@@ -228,12 +228,7 @@ public class IapManager : MonoBehaviour
                     PurchaseResultInfo purchaseResultInfo = iapClient.ParsePurchaseResultInfoFromIntent(androidIntent);
 
                     Debug.Log("HMSPluginResult: " + purchaseResultInfo.ReturnCode);
-
                     Debug.Log("HMSPluginPurchaseData: " + purchaseResultInfo.InAppPurchaseData);
-
-
-                    
-                   
 
                     switch (purchaseResultInfo.ReturnCode)
                     {

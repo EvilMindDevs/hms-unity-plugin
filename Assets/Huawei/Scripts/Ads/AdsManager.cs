@@ -7,8 +7,6 @@ using HuaweiMobileServices.Ads;
 public class AdsManager : MonoBehaviour
 {
 
-    private RewardAd rewardAd = null;
-
     private class RewardAdListener : IRewardAdStatusListener
     {
         private readonly AdsManager mAdsManager;
@@ -21,13 +19,13 @@ public class AdsManager : MonoBehaviour
         public void OnRewardAdClosed()
         {
             Debug.Log("[HMS] AdsManager OnRewardAdClosed");
-            mAdsManager.LoadNextAd();
+            mAdsManager.LoadNextRewardedAd();
         }
 
         public void OnRewardAdFailedToShow(int errorCode)
         {
             Debug.Log("[HMS] AdsManager OnRewardAdClosed " + errorCode);
-            mAdsManager.LoadNextAd();
+            mAdsManager.LoadNextRewardedAd();
         }
 
         public void OnRewardAdOpened()
@@ -41,16 +39,91 @@ public class AdsManager : MonoBehaviour
         }
     }
 
+    private class InterstitialAdListener : IAdListener
+    {
+        private readonly AdsManager mAdsManager;
+
+        public InterstitialAdListener(AdsManager adsManager)
+        {
+            mAdsManager = adsManager;
+        }
+
+        public void OnAdClicked()
+        {
+            Debug.Log("[HMS] AdsManager OnAdClicked");
+        }
+
+        public void OnAdClosed()
+        {
+            Debug.Log("[HMS] AdsManager OnAdClosed");
+            mAdsManager.LoadNextInterstitialAd();
+        }
+
+        public void OnAdFailed(int reason)
+        {
+            Debug.Log("[HMS] AdsManager OnAdFailed");
+        }
+
+        public void OnAdImpression()
+        {
+            Debug.Log("[HMS] AdsManager OnAdImpression");
+        }
+
+        public void OnAdLeave()
+        {
+            Debug.Log("[HMS] AdsManager OnAdLeave");
+        }
+
+        public void OnAdLoaded()
+        {
+            Debug.Log("[HMS] AdsManager OnAdLoaded");
+        }
+
+        public void OnAdOpened()
+        {
+            Debug.Log("[HMS] AdsManager OnAdOpened");
+        }
+    }
+
+    private RewardAd rewardAd = null;
+    private InterstitialAd interstitialAd = null;
+
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("[HMS] AdsManager Start");
-        LoadNextAd();
+        LoadNextRewardedAd();
+        LoadNextInterstitialAd();
     }
 
-    public void ShowAd()
+    private void LoadNextRewardedAd()
     {
-        Debug.Log("[HMS] AdsManager ShowAd");
+        Debug.Log("[HMS] AdsManager LoadNextRewardedAd");
+        rewardAd = new RewardAd("testx9dtjwj8hp");
+        rewardAd.LoadAd(new AdParam.Builder().Build(),
+            () => { Debug.Log("[HMS] Ad loaded!"); },
+            (errorCode) =>
+            {
+                Debug.Log("[HMS] Ad loading failed");
+                LoadNextRewardedAd();
+            }
+        );
+    }
+
+    private void LoadNextInterstitialAd()
+    {
+        Debug.Log("[HMS] AdsManager LoadNextInterstitialAd");
+        interstitialAd = new InterstitialAd
+        {
+            AdId = "testb4znbuh3n2",
+            AdListener = new InterstitialAdListener(this)
+        };
+        interstitialAd.LoadAd(new AdParam.Builder().Build());
+    }
+
+    public void ShowRewardedAd()
+    {
+        Debug.Log("[HMS] AdsManager ShowRewardedAd");
         if (rewardAd != null)
         {
             if (rewardAd.Loaded)
@@ -65,16 +138,20 @@ public class AdsManager : MonoBehaviour
         }
     }
 
-    private void LoadNextAd()
+    public void ShowInterstitialAd()
     {
-        rewardAd = new RewardAd("testx9dtjwj8hp");
-        rewardAd.LoadAd(new AdParam.Builder().Build(),
-            () => { Debug.Log("[HMS] Ad loaded!"); },
-            (errorCode) =>
+        Debug.Log("[HMS] AdsManager ShowInterstitialAd");
+        if (interstitialAd != null)
+        {
+            if (interstitialAd.Loaded)
             {
-                Debug.Log("[HMS] Ad loading failed");
-                LoadNextAd();
+                Debug.Log("[HMS] AdsManager interstitialAd.Show");
+                interstitialAd.Show();
             }
-        );
+            else
+            {
+                Debug.Log("[HMS] Interstitial ad clicked but still not loaded");
+            }
+        }
     }
 }

@@ -24,12 +24,10 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("HMS GAMES: Game init");
-        
-        // TODO set AuthHuaweiID with SignIn. Silent?
 
+        SignIn();
 
-        authHuaweiId = new AuthHuaweiId();
-
+        initGame();
         
 
         if (achievements)
@@ -47,6 +45,13 @@ public class GameManager : MonoBehaviour
         
     }
 
+    void initGame()
+    {
+        IJosAppsClient josAppsClient = JosApps.GetJosAppsClient(authHuaweiId);
+
+        josAppsClient.Init();
+    }
+
     private void initLeaderboards()
     {
         Debug.Log("HMS GAMES: Achievements init");
@@ -62,24 +67,42 @@ public class GameManager : MonoBehaviour
 
     public void SignIn()
     {
-        // Huawei sign in
-
-
+        
         HuaweiIdAuthParams authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).CreateParams();
+        IHuaweiIdAuthService authService = HuaweiIdAuthManager.GetService(authParams);
+        ITask<AuthHuaweiId> task = HuaweiIdAuthManager.ParseAuthResultFromIntent(authService.SignInIntent);
 
-        //ITask<AuthHuaweiId> task =
-        //task.AddOnSuccessListener((result) =>
-        //{
-        //    Debug.Log("[HMSP:] SingIn Success");
-        //    Debug.Log("[HMSP:] Display Name" + result.DisplayName);
+        task.AddOnSuccessListener((result) =>
+        {
+            Debug.Log("[HMSP:] SingIn Success");
+            authHuaweiId = result;
+            Debug.Log("[HMSP:] huaweiId:" + authHuaweiId);
 
 
+        }).AddOnFailureListener((exception) =>
+        {
+            Debug.Log("[HMSP:] SignIn Failed");
 
-        //}).AddOnFailureListener((exception) =>
-        //{
-        //    Debug.Log("[HMSP:] SignIn Failed");
+        });
+    }
 
-        //});
+    public void GetPlayerInfo()
+    {
+        IPlayersClient playersClient = Games.GetPlayersClient(authHuaweiId);
+        ITask<Player> task = playersClient.CurrentPlayer;
+
+        task.AddOnSuccessListener((result) =>
+        {
+            Debug.Log("[HMSP:] GetPlayerInfo Success");
+            
+            Debug.Log("[HMSP:] player:" + result.ToString());
+
+
+        }).AddOnFailureListener((exception) =>
+        {
+            Debug.Log("[HMSP:] GetPlayerInfo Failed");
+
+        });
     }
 
     /******************  ACHIEVEMENTS  ********************/

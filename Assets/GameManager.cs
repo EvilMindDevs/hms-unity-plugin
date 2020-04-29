@@ -67,23 +67,22 @@ public class GameManager : MonoBehaviour
 
     public void SignIn()
     {
-        
+        authHuaweiId = new AuthHuaweiId();
         HuaweiIdAuthParams authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).CreateParams();
-        IHuaweiIdAuthService authService = HuaweiIdAuthManager.GetService(authParams);
-        ITask<AuthHuaweiId> task = HuaweiIdAuthManager.ParseAuthResultFromIntent(authService.SignInIntent);
+        // IHuaweiIdAuthService authService = HuaweiIdAuthManager.GetService(authParams);
+        //ITask<AuthHuaweiId> task = HuaweiIdAuthManager.ParseAuthResultFromIntent(authService.SignInIntent);
 
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMSP:] SingIn Success");
-            authHuaweiId = result;
-            Debug.Log("[HMSP:] huaweiId:" + authHuaweiId);
+        //task.AddOnSuccessListener((result) =>
+        //{
+        //    Debug.Log("[HMSP:] SingIn Success");
+        //    authHuaweiId = result;
+        //    Debug.Log("[HMSP:] huaweiId:" + authHuaweiId);
 
+        //}).AddOnFailureListener((exception) =>
+        //{
+        //    Debug.Log("[HMSP:] SignIn Failed");
 
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMSP:] SignIn Failed");
-
-        });
+        //});
     }
 
     public void GetPlayerInfo()

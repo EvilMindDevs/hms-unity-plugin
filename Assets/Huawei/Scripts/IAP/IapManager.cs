@@ -9,6 +9,7 @@ using HuaweiMobileServices.Base;
 using HuaweiMobileServices.IAP;
 using System;
 using UnityEngine.Events;
+using HuaweiMobileServices.Id;
 
 public class IapManager : MonoBehaviour
 {
@@ -43,20 +44,82 @@ public class IapManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InitIAP();
-        // RestorePurchases();
-        recoverPurchases();
+        checkIapAvailabity();
+    }
 
-        
+    private void checkIapAvailabity()
+    {
+        iapClient = Iap.GetIapClient();
+
+        ITask<EnvReadyResult> task = iapClient.EnvReady;
+
+        task.AddOnSuccessListener((result) =>
+        {
+            Debug.Log("HMSP: checkIapAvailabity SUCCESS");
+            InitIAP();
+
+
+        }).AddOnFailureListener((exception) =>
+        {
+            Debug.Log("HMSP: Error on ObtainOwnedPurchases");
+
+            if (IapApiExceptionUtils.IsIapApiException(exception))
+            {
+                IapApiException iapApiException = IapApiExceptionUtils.AsIapApiException((exception));
+
+                
+                Status status = iapApiException.Status;
+                if (status.StatusCode == OrderStatusCode.ORDER_HWID_NOT_LOGIN)
+                {
+                    // User not logged in
+                    if (status.HasResolution())
+                    {
+                        status.StartResolutionForResult((androidIntent) =>
+                        {
+                            Debug.Log("[HMS]: IAP login intent launched");
+                            ITask<AuthHuaweiId> authTask = HuaweiIdAuthManager.ParseAuthResultFromIntent(androidIntent);
+
+                            authTask.AddOnSuccessListener((result) =>
+                            {
+                                Debug.Log("[HMS]: IAP logged in user:" + result.DisplayName);
+
+                            }).AddOnFailureListener((authException) =>
+                            {
+                                Debug.Log("[HMS]: IAP user not logged:" + authException.Message);
+                            });
+
+                        }, (statusException) =>
+                        {
+                            Debug.Log("[HMS]: IAP login intent ERROR");
+                        });
+                    }
+                }
+                else if (status.StatusCode == OrderStatusCode.ORDER_ACCOUNT_AREA_NOT_SUPPORTED)
+                {
+                    // The current region does not support HUAWEI IAP.
+                    Debug.Log("[HMS]: USer Area not supported by Huawei IAP");
+                }
+            }
+
+            
+
+
+                
+
+            
+        });
+
 
 
     }
+
+
 
     
 
 
 
-    private void InitIAP()
+    protected void InitIAP()
     {
         foreach (Product product in products)
         {
@@ -69,7 +132,7 @@ public class IapManager : MonoBehaviour
 
         ProductInfoReq productInfoReq = new ProductInfoReq();
        
-        iapClient = Iap.GetIapClient();
+        
      
 
         // CONSUMABLE REQUEST
@@ -111,6 +174,8 @@ public class IapManager : MonoBehaviour
         
 
         RestorePurchases();
+        ObtainOwnedPurchases();
+        
     }
 
 
@@ -208,12 +273,16 @@ public class IapManager : MonoBehaviour
     {
 
         PurchaseIntentReq purchaseIntentReq = new PurchaseIntentReq();
-        purchaseIntentReq.PriceType = 0;
+
+        ProductInfo productInfo = productInfoList.Find(product => product.ProductId == productID);
+        purchaseIntentReq.PriceType = productInfo.PriceType;
         purchaseIntentReq.ProductId = productID;
         // ToDo : developer payload???
         purchaseIntentReq.DeveloperPayload = "test";
 
         ITask<PurchaseIntentResult> task = iapClient.CreatePurchaseIntent(purchaseIntentReq);
+
+        InAppPurchaseData inAppPurchaseDataBean;
 
         task.AddOnSuccessListener((result) =>
         {
@@ -228,39 +297,54 @@ public class IapManager : MonoBehaviour
                     PurchaseResultInfo purchaseResultInfo = iapClient.ParsePurchaseResultInfoFromIntent(androidIntent);
 
                     Debug.Log("HMSPluginResult: " + purchaseResultInfo.ReturnCode);
-                    Debug.Log("HMSPluginPurchaseData: " + purchaseResultInfo.InAppPurchaseData);
+                    Debug.Log("HMErrorMssg: " + purchaseResultInfo.ErrMsg);
+                    Debug.Log("HMS: HMSInAppPurchaseData" + purchaseResultInfo.InAppPurchaseData);
+                    Debug.Log("HMS: HMSInAppDataSignature" + purchaseResultInfo.InAppDataSignature);
 
                     switch (purchaseResultInfo.ReturnCode)
                     {
                         case OrderStatusCode.ORDER_STATE_CANCEL:
                             // User cancel payment.
+                            Debug.Log("[HMS]: User cancel payment");
                             break;
                         case OrderStatusCode.ORDER_STATE_FAILED:
+                            Debug.Log("[HMS]: order paymentf failed");
+                            break;
 
                         case OrderStatusCode.ORDER_PRODUCT_OWNED:
+                            Debug.Log("[HMS]: Product owned");
+                            inAppPurchaseDataBean = new InAppPurchaseData(purchaseResultInfo.InAppPurchaseData);
+                            ConsumePurchase(inAppPurchaseDataBean.PurchaseToken);
+
                             // to check if there exists undelivered products.
                             break;
                         case OrderStatusCode.ORDER_STATE_SUCCESS:
                             // pay success.
+                            Debug.Log("[HMSPlugin]: PURCHASE SUCCESS");
+
                             String inAppPurchaseData = purchaseResultInfo.InAppPurchaseData;
                             String inAppPurchaseDataSignature = purchaseResultInfo.InAppDataSignature;
-                            Debug.Log("HMS:" + inAppPurchaseData);
+                            Debug.Log("HMS" + inAppPurchaseData);
                             Debug.Log("HMS:" + inAppPurchaseDataSignature);
-                            // use the public key of your app to verify the signature.
+                            
+                            //ToDO: use the public key of your app to verify the signature.
                             // If ok, you can deliver your products.
                             // If the user purchased a consumable product, call the consumeOwnedPurchase API to consume it after successfully delivering the product.
+                            
+                            // Consume purchase
+                            inAppPurchaseDataBean = new InAppPurchaseData(purchaseResultInfo.InAppPurchaseData);
+                            ConsumePurchase(inAppPurchaseDataBean.PurchaseToken);
                             break;
                         default:
                             break;
                     }
 
-                    onPurchaseSuccess();
+                    
                 },(exception) =>
                 {
-                    onPurchaseError();
+                    Debug.Log("[HMSPlugin]:startIntent ERROR");
                 }
                 );
-
 
             }
 
@@ -273,14 +357,35 @@ public class IapManager : MonoBehaviour
 
     }
 
-    public void onPurchaseSuccess()
+    public void ObtainOwnedPurchases()
     {
-        Debug.Log("[HMSPlugin]: PURCHASE SUCCESS");
-    }
+        Debug.Log("HMSP: ObtainOwnedPurchaseRequest");
+        OwnedPurchasesReq ownedPurchasesReq = new OwnedPurchasesReq();
 
-    public void onPurchaseError()
-    {
-        Debug.Log("[HMSPlugin]: PURCHASE ERROR");
+        ownedPurchasesReq.PriceType = 1;
+
+        ITask<OwnedPurchasesResult> task = iapClient.ObtainOwnedPurchases(ownedPurchasesReq);
+
+        task.AddOnSuccessListener((result) =>
+        {
+            Debug.Log("HMSP: ObtainOwnedPurchases");
+
+            if (result != null && result.InAppPurchaseDataList != null)
+            {
+                Debug.Log("HMSP: Restored " + result.InAppPurchaseDataList.Count + "non consumable products");
+
+                foreach( string inAppPurchaseData in result.InAppPurchaseDataList)
+                {
+                    InAppPurchaseData inAppPurchaseDataBean = new InAppPurchaseData(inAppPurchaseData);
+
+                    Debug.Log("HMSP: " + inAppPurchaseDataBean.ProductId);
+                }
+            }
+
+        }).AddOnFailureListener((exception) =>
+        {
+            Debug.Log("HMSP: Error on ObtainOwnedPurchases");
+        });
     }
 
 
@@ -291,6 +396,8 @@ public class IapManager : MonoBehaviour
         } 
         
     }
+
+    
 
 
 

@@ -24,21 +24,10 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("HMS GAMES: Game init");
-
         SignIn();
-
-        initGame();
         
 
-        if (achievements)
-        {
-            initAchievements();
-        }
-
-        if (leaderboards)
-        {
-            initLeaderboards();
-        }
+        
 
       
 
@@ -47,9 +36,13 @@ public class GameManager : MonoBehaviour
 
     void initGame()
     {
+        Debug.Log("HMS GAMES init");
+        HuaweiMobileServicesUtil.SetApplication();
+        Debug.Log("HMS GAMES: Setted app");
         IJosAppsClient josAppsClient = JosApps.GetJosAppsClient(authHuaweiId);
-
+        Debug.Log("HMS GAMES: jossClient");
         josAppsClient.Init();
+        Debug.Log("HMS GAMES: jossClient init");
     }
 
     private void initLeaderboards()
@@ -67,22 +60,34 @@ public class GameManager : MonoBehaviour
 
     public void SignIn()
     {
-        authHuaweiId = new AuthHuaweiId();
+        
         HuaweiIdAuthParams authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).CreateParams();
-        // IHuaweiIdAuthService authService = HuaweiIdAuthManager.GetService(authParams);
-        //ITask<AuthHuaweiId> task = HuaweiIdAuthManager.ParseAuthResultFromIntent(authService.SignInIntent);
 
-        //task.AddOnSuccessListener((result) =>
-        //{
-        //    Debug.Log("[HMSP:] SingIn Success");
-        //    authHuaweiId = result;
-        //    Debug.Log("[HMSP:] huaweiId:" + authHuaweiId);
+        HuaweiIdAuthManager.GetService(authParams).StartSignIn(
+            (result) =>
+            {
+                Debug.Log("[HMSP:] SingIn Success");
+                authHuaweiId = result;
+                Debug.Log("[HMSP:] huaweiId:" + authHuaweiId);
+                initGame();
 
-        //}).AddOnFailureListener((exception) =>
-        //{
-        //    Debug.Log("[HMSP:] SignIn Failed");
+                if (achievements)
+                {
+                    initAchievements();
+                }
 
-        //});
+                if (leaderboards)
+                {
+                    initLeaderboards();
+                }
+
+            }
+        , (exception) =>
+        {
+            Debug.Log("[HMSP:] SignIn Failed");
+
+        });
+        
     }
 
     public void GetPlayerInfo()
@@ -107,25 +112,18 @@ public class GameManager : MonoBehaviour
     /******************  ACHIEVEMENTS  ********************/
     public void ShowAchievements() {
 
-        AuthHuaweiId authHuaweiId = new AuthHuaweiId();
+       
 
         IAchievementsClient achievementsClient = Games.GetAchievementsClient(authHuaweiId);
 
-        ITask<AndroidIntent> task = achievementsClient.ShowAchievementListIntent;
-
-        task.AddOnSuccessListener((intent) =>
-        {
-
+        achievementsClient.ShowAchievementList(()=> {
             Debug.Log("[HMS GAMES:] ShowAchievements SUCCESS");
-            // result start ActivityForResult
 
-
-        }).AddOnFailureListener((exception) =>
-        {
-
+        }, (exception) => {
             Debug.Log("[HMS GAMES:] ShowAchievements ERROR");
-
         });
+
+        
 
     }
 
@@ -247,18 +245,17 @@ public class GameManager : MonoBehaviour
 
     public void ShowLeaderboards()
     {
-        ITask<AndroidIntent> task = rankingsClient.TotalRankingsIntent;
-
-        task.AddOnSuccessListener((result) =>
+        rankingsClient.ShowTotalRankings(() =>
         {
             Debug.Log("[HMS GAMES] ShowLeaderboards SUCCESS");
 
-            // ToDo: Launch StartActivity
 
-        }).AddOnFailureListener((exception) =>
+        }, (exception) =>
         {
             Debug.Log("[HMS GAMES] ShowLeaderboards ERROR");
         });
+
+       
     }
 
     public void GetLeaderboardsData()

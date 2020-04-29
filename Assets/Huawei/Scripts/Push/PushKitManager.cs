@@ -16,9 +16,7 @@ public class PushKitManager : MonoBehaviour, IPushListener
     {
         remoteMessageText = GameObject.Find("RemoteMessageText").GetComponent<Text>();
         PushManager.Listener = this;
-        Debug.Log("[HMS] Getting client app ID");
-        var appId = "101282883";
-        pushToken = HmsInstanceId.GetInstance().GetToken(appId, "HCM");
+        pushToken = PushManager.Token;
         Debug.Log($"[HMS] Push token from GetToken is {pushToken}");
     }
 

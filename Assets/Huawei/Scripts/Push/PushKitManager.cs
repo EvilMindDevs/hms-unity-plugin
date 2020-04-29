@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PushManager : MonoBehaviour, IPushListener
+public class PushKitManager : MonoBehaviour, IPushListener
 {
 
     private string pushToken;
@@ -14,13 +14,17 @@ public class PushManager : MonoBehaviour, IPushListener
     // Start is called before the first frame update
     void Start()
     {
-        var appId = AGConnectServicesConfig.FromContext().GetString("client/app_id");
-        pushToken = HmsInstanceId.GetInstance().GetToken(appId, "HCM");
         remoteMessageText = GameObject.Find("RemoteMessageText").GetComponent<Text>();
+        PushManager.Listener = this;
+        Debug.Log("[HMS] Getting client app ID");
+        var appId = "101282883";
+        pushToken = HmsInstanceId.GetInstance().GetToken(appId, "HCM");
+        Debug.Log($"[HMS] Push token from GetToken is {pushToken}");
     }
 
     public void OnNewToken(string token)
     {
+        Debug.Log($"[HMS] Push token from OnNewToken is {pushToken}");
         if (pushToken == null)
         {
             pushToken = token;
@@ -32,7 +36,7 @@ public class PushManager : MonoBehaviour, IPushListener
         Debug.Log("Error asking for Push token");
         Debug.Log(e.StackTrace);
     }
-
+        
     public void OnMessageReceived(RemoteMessage remoteMessage)
     {
         var id = remoteMessage.MessageId;

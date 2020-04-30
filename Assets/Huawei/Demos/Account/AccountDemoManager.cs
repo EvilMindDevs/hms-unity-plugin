@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using HuaweiMobileServices.Id;
+using HuaweiMobileServices.Utils;
 using UnityEngine;
 using UnityEngine.UI;
-using HuaweiMobileServices.Id;
-using HuaweiMobileServices.Utils;
 
 public class AccountDemoManager : MonoBehaviour
 {
@@ -21,9 +18,10 @@ public class AccountDemoManager : MonoBehaviour
     {
         loggedInUser = GameObject.Find("LoggedUserText").GetComponent<Text>();
         loggedInUser.text = NOT_LOGGED_IN;
+
         accountManager = GameObject.Find("AccountManager").GetComponent<AccountManager>();
-        accountManager.LoginSuccess = (authId) => { OnLoginSuccess(authId); };
-        accountManager.LoginFailed = (error) => { OnLoginFailure(error); };
+        accountManager.LoginSuccess = OnLoginSuccess;
+        accountManager.LoginFailed = OnLoginFailure;
     }
 
     public void LogIn()
@@ -39,7 +37,7 @@ public class AccountDemoManager : MonoBehaviour
 
     public void OnLoginSuccess(AuthHuaweiId authHuaweiId)
     {
-        loggedInUser.text = String.Format(LOGGED_IN, authHuaweiId.DisplayName);
+        loggedInUser.text = string.Format(LOGGED_IN, authHuaweiId.DisplayName);
     }
 
     public void OnLoginFailure(HMSException error)

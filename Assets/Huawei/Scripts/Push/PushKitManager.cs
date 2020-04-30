@@ -1,6 +1,7 @@
 ﻿using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Push;
+using HuaweiMobileServices.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,24 +9,29 @@ using UnityEngine.UI;
 public class PushKitManager : MonoBehaviour, IPushListener
 {
 
-    private string pushToken;
-    private Text remoteMessageText;
+    public Action<string> OnTokenSuccess { get; set; }
+    public Action<Exception> OnTokenFailure { get; set; }
+
+    public Action<RemoteMessage> OnMessageReceivedSuccess { get; set; }
 
     // Start is called before the first frame update
     void Start()
     {
-        remoteMessageText = GameObject.Find("RemoteMessageText").GetComponent<Text>();
         PushManager.Listener = this;
-        pushToken = PushManager.Token;
-        Debug.Log($"[HMS] Push token from GetToken is {pushToken}");
+        var token = PushManager.Token;
+        Debug.Log($"[HMS] Push token from GetToken is {token}");
+        if (token != null)
+        {
+            OnTokenSuccess?.Invoke(token);
+        }
     }
 
     public void OnNewToken(string token)
     {
-        Debug.Log($"[HMS] Push token from OnNewToken is {pushToken}");
-        if (pushToken == null)
+        Debug.Log($"[HMS] Push token from OnNewToken is {token}");
+        if (token != null)
         {
-            pushToken = token;
+            OnTokenSuccess?.Invoke(token);
         }
     }
 
@@ -33,14 +39,11 @@ public class PushKitManager : MonoBehaviour, IPushListener
     {
         Debug.Log("Error asking for Push token");
         Debug.Log(e.StackTrace);
+        OnTokenFailure?.Invoke(e);
     }
         
     public void OnMessageReceived(RemoteMessage remoteMessage)
     {
-        var id = remoteMessage.MessageId;
-        var from = remoteMessage.From;
-        var to = remoteMessage.To;
-        var data = remoteMessage.Data;
-        remoteMessageText.text = $"ID: {id}\nFrom: {from}\nTo: {to}\nData: {data}";
+        OnMessageReceivedSuccess?.Invoke(remoteMessage);
     }
 }

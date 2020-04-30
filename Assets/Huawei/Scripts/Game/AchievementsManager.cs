@@ -8,6 +8,10 @@ using UnityEngine;
 public class AchievementsManager : MonoBehaviour
 {
 
+    private const string NAME = "AchievementsManager";
+
+    public static AchievementsManager Instance => GameObject.Find(NAME).GetComponent<AchievementsManager>();
+
     private AccountManager accountManager;
     private IAchievementsClient achievementsClient;
 

@@ -8,6 +8,10 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
+    private const string NAME = "GameManager";
+
+    public static GameManager Instance => GameObject.Find(NAME).GetComponent<GameManager>();
+
     private AccountManager accountManager;
 
     public Action<Player> OnGetPlayerInfoSuccess { get; set; }

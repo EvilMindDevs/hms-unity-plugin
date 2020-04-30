@@ -7,6 +7,11 @@ using UnityEngine;
 
 public class LeaderboardManager : MonoBehaviour
 {
+
+    private const string NAME = "LeaderboardManager";
+
+    public static LeaderboardManager Instance => GameObject.Find(NAME).GetComponent<LeaderboardManager>();
+
     private AccountManager accountManager;
     private IRankingsClient rankingsClient;
 

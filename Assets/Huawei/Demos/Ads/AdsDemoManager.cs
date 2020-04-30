@@ -17,7 +17,6 @@ public class AdsDemoManager : MonoBehaviour
     void Start()
     {
         InitRewardedAds();
-        
     }
 
     private void InitRewardedAds()

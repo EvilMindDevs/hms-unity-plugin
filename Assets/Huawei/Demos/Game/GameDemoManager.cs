@@ -15,8 +15,6 @@ public class GameDemoManager : MonoBehaviour
     public bool leaderboards;
     public bool customUnit;
 
-
-
     AuthHuaweiId authHuaweiId;
     IAchievementsClient achievementsClient;
     IRankingsClient rankingsClient;
@@ -25,13 +23,6 @@ public class GameDemoManager : MonoBehaviour
     {
         Debug.Log("HMS GAMES: Game init");
         SignIn();
-        
-
-        
-
-      
-
-        
     }
 
     void initGame()
@@ -56,7 +47,6 @@ public class GameDemoManager : MonoBehaviour
         Debug.Log("HMS GAMES: Achievements init");
         achievementsClient = Games.GetAchievementsClient(authHuaweiId);
     }
-
 
     public void SignIn()
     {

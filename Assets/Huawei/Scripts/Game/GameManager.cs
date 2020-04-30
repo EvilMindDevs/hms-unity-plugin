@@ -15,8 +15,6 @@ public class GameManager : MonoBehaviour
     public bool leaderboards;
     public bool customUnit;
 
-
-
     AuthHuaweiId authHuaweiId;
     IAchievementsClient achievementsClient;
     IRankingsClient rankingsClient;
@@ -24,20 +22,13 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("HMS GAMES: Game init");
+        HuaweiMobileServicesUtil.SetApplication();
         SignIn();
-        
-
-        
-
-      
-
-        
     }
 
-    void initGame()
+    public void Init(AuthHuaweiId authHuaweiId)
     {
         Debug.Log("HMS GAMES init");
-        HuaweiMobileServicesUtil.SetApplication();
         Debug.Log("HMS GAMES: Setted app");
         IJosAppsClient josAppsClient = JosApps.GetJosAppsClient(authHuaweiId);
         Debug.Log("HMS GAMES: jossClient");
@@ -69,7 +60,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log("[HMSP:] SingIn Success");
                 authHuaweiId = result;
                 Debug.Log("[HMSP:] huaweiId:" + authHuaweiId);
-                initGame();
+                Init();
 
                 if (achievements)
                 {
@@ -106,96 +97,6 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("[HMSP:] GetPlayerInfo Failed");
 
-        });
-    }
-
-    /******************  ACHIEVEMENTS  ********************/
-    public void ShowAchievements() {
-
-       
-
-        IAchievementsClient achievementsClient = Games.GetAchievementsClient(authHuaweiId);
-
-        achievementsClient.ShowAchievementList(()=> {
-            Debug.Log("[HMS GAMES:] ShowAchievements SUCCESS");
-
-        }, (exception) => {
-            Debug.Log("[HMS GAMES:] ShowAchievements ERROR");
-        });
-
-        
-
-    }
-
-    public void GetAchievementsList()
-    {
-        ITask<IList<Achievement>> task = achievementsClient.GetAchievementList(true);
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] GetAchievementsList SUCCESS");
-            foreach (Achievement achievement in result) {
-                Debug.Log("Achievement " + achievement.Id + "-" + achievement.DisplayName);
-            }
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] GetAchievementsList ERROR");
-        });
-    }
-
-
-    public void RevealAchievement(string achievementId)
-    {
-
-        ITask<HuaweiMobileServices.Utils.Void> task = achievementsClient.VisualizeWithResult(achievementId);
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] RevealAchievement SUCCESS");
-            
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] RevealAchievement ERROR");
-        });
-    }
-    public void IncreaseStepAchievement(string achievementId, int stepIncrement)
-    {
-        ITask<bool> task = achievementsClient.GrowWithResult(achievementId, stepIncrement);
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] IncreaseStepAchievement SUCCESS" + result);
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] IncreaseStepAchievement ERROR");
-        });
-    }
-    
-    public void SetStepAchievement(string achievementId, int stepsNum)
-    {
-        ITask<bool> task = achievementsClient.MakeStepsWithResult(achievementId, stepsNum);
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] SetStepAchievement SUCCESS" + result);
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] SetStepAchievement ERROR");
-        });
-    }
-
-    public void UnlockAchievement(string achievementId) {
-        ITask<HuaweiMobileServices.Utils.Void> task = achievementsClient.ReachWithResult(achievementId);
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] UnlockAchievements SUCCESS" );
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] UnlockAchievements ERROR");
         });
     }
 

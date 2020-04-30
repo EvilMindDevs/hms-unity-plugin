@@ -15,6 +15,7 @@ public class AccountManager : MonoBehaviour
         }
     }
 
+    public AuthHuaweiId huaweiId;
     public Action<AuthHuaweiId> LoginSuccess { get; set; }
     public Action<HMSException> LoginFailed { get; set; }
 
@@ -30,9 +31,11 @@ public class AccountManager : MonoBehaviour
     {
         authService.StartSignIn((authId) =>
         {
+            huaweiId = authId;
             LoginSuccess?.Invoke(authId);
         }, (error) =>
         {
+            huaweiId = null;
             LoginFailed?.Invoke(error);
         });
     }
@@ -40,5 +43,6 @@ public class AccountManager : MonoBehaviour
     public void LogOut()
     {
         authService.SignOut();
+        huaweiId = null;
     }
 }

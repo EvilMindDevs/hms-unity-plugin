@@ -43,6 +43,10 @@ public class RewardAdManager : MonoBehaviour
         }
     }
 
+    private const string NAME = "RewardAdManager";
+
+    public static RewardAdManager Instance => GameObject.Find(NAME).GetComponent<RewardAdManager>();
+
     private RewardAd rewardAd = null;
 
     public string AdId { get; set; }

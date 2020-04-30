@@ -6,6 +6,10 @@ using UnityEngine;
 public class AccountManager : MonoBehaviour
 {
 
+    private const string NAME = "AccountManager";
+
+    public static AccountManager Instance => GameObject.Find(NAME).GetComponent<AccountManager>();
+
     private static HuaweiIdAuthService DefaultAuthService
     {
         get
@@ -14,8 +18,8 @@ public class AccountManager : MonoBehaviour
             return HuaweiIdAuthManager.GetService(authParams);
         }
     }
-
-    public AuthHuaweiId huaweiId;
+    
+    public AuthHuaweiId HuaweiId { get; private set; }
     public Action<AuthHuaweiId> LoginSuccess { get; set; }
     public Action<HMSException> LoginFailed { get; set; }
 
@@ -27,22 +31,22 @@ public class AccountManager : MonoBehaviour
         authService = DefaultAuthService;
     }
 
-    public void LogIn()
+    public void SignIn()
     {
         authService.StartSignIn((authId) =>
         {
-            huaweiId = authId;
+            HuaweiId = authId;
             LoginSuccess?.Invoke(authId);
         }, (error) =>
         {
-            huaweiId = null;
+            HuaweiId = null;
             LoginFailed?.Invoke(error);
         });
     }
 
-    public void LogOut()
+    public void SignOut()
     {
         authService.SignOut();
-        huaweiId = null;
+        HuaweiId = null;
     }
 }

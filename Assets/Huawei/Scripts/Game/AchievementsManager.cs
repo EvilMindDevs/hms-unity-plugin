@@ -32,18 +32,18 @@ public class AchievementsManager : MonoBehaviour
     public void Start()
     {
         Debug.Log("HMS GAMES: Achievements init");
-        accountManager = GameObject.Find("AccountManager").GetComponent<AccountManager>();
-        if (accountManager.huaweiId != null)
+        accountManager = AccountManager.Instance;
+        if (accountManager.HuaweiId != null)
         {
-            achievementsClient = Games.GetAchievementsClient(accountManager.huaweiId);
+            achievementsClient = Games.GetAchievementsClient(accountManager.HuaweiId);
         }
     }
 
     public void ShowAchievements()
     {
-        if (accountManager.huaweiId != null)
+        if (accountManager.HuaweiId != null)
         {
-            IAchievementsClient achievementsClient = Games.GetAchievementsClient(accountManager.huaweiId);
+            IAchievementsClient achievementsClient = Games.GetAchievementsClient(accountManager.HuaweiId);
             achievementsClient.ShowAchievementList(() =>
             {
                 Debug.Log("[HMS GAMES:] ShowAchievements SUCCESS");

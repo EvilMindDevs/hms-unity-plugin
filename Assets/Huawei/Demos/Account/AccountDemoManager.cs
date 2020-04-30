@@ -19,19 +19,19 @@ public class AccountDemoManager : MonoBehaviour
         loggedInUser = GameObject.Find("LoggedUserText").GetComponent<Text>();
         loggedInUser.text = NOT_LOGGED_IN;
 
-        accountManager = GameObject.Find("AccountManager").GetComponent<AccountManager>();
+        accountManager = AccountManager.Instance;
         accountManager.LoginSuccess = OnLoginSuccess;
         accountManager.LoginFailed = OnLoginFailure;
     }
 
     public void LogIn()
     {
-        accountManager.LogIn();
+        accountManager.SignIn();
     }
 
     public void LogOut()
     {
-        accountManager.LogOut();
+        accountManager.SignOut();
         loggedInUser.text = NOT_LOGGED_IN;
     }
 

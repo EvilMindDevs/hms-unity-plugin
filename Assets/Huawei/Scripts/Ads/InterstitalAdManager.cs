@@ -61,6 +61,10 @@ public class InterstitalAdManager : MonoBehaviour
         }
     }
 
+    private const string NAME = "InterstitalAdManager";
+
+    public static InterstitalAdManager Instance => GameObject.Find(NAME).GetComponent<InterstitalAdManager>();
+
     private InterstitialAd interstitialAd = null;
 
     public string AdId { get; set; }

@@ -18,8 +18,8 @@ public class AchievementsManager : MonoBehaviour
     public Action OnShowAchievementsSuccess { get; set; }
     public Action<HMSException> OnShowAchievementsFailure { get; set; }
 
-    public Action<IList<Achievement>> OnGetAchievementSuccess { get; set; }
-    public Action<HMSException> OnGetAchievementFailure { get; set; }
+    public Action<IList<Achievement>> OnGetAchievementsListSuccess { get; set; }
+    public Action<HMSException> OnGetAchievementsListFailure { get; set; }
 
     public Action OnRevealAchievementSuccess { get; set; }
     public Action<HMSException> OnRevealAchievementFailure { get; set; }
@@ -66,11 +66,11 @@ public class AchievementsManager : MonoBehaviour
         task.AddOnSuccessListener((result) =>
         {
             Debug.Log("[HMS GAMES] GetAchievementsList SUCCESS");
-            OnGetAchievementSuccess?.Invoke(result);
+            OnGetAchievementsListSuccess?.Invoke(result);
         }).AddOnFailureListener((exception) =>
         {
             Debug.Log("[HMS GAMES] GetAchievementsList ERROR");
-            OnGetAchievementFailure?.Invoke(exception);
+            OnGetAchievementsListFailure?.Invoke(exception);
         });
     }
 

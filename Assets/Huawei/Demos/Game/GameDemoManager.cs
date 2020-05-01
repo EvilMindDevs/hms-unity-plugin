@@ -11,198 +11,156 @@ using System;
 public class GameDemoManager : MonoBehaviour
 {
 
-    public bool achievements;
-    public bool leaderboards;
-    public bool customUnit;
+    private bool achievements = true;
+    private  bool leaderboards = true;
+    private bool customUnit = false;
 
-    AuthHuaweiId authHuaweiId;
+    
     IAchievementsClient achievementsClient;
     IRankingsClient rankingsClient;
 
+    GameManager gameManager;
+    LeaderboardManager leaderboardManager;
+    AchievementsManager achievementsManager;
+
     void Start()
     {
-        Debug.Log("HMS GAMES: Game init");
-        SignIn();
+        gameManager = GameManager.Instance;
+
+        leaderboardManager = LeaderboardManager.Instance;
+
+        achievementsManager = AchievementsManager.Instance;
+        achievementsManager.OnShowAchievementsSuccess = OnShowAchievementsSuccess;
+        achievementsManager.OnShowAchievementsFailure = OnShowAchievementsFailure;
+        achievementsManager.OnRevealAchievementSuccess = OnRevealAchievementSuccess;
+        achievementsManager.OnRevealAchievementFailure = OnRevealAchievementFailure;
+        achievementsManager.OnIncreaseStepAchievementSuccess = OnIncreaseStepAchievementSuccess;
+        achievementsManager.OnIncreaseStepAchievementFailure = OnIncreaseStepAchievementFailure;
+        achievementsManager.OnUnlockAchievementSuccess = OnUnlockAchievementSuccess;
+        achievementsManager.OnUnlockAchievementFailure = OnUnlockAchievementFailure;
     }
 
-    void initGame()
-    {
-        Debug.Log("HMS GAMES init");
-        HuaweiMobileServicesUtil.SetApplication();
-        Debug.Log("HMS GAMES: Setted app");
-        IJosAppsClient josAppsClient = JosApps.GetJosAppsClient(authHuaweiId);
-        Debug.Log("HMS GAMES: jossClient");
-        josAppsClient.Init();
-        Debug.Log("HMS GAMES: jossClient init");
-    }
 
-    private void initLeaderboards()
-    {
-        Debug.Log("HMS GAMES: Achievements init");
-        rankingsClient = Games.GetRankingsClient(authHuaweiId);
-
-    }
-
-    private void initAchievements() {
-        Debug.Log("HMS GAMES: Achievements init");
-        achievementsClient = Games.GetAchievementsClient(authHuaweiId);
-    }
-
-    public void SignIn()
-    {
-        
-        HuaweiIdAuthParams authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).CreateParams();
-
-        HuaweiIdAuthManager.GetService(authParams).StartSignIn(
-            (result) =>
-            {
-                Debug.Log("[HMSP:] SingIn Success");
-                authHuaweiId = result;
-                Debug.Log("[HMSP:] huaweiId:" + authHuaweiId);
-                initGame();
-
-                if (achievements)
-                {
-                    initAchievements();
-                }
-
-                if (leaderboards)
-                {
-                    initLeaderboards();
-                }
-
-            }
-        , (exception) =>
-        {
-            Debug.Log("[HMSP:] SignIn Failed");
-
-        });
-        
-    }
-
-    public void GetPlayerInfo()
-    {
-        IPlayersClient playersClient = Games.GetPlayersClient(authHuaweiId);
-        ITask<Player> task = playersClient.CurrentPlayer;
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMSP:] GetPlayerInfo Success");
-            
-            Debug.Log("[HMSP:] player:" + result.ToString());
-
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMSP:] GetPlayerInfo Failed");
-
-        });
-    }
-
-    /******************  ACHIEVEMENTS  ********************/
+    
+    // SHOW ACHIEVEMENTS
     public void ShowAchievements() {
 
-       
+        achievementsManager.ShowAchievements();
+    }
 
-        IAchievementsClient achievementsClient = Games.GetAchievementsClient(authHuaweiId);
-
-        achievementsClient.ShowAchievementList(()=> {
-            Debug.Log("[HMS GAMES:] ShowAchievements SUCCESS");
-
-        }, (exception) => {
-            Debug.Log("[HMS GAMES:] ShowAchievements ERROR");
-        });
-
-        
+    private void OnShowAchievementsSuccess()
+    {
 
     }
+
+    private void OnShowAchievementsFailure(HMSException exception)
+    {
+
+    }
+
+    // GET ACHIEVEMENT LIST
 
     public void GetAchievementsList()
     {
-        ITask<IList<Achievement>> task = achievementsClient.GetAchievementList(true);
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] GetAchievementsList SUCCESS");
-            foreach (Achievement achievement in result) {
-                Debug.Log("Achievement " + achievement.Id + "-" + achievement.DisplayName);
-            }
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] GetAchievementsList ERROR");
-        });
+        achievementsManager.GetAchievementsList();
+        // ToDo callbacks
+        // achievementsManager.OnGetAchievementListSuccess = OnGetAchievemenListSuccess;
+        // achievementsManager.OnGetAchievementListFailure = OnGetAchievementListFailure;
     }
 
+    private void OnGetAchievemenListSuccess()
+    {
 
+    }
+
+    private void OnGetAchievementListFailure()
+    {
+
+    }
+
+    // REVEAL ACHIEVEMENT
     public void RevealAchievement(string achievementId)
     {
-
-        ITask<HuaweiMobileServices.Utils.Void> task = achievementsClient.VisualizeWithResult(achievementId);
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] RevealAchievement SUCCESS");
-            
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] RevealAchievement ERROR");
-        });
+        achievementsManager.RevealAchievement(achievementId);
     }
-    public void IncreaseStepAchievement(string achievementId, int stepIncrement)
+
+    public void OnRevealAchievementSuccess()
     {
-        ITask<bool> task = achievementsClient.GrowWithResult(achievementId, stepIncrement);
 
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] IncreaseStepAchievement SUCCESS" + result);
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] IncreaseStepAchievement ERROR");
-        });
     }
-    
+
+    private void OnRevealAchievementFailure(HMSException error)
+    {
+
+    }
+
+    // INCREASE STEP ACHIEVEMENT
+    public void IncreaseStepAchievement(string achievementId, int stepIncrement = 1)
+    {
+        achievementsManager.IncreaseStepAchievement(achievementId, stepIncrement);
+    }
+
+    private void OnIncreaseStepAchievementSuccess()
+    {
+
+    }
+
+    private void OnIncreaseStepAchievementFailure(HMSException error)
+    {
+
+    }
+
+    // Set Step Achivement
     public void SetStepAchievement(string achievementId, int stepsNum)
     {
-        ITask<bool> task = achievementsClient.MakeStepsWithResult(achievementId, stepsNum);
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] SetStepAchievement SUCCESS" + result);
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] SetStepAchievement ERROR");
-        });
+        achievementsManager.SetStepAchievement(achievementId, stepsNum);
     }
 
+    private void OnSetStepAchievementSuccess()
+    {
+
+    }
+
+    private void OnSetStepAchievemenFailure(HMSException error)
+    {
+
+    }
+
+    // Unlock Achievement
+
     public void UnlockAchievement(string achievementId) {
-        ITask<HuaweiMobileServices.Utils.Void> task = achievementsClient.ReachWithResult(achievementId);
+        achievementsManager.UnlockAchievement(achievementId);
+    }
 
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] UnlockAchievements SUCCESS" );
+    private void OnUnlockAchievementSuccess()
+    {
 
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] UnlockAchievements ERROR");
-        });
+    }
+
+    private void OnUnlockAchievementFailure(HMSException error)
+    { 
+
     }
 
     /******************  LEADERBOARDS  ********************/
 
     public void IsUserScoreShownOnLeaderboards()
     {
-        ITask<int> task = rankingsClient.GetRankingSwitchStatus();
 
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] isUserScoreShownOnLeaderboards SUCCESS" + result);
+       /// Todo Hay que cambiar en el manager isUser por el getUser
+       /// 
+       leaderboardManager.IsUserScoreShownOnLeaderboards();
+        leaderboardManager.OnIsUserScoreShownOnLeaderboardsSuccess = OnIsUserScoreShownOnLeaderboardsSuccess;
+       leaderboardManager.OnIsUserScoreShownOnLeaderboardsFailure = OnIsUserScoreShownOnLeaderboardsFailure;
+    }
 
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] isUserScoreShownOnLeaderboards ERROR");
-        });
+    private void OnIsUserScoreShownOnLeaderboardsSuccess(int i)
+    {
+
+    }
+
+    private void OnIsUserScoreShownOnLeaderboardsFailure(HMSException error)
+    {
 
     }
 

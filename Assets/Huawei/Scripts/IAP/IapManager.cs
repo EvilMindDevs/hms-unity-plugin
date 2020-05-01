@@ -1,296 +1,220 @@
 ﻿# define DEBUG
 
-using System.Collections;
+using HuaweiMobileServices.Base;
+using HuaweiMobileServices.IAP;
+using HuaweiMobileServices.Utils;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using HuaweiConstants;
-using HuaweiMobileServices.Base;
-
-using HuaweiMobileServices.IAP;
-using System;
-using UnityEngine.Events;
-using HuaweiMobileServices.Id;
 
 public class IapManager : MonoBehaviour
 {
 
-    public string key;
+    private const string NAME = "IapManager";
 
+    public static IapManager Instance => GameObject.Find(NAME).GetComponent<IapManager>();
 
-    public Product[] products;
+    private static readonly HMSException IAP_NOT_AVAILABLE = new HMSException("IAP not available");
 
-    [HideInInspector]
-    public int numberOfProductsRetrieved;
+    public Action OnCheckIapAvailabilitySuccess { get; set; }
+    public Action<HMSException> OnCheckIapAvailabilityFailure { get; set; }
 
-    List<string> productIdConsumablesList = new List<string>();
-    List<string> productIdNonConsumablesList = new List<string>();
-    List<ProductInfo> productInfoList = new List<ProductInfo>();
+    public Action<IList<ProductInfoResult>> OnObtainProductInfoSuccess { get; set; }
+    public Action<HMSException> OnObtainProductInfoFailure { get; set; }
 
-    IIapClient iapClient;
+    public Action OnRecoverPurchasesSuccess { get; set; }
+    public Action<HMSException> OnRecoverPurchasesFailure { get; set; }
 
-    UnityEvent loadedEvent;
+    public Action OnConsumePurchaseSuccess { get; set; }
+    public Action<HMSException> OnConsumePurchaseFailure { get; set; }
 
+    public Action<PurchaseResultInfo> OnBuyProductSuccess { get; set; }
+    public Action<int> OnBuyProductFailure { get; set; }
 
-    void Awake()
-    {
-#if DEBUG
-        Debug.Log("[HMSPlugin]: IAPP manager Init");
-#endif
-        Debug.Log("[HMSPlugin]: IAP manager Init");
-        loadedEvent = new UnityEvent();
-        
-    }
+    public Action<OwnedPurchasesResult> OnObtainOwnedPurchasesSuccess { get; set; }
+    public Action<HMSException> OnObtainOwnedPurchasesFailure { get; set; }
+
+    private IIapClient iapClient;
+    private bool? iapAvailable = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        checkIapAvailabity();
+
     }
 
-    private void checkIapAvailabity()
+    public void CheckIapAvailability()
     {
         iapClient = Iap.GetIapClient();
-
         ITask<EnvReadyResult> task = iapClient.EnvReady;
-
         task.AddOnSuccessListener((result) =>
         {
             Debug.Log("HMSP: checkIapAvailabity SUCCESS");
-            InitIAP();
-
+            iapAvailable = true;
+            OnCheckIapAvailabilitySuccess?.Invoke();
 
         }).AddOnFailureListener((exception) =>
         {
             Debug.Log("HMSP: Error on ObtainOwnedPurchases");
+            iapClient = null;
+            iapAvailable = false;
+            OnCheckIapAvailabilityFailure?.Invoke(exception);
 
-            if (IapApiExceptionUtils.IsIapApiException(exception))
-            {
-                IapApiException iapApiException = IapApiExceptionUtils.AsIapApiException((exception));
-
-                
-                Status status = iapApiException.Status;
-                if (status.StatusCode == OrderStatusCode.ORDER_HWID_NOT_LOGIN)
-                {
-                    // User not logged in
-                    if (status.HasResolution())
-                    {
-                        status.StartResolutionForResult((androidIntent) =>
-                        {
-                            Debug.Log("[HMS]: IAP login intent launched");
-                            ITask<AuthHuaweiId> authTask = HuaweiIdAuthManager.ParseAuthResultFromIntent(androidIntent);
-
-                            authTask.AddOnSuccessListener((result) =>
-                            {
-                                Debug.Log("[HMS]: IAP logged in user:" + result.DisplayName);
-
-                            }).AddOnFailureListener((authException) =>
-                            {
-                                Debug.Log("[HMS]: IAP user not logged:" + authException.Message);
-                            });
-
-                        }, (statusException) =>
-                        {
-                            Debug.Log("[HMS]: IAP login intent ERROR");
-                        });
-                    }
-                }
-                else if (status.StatusCode == OrderStatusCode.ORDER_ACCOUNT_AREA_NOT_SUPPORTED)
-                {
-                    // The current region does not support HUAWEI IAP.
-                    Debug.Log("[HMS]: USer Area not supported by Huawei IAP");
-                }
-            }
-
-            
-
-
-                
-
-            
         });
-
-
-
     }
 
-
-
-    
-
-
-
-    protected void InitIAP()
+    // TODO Obtain non-consumables too!
+    public void ObtainProductInfo(IList<string> productIdConsumablesList = null)
     {
-        foreach (Product product in products)
-        {
-            if (product.isConsumable)
-            {
-                productIdConsumablesList.Add(product.productID);
-            }
 
+        if (iapAvailable != true)
+        {
+            OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
+            return;
         }
 
-        ProductInfoReq productInfoReq = new ProductInfoReq();
-       
-        
-     
-
-        // CONSUMABLE REQUEST
-        productInfoReq.PriceType = 0;
-    
-        productInfoReq.ProductIds = productIdConsumablesList;
-        
-        ITask<ProductInfoResult> task = iapClient.ObtainProductInfo(productInfoReq);
-        
-        Debug.Log(task.Result);
-
-        task.AddOnSuccessListener((result) =>
+        ProductInfoReq productInfoReq = new ProductInfoReq
         {
+            PriceType = 0,
+            ProductIds = productIdConsumablesList
+        };
 
-            if (result != null)
+        iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type0) =>
+        {
+            Debug.Log("[HMSPlugin]:" + type0.ErrMsg + type0.ReturnCode.ToString());
+            Debug.Log("[HMSPlugin]: Found " + type0.ProductInfoList.Count + "consumable products");
+
+            productInfoReq = new ProductInfoReq
             {
-                
-                if (result.ProductInfoList.Count != 0)
+                PriceType = 1,
+                ProductIds = productIdConsumablesList
+            };
+
+            iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type1) =>
+            {
+                Debug.Log("[HMSPlugin]:" + type1.ErrMsg + type1.ReturnCode.ToString());
+                Debug.Log("[HMSPlugin]: Found " + type1.ProductInfoList.Count + "consumable products");
+
+                productInfoReq = new ProductInfoReq
                 {
-                    
-                    Debug.Log("[HMSPlugin]:" + result.ErrMsg + result.ReturnCode.ToString());
-                    Debug.Log("[HMSPlugin]: Found " + result.ProductInfoList.Count + "consumable products");
-                    foreach (ProductInfo productInfo in result.ProductInfoList)
-                    {
-                        Debug.Log("[HMSPlugin]: " + productInfo.ProductName + "," + productInfo.Price);
-                        productInfoList.Add(productInfo);
-                    }
-                }
+                    PriceType = 0,
+                    ProductIds = productIdConsumablesList
+                };
 
+                OnObtainProductInfoSuccess?.Invoke(new List<ProductInfoResult> { type0, type1 });
 
-            }
-            loadedEvent.Invoke();
+            }).AddOnFailureListener((exception) =>
+            {
+                Debug.Log("[HMSPlugin]: ERROR Houston!!" + exception.Message);
+                OnObtainProductInfoFailure?.Invoke(exception);
+
+            });
 
         }).AddOnFailureListener((exception) =>
         {
             Debug.Log("[HMSPlugin]: ERROR Houston!!" + exception.Message);
+            OnObtainProductInfoFailure?.Invoke(exception);
+
         });
-
-        
-
-        RestorePurchases();
-        ObtainOwnedPurchases();
-        
     }
 
-
-    private void RestorePurchases()
+    public void ConsumeOwnedPurchases()
     {
-        foreach (Product product in products)
-        {
-            if (!product.isConsumable)
-            {
-                productIdConsumablesList.Add(product.productID);
-            }
 
+        if (iapAvailable != true)
+        {
+            OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
+            return;
         }
 
-        ProductInfoReq productInfoReq = new ProductInfoReq();
-        
-
-        // NON CONSUMABLE REQUEST
-        productInfoReq.PriceType = 1;
-        productInfoReq.ProductIds = productIdConsumablesList;
-
-        ITask<ProductInfoResult> task = iapClient.ObtainProductInfo(productInfoReq);
-
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("HMSPlugin: NON consumables result success");
-            if (result != null && result.ProductInfoList.Count != 0)
-            {
-                Debug.Log("[HMSPlugin]:" + result.ErrMsg + result.ReturnCode.ToString());
-                Debug.Log("[HMSPlugin]: Found " + result.ProductInfoList.Count + "non consumable products");
-                foreach (ProductInfo productInfo in result.ProductInfoList)
-                {
-                    Debug.Log("[HMSPlugin]: " + productInfo.ProductName + "," + productInfo.Price);
-                    productInfoList.Add(productInfo);
-                }
-
-            }
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMSPlugin]: ERROR Houston!!" + exception.Message);
-        });
-    }
-
-    public ProductInfo GetProductInfo(string productID)
-    {
-        return productInfoList.Find( productInfo => productInfo.ProductId == productID);
-    }
-
-    private void recoverPurchases()
-    {
         OwnedPurchasesReq ownedPurchasesReq = new OwnedPurchasesReq();
 
         ITask<OwnedPurchasesResult> task = iapClient.ObtainOwnedPurchases(ownedPurchasesReq);
-
         task.AddOnSuccessListener((result) =>
         {
             Debug.Log("HMSP: recoverPurchases");
-            foreach(string inAppPurchaseData in result.InAppPurchaseDataList) {
-
-                InAppPurchaseData inAppPurchaseDataBean = new InAppPurchaseData(inAppPurchaseData);
-                string purchaseToken = inAppPurchaseDataBean.PurchaseToken;
-
-                ConsumePurchase(purchaseToken);
-
+            foreach (string inAppPurchaseData in result.InAppPurchaseDataList)
+            {
+                ConsumePurchaseWithPurchaseData(inAppPurchaseData);
                 Debug.Log("HMSP: recoverPurchases result> " + result.ReturnCode);
             }
-            
-            
+
+            OnRecoverPurchasesSuccess?.Invoke();
+
         }).AddOnFailureListener((exception) =>
         {
-            Debug.Log("HMSP: Error on recoverPurchases"+ exception.StackTrace);
+            Debug.Log($"HMSP: Error on recoverPurchases {exception.StackTrace}");
+            OnRecoverPurchasesFailure?.Invoke(exception);
+
         });
     }
 
+    public void ConsumePurchase(PurchaseResultInfo purchaseResultInfo)
+    {
+        ConsumePurchaseWithPurchaseData(purchaseResultInfo.InAppPurchaseData);
+    }
 
-    private void ConsumePurchase(string token) {
+    public void ConsumePurchaseWithPurchaseData(string inAppPurchaseData)
+    {
+        var inAppPurchaseDataBean = new InAppPurchaseData(inAppPurchaseData);
+        string purchaseToken = inAppPurchaseDataBean.PurchaseToken;
+        ConsumePurchaseWithToken(purchaseToken);
+    }
 
-        ConsumeOwnedPurchaseReq consumeOwnedPurchaseReq = new ConsumeOwnedPurchaseReq();
-        consumeOwnedPurchaseReq.PurchaseToken = token;
+    public void ConsumePurchaseWithToken(string token)
+    {
+
+        if (iapAvailable != true)
+        {
+            OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
+            return;
+        }
+
+        ConsumeOwnedPurchaseReq consumeOwnedPurchaseReq = new ConsumeOwnedPurchaseReq
+        {
+            PurchaseToken = token
+        };
 
         ITask<ConsumeOwnedPurchaseResult> task = iapClient.ConsumeOwnedPurchase(consumeOwnedPurchaseReq);
 
         task.AddOnSuccessListener((result) =>
         {
             Debug.Log("HMSP: consumePurchase");
+            OnConsumePurchaseSuccess?.Invoke();
 
         }).AddOnFailureListener((exception) =>
         {
             Debug.Log("HMSP: Error on consumePurchase");
+            OnConsumePurchaseFailure?.Invoke(exception);
+
         });
     }
 
-    public void BuyProduct(string productID)
+    public void BuyProduct(ProductInfo productInfo)
     {
 
-        PurchaseIntentReq purchaseIntentReq = new PurchaseIntentReq();
+        if (iapAvailable != true)
+        {
+            OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
+            return;
+        }
 
-        ProductInfo productInfo = productInfoList.Find(product => product.ProductId == productID);
-        purchaseIntentReq.PriceType = productInfo.PriceType;
-        purchaseIntentReq.ProductId = productID;
-        // ToDo : developer payload???
-        purchaseIntentReq.DeveloperPayload = "test";
+        PurchaseIntentReq purchaseIntentReq = new PurchaseIntentReq
+        {
+            PriceType = productInfo.PriceType,
+            ProductId = productInfo.ProductId,
+            // ToDo : developer payload???
+            DeveloperPayload = "test"
+        };
 
         ITask<PurchaseIntentResult> task = iapClient.CreatePurchaseIntent(purchaseIntentReq);
-
-        InAppPurchaseData inAppPurchaseDataBean;
-
         task.AddOnSuccessListener((result) =>
         {
 
             if (result != null)
             {
                 Debug.Log("[HMSPlugin]:" + result.ErrMsg + result.ReturnCode.ToString());
-                Debug.Log("[HMSPlugin]: Bought " + productID);
+                Debug.Log("[HMSPlugin]: Bought " + purchaseIntentReq.ProductId);
                 Status status = result.Status;
                 status.StartResolutionForResult((androidIntent) =>
                 {
@@ -303,48 +227,18 @@ public class IapManager : MonoBehaviour
 
                     switch (purchaseResultInfo.ReturnCode)
                     {
-                        case OrderStatusCode.ORDER_STATE_CANCEL:
-                            // User cancel payment.
-                            Debug.Log("[HMS]: User cancel payment");
-                            break;
-                        case OrderStatusCode.ORDER_STATE_FAILED:
-                            Debug.Log("[HMS]: order paymentf failed");
-                            break;
-
-                        case OrderStatusCode.ORDER_PRODUCT_OWNED:
-                            Debug.Log("[HMS]: Product owned");
-                            inAppPurchaseDataBean = new InAppPurchaseData(purchaseResultInfo.InAppPurchaseData);
-                            ConsumePurchase(inAppPurchaseDataBean.PurchaseToken);
-
-                            // to check if there exists undelivered products.
-                            break;
                         case OrderStatusCode.ORDER_STATE_SUCCESS:
-                            // pay success.
-                            Debug.Log("[HMSPlugin]: PURCHASE SUCCESS");
-
-                            String inAppPurchaseData = purchaseResultInfo.InAppPurchaseData;
-                            String inAppPurchaseDataSignature = purchaseResultInfo.InAppDataSignature;
-                            Debug.Log("HMS" + inAppPurchaseData);
-                            Debug.Log("HMS:" + inAppPurchaseDataSignature);
-                            
-                            //ToDO: use the public key of your app to verify the signature.
-                            // If ok, you can deliver your products.
-                            // If the user purchased a consumable product, call the consumeOwnedPurchase API to consume it after successfully delivering the product.
-                            
-                            // Consume purchase
-                            inAppPurchaseDataBean = new InAppPurchaseData(purchaseResultInfo.InAppPurchaseData);
-                            ConsumePurchase(inAppPurchaseDataBean.PurchaseToken);
+                            OnBuyProductSuccess.Invoke(purchaseResultInfo);
                             break;
                         default:
+                            OnBuyProductFailure.Invoke(purchaseResultInfo.ReturnCode);
                             break;
                     }
 
-                    
-                },(exception) =>
+                }, (exception) =>
                 {
                     Debug.Log("[HMSPlugin]:startIntent ERROR");
-                }
-                );
+                });
 
             }
 
@@ -352,66 +246,34 @@ public class IapManager : MonoBehaviour
         {
             Debug.Log("[HMSPlugin]: ERROR BuyProduct!!" + exception.Message);
         });
-
-
-
     }
 
     public void ObtainOwnedPurchases()
     {
-        Debug.Log("HMSP: ObtainOwnedPurchaseRequest");
-        OwnedPurchasesReq ownedPurchasesReq = new OwnedPurchasesReq();
 
-        ownedPurchasesReq.PriceType = 1;
+        if (iapAvailable != true)
+        {
+            OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
+            return;
+        }
+
+        Debug.Log("HMSP: ObtainOwnedPurchaseRequest");
+        OwnedPurchasesReq ownedPurchasesReq = new OwnedPurchasesReq
+        {
+            PriceType = 1
+        };
 
         ITask<OwnedPurchasesResult> task = iapClient.ObtainOwnedPurchases(ownedPurchasesReq);
-
         task.AddOnSuccessListener((result) =>
         {
             Debug.Log("HMSP: ObtainOwnedPurchases");
-
-            if (result != null && result.InAppPurchaseDataList != null)
-            {
-                Debug.Log("HMSP: Restored " + result.InAppPurchaseDataList.Count + "non consumable products");
-
-                foreach( string inAppPurchaseData in result.InAppPurchaseDataList)
-                {
-                    InAppPurchaseData inAppPurchaseDataBean = new InAppPurchaseData(inAppPurchaseData);
-
-                    Debug.Log("HMSP: " + inAppPurchaseDataBean.ProductId);
-                }
-            }
+            OnObtainOwnedPurchasesSuccess?.Invoke(result);
 
         }).AddOnFailureListener((exception) =>
         {
             Debug.Log("HMSP: Error on ObtainOwnedPurchases");
+            OnObtainProductInfoFailure?.Invoke(exception);
         });
     }
 
-
-    public void addListener(UnityAction action){
-        if (loadedEvent!= null)
-        {
-            loadedEvent.AddListener(action);  
-        } 
-        
-    }
-
-    
-
-
-
-
-}
-
-
-
-
-[System.Serializable]
-public class Product
-{
-    [SerializeField]
-    public string productID;
-    [SerializeField]
-    public bool isConsumable;
 }

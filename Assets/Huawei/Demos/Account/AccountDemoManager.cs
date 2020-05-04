@@ -38,6 +38,7 @@ public class AccountDemoManager : MonoBehaviour
     public void OnLoginSuccess(AuthHuaweiId authHuaweiId)
     {
         loggedInUser.text = string.Format(LOGGED_IN, authHuaweiId.DisplayName);
+        Debug.Log($"UID: {authHuaweiId.Uid}");
     }
 
     public void OnLoginFailure(HMSException error)

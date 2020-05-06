@@ -20,8 +20,8 @@ public class AccountManager : MonoBehaviour
     }
     
     public AuthHuaweiId HuaweiId { get; private set; }
-    public Action<AuthHuaweiId> LoginSuccess { get; set; }
-    public Action<HMSException> LoginFailed { get; set; }
+    public Action<AuthHuaweiId> OnSignInSuccess { get; set; }
+    public Action<HMSException> OnSignInFailed { get; set; }
 
     private HuaweiIdAuthService authService;
 
@@ -36,11 +36,11 @@ public class AccountManager : MonoBehaviour
         authService.StartSignIn((authId) =>
         {
             HuaweiId = authId;
-            LoginSuccess?.Invoke(authId);
+            OnSignInSuccess?.Invoke(authId);
         }, (error) =>
         {
             HuaweiId = null;
-            LoginFailed?.Invoke(error);
+            OnSignInFailed?.Invoke(error);
         });
     }
 

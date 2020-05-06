@@ -50,12 +50,12 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnShowAchievementsSuccess()
     {
-
+        Debug.Log("HMS Games: ShowAchievements SUCCESS ");
     }
 
     private void OnShowAchievementsFailure(HMSException exception)
     {
-
+        Debug.Log("HMS Games: ShowAchievements ERROR ");
     }
 
     // GET ACHIEVEMENT LIST
@@ -63,19 +63,19 @@ public class GameDemoManager : MonoBehaviour
     public void GetAchievementsList()
     {
         achievementsManager.GetAchievementsList();
-        // ToDo callbacks
-        // achievementsManager.OnGetAchievementListSuccess = OnGetAchievemenListSuccess;
-        // achievementsManager.OnGetAchievementListFailure = OnGetAchievementListFailure;
+        achievementsManager.OnGetAchievementsListSuccess = OnGetAchievemenListSuccess;
+        achievementsManager.OnGetAchievementsListFailure = OnGetAchievementListFailure;
+        
     }
 
-    private void OnGetAchievemenListSuccess()
+    private void OnGetAchievemenListSuccess(IList<Achievement> achievementList)
     {
-
+        Debug.Log("HMS Games: GetAchievementsList SUCCESS ");
     }
 
-    private void OnGetAchievementListFailure()
+    private void OnGetAchievementListFailure(HMSException error)
     {
-
+        Debug.Log("HMS Games: GetAchievementsList ERROR ");
     }
 
     // REVEAL ACHIEVEMENT
@@ -86,12 +86,12 @@ public class GameDemoManager : MonoBehaviour
 
     public void OnRevealAchievementSuccess()
     {
-
+        Debug.Log("HMS Games: RevealAchievement SUCCESS ");
     }
 
     private void OnRevealAchievementFailure(HMSException error)
     {
-
+        Debug.Log("HMS Games: RevealAchievement ERROR ");
     }
 
     // INCREASE STEP ACHIEVEMENT
@@ -102,12 +102,12 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnIncreaseStepAchievementSuccess()
     {
-
+        Debug.Log("HMS Games: IncreaseStepAchievement SUCCESS ");
     }
 
     private void OnIncreaseStepAchievementFailure(HMSException error)
     {
-
+        Debug.Log("HMS Games: IncreaseStepAchievement ERROR ");
     }
 
     // Set Step Achivement
@@ -118,12 +118,12 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnSetStepAchievementSuccess()
     {
-
+        Debug.Log("HMS Games: SetStepAchievement SUCCESS ");
     }
 
     private void OnSetStepAchievemenFailure(HMSException error)
     {
-
+        Debug.Log("HMS Games: SetStepAchievement ERROR ");
     }
 
     // Unlock Achievement
@@ -134,128 +134,150 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnUnlockAchievementSuccess()
     {
-
+        Debug.Log("HMS Games: UnlockAchievement SUCCESS ");
     }
 
     private void OnUnlockAchievementFailure(HMSException error)
-    { 
-
+    {
+        Debug.Log("HMS Games: UnlockAchievement ERROR ");
     }
 
     /******************  LEADERBOARDS  ********************/
 
-    public void IsUserScoreShownOnLeaderboards()
+
+    // Get User Score Shown
+    public void GetUserScoreShownOnLeaderboards()
     {
 
        /// Todo Hay que cambiar en el manager isUser por el getUser
-       /// 
        leaderboardManager.IsUserScoreShownOnLeaderboards();
-        leaderboardManager.OnIsUserScoreShownOnLeaderboardsSuccess = OnIsUserScoreShownOnLeaderboardsSuccess;
+       leaderboardManager.OnIsUserScoreShownOnLeaderboardsSuccess = OnIsUserScoreShownOnLeaderboardsSuccess;
        leaderboardManager.OnIsUserScoreShownOnLeaderboardsFailure = OnIsUserScoreShownOnLeaderboardsFailure;
     }
 
     private void OnIsUserScoreShownOnLeaderboardsSuccess(int i)
     {
-
+        Debug.Log("HMS Games: GetUserScoreShownOnLeaderboards SUCCESS ");
     }
 
     private void OnIsUserScoreShownOnLeaderboardsFailure(HMSException error)
     {
-
+        Debug.Log("HMS Games: GetUserScoreShownOnLeaderboards ERROR ");
     }
+
+    // Set User Score Shown
 
     public void SetUserScoreShownOnLeaderboards(int active)
     {
-        ITask<int> task = rankingsClient.SetRankingSwitchStatus(1);
+        leaderboardManager.SetUserScoreShownOnLeaderboards(active);
+        leaderboardManager.OnSetUserScoreShownOnLeaderboardsSuccess = OnSetUserScoreShownOnLeaderboardsSuccess;
+        leaderboardManager.OnSetUserScoreShownOnLeaderboardsFailure = OnSetUserScoreShownOnLeaderboardsFailure;
 
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] SetUserScoreShownOnLeaderboards SUCCESS" + result);
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] SetUserScoreShownOnLeaderboards ERROR");
-        });
     }
+
+    private void OnSetUserScoreShownOnLeaderboardsSuccess(int active)
+    {
+        Debug.Log("HMS Games: SetUserScoreShownOnLeaderboards SUCCESS ");
+    }
+
+    private void OnSetUserScoreShownOnLeaderboardsFailure(HMSException exception)
+    {
+        Debug.Log("HMS Games: SetUserScoreShownOnLeaderboards ERROR ");
+    }
+
+
+    // Submit Score
 
     public void SubmitScore(string leaderboardId, long score, string scoreTips)
     {
         if (customUnit)
         {
-            ITask<ScoreSubmissionInfo> scoreTask = rankingsClient.SubmitScoreWithResult(leaderboardId, score, scoreTips);
+            leaderboardManager.SubmitScore(leaderboardId, score, scoreTips);
+            leaderboardManager.OnSubmitScoreSuccess = OnSubmitScoreSuccess;
+            leaderboardManager.OnSubmitScoreFailure = OnSubmitScoreFailure;
         }
         else
         {
-            ITask<ScoreSubmissionInfo> scoreTask = rankingsClient.SubmitScoreWithResult(leaderboardId, score);
+            leaderboardManager.SubmitScore(leaderboardId, score);
         }
         
     }
 
+    private void OnSubmitScoreSuccess(ScoreSubmissionInfo scoreSubmission)
+    {
+        Debug.Log("HMS Games: SubmitScore SUCCESS ");
+    }
+
+    private void OnSubmitScoreFailure (HMSException exception)
+    {
+        Debug.Log("HMS Games: SubmitScore ERROR ");
+
+    }
+
+    // Show Leaderboards
+
     public void ShowLeaderboards()
     {
-        rankingsClient.ShowTotalRankings(() =>
-        {
-            Debug.Log("[HMS GAMES] ShowLeaderboards SUCCESS");
-
-
-        }, (exception) =>
-        {
-            Debug.Log("[HMS GAMES] ShowLeaderboards ERROR");
-        });
-
-       
+        leaderboardManager.ShowLeaderboards();
+        leaderboardManager.OnShowLeaderboardsSuccess = OnShowLeaderboardsSuccess;
+        leaderboardManager.OnShowLeaderboardsFailure = OnShowLeaderboardsFailure;
+        
     }
 
-    public void GetLeaderboardsData()
+    private void OnShowLeaderboardsSuccess()
     {
-        ITask<IList<Ranking>> task = rankingsClient.GetRankingSummary(true);
+        Debug.Log("HMS Games: ShowLeaderboards SUCCESS ");
 
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] GetLeaderboardsData SUCCESS");
-
-            foreach (Ranking ranking in result)
-            {
-                Debug.Log("[HMS GAMES] Received " + ranking.RankingDisplayName + "data");
-            }
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] GetLeaderboardsData ERROR");
-        });
     }
 
-    public void GetLeaderboardData(string leaderboardId)
+    private void OnShowLeaderboardsFailure(HMSException error)
     {
-        ITask<Ranking> task = rankingsClient.GetRankingSummary(leaderboardId,true);
+        Debug.Log("HMS Games: ShowLeaderboards ERROR ");
 
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] GetLeaderboardsData SUCCESS");
-
-            Debug.Log("[HMS GAMES] Received " + result.RankingDisplayName + "data");
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] GetLeaderboardsData ERROR");
-        });
     }
+
+    // Get Leadeboards Data
+
+    public void GetLeaderboardsData(string leaderboardId)
+    {
+        leaderboardManager.GetLeaderboardData(leaderboardId);
+        leaderboardManager.OnGetLeaderboardDataSuccess = OnGetLeaderboardDataSuccess;
+        leaderboardManager.OnGetLeaderboardsDataFailure = OnGetLeaderboardsDataFailure;
+
+    }
+
+    private void OnGetLeaderboardDataSuccess(Ranking ranking)
+    {
+        Debug.Log("HMS Games: GetLeaderboardsData SUCCESS ");
+
+    }
+    private void OnGetLeaderboardsDataFailure(HMSException exception)
+    {
+        Debug.Log("HMS Games: GetLeaderboardsData ERROR ");
+
+    }
+
+    // Get Scores From Leaderboard
 
     public void GetScoresFromLeaderboard(string leaderboardId, int timeDimension, int maxResults, int offsetPlayerRank, int pageDirection)
     {
 
-        ITask<RankingScores> task
-        = rankingsClient.GetRankingTopScores(leaderboardId, timeDimension, maxResults, offsetPlayerRank, pageDirection);
+        leaderboardManager.GetScoresFromLeaderboard(leaderboardId, timeDimension, maxResults, offsetPlayerRank, pageDirection);
 
-        task.AddOnSuccessListener((result) =>
-        {
-            Debug.Log("[HMS GAMES] GetScoresFromLeaderboard SUCCESS");
+        leaderboardManager.OnGetScoresFromLeaderboardSuccess = OnGetScoresFromLeaderboardSuccess;
+        leaderboardManager.OnGetScoresFromLeaderboardFailure = OnGetScoresFromLeaderboardFailure;
 
-
-        }).AddOnFailureListener((exception) =>
-        {
-            Debug.Log("[HMS GAMES] GetScoresFromLeaderboard ERROR");
-        });
     }
-        
+
+    private void OnGetScoresFromLeaderboardSuccess(RankingScores rankingScores)
+    {
+        Debug.Log("HMS Games: GetScoresFromLeaderboard SUCCESS ");
+    }
+
+    private void OnGetScoresFromLeaderboardFailure(HMSException error)
+    {
+        Debug.Log("HMS Games: GetScoresFromLeaderboard ERROR ");
+    }
+
+
 }

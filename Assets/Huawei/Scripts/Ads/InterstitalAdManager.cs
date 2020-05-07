@@ -67,7 +67,19 @@ public class InterstitalAdManager : MonoBehaviour
 
     private InterstitialAd interstitialAd = null;
 
-    public string AdId { get; set; }
+    private string mAdId;
+
+    public string AdId
+    {
+        get => mAdId;
+        set
+        {
+            Debug.Log($"[HMS] InterstitalAdManager: Set interstitial ad ID: {value}");
+            mAdId = value;
+            LoadNextInterstitialAd();
+        }
+    }
+
     public Action OnAdClicked { get; set; }
     public Action OnAdClosed { get; set; }
     public Action<int> OnAdFailed { get; set; }
@@ -79,16 +91,16 @@ public class InterstitalAdManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("[HMS] AdsManager Start");
-        LoadNextInterstitialAd();
+        Debug.Log("[HMS] InterstitalAdManager Start");
+        HwAds.Init();
     }
 
-    private void LoadNextInterstitialAd()
+    public void LoadNextInterstitialAd()
     {
-        Debug.Log("[HMS] AdsManager LoadNextInterstitialAd");
+        Debug.Log("[HMS] InterstitalAdManager LoadNextInterstitialAd");
         interstitialAd = new InterstitialAd
         {
-            AdId = "testb4znbuh3n2",
+            AdId = AdId,
             AdListener = new InterstitialAdListener(this)
         };
         interstitialAd.LoadAd(new AdParam.Builder().Build());
@@ -96,10 +108,10 @@ public class InterstitalAdManager : MonoBehaviour
 
     public void ShowInterstitialAd()
     {
-        Debug.Log("[HMS] AdsManager ShowInterstitialAd");
+        Debug.Log("[HMS] InterstitalAdManager ShowInterstitialAd");
         if (interstitialAd?.Loaded == true)
         {
-            Debug.Log("[HMS] AdsManager interstitialAd.Show");
+            Debug.Log("[HMS] InterstitalAdManager interstitialAd.Show");
             interstitialAd.Show();
         }
         else

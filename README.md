@@ -8,26 +8,81 @@ The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services
 * Push notifications
 * Game leaderboards and achievements
 
+## Requirements
+Unity LTS version 2018.4.20f1
+Android SDK min 21
+Net 4.x
+
+## Status
+This is an ongoing project, currently WIP. Feel free to contact us if you'd like to collaborate and use Github issues for any problems you might encounter. We'd try to answer in no more than a working day.
+
+### Roadmap
+* Full working demos - ETA: 14/05/20
+* Analytics integration - ETA: 29/05/20
 
 ## Connect your game Huawei Mobile Services in 5 easy steps
-
 
 1. Register your app at Huawei Developer
 2. Import the Plugin to your Unity project
 3. Configure your manifest
-4. Connect your game with the HMS Manager
-5. Connect the HMS Callback Handler with your game
+4. Connect your game with the HMS Managers
+5. Connect the HMS Callbacks with your game
 
 ### 1 - Register your app at Huawei Developer
 
-Register at [Huawei Developer](https://developer.huawei.com/consumer/en/)
+#### 1.1-  Register at [Huawei Developer](https://developer.huawei.com/consumer/en/)
+
+![Huawei Developer](http://evil-mind.com/huawei/images/huaweiDeveloper.png "Huawei Developer")
+
+#### 1.2 - Create an app in AppGallery Connect.
+During this step, you will create an app in AppGallery Connect (AGC) of HUAWEI Developer. When creating the app, you will need to enter the app name, app category, default language, and signing certificate fingerprint. After the app has been created, you will be able to obtain the basic configurations for the app, for example, the app ID and the CPID.
+
+1. Sign in to Huawei Developer and click **Console**.
+2. Click the HUAWEI AppGallery card and access AppGallery Connect.
+3. On the **AppGallery Connect** page, click **My apps**.
+4. On the displayed **My apps** page, click **New**.
+5. Enter the App name, select App category (Game), and select Default language as needed.
+6. Upon successful app creation, the App information page will automatically display. There you can find the App ID and CPID that are assigned by the system to your app.
+
+#### 1.3 Add Package Name
+Set the package name of the created application on the AGC.
+
+1. Open the previously created application in AGC application management and select the **Develop TAB** to pop up an entry to manually enter the package name and select **manually enter the package name**.
+2. Fill in the application package name in the input box and click save.
+
+> Your package name should end in .huawei in order to release in App Gallery
+
+#### Generate a keystore.
+
+Create a keystore using Unity or Android Tools. make sure your Unity project uses this keystore under the **Build Settings>PlayerSettings>Publishing settings**
+
+
+#### Generate a signing certificate fingerprint.
+
+During this step, you will need to export the SHA-256 fingerprint by using keytool provided by the JDK and signature file.
+
+1. Open the command window or terminal and access the bin directory where the JDK is installed.
+2. Run the keytool command in the bin directory to view the signature file and run the command.
+
+    ``keytool -list -v -keystore D:\Android\WorkSpcae\HmsDemo\app\HmsDemo.jks``
+3. Enter the password of the signature file keystore in the information area. The password is the password used to generate the signature file.
+4. Obtain the SHA-256 fingerprint from the result. Save for next step.
+
+
+#### Add fingerprint certificate to AppGallery Connect
+During this step, you will configure the generated SHA-256 fingerprint in AppGallery Connect.
+
+1. In AppGallery Connect, click the app that you have created and go to **Develop> Overview**
+2. Go to the App information section and enter the SHA-256 fingerprint that you generated earlier.
+3. Click √ to save the fingerprint.
+
 ____
 
 ### 2 - Import the plugin to your Unity Project
 
 To import the plugin:
 
-1. Download the [.unitypackage](http://evil-mind.com/huawei/downloads/HMSPlugin.unitypackage)
+1. Download the [.unitypackage](https://github.com/EvilMindDevs/hms-unity-plugin/releases)
 2. Open your game in Unity
 3. Choose Assets> Import Package> Custom
 ![Import Package](http://evil-mind.com/huawei/images/importCustomPackage.png "Import package")
@@ -91,22 +146,14 @@ And your manifest should look now like these:
     </manifest>
 ```
 ____
-### 4 Connect your game with the HMS Manager
+### 4 Connect your game with any HMS Manager
 
-In order for the plugin to work, you need to deploy HMSManager prefab inside your scene.
+In order for the plugin to work, you need to deploy the needed HMS Manager prefab inside your scene.
 
 1. In Unity's project view, locate the plugins prefab folder
 2. Drag and drop the HMS Manager to your scene
-3. Select the HMS Manager object in the hierarchy view
-4. Configure the HMS Manager by selecting it and filling out the field in the Inspector
-    * Key: Input your game's key
-    * Set your game's products
-        * Input the amount of products you created at developer's portal
-        * Fill out the productID with the products ID you set on the developer's portal
-        * Check the is Consumable checkbox if your product is consumable
-    ![HMS Manager](http://evil-mind.com/huawei/images/HMSManagerConfig.png "HMS Manager")
 
-Now you need your game to call the HMSManager from your game. You can do this by code or as a UI event. See below for further instructions.
+Now you need your game to call the HMS Manager from your game. You can do this by code or as a UI event. See below for further instructions.
     
 #### Call the HMS by code
 
@@ -153,51 +200,38 @@ If you are not sure how to do this, search the demo folder and open the sample s
 ![Sample store](http://evil-mind.com/huawei/images/demo.jpg "Sample store")
 ____
 
-### 5 Connect the HMS Callbacks Handler with you game
+### 5 Connect the HMS Callbacks with you game
+In order to receive the callback information from Huawei Mobile Services, you need to set the callbacks that will control the information retrieved from Huawei Servers.
 
-The Callbacks Handler is a component inside the HMS Manager that will help you deal with all the responses from HMS Servers.
+## Kits Specification
+Find below the specific information on the included functionalities in this plugin
 
-1. Open the HMSCallbacksHandler.cs file inside Plugins/HuaweiMbileServices/Scripts
-This script is divided in two parts. The products help methods and the event methods:
+1. Account
+2. In App Purchases
+3. Ads
+4. Push notifications
+5. Game
 
-    #### Products Help
+### Account
 
-    Gives you information about the products registered inside App Gallery Connect. Call them when needed.
+Official Documentation on Account Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/account-introduction-v4)
 
-    ```csharp
-    public List GetProductList(){}
 
-    public string GetProductName(string productID) {}
+### In App Purchases
 
-    public string GetProductDescription(string productID) {}
+Official Documentation on IAP Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/iap-service-introduction-v4)
 
-    public string GetProductPrice(string productID){}
-    ```
+### Ads
 
-    #### Event Methods
+Official Documentation on Ads Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/ads-sdk-introduction)
 
-    Are the methods fired when an answer arrives form server. Override or implement these to make your game respond to successfull or error callbacks.
-    (i.e: add 100 golden coins to player when On Purchase Success event is received )
+### Push
 
-    ##### Login 
-    
-    ```csharp
-    public void OnLoginSuccess ( GameUserData gameUserData ){}
+Official Documentation on Push Kit: [Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/push-introduction)
 
-    public void OnLoginError ( int resultCode ){}
-    ```
-    ##### Product's Details
-    ```csharp
-    public void OnProductDetailSuccess ( ProductDetailsResponse response )
-    public void OnProductDetailError ( int resultCode )
-    ```
-    ##### Buying a Product
-    ```csharp
-    public void OnPurchaseSuccess ( ProductPayReponse response )
+### Game
 
-    public void OnPurchaseError (int resultCode)
-    ```
-
+Official Documentation on Game Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/game-introduction-v4)
 
 ______
 

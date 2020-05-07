@@ -14,17 +14,15 @@ public class HuaweiEditor : EditorWindow
     bool appPackageEntered;
     bool appIDEntered;
     bool cpIDEntered;
-    bool HMSEntered;
     float labelWidth = 100f;
 
 
     string APPID = "1234567890";
     string PACKAGE = "com.yourcompany.yourgame";
     string CPID = "1234567890";
-    string HMSVersion = "2.6.1";
+    
     String regexPackage = "^([A-Za-z]{1}[A-Za-z\\d_]*\\.)+[A-Za-z][A-Za-z\\d_]*$";
     String regexIDs = "^([0.9\\d_])";
-    String regexHMS = "^([0.9\\d_]*\\.)+[0-9][0.9\\d_]*$";
 
     private GUIStyle redGUIStyle;
 
@@ -86,18 +84,11 @@ public class HuaweiEditor : EditorWindow
         cpIDEntered = Regex.IsMatch(CPID, regexIDs) && !CPID.Equals("1234567890");
         EditorGUILayout.EndHorizontal();
 
-        //HMS
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Label("HMS", GUILayout.MinWidth(labelWidth));
-        HMSVersion = EditorGUILayout.TextField(HMSVersion);
-        GUILayout.FlexibleSpace();
-        HMSEntered = EditorGUILayout.Toggle(HMSEntered);
-        HMSEntered = Regex.IsMatch(HMSVersion, regexHMS);
-        EditorGUILayout.EndHorizontal();
+  
 
         GUILayout.Space(10f);
 
-        if (appPackageEntered && appIDEntered && cpIDEntered && HMSEntered)
+        if (appPackageEntered && appIDEntered && cpIDEntered)
         {
             if (GUILayout.Button("Configure Manifest"))
             {
@@ -120,10 +111,7 @@ public class HuaweiEditor : EditorWindow
             {
                 GUILayout.Label("Please enter a valid CPI", redGUIStyle);
             }
-            if (!HMSEntered)
-            {
-                GUILayout.Label("Please enter a valid HMS version", redGUIStyle);
-            }
+            
 
         }
 
@@ -454,19 +442,13 @@ public class HuaweiEditor : EditorWindow
         //     android:value="cpid=890034000004105619">
         // </meta-data>
 
-        // <meta-data
-        //     android:name="com.huawei.hms.version"
-        //     android:value="2.6.1">
-        // </meta-data> 
+        
         bool hasAppID = false;
         bool hasCPID = false;
-        bool hasHMSVersion = false;
+        
         XmlNode appIDNode = null;
         XmlNode cPIDNode = null;
-        XmlNode versionNode = null;
-
-
-
+     
 
         XmlElement manifestRoot = manifest.DocumentElement;
 
@@ -488,11 +470,7 @@ public class HuaweiEditor : EditorWindow
                         hasCPID = true;
                         cPIDNode = node;
                     }
-                    if (attribute.Value.Contains("com.huawei.hms.version"))
-                    {
-                        hasHMSVersion = true;
-                        versionNode = node;
-                    }
+                    
                 }
 
             }
@@ -533,22 +511,6 @@ public class HuaweiEditor : EditorWindow
 
         }
 
-        if (!hasHMSVersion)
-        {
-            XmlElement element = manifest.CreateElement("meta-data");
-            element = manifest.CreateElement("meta-data");
-            element.SetAttribute("name", "http://schemas.android.com/apk/res/android", "com.huawei.hms.version");
-            element.SetAttribute("value", "http://schemas.android.com/apk/res/android", HMSVersion);
-            applicationNode.AppendChild(element);
-            UnityEngine.Debug.Log("[HMS]: App HMS version " + HMSVersion + " added to manifest.");
-        }
-        else
-        {
-            // Edit meta-data with package name
-            versionNode.Attributes["value", "http://schemas.android.com/apk/res/android"].Value = HMSVersion;
-            Debug.Log("[HMS]: HMS version updated in manifest.");
-
-        }
 
     }
     //#endif

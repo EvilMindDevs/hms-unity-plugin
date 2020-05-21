@@ -2,7 +2,7 @@
 using HuaweiMobileServices.Utils;
 using UnityEngine;
 using UnityEngine.UI;
-
+using HmsPlugin;
 public class AccountDemoManager : MonoBehaviour
 {
 

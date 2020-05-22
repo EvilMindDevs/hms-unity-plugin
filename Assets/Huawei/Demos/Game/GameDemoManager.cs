@@ -25,11 +25,11 @@ public class GameDemoManager : MonoBehaviour
 
     void Start()
     {
-        gameManager = GameManager.Instance;
+        gameManager = GameManager.GetInstance();
 
-        leaderboardManager = LeaderboardManager.Instance;
+        leaderboardManager = LeaderboardManager.GetInstance();
 
-        achievementsManager = AchievementsManager.Instance;
+        achievementsManager = AchievementsManager.GetInstance();
         achievementsManager.OnShowAchievementsSuccess = OnShowAchievementsSuccess;
         achievementsManager.OnShowAchievementsFailure = OnShowAchievementsFailure;
         achievementsManager.OnRevealAchievementSuccess = OnRevealAchievementSuccess;

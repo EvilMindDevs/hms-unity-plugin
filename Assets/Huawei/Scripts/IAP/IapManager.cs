@@ -10,9 +10,7 @@ using UnityEngine;
 public class IapManager : MonoBehaviour
 {
 
-    private const string NAME = "IapManager";
-
-    public static IapManager Instance => GameObject.Find(NAME).GetComponent<IapManager>();
+    public static IapManager GetInstance(string name = "IapManager") => GameObject.Find(name).GetComponent<IapManager>();
 
     private static readonly HMSException IAP_NOT_AVAILABLE = new HMSException("IAP not available");
 

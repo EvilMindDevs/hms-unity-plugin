@@ -6,9 +6,7 @@ using UnityEngine;
 public class AccountManager : MonoBehaviour
 {
 
-    private const string NAME = "AccountManager";
-
-    public static AccountManager Instance => GameObject.Find(NAME).GetComponent<AccountManager>();
+    public static AccountManager GetInstance(string name = "AccountManager") => GameObject.Find(name).GetComponent<AccountManager>();
 
     private static HuaweiIdAuthService DefaultAuthService
     {

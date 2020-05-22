@@ -8,9 +8,7 @@ using UnityEngine;
 public class AchievementsManager : MonoBehaviour
 {
 
-    private const string NAME = "AchievementsManager";
-
-    public static AchievementsManager Instance => GameObject.Find(NAME).GetComponent<AchievementsManager>();
+    public static AchievementsManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<AchievementsManager>();
 
     private AccountManager accountManager;
     private IAchievementsClient achievementsClient;
@@ -36,7 +34,7 @@ public class AchievementsManager : MonoBehaviour
     public void Start()
     {
         Debug.Log("HMS GAMES: Achievements init");
-        accountManager = AccountManager.Instance;
+        accountManager = AccountManager.GetInstance();
         if (accountManager.HuaweiId != null)
         {
             achievementsClient = Games.GetAchievementsClient(accountManager.HuaweiId);

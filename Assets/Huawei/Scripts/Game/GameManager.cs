@@ -8,9 +8,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
-    private const string NAME = "GameManager";
-
-    public static GameManager Instance => GameObject.Find(NAME).GetComponent<GameManager>();
+    public static GameManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<GameManager>();
 
     private AccountManager accountManager;
 
@@ -22,7 +20,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("HMS GAMES: Game init");
         HuaweiMobileServicesUtil.SetApplication();
-        accountManager = AccountManager.Instance;
+        accountManager = AccountManager.GetInstance();
         Init();
     }
 

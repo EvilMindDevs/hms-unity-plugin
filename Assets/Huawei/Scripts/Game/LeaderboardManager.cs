@@ -8,9 +8,7 @@ using UnityEngine;
 public class LeaderboardManager : MonoBehaviour
 {
 
-    private const string NAME = "LeaderboardManager";
-
-    public static LeaderboardManager Instance => GameObject.Find(NAME).GetComponent<LeaderboardManager>();
+    public static LeaderboardManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<LeaderboardManager>();
 
     private AccountManager accountManager;
     private IRankingsClient rankingsClient;
@@ -38,7 +36,7 @@ public class LeaderboardManager : MonoBehaviour
 
     public void Start()
     {
-        accountManager = AccountManager.Instance;
+        accountManager = AccountManager.GetInstance();
         if (accountManager.HuaweiId != null)
         {
             rankingsClient = Games.GetRankingsClient(accountManager.HuaweiId);

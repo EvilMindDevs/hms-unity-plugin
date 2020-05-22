@@ -3,50 +3,53 @@ using HuaweiMobileServices.Utils;
 using System;
 using UnityEngine;
 
-public class AccountManager : MonoBehaviour
+namespace HmsPlugin
 {
+    public class AccountManager : MonoBehaviour
+    {
 
-    private const string NAME = "AccountManager";
-
-    public static AccountManager Instance => GameObject.Find(NAME).GetComponent<AccountManager>();
+    public static AccountManager GetInstance(string name = "AccountManager") => GameObject.Find(name).GetComponent<AccountManager>();
 
     private static HuaweiIdAuthService DefaultAuthService
     {
         get
         {
-            var authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetIdToken().CreateParams();
-            return HuaweiIdAuthManager.GetService(authParams);
+            get
+            {
+                var authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetIdToken().CreateParams();
+                return HuaweiIdAuthManager.GetService(authParams);
+            }
         }
-    }
-    
-    public AuthHuaweiId HuaweiId { get; private set; }
-    public Action<AuthHuaweiId> OnSignInSuccess { get; set; }
-    public Action<HMSException> OnSignInFailed { get; set; }
 
-    private HuaweiIdAuthService authService;
+        public AuthHuaweiId HuaweiId { get; private set; }
+        public Action<AuthHuaweiId> OnSignInSuccess { get; set; }
+        public Action<HMSException> OnSignInFailed { get; set; }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        authService = DefaultAuthService;
-    }
+        private HuaweiIdAuthService authService;
 
-    public void SignIn()
-    {
-        authService.StartSignIn((authId) =>
+        // Start is called before the first frame update
+        void Start()
         {
-            HuaweiId = authId;
-            OnSignInSuccess?.Invoke(authId);
-        }, (error) =>
+            authService = DefaultAuthService;
+        }
+
+        public void SignIn()
         {
+            authService.StartSignIn((authId) =>
+            {
+                HuaweiId = authId;
+                OnSignInSuccess?.Invoke(authId);
+            }, (error) =>
+            {
+                HuaweiId = null;
+                OnSignInFailed?.Invoke(error);
+            });
+        }
+
+        public void SignOut()
+        {
+            authService.SignOut();
             HuaweiId = null;
-            OnSignInFailed?.Invoke(error);
-        });
-    }
-
-    public void SignOut()
-    {
-        authService.SignOut();
-        HuaweiId = null;
+        }
     }
 }

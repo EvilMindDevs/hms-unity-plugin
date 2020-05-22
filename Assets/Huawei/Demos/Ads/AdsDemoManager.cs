@@ -22,14 +22,14 @@ public class AdsDemoManager : MonoBehaviour
 
     private void InitRewardedAds()
     {
-        rewardAdManager = GetComponent<RewardAdManager>();
+        rewardAdManager = RewardAdManager.GetInstance();
         rewardAdManager.AdId = REWARD_AD_ID;
         rewardAdManager.OnRewarded = OnRewarded;
     }
 
     private void InitInterstitialAds()
     {
-        interstitialAdManager = GetComponent<InterstitalAdManager>();
+        interstitialAdManager = InterstitalAdManager.GetInstance();
         interstitialAdManager.AdId = INTERSTITIAL_AD_ID;
         interstitialAdManager.OnAdClosed = OnInterstitialAdClosed;
     }

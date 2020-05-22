@@ -2,7 +2,7 @@
 using HuaweiMobileServices.Utils;
 using UnityEngine;
 using UnityEngine.UI;
-
+using HmsPlugin;
 public class AccountDemoManager : MonoBehaviour
 {
 
@@ -19,7 +19,7 @@ public class AccountDemoManager : MonoBehaviour
         loggedInUser = GameObject.Find("LoggedUserText").GetComponent<Text>();
         loggedInUser.text = NOT_LOGGED_IN;
 
-        accountManager = AccountManager.Instance;
+        accountManager = AccountManager.GetInstance();
         accountManager.OnSignInSuccess = OnLoginSuccess;
         accountManager.OnSignInFailed = OnLoginFailure;
     }

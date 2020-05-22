@@ -6,117 +6,118 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class InterstitalAdManager : MonoBehaviour
+namespace HmsPlugin
 {
-    private class InterstitialAdListener : IAdListener
+    public class InterstitalAdManager : MonoBehaviour
     {
-        private readonly InterstitalAdManager mAdsManager;
-
-        public InterstitialAdListener(InterstitalAdManager adsManager)
+        private class InterstitialAdListener : IAdListener
         {
-            mAdsManager = adsManager;
+            private readonly InterstitalAdManager mAdsManager;
+
+            public InterstitialAdListener(InterstitalAdManager adsManager)
+            {
+                mAdsManager = adsManager;
+            }
+
+            public void OnAdClicked()
+            {
+                Debug.Log("[HMS] AdsManager OnAdClicked");
+                mAdsManager.OnAdClicked?.Invoke();
+            }
+
+            public void OnAdClosed()
+            {
+                Debug.Log("[HMS] AdsManager OnAdClosed");
+                mAdsManager.OnAdClicked?.Invoke();
+                mAdsManager.LoadNextInterstitialAd();
+            }
+
+            public void OnAdFailed(int reason)
+            {
+                Debug.Log("[HMS] AdsManager OnAdFailed");
+                mAdsManager.OnAdFailed?.Invoke(reason);
+            }
+
+            public void OnAdImpression()
+            {
+                Debug.Log("[HMS] AdsManager OnAdImpression");
+                mAdsManager.OnAdImpression?.Invoke();
+            }
+
+            public void OnAdLeave()
+            {
+                Debug.Log("[HMS] AdsManager OnAdLeave");
+                mAdsManager.OnAdLeave?.Invoke();
+            }
+
+            public void OnAdLoaded()
+            {
+                Debug.Log("[HMS] AdsManager OnAdLoaded");
+                mAdsManager.OnAdLoaded?.Invoke();
+            }
+
+            public void OnAdOpened()
+            {
+                Debug.Log("[HMS] AdsManager OnAdOpened");
+                mAdsManager.OnAdOpened?.Invoke();
+            }
         }
 
-        public void OnAdClicked()
-        {
-            Debug.Log("[HMS] AdsManager OnAdClicked");
-            mAdsManager.OnAdClicked?.Invoke();
-        }
-
-        public void OnAdClosed()
-        {
-            Debug.Log("[HMS] AdsManager OnAdClosed");
-            mAdsManager.OnAdClicked?.Invoke();
-            mAdsManager.LoadNextInterstitialAd();
-        }
-
-        public void OnAdFailed(int reason)
-        {
-            Debug.Log("[HMS] AdsManager OnAdFailed");
-            mAdsManager.OnAdFailed?.Invoke(reason);
-        }
-
-        public void OnAdImpression()
-        {
-            Debug.Log("[HMS] AdsManager OnAdImpression");
-            mAdsManager.OnAdImpression?.Invoke();
-        }
-
-        public void OnAdLeave()
-        {
-            Debug.Log("[HMS] AdsManager OnAdLeave");
-            mAdsManager.OnAdLeave?.Invoke();
-        }
-
-        public void OnAdLoaded()
-        {
-            Debug.Log("[HMS] AdsManager OnAdLoaded");
-            mAdsManager.OnAdLoaded?.Invoke();
-        }
-
-        public void OnAdOpened()
-        {
-            Debug.Log("[HMS] AdsManager OnAdOpened");
-            mAdsManager.OnAdOpened?.Invoke();
-        }
-    }
-
-    private const string NAME = "InterstitalAdManager";
-
-    public static InterstitalAdManager Instance => GameObject.Find(NAME).GetComponent<InterstitalAdManager>();
+    public static InterstitalAdManager GetInstance(string name = "AdsManager") => GameObject.Find(name).GetComponent<InterstitalAdManager>();
 
     private InterstitialAd interstitialAd = null;
 
-    private string mAdId;
+        private string mAdId;
 
-    public string AdId
-    {
-        get => mAdId;
-        set
+        public string AdId
         {
-            Debug.Log($"[HMS] InterstitalAdManager: Set interstitial ad ID: {value}");
-            mAdId = value;
-            LoadNextInterstitialAd();
+            get => mAdId;
+            set
+            {
+                Debug.Log($"[HMS] InterstitalAdManager: Set interstitial ad ID: {value}");
+                mAdId = value;
+                LoadNextInterstitialAd();
+            }
         }
-    }
 
-    public Action OnAdClicked { get; set; }
-    public Action OnAdClosed { get; set; }
-    public Action<int> OnAdFailed { get; set; }
-    public Action OnAdImpression { get; set; }
-    public Action OnAdLeave { get; set; }
-    public Action OnAdLoaded { get; set; }
-    public Action OnAdOpened { get; set; }
+        public Action OnAdClicked { get; set; }
+        public Action OnAdClosed { get; set; }
+        public Action<int> OnAdFailed { get; set; }
+        public Action OnAdImpression { get; set; }
+        public Action OnAdLeave { get; set; }
+        public Action OnAdLoaded { get; set; }
+        public Action OnAdOpened { get; set; }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        Debug.Log("[HMS] InterstitalAdManager Start");
-        HwAds.Init();
-    }
-
-    public void LoadNextInterstitialAd()
-    {
-        Debug.Log("[HMS] InterstitalAdManager LoadNextInterstitialAd");
-        interstitialAd = new InterstitialAd
+        // Start is called before the first frame update
+        void Start()
         {
-            AdId = AdId,
-            AdListener = new InterstitialAdListener(this)
-        };
-        interstitialAd.LoadAd(new AdParam.Builder().Build());
-    }
-
-    public void ShowInterstitialAd()
-    {
-        Debug.Log("[HMS] InterstitalAdManager ShowInterstitialAd");
-        if (interstitialAd?.Loaded == true)
-        {
-            Debug.Log("[HMS] InterstitalAdManager interstitialAd.Show");
-            interstitialAd.Show();
+            Debug.Log("[HMS] InterstitalAdManager Start");
+            HwAds.Init();
         }
-        else
+
+        public void LoadNextInterstitialAd()
         {
-            Debug.Log("[HMS] Interstitial ad clicked but still not loaded");
+            Debug.Log("[HMS] InterstitalAdManager LoadNextInterstitialAd");
+            interstitialAd = new InterstitialAd
+            {
+                AdId = AdId,
+                AdListener = new InterstitialAdListener(this)
+            };
+            interstitialAd.LoadAd(new AdParam.Builder().Build());
+        }
+
+        public void ShowInterstitialAd()
+        {
+            Debug.Log("[HMS] InterstitalAdManager ShowInterstitialAd");
+            if (interstitialAd?.Loaded == true)
+            {
+                Debug.Log("[HMS] InterstitalAdManager interstitialAd.Show");
+                interstitialAd.Show();
+            }
+            else
+            {
+                Debug.Log("[HMS] Interstitial ad clicked but still not loaded");
+            }
         }
     }
 }

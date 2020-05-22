@@ -7,6 +7,7 @@ using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Utils;
 using System;
+using HmsPlugin;
 
 public class GameDemoManager : MonoBehaviour
 {

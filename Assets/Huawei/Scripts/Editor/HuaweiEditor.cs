@@ -141,7 +141,16 @@ public class HuaweiEditor : EditorWindow
         defaultManifestPath = Path.Combine(defaultManifestPath, "PlaybackEngines");
         defaultManifestPath = Path.Combine(defaultManifestPath, "AndroidPlayer");
         defaultManifestPath = Path.Combine(defaultManifestPath, "Apk");
-        defaultManifestPath = Path.Combine(defaultManifestPath, "AndroidManifest.xml");
+
+        if ( Int32.Parse(Application.unityVersion.Substring(0, 4)) >= 2019){
+            
+            defaultManifestPath = Path.Combine(defaultManifestPath, "UnityManifest.xml");
+        }
+        else
+        {
+            defaultManifestPath = Path.Combine(defaultManifestPath, "AndroidManifest.xml");
+        }
+
 
 
         Debug.Log("preparing");

@@ -1,6 +1,5 @@
 ﻿using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Game;
-using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
 using System;
 using UnityEngine;
@@ -10,30 +9,19 @@ namespace HmsPlugin
     public class GameManager : MonoBehaviour
     {
 
-    public static GameManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<GameManager>();
+        public static GameManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<GameManager>();
 
-    private AccountManager accountManager;
+        private AccountManager accountManager;
 
         public Action<Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }
 
-    // Make sure user already signed in!
-    public void Start()
-    {
-        Debug.Log("HMS GAMES: Game init");
-        HuaweiMobileServicesUtil.SetApplication();
-        accountManager = AccountManager.GetInstance();
-        Init();
-    }
-
-    private void Init()
-    {
-        Debug.Log("HMS GAMES init");
-        if (accountManager.HuaweiId != null)
+        // Make sure user already signed in!
+        public void Start()
         {
             Debug.Log("HMS GAMES: Game init");
             HuaweiMobileServicesUtil.SetApplication();
-            accountManager = AccountManager.Instance;
+            accountManager = AccountManager.GetInstance();
             Init();
         }
 

@@ -10,10 +10,10 @@ namespace HmsPlugin
     public class AchievementsManager : MonoBehaviour
     {
 
-    public static AchievementsManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<AchievementsManager>();
+        public static AchievementsManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<AchievementsManager>();
 
-    private AccountManager accountManager;
-    private IAchievementsClient achievementsClient;
+        private AccountManager accountManager;
+        private IAchievementsClient achievementsClient;
 
         public Action OnShowAchievementsSuccess { get; set; }
         public Action<HMSException> OnShowAchievementsFailure { get; set; }
@@ -33,17 +33,18 @@ namespace HmsPlugin
         public Action OnUnlockAchievementSuccess { get; set; }
         public Action<HMSException> OnUnlockAchievementFailure { get; set; }
 
-    public void Start()
-    {
-        Debug.Log("HMS GAMES: Achievements init");
-        accountManager = AccountManager.GetInstance();
-        if (accountManager.HuaweiId != null)
+        public void Start()
         {
             Debug.Log("HMS GAMES: Achievements init");
-            accountManager = AccountManager.Instance;
+            accountManager = AccountManager.GetInstance();
             if (accountManager.HuaweiId != null)
             {
-                achievementsClient = Games.GetAchievementsClient(accountManager.HuaweiId);
+                Debug.Log("HMS GAMES: Achievements init");
+                accountManager = AccountManager.GetInstance();
+                if (accountManager.HuaweiId != null)
+                {
+                    achievementsClient = Games.GetAchievementsClient(accountManager.HuaweiId);
+                }
             }
         }
 

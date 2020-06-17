@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using HuaweiMobileServices.Ads;
+using HmsPlugin;
 
 public class AdsDemoManager : MonoBehaviour
 {

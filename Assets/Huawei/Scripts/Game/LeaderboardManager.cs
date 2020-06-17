@@ -36,15 +36,16 @@ namespace HmsPlugin
         public Action<ScoreSubmissionInfo> OnSubmitScoreSuccess { get; set; }
         public Action<HMSException> OnSubmitScoreFailure { get; set; }
 
-    public void Start()
-    {
-        accountManager = AccountManager.GetInstance();
-        if (accountManager.HuaweiId != null)
+        public void Start()
         {
-            accountManager = AccountManager.Instance;
+            accountManager = AccountManager.GetInstance();
             if (accountManager.HuaweiId != null)
             {
-                rankingsClient = Games.GetRankingsClient(accountManager.HuaweiId);
+                accountManager = AccountManager.GetInstance();
+                if (accountManager.HuaweiId != null)
+                {
+                    rankingsClient = Games.GetRankingsClient(accountManager.HuaweiId);
+                }
             }
         }
 

@@ -9,16 +9,21 @@ The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services
 * Game leaderboards and achievements
 
 ## Requirements
-Unity LTS version 2018.4.20f1
 Android SDK min 21
 Net 4.x
+
+## Important
+This plugin supports:
+* Unity version 2019 - Developed in Master Branch
+* Unity version 2018 - Developed in 2018 Branch
+
+**Make sure to download the corresponding unity package for the Unity version you are using from the release section**
 
 ## Status
 This is an ongoing project, currently WIP. Feel free to contact us if you'd like to collaborate and use Github issues for any problems you might encounter. We'd try to answer in no more than a working day.
 
-### Roadmap
-* Full working demos - ETA: 14/05/20
-* Analytics integration - ETA: 29/05/20
+### Expected soon features
+* Analytics integration
 
 ## Connect your game Huawei Mobile Services in 5 easy steps
 

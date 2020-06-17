@@ -8,11 +8,9 @@ namespace HmsPlugin
     public class AccountManager : MonoBehaviour
     {
 
-    public static AccountManager GetInstance(string name = "AccountManager") => GameObject.Find(name).GetComponent<AccountManager>();
+        public static AccountManager GetInstance(string name = "AccountManager") => GameObject.Find(name).GetComponent<AccountManager>();
 
-    private static HuaweiIdAuthService DefaultAuthService
-    {
-        get
+        private static HuaweiIdAuthService DefaultAuthService
         {
             get
             {

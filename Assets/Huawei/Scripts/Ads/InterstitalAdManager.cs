@@ -28,7 +28,7 @@ namespace HmsPlugin
             public void OnAdClosed()
             {
                 Debug.Log("[HMS] AdsManager OnAdClosed");
-                mAdsManager.OnAdClicked?.Invoke();
+                mAdsManager.OnAdClosed?.Invoke();
                 mAdsManager.LoadNextInterstitialAd();
             }
 

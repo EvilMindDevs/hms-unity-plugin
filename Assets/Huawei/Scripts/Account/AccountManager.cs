@@ -14,8 +14,12 @@ namespace HmsPlugin
         {
             get
             {
+                Debug.Log("[HMS]: GET AUTH");
                 var authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetIdToken().CreateParams();
-                return HuaweiIdAuthManager.GetService(authParams);
+                Debug.Log("[HMS]: AUTHPARAMS AUTHSERVICE" + authParams);
+                var result = HuaweiIdAuthManager.GetService(authParams);
+                Debug.Log("[HMS]: RESULT AUTHSERVICE"+ result);
+                return result;
             }
         }
 
@@ -26,13 +30,15 @@ namespace HmsPlugin
         private HuaweiIdAuthService authService;
 
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
+            Debug.Log("[HMS]: AWAKE AUTHSERVICE");
             authService = DefaultAuthService;
         }
 
         public void SignIn()
         {
+            Debug.Log("[HMS]: Sign in " + authService);
             authService.StartSignIn((authId) =>
             {
                 HuaweiId = authId;

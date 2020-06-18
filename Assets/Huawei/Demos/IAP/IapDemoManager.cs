@@ -10,13 +10,14 @@ using HuaweiMobileServices.IAP;
 using System;
 using UnityEngine.Events;
 using HuaweiMobileServices.Id;
+using HmsPlugin;
 
 public class IapDemoManager : MonoBehaviour
 {
 
-    public string key;
-
-    public HuaweiProduct[] products;
+    public string[] ConsumableProducts;
+    public string[] NonConsumableProducts;
+    public string[] SubscriptionProducts;
 
     [HideInInspector]
     public int numberOfProductsRetrieved;
@@ -39,7 +40,9 @@ public class IapDemoManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("[HMS]: Started");
         accountManager = GetComponent<AccountManager>();
+        Debug.Log(accountManager.ToString());
         accountManager.OnSignInFailed = (error) =>
         {
             Debug.Log($"[HMSPlugin]: SignIn failed. {error.Message}");
@@ -50,6 +53,7 @@ public class IapDemoManager : MonoBehaviour
 
     private void SignedIn(AuthHuaweiId authHuaweiId)
     {
+        Debug.Log("[HMS]: SignedIn");
         iapManager = GetComponent<IapManager>();
         iapManager.OnCheckIapAvailabilitySuccess = LoadStore;
         iapManager.OnCheckIapAvailabilityFailure = (error) =>
@@ -61,7 +65,7 @@ public class IapDemoManager : MonoBehaviour
 
     private void LoadStore()
     {
-
+        Debug.Log("[HMS]: LoadStore");
         // Set Callback for ObtainInfoSuccess
         iapManager.OnObtainProductInfoSuccess = (productInfoResultList) =>
         {
@@ -87,7 +91,7 @@ public class IapDemoManager : MonoBehaviour
         };
 
         // Call ObtainProductInfo 
-        iapManager.ObtainProductInfo(new List<HuaweiProduct>(products));
+        iapManager.ObtainProductInfo(new List<string>(ConsumableProducts), new List<string>(NonConsumableProducts), new List<string>(SubscriptionProducts));
 
     }
 
@@ -138,7 +142,7 @@ public class IapDemoManager : MonoBehaviour
                     Debug.Log("[HMS]: User cancel payment");
                     break;
                 case OrderStatusCode.ORDER_STATE_FAILED:
-                    Debug.Log("[HMS]: order paymentf failed");
+                    Debug.Log("[HMS]: order payment failed");
                     break;
 
                 case OrderStatusCode.ORDER_PRODUCT_OWNED:

@@ -19,6 +19,9 @@ This plugin supports:
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
 
+## Troubleshooting
+Please check our [wiki page](https://github.com/EvilMindDevs/hms-unity-plugin/wiki/Troubleshooting)
+
 ## Status
 This is an ongoing project, currently WIP. Feel free to contact us if you'd like to collaborate and use Github issues for any problems you might encounter. We'd try to answer in no more than a working day.
 

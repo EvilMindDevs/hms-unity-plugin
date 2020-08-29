@@ -243,13 +243,17 @@ namespace HmsPlugin
             {   
                 PurchaseResultInfo purchaseResultInfo = iapClient.ParsePurchaseResultInfoFromIntent(androidIntent);
 
+                var receipt = new PurchaseReceipt {
+                    signature=purchaseResultInfo.InAppDataSignature,
+                    json=purchaseResultInfo.InAppPurchaseData
+                };
 
                 switch (purchaseResultInfo.ReturnCode)
                 {
                     case OrderStatusCode.ORDER_STATE_SUCCESS:
                         var data = new InAppPurchaseData(purchaseResultInfo.InAppPurchaseData);
                         this.purchasedData[product.storeSpecificId] = data;
-                        storeEvents.OnPurchaseSucceeded(product.storeSpecificId, purchaseResultInfo.InAppDataSignature, data.OrderID );
+                        storeEvents.OnPurchaseSucceeded(product.storeSpecificId, UnityEngine.JsonUtility.ToJson(receipt), data.OrderID );
                         break;
 
                     case OrderStatusCode.ORDER_PRODUCT_OWNED:
@@ -292,7 +296,12 @@ namespace HmsPlugin
                 });
             }
         }
-        
+
+        internal class PurchaseReceipt
+        {
+            public string json;
+            public string signature;
+        }
     }
 }
 

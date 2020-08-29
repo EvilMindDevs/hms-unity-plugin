@@ -101,6 +101,12 @@ namespace HmsPlugin
 
         private void CreateProductRequest(List<string> consumablesIDs, HuaweiConstants.IAP.IapType type, System.Action onSuccess)
         {
+            if (consumablesIDs.Count == 0)
+            {
+                onSuccess();
+                return;
+            }
+
             var productsDataRequest        = new ProductInfoReq();
             productsDataRequest.PriceType  = (int)type;
             productsDataRequest.ProductIds = consumablesIDs;

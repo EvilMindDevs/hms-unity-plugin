@@ -169,13 +169,8 @@ namespace HmsPlugin
 
             foreach(var product in this.productsList)
             {
-                string priceString;
-                float price     = product.MicrosPrice * 0.000001f;
-
-                if (price < 100) priceString = price.ToString("0.00");
-                else             priceString = ((int)(price + 0.5f)).ToString();
-
-                var prodMeta = new ProductMetadata(priceString, product.ProductName, product.ProductDesc, product.Currency, (decimal)price);
+                float price = product.MicrosPrice * 0.000001f;
+                var prodMeta = new ProductMetadata(product.Price, product.ProductName, product.ProductDesc, product.Currency, (decimal)price);
                 ProductDescription prodDesc;
 
                 if(this.purchasedData.TryGetValue(product.ProductId, out var purchaseData))

@@ -193,6 +193,20 @@ hmsManager.Login();
 <provider android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
  ```
  
+ Invoke analytics funtions:
+ 
+``` csharp
+AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
+
+HiAnalyticsTools.EnableLog();
+instance = HiAnalytics.GetInstance(activity);
+instance.SetAnalyticsEnabled(true);
+Bundle bundleUnity = new Bundle();
+bundleUnity.PutString(key, value);
+instance.OnEvent(eventID, bundleUnity);
+  ```
+  
 ##### In App Purchases
 You can retrieve a products information from App Gallery:
 * Name

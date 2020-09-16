@@ -20,7 +20,7 @@ This plugin supports:
 * Unity version 2018 - Developed in 2018 Branch
 
 
-**If analytics kit will not used, delete "agconnect-credential-1.0.0.300.aar" and  "hianalytics-5.0.3.300.aar" from ...Assets\Plugins\Android**
+**If analytics kit will not used, delete "agconnect-credential-1.0.0.300.aar" and  "hianalytics-5.0.3.300.aar" from "...Assets\Plugins\Android"**
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
 

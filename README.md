@@ -7,6 +7,8 @@ The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services
 * Ads: Interstitial, rewarded videos and banner
 * Push notifications
 * Game leaderboards and achievements
+* Huawei Anayltics kit
+
 
 ## Requirements
 Android SDK min 21
@@ -17,6 +19,7 @@ This plugin supports:
 * Unity version 2019 - Developed in Master Branch
 * Unity version 2018 - Developed in 2018 Branch
 
+**If analytics kit will not used, delete "agconnect-credential-1.0.0.300.aar" and  "hianalytics-5.0.3.300.aar" from ...Assets\Plugins\Android **
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
 
 ## Troubleshooting
@@ -141,6 +144,8 @@ And your manifest should look now like these:
         <meta-data android:name="com.huawei.hms.client.appid" android:value="appid=9999" />
         <meta-data android:name="com.huawei.hms.client.cpid" android:value="cpid=1234567890" />
         <meta-data android:name="com.huawei.hms.version" android:value="2.6.1" />
+        <provider android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
+ 
         <provider android:name="com.huawei.hms.update.provider.UpdateProvider" android:authorities="com.yourco.huawei.hms.update.provider" android:exported="false" android:grantUriPermissions="true" />
         <provider android:name="com.huawei.updatesdk.fileprovider.UpdateSdkFileProvider" android:authorities="com.yourco.huawei.updateSdk.fileProvider" android:exported="false" android:grantUriPermissions="true" />
         </application>
@@ -190,6 +195,16 @@ Open the Purchase dialog by calling to BuyProduct method
 ```csharp
 BuyProduct(string productID)
 ```
+
+#### Analytics kit
+ 
+1. Enable Analtics kit from AGC
+2. Update ...Assets\Plugins\Android\assets\agconnect-services.json file
+3. Add this provider to AndroidManifest.xml
+
+```xml
+<provider android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
+ ```
 
 #### Call the HMS from your UI
 
@@ -241,6 +256,10 @@ Official Documentation on Push Kit: [Documentation](https://developer.huawei.com
 
 Official Documentation on Game Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/game-introduction-v4)
 
+
+### Analytics
+
+Official Documentation on Analytics Kit: [ Documentation](https://developer.huawei.com/consumer/en/hms/huawei-analyticskit)
 ______
 
 ## License

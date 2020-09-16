@@ -183,6 +183,16 @@ Call login method in order to open the login dialog
 hmsManager.Login();
 ```
 
+#### Analytics kit
+ 
+1. Enable Analtics kit from AGC
+2. Update ...Assets\Plugins\Android\assets\agconnect-services.json file
+3. Add this provider to AndroidManifest.xml
+
+```xml
+<provider android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
+ ```
+ 
 ##### In App Purchases
 You can retrieve a products information from App Gallery:
 * Name
@@ -197,16 +207,6 @@ Open the Purchase dialog by calling to BuyProduct method
 ```csharp
 BuyProduct(string productID)
 ```
-
-#### Analytics kit
- 
-1. Enable Analtics kit from AGC
-2. Update ...Assets\Plugins\Android\assets\agconnect-services.json file
-3. Add this provider to AndroidManifest.xml
-
-```xml
-<provider android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
- ```
 
 #### Call the HMS from your UI
 

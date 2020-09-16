@@ -30,19 +30,18 @@ namespace HmsPlugin
         }
         private void LoadBannerAds()
         {
-            AdStatusListener mAdStatusListener = new AdStatusListener();
+            AdStatusListener adStatusListener = new AdStatusListener();
             
-            Debug.Log("[HMS] BannerAdManager Start : "  + mAdId);
+            Debug.Log("[HMS] BannerAdManager Start : "  + AdId);
             String bannerSize = UnityBannerAdSize.BANNER_SIZE_320_50;
-            bannerAdView = new BannerAd(mAdStatusListener);
+            bannerAdView = new BannerAd(adStatusListener);
              
-             bannerAdView.AdId = mAdId;
-             bannerAdView.positionType = (int) UnityBannerAdPositionCodeType.POSITION_TOP;
+            bannerAdView.AdId = AdId;
+            bannerAdView.PositionType = (int) UnityBannerAdPositionCodeType.POSITION_TOP;
  
-            bannerAdView.sizeType = bannerSize;
+            bannerAdView.SizeType = bannerSize;
  
-            bannerAdView.mAdStatusListener = mAdStatusListener;
- 
+            bannerAdView.AdStatusListener = adStatusListener;
 
         }
         // Start is called before the first frame update
@@ -59,11 +58,11 @@ namespace HmsPlugin
         public void ShowBannerAd()
         {
             LoadBannerAds();
-            bannerAdView.showBanner(new AdParam.Builder().Build());
+            bannerAdView.ShowBanner(new AdParam.Builder().Build());
         }
         public void HideBannerAd()
         {
-            bannerAdView.hideBanner();
+            bannerAdView.HideBanner();
         }
     }
 

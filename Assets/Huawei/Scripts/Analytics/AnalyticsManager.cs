@@ -15,16 +15,16 @@ public class AnalyticsManager : MonoBehaviour
         AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
 
-        HiAnalyticsTools.enableLog();
-        instance = HiAnalytics.getInstance(activity);
-        instance.setAnalyticsEnabled(true);
+        HiAnalyticsTools.EnableLog();
+        instance = HiAnalytics.GetInstance(activity);
+        instance.SetAnalyticsEnabled(true);
 
     }
     public void SendEventWithBundle(String eventID, String key, String value)
     {
         Bundle bundleUnity = new Bundle();
-        bundleUnity.putString(key, value);
-        instance.onEvent(eventID, bundleUnity);
+        bundleUnity.PutString(key, value);
+        instance.OnEvent(eventID, bundleUnity);
     }
 
     // Start is called before the first frame update

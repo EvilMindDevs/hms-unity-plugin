@@ -206,6 +206,7 @@ Bundle bundleUnity = new Bundle();
 bundleUnity.PutString(key, value);
 instance.OnEvent(eventID, bundleUnity);
   ```
+  4. Analytics kit should be initialized in "onCreate()" for that we use ...Assets\Plugins\Android\assets\agconnect-services.json file.
   
 ##### In App Purchases
 You can retrieve a products information from App Gallery:

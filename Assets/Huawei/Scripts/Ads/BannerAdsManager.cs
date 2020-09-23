@@ -30,18 +30,21 @@ namespace HmsPlugin
         }
         private void LoadBannerAds()
         {
-            AdStatusListener mAdStatusListener = new AdStatusListener();
+            if (bannerAdView == null)
+            {
+                AdStatusListener mAdStatusListener = new AdStatusListener();
             
-            Debug.Log("[HMS] BannerAdManager Start : "  + mAdId);
-            String bannerSize = UnityBannerAdSize.BANNER_SIZE_320_50;
-            bannerAdView = new BannerAd(mAdStatusListener);
+                Debug.Log("[HMS] BannerAdManager Start : "  + mAdId);
+                String bannerSize = UnityBannerAdSize.BANNER_SIZE_320_50;
+                bannerAdView = new BannerAd(mAdStatusListener);
              
-             bannerAdView.AdId = mAdId;
-             bannerAdView.positionType = (int) UnityBannerAdPositionCodeType.POSITION_TOP;
+                bannerAdView.AdId = mAdId;
+                bannerAdView.positionType = (int) UnityBannerAdPositionCodeType.POSITION_TOP;
  
-            bannerAdView.sizeType = bannerSize;
+                bannerAdView.sizeType = bannerSize;
  
-            bannerAdView.mAdStatusListener = mAdStatusListener;
+                bannerAdView.mAdStatusListener = mAdStatusListener;
+            }
  
 
         }

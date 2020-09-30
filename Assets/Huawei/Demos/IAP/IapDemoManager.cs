@@ -91,8 +91,18 @@ public class IapDemoManager : MonoBehaviour
         };
 
         // Call ObtainProductInfo 
-        iapManager.ObtainProductInfo(new List<string>(ConsumableProducts), new List<string>(NonConsumableProducts), new List<string>(SubscriptionProducts));
-
+        if (!IsNullOrEmpty(ConsumableProducts))
+        {
+            iapManager.ObtainProductConsumablesInfo(new List<string>(ConsumableProducts));
+        }
+        if (!IsNullOrEmpty(NonConsumableProducts))
+        {
+            iapManager.ObtainProductNonConsumablesInfo(new List<string>(NonConsumableProducts));
+        }
+        if (!IsNullOrEmpty(SubscriptionProducts))
+        {
+            iapManager.ObtainProductSubscriptionInfo(new List<string>(SubscriptionProducts));
+        }
     }
 
 
@@ -170,7 +180,10 @@ public class IapDemoManager : MonoBehaviour
         }
 
     }
-
+    public bool IsNullOrEmpty(Array array)
+    {
+        return (array == null || array.Length == 0);
+    }
 }
 
 [System.Serializable]

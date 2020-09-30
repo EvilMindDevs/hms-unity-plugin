@@ -528,7 +528,7 @@ PrefabInstance:
     - target: {fileID: 1541257162738031061, guid: 23e2e5a6941eac7459106695c5a8c300,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: consumableid1
+      value: coins100
       objectReference: {fileID: 0}
     - target: {fileID: 1541257163200300666, guid: 23e2e5a6941eac7459106695c5a8c300,
         type: 3}
@@ -849,8 +849,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConsumableProducts:
-  - consumableid1
-  NonConsumableProducts: []
+  - coins100
+  - coins1000
+  NonConsumableProducts:
+  - no_ads
+  - premium
   SubscriptionProducts: []
   numberOfProductsRetrieved: 0
 --- !u!114 &4211748590891713759

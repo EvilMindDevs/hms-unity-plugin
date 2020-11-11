@@ -64,7 +64,29 @@ namespace HmsPlugin
         }
 
         // TODO Obtain non-consumables too!
-        public void ObtainProductInfo(IList<string> productIdConsumablesList, IList<string> productIdNonConsumablesList, IList<string> productIdSubscriptionList)
+        public void ObtainProductInfo(List<string> productIdConsumablesList, List<string> productIdNonConsumablesList, List<string> productIdSubscriptionList)
+        {
+
+            if (iapAvailable != true)
+            {
+                OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
+                return;
+            }
+
+            if (!IsNullOrEmpty(productIdConsumablesList))
+            {
+                ObtainProductInfo(new List<string>(productIdConsumablesList), 0);
+            }
+            if (!IsNullOrEmpty(productIdConsumablesList))
+            {
+                ObtainProductInfo(new List<string>(productIdConsumablesList), 1);
+            }
+            if (!IsNullOrEmpty(productIdConsumablesList))
+            {
+                ObtainProductInfo(new List<string>(productIdConsumablesList), 2);
+            }
+        }
+        private void ObtainProductInfo(IList<string> productIdNonConsumablesList, int priceType)
         {
 
             if (iapAvailable != true)
@@ -75,64 +97,23 @@ namespace HmsPlugin
 
             ProductInfoReq productInfoReq = new ProductInfoReq
             {
-                PriceType = 0,
-                ProductIds = productIdConsumablesList
+                PriceType = priceType,
+                ProductIds = productIdNonConsumablesList
             };
 
-            iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type0) =>
+            iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type) =>
             {
-                Debug.Log("[HMSPlugin]:" + type0.ErrMsg + type0.ReturnCode.ToString());
-                Debug.Log("[HMSPlugin]: Found " + type0.ProductInfoList.Count + "consumable products");
-
-                productInfoReq = new ProductInfoReq
-                {
-                    PriceType = 1,
-                    ProductIds = productIdNonConsumablesList
-                };
-
-                iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type1) =>
-                {
-                    Debug.Log("[HMSPlugin]:" + type1.ErrMsg + type1.ReturnCode.ToString());
-                    Debug.Log("[HMSPlugin]: Found " + type1.ProductInfoList.Count + " non consumable products");
-
-                    productInfoReq = new ProductInfoReq
-                    {
-                        PriceType = 2,
-                        ProductIds = productIdSubscriptionList
-                    };
-
-                    iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type2) =>
-                    {
-                        Debug.Log("[HMSPlugin]:" + type2.ErrMsg + type2.ReturnCode.ToString());
-                        Debug.Log("[HMSPlugin]: Found " + type2.ProductInfoList.Count + " subscription products");
-
-
-                        OnObtainProductInfoSuccess?.Invoke(new List<ProductInfoResult> { type0, type1, type2 });
-
-                    }).AddOnFailureListener((exception) =>
-                    {
-                        Debug.Log("[HMSPlugin]: ERROR Subscriptions ObtainInfo " + exception.GetBaseException().Message);
-                        OnObtainProductInfoFailure?.Invoke(exception);
-
-                    });
-
-                    
-
-                }).AddOnFailureListener((exception) =>
-                {
-                    Debug.Log("[HMSPlugin]: ERROR Non Consumable ObtainInfo" + exception.Message);
-                    OnObtainProductInfoFailure?.Invoke(exception);
-
-                });
-
+                Debug.Log("[HMSPlugin]:" + type.ErrMsg + type.ReturnCode.ToString());
+                Debug.Log("[HMSPlugin]: {0=Consumable}  {1=Non-Consumable}  {2=Subscription}");
+                Debug.Log("[HMSPlugin]: Found " + type.ProductInfoList.Count + " type of " + priceType + " products");
+                OnObtainProductInfoSuccess?.Invoke(new List<ProductInfoResult> { type });
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMSPlugin]: ERROR Consumable ObtainInfo" + exception.Message);
+                Debug.Log("[HMSPlugin]: ERROR non  Consumable ObtainInfo" + exception.Message);
                 OnObtainProductInfoFailure?.Invoke(exception);
 
             });
         }
-
         public void ConsumeOwnedPurchases()
         {
 
@@ -289,6 +270,9 @@ namespace HmsPlugin
                 OnObtainProductInfoFailure?.Invoke(exception);
             });
         }
-
+        public bool IsNullOrEmpty(List<string> array)
+        {
+            return (array == null || array.Count == 0);
+        }
     }
 }

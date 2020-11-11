@@ -45,8 +45,6 @@ namespace HmsPlugin
  
                 bannerAdView.mAdStatusListener = mAdStatusListener;
             }
- 
-
         }
         // Start is called before the first frame update
         void Start()
@@ -62,11 +60,11 @@ namespace HmsPlugin
         public void ShowBannerAd()
         {
             LoadBannerAds();
-            bannerAdView.showBanner(new AdParam.Builder().Build());
+            bannerAdView.ShowBanner(new AdParam.Builder().Build());
         }
         public void HideBannerAd()
         {
-            bannerAdView.hideBanner();
+            bannerAdView.HideBanner();
         }
     }
 

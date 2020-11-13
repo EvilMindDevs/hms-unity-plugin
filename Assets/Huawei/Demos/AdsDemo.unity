@@ -391,7 +391,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 89, y: -186}
+  m_AnchoredPosition: {x: 89, y: -208}
   m_SizeDelta: {x: 150, y: 98.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &325230335
@@ -498,7 +498,7 @@ GameObject:
   - component: {fileID: 367289024}
   - component: {fileID: 367289023}
   m_Layer: 5
-  m_Name: BannerAdButton
+  m_Name: ShowAdBanner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -521,7 +521,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -93, y: -186}
+  m_AnchoredPosition: {x: -94, y: -209}
   m_SizeDelta: {x: 150, y: 98.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &367289023

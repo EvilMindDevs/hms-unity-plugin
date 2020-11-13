@@ -20,10 +20,12 @@ public class AnalyticsManager : MonoBehaviour
         instance.SetAnalyticsEnabled(true);
 
     }
+
     public void SendEventWithBundle(String eventID, String key, String value)
     {
         Bundle bundleUnity = new Bundle();
         bundleUnity.PutString(key, value);
+        Debug.Log($"[HMS] : Analytics Kits Event Id:{eventID} Key:{key} Value:{value}");
         instance.OnEvent(eventID, bundleUnity);
     }
 

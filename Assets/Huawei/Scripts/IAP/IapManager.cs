@@ -77,13 +77,13 @@ namespace HmsPlugin
             {
                 ObtainProductInfo(new List<string>(productIdConsumablesList), 0);
             }
-            if (!IsNullOrEmpty(productIdConsumablesList))
+            if (!IsNullOrEmpty(productIdNonConsumablesList))
             {
-                ObtainProductInfo(new List<string>(productIdConsumablesList), 1);
+                ObtainProductInfo(new List<string>(productIdNonConsumablesList), 1);
             }
-            if (!IsNullOrEmpty(productIdConsumablesList))
+            if (!IsNullOrEmpty(productIdSubscriptionList))
             {
-                ObtainProductInfo(new List<string>(productIdConsumablesList), 2);
+                ObtainProductInfo(new List<string>(productIdSubscriptionList), 2);
             }
         }
         private void ObtainProductInfo(IList<string> productIdNonConsumablesList, int priceType)

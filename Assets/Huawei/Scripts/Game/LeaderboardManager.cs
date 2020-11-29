@@ -13,7 +13,7 @@ namespace HmsPlugin
     public static LeaderboardManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<LeaderboardManager>();
 
     private AccountManager accountManager;
-    private IRankingsClient rankingsClient;
+    public IRankingsClient rankingsClient;
 
         public Action<int> OnIsUserScoreShownOnLeaderboardsSuccess { get; set; }
         public Action<HMSException> OnIsUserScoreShownOnLeaderboardsFailure { get; set; }
@@ -38,15 +38,7 @@ namespace HmsPlugin
 
         public void Start()
         {
-            accountManager = AccountManager.GetInstance();
-            if (accountManager.HuaweiId != null)
-            {
-                accountManager = AccountManager.GetInstance();
-                if (accountManager.HuaweiId != null)
-                {
-                    rankingsClient = Games.GetRankingsClient(accountManager.HuaweiId);
-                }
-            }
+
         }
 
         public void IsUserScoreShownOnLeaderboards()

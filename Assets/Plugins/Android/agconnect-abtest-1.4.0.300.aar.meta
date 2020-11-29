@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Plugins/Android/agconnect-abtest-1.4.0.300.aar.meta
 guid: 6bc8f4b21ec3658489606101f1e84353
+=======
+guid: 139a6920d3069fb47a52952c3c541dc7
+>>>>>>> 230d406... Saved Games Added, bugs fixed:Assets/Plugins/Android/agconnect-core-1.4.2.24.aar.meta
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2

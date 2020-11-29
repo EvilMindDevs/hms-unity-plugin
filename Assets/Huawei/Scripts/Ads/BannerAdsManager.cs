@@ -15,10 +15,6 @@ namespace HmsPlugin
     {
         public event Action BannerLoaded;
         public event Action BannerFailedToLoad;
-
-        private GameObject mLoadButton;
-        private GameObject mHideButton;
-
         public static BannerAdsManager GetInstance(string name = "AdsManager") => GameObject.Find(name).GetComponent<BannerAdsManager>();
         private BannerAd bannerAdView = null;
 
@@ -100,11 +96,6 @@ namespace HmsPlugin
 
             LoadBannerAds(UnityBannerAdPositionCodeType.POSITION_BOTTOM);
             HideBannerAd();
-
-            mLoadButton = GameObject.Find("ShowAdBanner");
-            mLoadButton.GetComponent<Button>().onClick.AddListener(ShowBannerAd);
-            mHideButton = GameObject.Find("HideAdButton");
-            mHideButton.GetComponent<Button>().onClick.AddListener(HideBannerAd);
         }
 
         public void ShowBannerAd()

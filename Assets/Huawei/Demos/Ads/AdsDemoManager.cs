@@ -41,7 +41,14 @@ public class AdsDemoManager : MonoBehaviour
         interstitialAdManager.AdId = INTERSTITIAL_AD_ID;
         interstitialAdManager.OnAdClosed = OnInterstitialAdClosed;
     }
-
+    public void ShowBannerAd()
+    {
+        bannerAdsManager.ShowBannerAd();
+    }
+    public void HideBannerAd()
+    {
+        bannerAdsManager.HideBannerAd();
+    }
     public void ShowRewardedAd()
     {
         Debug.Log("[HMS] AdsDemoManager ShowRewardedAd");

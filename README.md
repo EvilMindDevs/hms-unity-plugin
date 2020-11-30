@@ -9,6 +9,7 @@ The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services
 * Game leaderboards and achievements
 * Huawei Anayltics kit
 * Crash Service
+* Remote Config
 
 
 ## Requirements

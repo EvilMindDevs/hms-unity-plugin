@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4211748590702095452}
   - component: {fileID: 4211748590702095453}
+  - component: {fileID: 4497926794671367178}
+  - component: {fileID: 8107411711641091779}
   m_Layer: 0
   m_Name: IapManager
   m_TagString: Untagged
@@ -40,6 +42,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 4211748590702095454}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b206e05b9793e0446a105061a6f0bd86, type: 3}
+  m_Script: {fileID: 11500000, guid: 2356c204165ee9946a977fb4b96ec2ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4497926794671367178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4211748590702095454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c9566e3b74067e45b9cfa314943ef0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConsumableProducts: []
+  NonConsumableProducts: []
+  SubscriptionProducts: []
+  numberOfProductsRetrieved: 0
+--- !u!114 &8107411711641091779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4211748590702095454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 800c9b33446d5cf4487ffadf43ab7de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

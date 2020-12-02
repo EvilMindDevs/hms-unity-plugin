@@ -114,16 +114,8 @@ namespace HmsPlugin
             string title = "";
             bool allowAddBtn = true, allowDeleteBtn = true;
             int maxArchive = 100;
-            ITask<AndroidIntent> taskDisplayAppAssistant = playersClient.ShowArchiveListIntent(title, allowAddBtn, allowDeleteBtn, maxArchive);
-            taskDisplayAppAssistant.AddOnSuccessListener((result) =>
-            {
-                Debug.Log("[HMS:] ShowArchiveListIntent");
-                var callback = new GenericBridgeCallbackWrapper().AddOnSuccessListener((nothing) =>  {});
-                GenericBridgeWrapper.ReceiveShow(result.Intent, callback);
-            }).AddOnFailureListener((exception) =>
-            {
-                Debug.Log("[HMS:] ShowArchiveListIntent" + exception.ErrorCode + " :: " + exception.WrappedExceptionMessage + " ::  " + exception.WrappedCauseMessage);
-            });
+            playersClient.ShowArchiveListIntent(title, allowAddBtn, allowDeleteBtn, maxArchive);
+
             return;
         }
 

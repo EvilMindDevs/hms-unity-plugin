@@ -14,6 +14,79 @@ namespace HuaweiConstants
         }
         
     }
+	public static class UnityBannerAdPositionCode
+    {
+        public enum UnityBannerAdPositionCodeType : int
+        {
+            /**
+             * Position constant for a position with a custom offset.
+             */
+            POSITION_CUSTOM = -1,
+
+            /**
+             * Position constant for top of the screen.
+             */
+            POSITION_TOP = 0,
+
+            /**
+             * Position constant for bottom of the screen.
+             */
+            POSITION_BOTTOM = 1,
+
+            /**
+             * Position constant for top-left of the screen.
+             */
+            POSITION_TOP_LEFT = 2,
+
+            /**
+             * Position constant for top-right of the screen.
+             */
+            POSITION_TOP_RIGHT = 3,
+
+            /**
+             * Position constant for bottom-left of the screen.
+             */
+            POSITION_BOTTOM_LEFT = 4,
+
+            /**
+             * Position constant bottom-right of the screen.
+             */
+            POSITION_BOTTOM_RIGHT = 5,
+
+            /**
+             * Position constant center of the screen.
+             */
+            POSITION_CENTER = 6
+        }
+
+    }
+    public static class UnityBannerAdSize
+    {
+
+        public const string USER_DEFINED = "USER_DEFINED";
+
+        public const string BANNER_SIZE_320_50 = "BANNER_SIZE_320_50";
+
+        public const string BANNER_SIZE_320_100 = "BANNER_SIZE_320_100";
+
+        public const string BANNER_SIZE_468_60 = "BANNER_SIZE_468_60";
+
+        public const string BANNER_SIZE_DYNAMIC = "BANNER_SIZE_DYNAMIC";
+
+        public const string BANNER_SIZE_728_90 = "BANNER_SIZE_728_90";
+
+        public const string BANNER_SIZE_300_250 = "BANNER_SIZE_300_250";
+
+        public const string BANNER_SIZE_SMART = "BANNER_SIZE_SMART";
+
+        public const string BANNER_SIZE_160_600 = "BANNER_SIZE_160_600";
+
+        public const string BANNER_SIZE_360_57 = "BANNER_SIZE_360_57";
+
+        public const string BANNER_SIZE_360_144 = "BANNER_SIZE_360_144";
+         
+
+    }
     public static class HMSResponses
     {
 

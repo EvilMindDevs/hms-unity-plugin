@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 5065712364284268922}
   - component: {fileID: 5065712364284268901}
   - component: {fileID: 8731149566331794530}
-  - component: {fileID: 8697415973741775364}
+  - component: {fileID: 4244647030538236288}
   m_Layer: 0
-  m_Name: AdsManager 1
+  m_Name: AdsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d83c165ace31ca43b625142172f3b5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8697415973741775364
+--- !u!114 &4244647030538236288
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -66,6 +66,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 5065712364284268900}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51062c272375ac54cbbf7f7461a139a3, type: 3}
+  m_Script: {fileID: 11500000, guid: 1bce2b3adcd81bd44b34984f3844925e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

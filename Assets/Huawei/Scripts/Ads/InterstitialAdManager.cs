@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class InterstitalAdManager : MonoBehaviour
+    public class InterstitialAdManager : MonoBehaviour
     {
         private class InterstitialAdListener : IAdListener
         {
-            private readonly InterstitalAdManager mAdsManager;
+            private readonly InterstitialAdManager mAdsManager;
 
-            public InterstitialAdListener(InterstitalAdManager adsManager)
+            public InterstitialAdListener(InterstitialAdManager adsManager)
             {
                 mAdsManager = adsManager;
             }
@@ -59,9 +59,9 @@ namespace HmsPlugin
             }
         }
 
-    public static InterstitalAdManager GetInstance(string name = "AdsManager") => GameObject.Find(name).GetComponent<InterstitalAdManager>();
+        public static InterstitialAdManager GetInstance(string name = "AdsManager") => GameObject.Find(name).GetComponent<InterstitialAdManager>();
 
-    private InterstitialAd interstitialAd = null;
+        private InterstitialAd interstitialAd = null;
 
         private string mAdId;
 
@@ -70,7 +70,7 @@ namespace HmsPlugin
             get => mAdId;
             set
             {
-                Debug.Log($"[HMS] InterstitalAdManager: Set interstitial ad ID: {value}");
+                Debug.Log($"[HMS] InterstitialAdManager: Set interstitial ad ID: {value}");
                 mAdId = value;
                 LoadNextInterstitialAd();
             }
@@ -104,7 +104,7 @@ namespace HmsPlugin
 
         public void ShowInterstitialAd()
         {
-            Debug.Log("[HMS] InterstitalAdManager ShowInterstitialAd");
+            Debug.Log("[HMS] InterstitialAdManager ShowInterstitialAd");
             if (interstitialAd?.Loaded == true)
             {
                 Debug.Log("[HMS] InterstitalAdManager interstitialAd.Show");

@@ -13,7 +13,7 @@ public class AdsDemoManager : MonoBehaviour
     private const string BANNER_AD_ID = "testw6vs28auh3";
 
     private RewardAdManager rewardAdManager;
-    private InterstitalAdManager interstitialAdManager;
+    private InterstitialAdManager interstitialAdManager;
     private BannerAdsManager bannerAdsManager;
 
     // Start is called before the first frame update
@@ -37,7 +37,7 @@ public class AdsDemoManager : MonoBehaviour
 
     private void InitInterstitialAds()
     {
-        interstitialAdManager = InterstitalAdManager.GetInstance();
+        interstitialAdManager = InterstitialAdManager.GetInstance();
         interstitialAdManager.AdId = INTERSTITIAL_AD_ID;
         interstitialAdManager.OnAdClosed = OnInterstitialAdClosed;
     }

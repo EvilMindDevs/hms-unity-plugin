@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1729321062969376788}
   - component: {fileID: 6902094115344975192}
   m_Layer: 0
-  m_Name: AnalyticsManager 1
+  m_Name: AnalyticsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,6 +53,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 8602532924586718953}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a361dcf4f4c42c84388f2ac4aae07686, type: 3}
+  m_Script: {fileID: 11500000, guid: 51062c272375ac54cbbf7f7461a139a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

@@ -13,8 +13,8 @@ public class RemoteConfigManager : MonoBehaviour
 {
     string TAG = "RemoteConfig Manager";
 
-    public Action<ConfigValues> OnSetFecthSuccess { get; set; }
-    public Action<HMSException> OnSetFecthFailure { get; set; }
+    public Action<ConfigValues> OnFecthSuccess { get; set; }
+    public Action<HMSException> OnFecthFailure { get; set; }
 
     IAGConnectConfig agc = null;
 
@@ -32,9 +32,9 @@ public class RemoteConfigManager : MonoBehaviour
     }
 
     //applyDefault(int resId) Sets a default value for a parameter.
-    public void ApplyDefault(Dictionary<String, System.Object> map)
+    public void ApplyDefault(Dictionary<string, object> dictionary)
     {
-        if(agc != null) agc.ApplyDefault(map);
+        if(agc != null) agc.ApplyDefault(dictionary);
         Debug.Log($"[{TAG}]: applyDefault with Dictionary");
     }
 
@@ -59,15 +59,11 @@ public class RemoteConfigManager : MonoBehaviour
         ITask<ConfigValues> x = agc.Fetch();
         x.AddOnSuccessListener((configValues) =>
         {
-            Debug.Log($"[{TAG}]: fetch() Success");
-            agc.Apply(configValues);
-            OnSetFecthSuccess?.Invoke(configValues);
+            OnFecthSuccess?.Invoke(configValues);
         });
         x.AddOnFailureListener((exception) =>
         {
-            Debug.Log($"[{TAG}]: fetch() Failed => " + exception.ErrorCode);
-            Debug.Log($"[{TAG}]: fetch() Failed => " + exception.WrappedExceptionMessage);
-            OnSetFecthFailure?.Invoke(exception);
+            OnFecthFailure?.Invoke(exception);
         });
     }
 
@@ -78,16 +74,11 @@ public class RemoteConfigManager : MonoBehaviour
         ITask<ConfigValues> x = agc.Fetch(intervalSeconds);
         x.AddOnSuccessListener((configValues) =>
         {
-            Debug.Log($"[{TAG}]: fetch() Success");
-            Debug.Log($"[{TAG}]: fetch() Success => " + configValues.getValueAsString("abc"));
-            agc.Apply(configValues);
-            OnSetFecthSuccess?.Invoke(configValues);
+            OnFecthSuccess?.Invoke(configValues);
         });
         x.AddOnFailureListener((exception) =>
         {
-            Debug.Log($"[{TAG}]: fetch() Failed => " + exception.ErrorCode);
-            Debug.Log($"[{TAG}]: fetch() Failed => " + exception.WrappedExceptionMessage);
-            OnSetFecthFailure?.Invoke(exception);
+            OnFecthFailure?.Invoke(exception);
         });
     }
 
@@ -95,9 +86,13 @@ public class RemoteConfigManager : MonoBehaviour
     //values in Remote Configuration.
     public Dictionary<string, object> GetMergedAll()
     {
-        Dictionary<string, object> values = new Dictionary<string, object>();
-        if (agc != null) values = agc.GetMergedAll();
-        return values;
+        Dictionary<string, object> dictionary = new Dictionary<string, object>();
+        if (agc != null) dictionary = agc.GetMergedAll();
+        /*foreach(KeyValuePair<string, object> kvp in values)
+        {
+            Debug.Log($"[Remote Config]: key:{kvp.Key} / value:{kvp.Value}");
+        }*/
+        return dictionary;
     }
 
     //loadLastFetched() Obtains the cached data that is successfully fetched last time.
@@ -132,5 +127,12 @@ public class RemoteConfigManager : MonoBehaviour
         if (agc != null) agc.DeveloperMode = val;
         Debug.Log($"[{TAG}]: setDeveloperMode({val})");
     }
+
+    //Returns the value for a key.
+    public bool GetValueAsBoolean(string paramString) => agc.GetValueAsBoolean(paramString);
+    public byte[] GetValueAsByteArray(string paramString) => agc.GetValueAsByteArray(paramString);
+    public double GetValueAsDouble(string paramString) => agc.GetValueAsDouble(paramString);
+    public long GetValueAsLong(string paramString) => agc.GetValueAsLong(paramString);
+    public string GetValueAsString(string paramString) => agc.GetValueAsString(paramString);
 
 }

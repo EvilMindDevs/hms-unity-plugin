@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using HuaweiMobileServices.RemoteConfig;
+using HuaweiMobileServices.Utils;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,17 +21,26 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void Fetch()
     {
+        remoteConfigManager.OnFecthSuccess = OnFecthSuccess;
+        remoteConfigManager.OnFecthFailure = OnFecthFailure;
         remoteConfigManager.Fetch();
+    }
+
+    private void OnFecthSuccess(ConfigValues config)
+    {
+        remoteConfigManager.Apply(config);
+        Debug.Log($"[{TAG}]: fetch() Success");
+    }
+
+    private void OnFecthFailure(HMSException exception)
+    {
+        Debug.Log($"[{TAG}]: fetch() Failed Error Code => {exception.ErrorCode} Message => {exception.WrappedExceptionMessage}");
     }
 
     public void GetMergedAll()
     {
-        Dictionary<string, object> map = remoteConfigManager.GetMergedAll();
-        foreach (var el in map)
-        {
-            Debug.Log($"[{TAG}]: {el.Key} = {el.Value}");
-        }
-        countOfVariables.text = $"Count of Variables : {map.Count}";
+        Dictionary<string, object> dictionary = remoteConfigManager.GetMergedAll();
+        countOfVariables.text = $"Count of Variables : {dictionary.Count}";
     }
 
     public void ClearAll()
@@ -41,10 +51,12 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void ApplyDefault()
     {
-        Dictionary<string, object> map = new Dictionary<string, object>();
-        map.Add("Key", "Value");
-        map.Add("Key1", "Value1");
-        remoteConfigManager.ApplyDefault(map);
+        Dictionary<string, object> dictionary = new Dictionary<string, object>();
+        dictionary.Add("Key", "Value");
+        dictionary.Add("Key1", true);
+        dictionary.Add("Key2", 5);
+        dictionary.Add("Key3", 1.8); 
+        remoteConfigManager.ApplyDefault(dictionary);
         GetMergedAll();
     }
 
@@ -56,7 +68,7 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void LoadLastFetched()
     {
-        Debug.Log($"[{TAG}]: LoadLastFetched {remoteConfigManager.LoadLastFetched().getValueAsString("Key")}");
+        Debug.Log($"[{TAG}]: LoadLastFetched {remoteConfigManager.LoadLastFetched().getValueAsString("abc")}");
     }
 
     public void DeveloperMode(bool val)

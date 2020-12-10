@@ -13,7 +13,7 @@
     <meta-data android:name="com.huawei.hms.client.cpid" android:value="cpid=890034000004105619" />
     <meta-data android:name="com.huawei.hms.version" android:value="2.6.1" />
     <provider
-	   android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
+	   android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="com.evilmind.huawei" android:exported="false" android:grantUriPermissions="true"/>
 
    <provider android:name="com.huawei.updatesdk.fileprovider.UpdateSdkFileProvider" android:authorities="com.evilmind.huawei.updateSdk.fileProvider" android:exported="false" android:grantUriPermissions="true" />
   </application>

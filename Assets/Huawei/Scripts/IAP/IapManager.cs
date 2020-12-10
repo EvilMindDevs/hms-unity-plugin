@@ -1,4 +1,4 @@
-﻿# define DEBUG
+﻿
 
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.IAP;

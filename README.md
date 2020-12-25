@@ -35,6 +35,9 @@ This is an ongoing project, currently WIP. Feel free to contact us if you'd like
 ### Expected soon features
 * Analytics integration
 
+## Documentation - Unity Game Integration Solution Overview
+This is a document for who wants to integrate their game to HUAWEI AppGallery using Unity. This documents consists general information about the integration cons and pros and brief introduction to them with another 2 presentation inside of it.
+
 ## Connect your game Huawei Mobile Services in 5 easy steps
 
 1. Register your app at Huawei Developer

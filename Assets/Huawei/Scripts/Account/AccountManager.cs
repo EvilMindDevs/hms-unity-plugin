@@ -43,7 +43,7 @@ namespace HmsPlugin
         public Action<AuthHuaweiId> OnSignInSuccess { get; set; }
         public Action<HMSException> OnSignInFailed { get; set; }
 
-        private HuaweiIdAuthService authService;
+        private HuaweiIdAuthService authService, authServiceDrive;
 
         // Start is called before the first frame update
         void Awake()

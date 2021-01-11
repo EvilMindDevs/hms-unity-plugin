@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -107981364, guid: 741884b37a0234d86bb740e55081cd5f, type: 3}
+  m_Name: UDP Settings
+  m_EditorClassIdentifier: 
+  UnityProjectID: 110382a6-b733-425f-a094-c40e46c3b41a
+  UnityClientID: UNQXQcpKD0OiL5NlzdZdzQ
+  UnityClientKey: hdWYO3UMJVNTfKPlkwrAPFsmAtgiJuKpwfe_5UGov5Y
+  UnityClientRSAPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuiwPY46GztvXB9POjq4d0xXvrC2ZJaVhyE9jkmsGBfcqwi3We6VtiJciW49P+PK7TKKZVK97gKZDKS5AuWOu2jCusa58K1weXSCO5YXze7KyU/DWAq41/WjmOuwsAGSvIO2idVz45JKJQVvt8dDOEnkTBh7uPIeebl/4+u1J9t2RdoctcNK+w2Vea8DlFDndfzO3OZdcxeFaBCx8qlceAPOBj4uYGfhxAH8+b3XlmfTRgnNbWYSdJ31PbvugBi+4eVha/4wc7+zUmOB+PivHAPiX2aUj7nayDrIwjQ8BMeoxhO0ZB42muNFeRdx7qluEc8BfUweCaVHYgdeN0mpm/wIDAQAB
+  AppName: Crocs UDP HMS
+  AppSlug: b10d8897-6997-4b45-91f8-6b10bbf14b21
+  AppItemId: 5f19e0d0ba101d00207e0f11
+  Permission: 

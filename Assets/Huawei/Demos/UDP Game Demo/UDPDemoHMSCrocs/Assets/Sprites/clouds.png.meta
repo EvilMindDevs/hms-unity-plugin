@@ -1,0 +1,500 @@
+fileFormatVersion: 2
+guid: fe31a63ed1e503548bf5b03be71cb71f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8287873616420496286
+    second: clouds_0
+  - first:
+      213: 7911139459876737251
+    second: clouds_1
+  - first:
+      213: -1115256706364395465
+    second: clouds_2
+  - first:
+      213: -477254976604553037
+    second: clouds_3
+  - first:
+      213: 5291327898690728900
+    second: clouds_4
+  - first:
+      213: -8294918184612582425
+    second: clouds_5
+  - first:
+      213: -8869869572783183582
+    second: clouds_6
+  - first:
+      213: 4149633398077095797
+    second: clouds_7
+  - first:
+      213: -7053933015307643321
+    second: clouds_8
+  - first:
+      213: -8919544922904042576
+    second: clouds_9
+  - first:
+      213: -3052748074778076258
+    second: clouds_10
+  - first:
+      213: 4522440564201344832
+    second: clouds_11
+  - first:
+      213: -5800895834718413680
+    second: clouds_12
+  - first:
+      213: -5914686066510983863
+    second: clouds_13
+  - first:
+      213: 8274779338559331536
+    second: clouds_14
+  - first:
+      213: -8444972217358185434
+    second: clouds_15
+  - first:
+      213: 5405775852723589105
+    second: clouds_16
+  - first:
+      213: 9175486309980564834
+    second: clouds_17
+  - first:
+      213: 1775148799022944870
+    second: clouds_18
+  - first:
+      213: -8928922196803100657
+    second: clouds_19
+  - first:
+      213: -8527696092777130334
+    second: clouds_20
+  - first:
+      213: -3224149306057994188
+    second: clouds_21
+  - first:
+      213: 6107283552212181346
+    second: clouds_22
+  - first:
+      213: 3164869652999679957
+    second: clouds_23
+  - first:
+      213: -3304712205744322676
+    second: clouds_24
+  - first:
+      213: -3366764893647157846
+    second: clouds_25
+  - first:
+      213: -279751010975357376
+    second: clouds_26
+  - first:
+      213: 5201120456041310923
+    second: clouds_27
+  - first:
+      213: -89046765371265172
+    second: clouds_28
+  - first:
+      213: 1640035034794515131
+    second: clouds_29
+  - first:
+      213: 7210058697127598438
+    second: clouds_30
+  - first:
+      213: 4838695589380955831
+    second: clouds_31
+  - first:
+      213: -7583902682439742081
+    second: clouds_32
+  - first:
+      213: -2437878570738449722
+    second: clouds_33
+  - first:
+      213: -1705173544290952860
+    second: clouds_34
+  - first:
+      213: 8101251372536465703
+    second: clouds_35
+  - first:
+      213: -6347749325580323680
+    second: clouds_36
+  - first:
+      213: 3156630984403960620
+    second: clouds_37
+  - first:
+      213: 3875367777773267663
+    second: clouds_38
+  - first:
+      213: -3534741843738628571
+    second: clouds_39
+  - first:
+      213: 549167919206097936
+    second: clouds_40
+  - first:
+      213: -5887057570194380204
+    second: clouds_41
+  - first:
+      213: 4778199146668291635
+    second: clouds_42
+  - first:
+      213: -6243776230875188667
+    second: clouds_43
+  - first:
+      213: 7840893254436717062
+    second: clouds_44
+  - first:
+      213: 7020082681060471256
+    second: clouds_45
+  - first:
+      213: -5878722077832643412
+    second: clouds_46
+  - first:
+      213: 3342869561158471362
+    second: clouds_47
+  - first:
+      213: 3670713035132256601
+    second: clouds_48
+  - first:
+      213: -954762247776805630
+    second: clouds_49
+  - first:
+      213: 4686193535079209620
+    second: clouds_50
+  - first:
+      213: 6969535202913096440
+    second: clouds_51
+  - first:
+      213: 9124393542944156490
+    second: clouds_52
+  - first:
+      213: -990976170980771545
+    second: clouds_53
+  - first:
+      213: -4912329231265958464
+    second: clouds_54
+  - first:
+      213: -498173674246642881
+    second: clouds_55
+  - first:
+      213: 6023952474894190883
+    second: clouds_56
+  - first:
+      213: -9174590132758278189
+    second: clouds_57
+  - first:
+      213: -1472696647954404280
+    second: clouds_58
+  - first:
+      213: 8387924582633347216
+    second: clouds_59
+  - first:
+      213: 8405570977954538712
+    second: clouds_60
+  - first:
+      213: -6662765593927993959
+    second: clouds_61
+  - first:
+      213: 837835727691453222
+    second: clouds_62
+  - first:
+      213: 481639837475885866
+    second: clouds_63
+  - first:
+      213: 1999194541670666516
+    second: clouds_64
+  - first:
+      213: -2426949713103365771
+    second: clouds_65
+  - first:
+      213: 6083624670596106428
+    second: clouds_66
+  - first:
+      213: 3297173670177715257
+    second: clouds_67
+  - first:
+      213: 726425968632009880
+    second: clouds_68
+  - first:
+      213: -5970221379015543835
+    second: clouds_69
+  - first:
+      213: 3527547437726609973
+    second: clouds_70
+  - first:
+      213: 2824391388916099804
+    second: clouds_71
+  - first:
+      213: -5457231504344711722
+    second: clouds_72
+  - first:
+      213: 3825403054233058189
+    second: clouds_73
+  - first:
+      213: 4042619467639917011
+    second: clouds_74
+  - first:
+      213: 7790473736485517209
+    second: clouds_75
+  - first:
+      213: -3161023671456622574
+    second: clouds_76
+  - first:
+      213: -7147747797375486597
+    second: clouds_77
+  - first:
+      213: 7022398483330950672
+    second: clouds_78
+  - first:
+      213: 6347911280032918677
+    second: clouds_79
+  - first:
+      213: -1174824099461486000
+    second: clouds_80
+  - first:
+      213: -8037850989339282960
+    second: clouds_81
+  - first:
+      213: 2507147891409482340
+    second: clouds_82
+  - first:
+      213: -8997343997189523403
+    second: clouds_83
+  - first:
+      213: -1802221810181682177
+    second: clouds_84
+  - first:
+      213: -548593857006174913
+    second: clouds_85
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: clouds_0
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 1008
+        width: 748
+        height: 334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e936312a421740370800000000000000
+      internalID: 8287873616420496286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clouds_1
+      rect:
+        serializedVersion: 2
+        x: 907
+        y: 930
+        width: 1193
+        height: 521
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e0578a7c630acd60800000000000000
+      internalID: 7911139459876737251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clouds_2
+      rect:
+        serializedVersion: 2
+        x: 1089
+        y: 499
+        width: 961
+        height: 341
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 73037c73fefc580f0800000000000000
+      internalID: -1115256706364395465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clouds_3
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 24
+        width: 925
+        height: 439
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b0c23c90237069f0800000000000000
+      internalID: -477254976604553037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clouds_4
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 22
+        width: 1049
+        height: 392
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c3339f60b29e6940800000000000000
+      internalID: 5291327898690728900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: clouds_5
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 438
+        width: 968
+        height: 466
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7eb2d350cd782ec80800000000000000
+      internalID: -8294918184612582425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

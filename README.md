@@ -12,6 +12,11 @@ The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services
 * Remote Config
 
 
+## UDP Demo Game - Crocs
+* Full integration of UDP Services are in the demo and you can easily access them with documentation inside (Crocs - UDP Demo Documentation_V1.0.pptx)
+* Integrated Services are -> IAP, Ads, Collaboration, Cloud Diagnostics, Cloud Build and Analytics
+* Project is located inside Assets -> Huawei -> Demos -> UDP Game Demo
+
 ## Requirements
 Android SDK min 21
 Net 4.x

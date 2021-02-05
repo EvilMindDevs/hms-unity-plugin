@@ -5,6 +5,7 @@ using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static HuaweiMobileServices.Drive.Drive;
 namespace HmsPlugin
 {
     public class AccountManager : MonoBehaviour
@@ -42,13 +43,14 @@ namespace HmsPlugin
         public Action<AuthHuaweiId> OnSignInSuccess { get; set; }
         public Action<HMSException> OnSignInFailed { get; set; }
 
-        private HuaweiIdAuthService authService;
+        private HuaweiIdAuthService authService, authServiceDrive;
 
         // Start is called before the first frame update
         void Awake()
         {
             Debug.Log("[HMS]: AWAKE AUTHSERVICE");
             authService = DefaultAuthService;
+            authServiceDrive = DefaultDriveAuthService;
             //For Game          
         }
         //Game Service authentication
@@ -83,6 +85,36 @@ namespace HmsPlugin
                 OnSignInFailed?.Invoke(exception);
             });
         }
+        public void SignInDrive()
+        {
+            Debug.Log("[HMS]: Sign in Drive " + authServiceDrive);
+            authServiceDrive.StartSignIn((authId) =>
+            {
+                HuaweiId = authId;
+                OnSignInSuccess?.Invoke(authId);
+            }, (error) =>
+            {
+                HuaweiId = null;
+                OnSignInFailed?.Invoke(error);
+            });
+        }
+
+        private static HuaweiIdAuthService DefaultDriveAuthService
+        {
+            get
+            {
+
+                List<Scope> scopeList = new List<Scope>();
+                scopeList.Add(new Scope(DriveScopes.SCOPE_DRIVE_FILE)); // Permissions to upload and store app data. 
+                HuaweiIdAuthParams authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetAccessToken().SetIdToken().SetScopeList(scopeList).CreateParams();
+                Debug.Log("[HMS]: AUTHPARAMS DRIVE" + authParams);
+                var result = HuaweiIdAuthManager.GetService(authParams);
+                Debug.Log("[HMS]: RESULT DRIVE" + result);
+                return result;
+
+            }
+        }
+
         public void SignOut()
         {
             authService.SignOut();

@@ -7,11 +7,8 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace HmsPlugin
 {
-    public class AccountManager : MonoBehaviour
+    public class HMSAccountManager : HMSSingleton<HMSAccountManager>
     {
-
-        public static AccountManager GetInstance(string name = "AccountManager") => GameObject.Find(name).GetComponent<AccountManager>();
-
         private static HuaweiIdAuthService DefaultAuthService
         {
             get
@@ -20,7 +17,7 @@ namespace HmsPlugin
                 var authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetIdToken().CreateParams();
                 Debug.Log("[HMS]: AUTHPARAMS AUTHSERVICE" + authParams);
                 var result = HuaweiIdAuthManager.GetService(authParams);
-                Debug.Log("[HMS]: RESULT AUTHSERVICE"+ result);
+                Debug.Log("[HMS]: RESULT AUTHSERVICE" + result);
                 return result;
             }
         }
@@ -38,19 +35,18 @@ namespace HmsPlugin
                 return result;
             }
         }
-        public AuthHuaweiId HuaweiId { get;  set; }
+        public AuthHuaweiId HuaweiId { get; set; }
         public Action<AuthHuaweiId> OnSignInSuccess { get; set; }
         public Action<HMSException> OnSignInFailed { get; set; }
 
         private HuaweiIdAuthService authService;
 
-        // Start is called before the first frame update
-        void Awake()
+        private void Awake()
         {
             Debug.Log("[HMS]: AWAKE AUTHSERVICE");
             authService = DefaultAuthService;
-            //For Game          
         }
+
         //Game Service authentication
         public HuaweiIdAuthService GetGameAuthService()
         {

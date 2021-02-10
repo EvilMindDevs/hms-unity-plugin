@@ -12,7 +12,6 @@ namespace HmsPlugin
 
         public static AchievementsManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<AchievementsManager>();
 
-        private AccountManager accountManager;
         private IAchievementsClient achievementsClient;
 
         public Action OnShowAchievementsSuccess { get; set; }
@@ -36,23 +35,21 @@ namespace HmsPlugin
         public void Start()
         {
             Debug.Log("HMS GAMES: Achievements init");
-            accountManager = AccountManager.GetInstance();
-            if (accountManager.HuaweiId != null)
+            if (HMSAccountManager.Instance.HuaweiId != null)
             {
                 Debug.Log("HMS GAMES: Achievements init");
-                accountManager = AccountManager.GetInstance();
-                if (accountManager.HuaweiId != null)
+                if (HMSAccountManager.Instance.HuaweiId != null)
                 {
-                    achievementsClient = Games.GetAchievementsClient(accountManager.HuaweiId);
+                    achievementsClient = Games.GetAchievementsClient(HMSAccountManager.Instance.HuaweiId);
                 }
             }
         }
 
         public void ShowAchievements()
         {
-            if (accountManager.HuaweiId != null)
+            if (HMSAccountManager.Instance.HuaweiId != null)
             {
-                IAchievementsClient achievementsClient = Games.GetAchievementsClient(accountManager.HuaweiId);
+                IAchievementsClient achievementsClient = Games.GetAchievementsClient(HMSAccountManager.Instance.HuaweiId);
                 achievementsClient.ShowAchievementList(() =>
                 {
                     Debug.Log("[HMS GAMES:] ShowAchievements SUCCESS");

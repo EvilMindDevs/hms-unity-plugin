@@ -12,7 +12,6 @@ namespace HmsPlugin
 
     public static LeaderboardManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<LeaderboardManager>();
 
-    private AccountManager accountManager;
     public IRankingsClient rankingsClient;
 
         public Action<int> OnIsUserScoreShownOnLeaderboardsSuccess { get; set; }

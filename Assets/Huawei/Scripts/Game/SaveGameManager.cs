@@ -16,7 +16,6 @@ namespace HmsPlugin
     public class SaveGameManager : MonoBehaviour
     {
         public static SaveGameManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<SaveGameManager>();
-        private AccountManager accountManager;
         public IArchivesClient playersClient { get; set; }
 
         public AuthHuaweiId HuaweiId
@@ -24,14 +23,9 @@ namespace HmsPlugin
             get; set;
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            accountManager = AccountManager.GetInstance();
-        }
         public void SavedGameAuth()
         {
-            HuaweiId = accountManager.HuaweiId;
+            HuaweiId = HMSAccountManager.Instance.HuaweiId;
         }
         public IArchivesClient GetArchivesClient()
         {

@@ -27,7 +27,6 @@ public class IapDemoManager : MonoBehaviour
     List<string> productPurchasedList = new List<string>();
 
     private IapManager iapManager;
-    private AccountManager accountManager;
 
     UnityEvent loadedEvent;
 
@@ -41,14 +40,12 @@ public class IapDemoManager : MonoBehaviour
     void Start()
     {
         Debug.Log("[HMS]: Started");
-        accountManager = GetComponent<AccountManager>();
-        Debug.Log(accountManager.ToString());
-        accountManager.OnSignInFailed = (error) =>
+        HMSAccountManager.Instance.OnSignInFailed = (error) =>
         {
             Debug.Log($"[HMSPlugin]: SignIn failed. {error.Message}");
         };
-        accountManager.OnSignInSuccess = SignedIn;
-        accountManager.SignIn();
+        HMSAccountManager.Instance.OnSignInSuccess = SignedIn;
+        HMSAccountManager.Instance.SignIn();
     }
 
     private void SignedIn(AuthHuaweiId authHuaweiId)

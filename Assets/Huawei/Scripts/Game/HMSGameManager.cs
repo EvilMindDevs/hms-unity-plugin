@@ -7,13 +7,11 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class GameManager : MonoBehaviour
+    public class HMSGameManager : HMSSingleton<HMSGameManager>
     {
 
-        public static GameManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<GameManager>();
-
-        private SaveGameManager saveGameManager;
-        private LeaderboardManager leaderboardManager;
+        // change
+        //public static GameManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<GameManager>();
 
         public Action<Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }
@@ -26,7 +24,7 @@ namespace HmsPlugin
         {
             Debug.Log("HMS GAMES: Game init");
             HuaweiMobileServicesUtil.SetApplication();
-            saveGameManager = SaveGameManager.GetInstance();
+            //saveGameManager = SaveGameManager.GetInstance();
             Init();
         }
 
@@ -56,10 +54,10 @@ namespace HmsPlugin
         public void InitGameMAnagers()
         {
             //SavedGame Initilize
-            saveGameManager.SavedGameAuth();
-            saveGameManager.GetArchivesClient();
+            HMSSaveGameManager.Instance.SavedGameAuth();
+            HMSSaveGameManager.Instance.GetArchivesClient();
             //Leaderboard Initilize
-            leaderboardManager.rankingsClient = Games.GetRankingsClient(HMSAccountManager.Instance.HuaweiId);
+            HMSLeaderboardManager.Instance.rankingsClient = Games.GetRankingsClient(HMSAccountManager.Instance.HuaweiId);
         }
         public void GetPlayerInfo()
         {

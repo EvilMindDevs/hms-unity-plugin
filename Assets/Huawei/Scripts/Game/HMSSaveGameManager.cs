@@ -13,9 +13,9 @@ using UnityEngine.UI;
 
 namespace HmsPlugin
 {
-    public class SaveGameManager : MonoBehaviour
+    public class HMSSaveGameManager : HMSSingleton<HMSSaveGameManager>
     {
-        public static SaveGameManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<SaveGameManager>();
+        //public static SaveGameManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<SaveGameManager>();
         public IArchivesClient playersClient { get; set; }
 
         public AuthHuaweiId HuaweiId

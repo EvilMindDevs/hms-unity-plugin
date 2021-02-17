@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class AchievementsManager : MonoBehaviour
+    public class HMSAchievementsManager : HMSSingleton<HMSAchievementsManager>
     {
 
-        public static AchievementsManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<AchievementsManager>();
+        //public static AchievementsManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<AchievementsManager>();
 
         private IAchievementsClient achievementsClient;
 

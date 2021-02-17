@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class LeaderboardManager : MonoBehaviour
+    public class HMSLeaderboardManager : HMSSingleton<HMSLeaderboardManager>
     {
 
-    public static LeaderboardManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<LeaderboardManager>();
+    //public static LeaderboardManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<LeaderboardManager>();
 
     public IRankingsClient rankingsClient;
 

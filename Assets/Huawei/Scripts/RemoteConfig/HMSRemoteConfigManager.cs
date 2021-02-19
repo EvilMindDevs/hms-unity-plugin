@@ -9,9 +9,9 @@ using System.Xml.Linq;
 using System.Xml;
 
 
-public class RemoteConfigManager : MonoBehaviour
+public class HMSRemoteConfigManager : HMSSingleton<HMSRemoteConfigManager>
 {
-    string TAG = "RemoteConfig Manager";
+    string TAG = "HMSRemoteConfig Manager";
 
     public Action<ConfigValues> OnFecthSuccess { get; set; }
     public Action<HMSException> OnFecthFailure { get; set; }

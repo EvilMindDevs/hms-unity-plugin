@@ -26,8 +26,6 @@ public class IapDemoManager : MonoBehaviour
     List<ProductInfo> productInfoList = new List<ProductInfo>();
     List<string> productPurchasedList = new List<string>();
 
-    private IapManager iapManager;
-
     UnityEvent loadedEvent;
 
     void Awake()
@@ -51,20 +49,19 @@ public class IapDemoManager : MonoBehaviour
     private void SignedIn(AuthHuaweiId authHuaweiId)
     {
         Debug.Log("[HMS]: SignedIn");
-        iapManager = GetComponent<IapManager>();
-        iapManager.OnCheckIapAvailabilitySuccess = LoadStore;
-        iapManager.OnCheckIapAvailabilityFailure = (error) =>
+        HMSIAPManager.Instance.OnCheckIapAvailabilitySuccess = LoadStore;
+        HMSIAPManager.Instance.OnCheckIapAvailabilityFailure = (error) =>
         {
             Debug.Log($"[HMSPlugin]: IAP check failed. {error.Message}");
         };
-        iapManager.CheckIapAvailability();
+        HMSIAPManager.Instance.CheckIapAvailability();
     }
 
     private void LoadStore()
     {
         Debug.Log("[HMS]: LoadStore");
         // Set Callback for ObtainInfoSuccess
-        iapManager.OnObtainProductInfoSuccess = (productInfoResultList) =>
+        HMSIAPManager.Instance.OnObtainProductInfoSuccess = (productInfoResultList) =>
         {
 
             if (productInfoResultList != null)
@@ -82,13 +79,13 @@ public class IapDemoManager : MonoBehaviour
 
         };
         // Set Callback for ObtainInfoFailure
-        iapManager.OnObtainProductInfoFailure = (error) =>
+        HMSIAPManager.Instance.OnObtainProductInfoFailure = (error) =>
         {
             Debug.Log($"[HMSPlugin]: IAP ObtainProductInfo failed. {error.Message}");
         };
 
         // Call ObtainProductInfo 
-        iapManager.ObtainProductInfo(new List<string>(ConsumableProducts), new List<string>(NonConsumableProducts), new List<string>(SubscriptionProducts));
+        HMSIAPManager.Instance.ObtainProductInfo(new List<string>(ConsumableProducts), new List<string>(NonConsumableProducts), new List<string>(SubscriptionProducts));
 
     }
 
@@ -96,17 +93,17 @@ public class IapDemoManager : MonoBehaviour
 
     private void RestorePurchases()
     {
-        iapManager.OnObtainOwnedPurchasesSuccess = (ownedPurchaseResult) =>
+        HMSIAPManager.Instance.OnObtainOwnedPurchasesSuccess = (ownedPurchaseResult) =>
         {
             productPurchasedList = (List<string>)ownedPurchaseResult.InAppPurchaseDataList;
         };
 
-        iapManager.OnObtainOwnedPurchasesFailure = (error) =>
+        HMSIAPManager.Instance.OnObtainOwnedPurchasesFailure = (error) =>
         {
             Debug.Log("[HMS:] RestorePurchasesError" + error.Message);
         };
 
-        iapManager.ObtainOwnedPurchases();
+        HMSIAPManager.Instance.ObtainOwnedPurchases();
     }
 
     public ProductInfo GetProductInfo(string productID)
@@ -118,18 +115,18 @@ public class IapDemoManager : MonoBehaviour
 
     public void BuyProduct(string productID)
     {
-        iapManager.OnBuyProductSuccess = (purchaseResultInfo) =>
+        HMSIAPManager.Instance.OnBuyProductSuccess = (purchaseResultInfo) =>
         {
             // Verify signature with purchaseResultInfo.InAppDataSignature
 
             // If signature ok, deliver product
 
             // Consume product purchaseResultInfo.InAppDataSignature
-            iapManager.ConsumePurchase(purchaseResultInfo);
+            HMSIAPManager.Instance.ConsumePurchase(purchaseResultInfo);
 
         };
 
-        iapManager.OnBuyProductFailure = (errorCode) =>
+        HMSIAPManager.Instance.OnBuyProductFailure = (errorCode) =>
         {
            
             switch (errorCode)
@@ -154,7 +151,7 @@ public class IapDemoManager : MonoBehaviour
         var productInfo = productInfoList.Find(info => info.ProductId == productID);
         var payload = "test";
 
-        iapManager.BuyProduct(productInfo, payload);
+        HMSIAPManager.Instance.BuyProduct(productInfo, payload);
 
     }
 

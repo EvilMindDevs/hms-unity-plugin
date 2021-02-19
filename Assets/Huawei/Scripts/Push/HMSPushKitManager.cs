@@ -8,9 +8,8 @@ using UnityEngine.UI;
 
 namespace HmsPlugin
 {
-    public class PushKitManager : MonoBehaviour, IPushListener
+    public class HMSPushKitManager : HMSSingleton<HMSPushKitManager>, IPushListener
     {
-
         public Action<string> OnTokenSuccess { get; set; }
         public Action<Exception> OnTokenFailure { get; set; }
 

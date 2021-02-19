@@ -9,12 +9,9 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class IapManager : MonoBehaviour
+    public class HMSIAPManager : HMSSingleton<HMSIAPManager>
     {
-
-    public static IapManager GetInstance(string name = "IapManager") => GameObject.Find(name).GetComponent<IapManager>();
-
-    private static readonly HMSException IAP_NOT_AVAILABLE = new HMSException("IAP not available");
+        private static readonly HMSException IAP_NOT_AVAILABLE = new HMSException("IAP not available");
 
         public Action OnCheckIapAvailabilitySuccess { get; set; }
         public Action<HMSException> OnCheckIapAvailabilityFailure { get; set; }
@@ -36,12 +33,6 @@ namespace HmsPlugin
 
         private IIapClient iapClient;
         private bool? iapAvailable = null;
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
 
         public void CheckIapAvailability()
         {

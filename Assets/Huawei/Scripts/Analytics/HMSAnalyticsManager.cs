@@ -5,9 +5,9 @@ using HuaweiMobileServices.Analystics;
 using HuaweiMobileServices.Utils;
 using System;
 
-public class AnalyticsManager : MonoBehaviour
+public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
 {
-    public static AnalyticsManager GetInstance(string name = "AnalyticsManager") => GameObject.Find(name).GetComponent<AnalyticsManager>();
+    //public static HMSAnalyticsManager GetInstance(string name = "AnalyticsManager") => GameObject.Find(name).GetComponent<AnalyticsManager>();
 
     private HiAnalyticsInstance instance;
     void InitilizeAnalyticsInstane()

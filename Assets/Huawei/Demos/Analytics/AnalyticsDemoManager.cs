@@ -10,7 +10,7 @@ namespace HmsPlugin
 {
     public class AnalyticsDemoManager: MonoBehaviour
     {
-        private AnalyticsManager analyticsManager;
+        //private AnalyticsManager analyticsManager;
         InputField eventID, key, value;
         void InitilizeAnalyticsInstane()
         {
@@ -31,7 +31,7 @@ namespace HmsPlugin
             }
             else
             {
-                analyticsManager.SendEventWithBundle(eventID, key, value);
+                HMSAnalyticsManager.Instance.SendEventWithBundle(eventID, key, value);
             }
         }
  
@@ -39,7 +39,7 @@ namespace HmsPlugin
         void Start()
         {
             InitilizeAnalyticsInstane();
-            analyticsManager = AnalyticsManager.GetInstance();
+            //analyticsManager = AnalyticsManager.GetInstance();
         }
 
         // Update is called once per frame

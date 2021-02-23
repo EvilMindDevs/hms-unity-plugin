@@ -18,7 +18,7 @@ namespace HmsPlugin
             get
             {
                 Debug.Log("[HMS]: GET AUTH");
-                var authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetIdToken().CreateParams();
+                var authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetIdToken().SetAccessToken().CreateParams();
                 Debug.Log("[HMS]: AUTHPARAMS AUTHSERVICE" + authParams);
                 var result = HuaweiIdAuthManager.GetService(authParams);
                 Debug.Log("[HMS]: RESULT AUTHSERVICE"+ result);

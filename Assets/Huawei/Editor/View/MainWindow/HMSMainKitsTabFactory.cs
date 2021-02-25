@@ -10,12 +10,12 @@ using UnityEditor;
 
 internal class HMSMainKitsTabFactory
 {
-    public static TabView CreateTab()
+    public static TabView CreateTab(TabBar tabBar)
     {
         var tab = new TabView("Kits");
 
         tab.AddDrawer(new HorizontalLine());
-        tab.AddDrawer(new Toggle("Ads"));
+        tab.AddDrawer(new AdsToggleEditor(tabBar));
         tab.AddDrawer(new Toggle("IAP"));
         tab.AddDrawer(new Toggle("Game Services"));
         tab.AddDrawer(new Toggle("Remote Config"));

@@ -9,11 +9,23 @@ public class HMSCrashManager : HMSSingleton<HMSCrashManager>
         Debug.Log("[HMS]: Crash Initialized");
         agConnectCrash = AGConnectCrash.GetInstance();
     }
-
+    //Crash Collection enable/disable method used on AnalyticsDemo scene with enable/disable radio button configuration 
     public void enableCrashCollection(bool value)
     {
         agConnectCrash.EnableCrashCollection(value);
         Debug.Log($"[HMS]: Crash enableCrashCollection {value}");
+    }
+    //Crash Collection enable alternative method used on CrashDemo scene
+    public void enableCrashCollection()
+    {
+        agConnectCrash.EnableCrashCollection(true);
+        Debug.Log($"[HMS]: Crash enableCrashCollection");
+    }
+    //Crash Collection disable alternative method used on CrashDemo scene
+    public void disableCrashCollection()
+    {
+        agConnectCrash.EnableCrashCollection(false);
+        Debug.Log($"[HMS]: Crash disableCrashCollection");
     }
 
     public void testIt()

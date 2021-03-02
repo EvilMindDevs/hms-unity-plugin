@@ -3,7 +3,7 @@ using HmsPlugin.Extensions;
 using UnityEditor;
 using UnityEngine;
 
-namespace HmsPlugin
+namespace HmsPlugin.Toggle
 {
     public class Toggle : IDrawer
     {
@@ -13,11 +13,13 @@ namespace HmsPlugin
         private string _tooltip = string.Empty; // string.Empty is the disabled state of the tooltip
         private int? labelWidth;
 
-        public Toggle(string text, bool isChecked = false, Action<bool> onStateChanged = null)
+        public Toggle(string text, bool isChecked = false, Action<bool> onStateChanged = null, bool invokeOnStart = false)
         {
             _text = text;
             _checked = isChecked;
             _onStateChanged = onStateChanged;
+            if (invokeOnStart)
+                _onStateChanged.InvokeSafe(_checked);
         }
 
         public Toggle SetTooltip(string tooltipMessage)
@@ -53,7 +55,7 @@ namespace HmsPlugin
                 EditorGUIUtility.labelWidth = labelWidth.Value;
             }
 
-            _checked = EditorGUILayout.Toggle(new GUIContent(_text, _tooltip), _checked, GUILayout.ExpandWidth(true));
+            _checked = EditorGUILayout.Toggle(new GUIContent(_text, _tooltip), _checked, GUILayout.ExpandWidth(false));
 
             EditorGUIUtility.labelWidth = labelWidthTmp;
 

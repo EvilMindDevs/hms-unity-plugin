@@ -1,6 +1,7 @@
 ﻿using HmsPlugin;
 using HmsPlugin.HelpBox;
 using HmsPlugin.Label;
+using HmsPlugin.Toggle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ internal class HMSMainKitsTabFactory
     public static TabView CreateTab(TabBar tabBar)
     {
         var tab = new TabView("Kits");
+        tabBar.AddTab(tab);
 
         tab.AddDrawer(new HorizontalLine());
         tab.AddDrawer(new AdsToggleEditor(tabBar));

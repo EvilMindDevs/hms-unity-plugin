@@ -48,7 +48,8 @@ public static class ScriptableHelper
 
         return asset;
 #else
-            throw new NotImplementedException("Create is not available outside of editor");
+        Debug.LogError("Creating ScriptableObjects during runtime is not allowed!");
+        return (T)null;
 #endif
     }
 }

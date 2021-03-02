@@ -16,6 +16,7 @@ namespace HmsPlugin.TextField
     {
         private string _label = null;
         private string _text;
+        private int? labelWidth;
 
         public event Action<string> OnValueChanged;
 
@@ -46,11 +47,23 @@ namespace HmsPlugin.TextField
             OnValueChanged.InvokeSafe(_text);
         }
 
+        public TextField SetLabelWidth(int width)
+        {
+            labelWidth = width;
+            return this;
+        }
+
         public void Draw()
         {
             Rect rect = EditorGUILayout.GetControlRect();
 
             var tmpText = _text;
+
+            var labelWidthTmp = EditorGUIUtility.labelWidth;
+            if (labelWidth.HasValue)
+            {
+                EditorGUIUtility.labelWidth = labelWidth.Value;
+            }
 
             if (_label != null)
             {
@@ -60,6 +73,8 @@ namespace HmsPlugin.TextField
             {
                 _text = EditorGUI.TextField(rect, _text);
             }
+
+            EditorGUIUtility.labelWidth = labelWidthTmp;
 
             if (_text != tmpText)
             {

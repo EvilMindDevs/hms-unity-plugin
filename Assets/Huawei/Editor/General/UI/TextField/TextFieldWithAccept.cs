@@ -6,15 +6,17 @@ namespace HmsPlugin.TextField
     {
         private TextField _textField;
         private HorizontalSequenceDrawer _editLine;
+        private Button.Button _button;
 
         public TextFieldWithAccept(string label, string initialValue, string buttonText, Action onPressed)
         {
             _editLine = new HorizontalSequenceDrawer();
             _textField = new TextField(label, initialValue);
+            _button = new Button.Button(buttonText, onPressed);
             var returnChecker = new ReturnChecker(_textField);
             returnChecker.ReturnPressed += onPressed;
             _editLine.AddDrawer(returnChecker);
-            _editLine.AddDrawer(new Button.Button(buttonText, onPressed));
+            _editLine.AddDrawer(_button);
         }
 
         public TextFieldWithAccept(string initialValue, string buttonText, Action onPressed) : this(null, initialValue,
@@ -30,6 +32,18 @@ namespace HmsPlugin.TextField
         public string GetCurrentText()
         {
             return _textField.GetCurrentText();
+        }
+
+        public TextFieldWithAccept SetLabelWidth(int width)
+        {
+            _textField.SetLabelWidth(width);
+            return this;
+        }
+
+        public TextFieldWithAccept SetButtonWidth(int width)
+        {
+            _button.SetWidth(width);
+            return this;
         }
 
         public void ClearInput()

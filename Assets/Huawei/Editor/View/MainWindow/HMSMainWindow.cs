@@ -19,7 +19,7 @@ public class HMSMainWindow : HMSEditorWindow
     {
         var tabBar = new TabBar();
 
-        tabBar.AddTab(HMSMainKitsTabFactory.CreateTab(tabBar));
+        HMSMainKitsTabFactory.CreateTab(tabBar);
 
         return tabBar;
 

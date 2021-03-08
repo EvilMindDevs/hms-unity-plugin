@@ -89,27 +89,28 @@ namespace HmsPlugin
 
         private void SetupSequence()
         {
-            AddDrawer(new HorizontalLine());
-
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Label.Label("Banner").SetBold(true), new Spacer()));
+            AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Banner").SetBold(true), new HorizontalLine()));
             AddDrawer(new Space(3));
             AddDrawer(_enableBannerAdsToggle);
             AddDrawer(_bannerAdsDisabledDrawer);
-
             AddDrawer(new HorizontalLine());
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Label.Label("Interstitial").SetBold(true), new Spacer()));
+            AddDrawer(new Space(5));
+
+            AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Interstitial").SetBold(true), new HorizontalLine()));
             AddDrawer(new Space(3));
             AddDrawer(_enableInterstitialAdsToggle);
             AddDrawer(_interstitialAdsDisabledDrawer);
-
             AddDrawer(new HorizontalLine());
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Label.Label("Rewarded").SetBold(true), new Spacer()));
+            AddDrawer(new Space(5));
+
+            AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Rewarded").SetBold(true), new HorizontalLine()));
             AddDrawer(new Space(3));
             AddDrawer(_enableRewardedAdsToggle);
             AddDrawer(_rewardedAdsDisabledDrawer);
-
             AddDrawer(new HorizontalLine());
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Label.Label("Testing").SetBold(true), new Spacer()));
+            AddDrawer(new Space(5));
+
+            AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Testing").SetBold(true), new HorizontalLine()));
             AddDrawer(new Space(3));
             AddDrawer(_testAdstoggle);
             AddDrawer(new HorizontalLine());

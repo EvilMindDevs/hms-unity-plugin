@@ -2,7 +2,7 @@
 
 namespace HmsPlugin
 {
-    [CustomEditor(typeof(SettingsScriptableObject))]
+    //[CustomEditor(typeof(SettingsScriptableObject))]
     public class SettingsScriptableObjectDrawer : WindowEditRedirect
     {
     }

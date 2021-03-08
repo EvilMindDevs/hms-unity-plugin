@@ -10,10 +10,7 @@ namespace HmsPlugin
     public class HMSAchievementsManager : HMSSingleton<HMSAchievementsManager>
     {
 
-        //public static AchievementsManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<AchievementsManager>();
-
-        private IAchievementsClient achievementsClient;
-
+        public IAchievementsClient achievementsClient;
         public Action OnShowAchievementsSuccess { get; set; }
         public Action<HMSException> OnShowAchievementsFailure { get; set; }
 

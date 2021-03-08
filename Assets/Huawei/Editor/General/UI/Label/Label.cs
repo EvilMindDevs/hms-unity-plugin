@@ -14,6 +14,7 @@ namespace HmsPlugin.Label
         private GUIStyle _style;
         private FontStyle? _fontStyle;
         private bool _richTextEnabled = false;
+        private bool _stretchWidth = false;
 
         public Label(string text, string tooltip = null)
         {
@@ -43,6 +44,25 @@ namespace HmsPlugin.Label
         public Label SetBold(bool bold)
         {
             SetFontStyle(bold ? FontStyle.Bold : FontStyle.Normal);
+            return this;
+        }
+
+        public Label SetStretchWidth(bool status)
+        {
+            if (_style != null)
+            {
+                _style.stretchWidth = status;
+                _stretchWidth = status;
+            }
+            return this;
+        }
+
+        public Label SetStretchHeight(bool status)
+        {
+            if (_style != null)
+            {
+                _style.stretchHeight = status;
+            }
             return this;
         }
 
@@ -80,6 +100,7 @@ namespace HmsPlugin.Label
                 }
             }
 
+            _style.stretchWidth = _stretchWidth;
             _style.richText = _richTextEnabled;
 
             if (string.IsNullOrEmpty(tooltip))

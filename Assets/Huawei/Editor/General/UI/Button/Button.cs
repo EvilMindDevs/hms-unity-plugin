@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HmsPlugin.Button
 {
-    public class ButtonBase: IDrawer
+    public class ButtonBase : IDrawer
     {
         protected Delegate _onPress;
 
@@ -123,7 +123,7 @@ namespace HmsPlugin.Button
         private readonly string _text;
         private readonly int _width;
 
-        public ButtonInfo(Action<T> onButtonPress, string text, int width)
+        public ButtonInfo(string text, int width, Action<T> onButtonPress)
         {
             _onButtonPress = onButtonPress;
             _text = text;

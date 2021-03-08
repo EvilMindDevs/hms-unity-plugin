@@ -7,7 +7,7 @@ using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Utils;
 using System.Xml.Linq;
 using System.Xml;
-
+using HmsPlugin;
 
 public class HMSRemoteConfigManager : HMSSingleton<HMSRemoteConfigManager>
 {
@@ -21,6 +21,18 @@ public class HMSRemoteConfigManager : HMSSingleton<HMSRemoteConfigManager>
     void Start()
     {
         GetInstance();
+        if (HMSRemoteConfigSettings.Instance != null)
+        {
+            SetDeveloperMode(HMSRemoteConfigSettings.Instance.Settings.GetBool(HMSRemoteConfigSettings.DeveloperMode));
+            if (HMSRemoteConfigSettings.Instance.Settings.GetBool(HMSRemoteConfigSettings.ApplyDefaultValues))
+            {
+                var values = HMSRemoteDefaultValueSettings.Instance.GetDefaultValues();
+                if (values != null && values.Count > 0)
+                {
+                    ApplyDefault(values);
+                }
+            }
+        }
         Debug.Log($"[{TAG}]: Start() ");
     }
 
@@ -34,7 +46,7 @@ public class HMSRemoteConfigManager : HMSSingleton<HMSRemoteConfigManager>
     //applyDefault(int resId) Sets a default value for a parameter.
     public void ApplyDefault(Dictionary<string, object> dictionary)
     {
-        if(agc != null) agc.ApplyDefault(dictionary);
+        if (agc != null) agc.ApplyDefault(dictionary);
         Debug.Log($"[{TAG}]: applyDefault with Dictionary");
     }
 

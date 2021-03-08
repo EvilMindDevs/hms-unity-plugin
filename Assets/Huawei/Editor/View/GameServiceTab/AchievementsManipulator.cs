@@ -1,0 +1,94 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+
+namespace HmsPlugin
+{
+    public interface IAchievementsManipulator : ICollectionManipulator
+    {
+        IEnumerable<AchievementEntry> GetAllAchievements();
+        void RemoveAchievement(AchievementEntry value);
+        AddAchievementResult AddAchievement(string achievementName, string id);
+    }
+
+    public enum AddAchievementResult
+    {
+        OK,
+        AlreadyExists,
+        Invalid
+    }
+
+
+    public class AchievementManipulator : IAchievementsManipulator
+    {
+        public event Action OnRefreshRequired;
+        private Settings _settings;
+        private List<AchievementEntry> _achievementList;
+
+        public AchievementManipulator(Settings settings)
+        {
+            _settings = settings;
+            _achievementList = new List<AchievementEntry>();
+            for (int i = 0; i < settings.Keys.Count(); i++)
+            {
+                _achievementList.Add(new AchievementEntry(_settings.Keys.ElementAt(i), _settings.Values.ElementAt(i)));
+            }
+        }
+
+        public AddAchievementResult AddAchievement(string achievementName, string id)
+        {
+            id = id.PreprocessValue();
+            achievementName = achievementName.PreprocessValue();
+
+            var canAdd = CanAdd(id);
+            if (canAdd == AddAchievementResult.OK)
+            {
+                _achievementList.Add(new AchievementEntry(id, achievementName));
+                _settings.Set(id, achievementName);
+                RequireRefresh();
+            }
+
+            return canAdd;
+        }
+
+        private void RequireRefresh()
+        {
+            OnRefreshRequired.InvokeSafe();
+        }
+
+        private AddAchievementResult CanAdd(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return AddAchievementResult.Invalid;
+
+            foreach (var achievement in _achievementList)
+            {
+                if (achievement.Id.Equals(id))
+                {
+                    return AddAchievementResult.AlreadyExists;
+                }
+            }
+            return AddAchievementResult.OK;
+        }
+
+        public void Dispose()
+        {
+            OnRefreshRequired = null;
+        }
+
+        public void RemoveAchievement(AchievementEntry value)
+        {
+            Debug.Assert(_achievementList.Contains(value), "Failed to find " + value.Id + " in Achievement Settings file!");
+            _achievementList.Remove(value);
+            _settings.Remove(value.Id);
+            RequireRefresh();
+        }
+
+        public IEnumerable<AchievementEntry> GetAllAchievements()
+        {
+            return _achievementList;
+        }
+    }
+}

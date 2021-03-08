@@ -17,14 +17,14 @@ internal class HMSMainKitsTabFactory
         tabBar.AddTab(tab);
 
         tab.AddDrawer(new HorizontalLine());
-        tab.AddDrawer(new AdsToggleEditor(tabBar));
-        tab.AddDrawer(new Toggle("IAP"));
-        tab.AddDrawer(new Toggle("Game Services"));
-        tab.AddDrawer(new Toggle("Remote Config"));
-        tab.AddDrawer(new Toggle("Analytics"));
-        tab.AddDrawer(new Toggle("Push"));
-        tab.AddDrawer(new Toggle("Account"));
-        tab.AddDrawer(new Toggle("Crash"));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new AdsToggleEditor(tabBar), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new RemoteConfigToggleEditor(tabBar), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new IAPToggleEditor(tabBar), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new GameServiceToggleEditor(tabBar), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Toggle("Analytics"), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Toggle("Push"), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Toggle("Account"), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Toggle("Crash"), new Spacer()));
         tab.AddDrawer(new HorizontalLine());
         tab.AddDrawer(new Spacer());
         tab.AddDrawer(new HelpBox("Please import your agconnect-services.json file to StreamingAssets folder", MessageType.Error));

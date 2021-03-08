@@ -43,6 +43,12 @@ namespace HmsPlugin
                 Debug.Log("HMSP: checkIapAvailabity SUCCESS");
                 iapAvailable = true;
                 OnCheckIapAvailabilitySuccess?.Invoke();
+                if (HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart))
+                {
+                    ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(IAPProductType.Consumable),
+                        HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(IAPProductType.NonConsumable),
+                        HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(IAPProductType.Subscription));
+                }
 
             }).AddOnFailureListener((exception) =>
             {

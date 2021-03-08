@@ -9,10 +9,6 @@ namespace HmsPlugin
 {
     public class HMSGameManager : HMSSingleton<HMSGameManager>
     {
-
-        // change
-        //public static GameManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<GameManager>();
-
         public Action<Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }
         public Action<AuthHuaweiId> SignInSuccess { get; set; }
@@ -24,7 +20,6 @@ namespace HmsPlugin
         {
             Debug.Log("HMS GAMES: Game init");
             HuaweiMobileServicesUtil.SetApplication();
-            //saveGameManager = SaveGameManager.GetInstance();
             Init();
         }
 
@@ -42,22 +37,24 @@ namespace HmsPlugin
                 Debug.Log("HMS GAMES: jossClient");
                 josAppsClient.Init();
                 Debug.Log("HMS GAMES: jossClient init");
-                InitGameMAnagers();
+                InitGameManagers();
 
             }).AddOnFailureListener((exception) =>
             {
                 Debug.Log("HMS GAMES: The app has not been authorized");
                 authService.StartSignIn(SignInSuccess,SignInFailure);
-                InitGameMAnagers();
+                InitGameManagers();
             });
         }
-        public void InitGameMAnagers()
+        public void InitGameManagers()
         {
             //SavedGame Initilize
             HMSSaveGameManager.Instance.SavedGameAuth();
             HMSSaveGameManager.Instance.GetArchivesClient();
             //Leaderboard Initilize
             HMSLeaderboardManager.Instance.rankingsClient = Games.GetRankingsClient(HMSAccountManager.Instance.HuaweiId);
+            //Achievements Initilize
+            HMSAchievementsManager.Instance.achievementsClient = Games.GetAchievementsClient(HMSAccountManager.Instance.HuaweiId);
         }
         public void GetPlayerInfo()
         {

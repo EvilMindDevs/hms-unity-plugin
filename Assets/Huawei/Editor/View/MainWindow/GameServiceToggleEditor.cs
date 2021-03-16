@@ -12,7 +12,7 @@ namespace HmsPlugin
         private TabBar _tabBar;
         private TabView _tabView;
 
-        private const string GameServiceEnabled = "GameServiceEnabled";
+        public const string GameServiceEnabled = "GameService";
 
         public GameServiceToggleEditor(TabBar tabBar)
         {

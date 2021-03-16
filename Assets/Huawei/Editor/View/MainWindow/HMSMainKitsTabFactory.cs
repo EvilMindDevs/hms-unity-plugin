@@ -21,9 +21,9 @@ internal class HMSMainKitsTabFactory
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new RemoteConfigToggleEditor(tabBar), new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new IAPToggleEditor(tabBar), new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new GameServiceToggleEditor(tabBar), new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Toggle("Analytics"), new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Toggle("Push"), new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Toggle("Account"), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new AnalyticsToggleEditor(), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new PushToggleEditor(), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new AccountToggleEditor(), new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Toggle("Crash"), new Spacer()));
         tab.AddDrawer(new HorizontalLine());
         tab.AddDrawer(new Spacer());

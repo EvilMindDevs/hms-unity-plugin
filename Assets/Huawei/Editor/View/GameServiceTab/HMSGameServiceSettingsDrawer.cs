@@ -1,9 +1,11 @@
 ﻿using HmsPlugin.List;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace HmsPlugin
 {
@@ -47,6 +49,7 @@ namespace HmsPlugin
             AddDrawer(_leaderboardFoldout);
             AddDrawer(new Space(10));
             AddDrawer(new HMSLeaderboardAdderDrawer(_leaderboardManipulator));
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Constant Classes", CreateLeaderboardConstants).SetWidth(250), new Spacer()));
             AddDrawer(new HorizontalLine());
 
             AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Achievement List").SetBold(true), new HorizontalLine()));
@@ -54,7 +57,40 @@ namespace HmsPlugin
             AddDrawer(_achievementsFoldout);
             AddDrawer(new Space(10));
             AddDrawer(new HMSAchievementsAdderDrawer(_achievementManipulator));
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Constant Classes", CreateAchievementsConstants).SetWidth(250), new Spacer()));
             AddDrawer(new HorizontalLine());
+        }
+
+        private void CreateLeaderboardConstants()
+        {
+            if (_leaderboardSettings.Keys.Count() > 0)
+            {
+                using (var file = File.CreateText(Application.dataPath + "/Huawei/Scripts/Utils/HMSLeaderboardConstants.cs"))
+                {
+                    file.WriteLine("public class HMSLeaderboardConstants\n{");
+                    for (int i = 0; i < _leaderboardSettings.Keys.Count(); i++)
+                    {
+                        file.WriteLine($"\tpublic const string {_leaderboardSettings.Values.ElementAt(i).Replace(".", "").Trim()} = \"{_leaderboardSettings.Keys.ElementAt(i)}\";");
+                    }
+                    file.WriteLine("}");
+                }
+            }
+        }
+
+        private void CreateAchievementsConstants()
+        {
+            if (_achievementsSettings.Keys.Count() > 0)
+            {
+                using (var file = File.CreateText(Application.dataPath + "/Huawei/Scripts/Utils/HMSAchievementConstants.cs"))
+                {
+                    file.WriteLine("public class HMSAchievementConstants\n{");
+                    for (int i = 0; i < _achievementsSettings.Keys.Count(); i++)
+                    {
+                        file.WriteLine($"\tpublic const string {_achievementsSettings.Values.ElementAt(i).Replace(".", "").Replace(" ", "")} = \"{_achievementsSettings.Keys.ElementAt(i)}\";");
+                    }
+                    file.WriteLine("}");
+                }
+            }
         }
 
         private void OnLeaderboardListChanged()

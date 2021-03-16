@@ -82,6 +82,13 @@ namespace HmsPlugin
             _settings.Remove(product.Identifier);
             RequireRefresh();
         }
+
+        public void ClearAllProducts()
+        {
+            _productList.Clear();
+            _settings.Clear();
+            RequireRefresh();
+        }
     }
 
     public enum AddIAPProductValueResult

@@ -1,6 +1,7 @@
 ﻿using HmsPlugin.List;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,11 +66,28 @@ namespace HmsPlugin
             AddDrawer(new Space(10));
             AddDrawer(new HMSRemoteConfigAdderDrawer(_defaultValueManipulator));
             AddDrawer(_applyDefaultValuesToggle);
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Constant Classes", CreateRemoteConfigConstants).SetWidth(250), new Spacer()));
             AddDrawer(new HorizontalLine());
             AddDrawer(new Space(20));
             AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Utilities").SetBold(true), new HorizontalLine()));
             AddDrawer(_developerModeToggle);
             AddDrawer(new HorizontalLine());
+        }
+
+        private void CreateRemoteConfigConstants()
+        {
+            if (_defaultValueSettings.Keys.Count() > 0)
+            {
+                using (var file = File.CreateText(Application.dataPath + "/Huawei/Scripts/Utils/HMSRemoteConfigConstants.cs"))
+                {
+                    file.WriteLine("public class HMSRemoteConfigConstants\n{");
+                    for (int i = 0; i < _defaultValueSettings.Keys.Count(); i++)
+                    {
+                        file.WriteLine($"\tpublic const string {_defaultValueSettings.Keys.ElementAt(i).Replace(".", "").Replace(" ", "")} = \"{_defaultValueSettings.Values.ElementAt(i)}\";");
+                    }
+                    file.WriteLine("}");
+                }
+            }
         }
 
         private IDrawer CreateDefaultValuesListDrawer(IEnumerable<DefaultValue> defaultValues)

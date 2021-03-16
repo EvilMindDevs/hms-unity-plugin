@@ -12,7 +12,7 @@ namespace HmsPlugin
         private TabBar _tabBar;
         private TabView _tabView;
 
-        private const string RemoteConfigEnabled = "RemoteConfigEnabled";
+        public const string RemoteConfigEnabled = "RemoteConfig";
 
         public RemoteConfigToggleEditor(TabBar tabBar)
         {

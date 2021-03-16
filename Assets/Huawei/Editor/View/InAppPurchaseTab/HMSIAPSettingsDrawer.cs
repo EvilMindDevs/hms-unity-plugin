@@ -1,9 +1,13 @@
 ﻿using HmsPlugin.List;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using UnityEditor;
+using UnityEngine;
 
 namespace HmsPlugin
 {
@@ -66,10 +70,56 @@ namespace HmsPlugin
             AddDrawer(_productsFoldout);
             AddDrawer(new Space(10));
             AddDrawer(new HMSIAPProductAdderDrawer(_productManipulator));
+            AddDrawer(new Space(10));
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Clear All Products", ClearAllIAPProducts).SetWidth(250), new Spacer()));
+            AddDrawer(new Space(3));
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Constant Classes", CreateIAPConstants).SetWidth(250), new Spacer()));
             AddDrawer(new HorizontalLine());
             AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Utilities").SetBold(true), new HorizontalLine()));
             AddDrawer(_initializeOnStartToggle);
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Import Consumables from Google IAP CSV"), new Button.Button("Import", ImportFromGoogle).SetWidth(100)));
             AddDrawer(new HorizontalLine());
+        }
+
+        private void ClearAllIAPProducts()
+        {
+            _productManipulator.ClearAllProducts();
+        }
+
+        private void ImportFromGoogle()
+        {
+            string path = EditorUtility.OpenFilePanel("Choose a CSV File", "", "csv");
+            if (!string.IsNullOrEmpty(path))
+            {
+                using (var reader = new StreamReader(path))
+                {
+                    string identifier = "";
+                    int i = 0;
+                    while (!reader.EndOfStream)
+                    {
+                        i++;
+                        identifier = reader.ReadLine().Split(',')[0];
+                        if (i == 1) continue;
+                        _productManipulator.AddProduct(identifier, IAPProductType.Consumable);
+                    }
+                }
+            }
+        }
+
+        private void CreateIAPConstants()
+        {
+            if (_productListSettings.Keys.Count() > 0)
+            {
+                using (var file = File.CreateText(Application.dataPath + "/Huawei/Scripts/Utils/HMSIAPConstants.cs"))
+                {
+                    file.WriteLine("public class HMSIAPConstants\n{");
+                    for (int i = 0; i < _productListSettings.Keys.Count(); i++)
+                    {
+                        file.WriteLine($"\tpublic const string {Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "") } = \"{_productListSettings.Keys.ElementAt(i).Replace("\"", "")}\";");
+                    }
+                    file.WriteLine("}");
+                }
+            }
         }
     }
 }

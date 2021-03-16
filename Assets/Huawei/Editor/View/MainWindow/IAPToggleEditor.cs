@@ -12,7 +12,7 @@ namespace HmsPlugin
         private TabBar _tabBar;
         private TabView _tabView;
 
-        private const string IAPKitEnabled = "IAPKitEnabled";
+        public const string IAPKitEnabled = "IAPKit";
 
         public IAPToggleEditor(TabBar tabBar)
         {

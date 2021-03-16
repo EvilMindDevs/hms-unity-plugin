@@ -11,7 +11,7 @@ namespace HmsPlugin
         private TabBar _tabBar;
         private TabView _tabView;
 
-        private const string AdsKitEnabled = "AdsKitEnabled";
+        public const string AdsKitEnabled = "AdsKit";
 
         public AdsToggleEditor(TabBar tabBar)
         {

@@ -23,13 +23,14 @@ namespace HmsPlugin
                 { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:4.0.1.300"} },
                 { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.29.303", "com.huawei.hms:ads-consent:3.4.30.301" } },
                 { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:5.0.3.300" } },
+                { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.4.1.300" } },
                 { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:4.0.1.300" } },
                 { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:4.0.2.300" } },
                 { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:4.0.2.300" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.4.1.300" } },
             };
 
-            //TODO: register crash kit, nearby serive, cloud db and auth.
+            //TODO: register nearby serive, cloud db and auth.
         }
 
         private void CreateGradleFiles(string[] gradleConfigs)

@@ -5,7 +5,7 @@ using System;
 
 namespace HmsPlugin
 {
-    public class AnalyticsToggleEditor : IDrawer
+    public class AnalyticsToggleEditor : IDrawer, IDependentToggle
     {
         private Toggle.Toggle _toggle;
 
@@ -19,12 +19,31 @@ namespace HmsPlugin
 
         private void OnStateChanged(bool value)
         {
-            HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, value);
+            if (!value && HMSMainEditorSettings.Instance.Settings.GetBool(CrashToggleEditor.CrashKitEnabled))
+            {
+                EditorUtility.DisplayDialog("Error", "CrashKit is dependent on AnalyticsKit. Please disable CrashKit first.", "OK");
+                _toggle.SetChecked(true);
+            }
+            else
+            {
+                HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, value);
+            }
         }
 
         public void Draw()
         {
             _toggle.Draw();
         }
+
+        public void SetToggle(bool value)
+        {
+            _toggle.SetChecked(value);
+            HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, value);
+        }
+    }
+
+    public interface IDependentToggle
+    {
+        void SetToggle(bool value);
     }
 }

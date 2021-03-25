@@ -15,8 +15,6 @@ public class AuthServiceDemo : MonoBehaviour
     private AGConnectUser user = null;
     private Text loggedInUser;
 
-    private AccountManager accountManager;
-
     public GameObject verifyCodePhone;
     public GameObject verifyCodeEmail;
 
@@ -83,7 +81,7 @@ public class AuthServiceDemo : MonoBehaviour
         verifyCodeEmail.SetActive(false);
     }
 
-    private void OnAccountKitLoginSuccess(AuthHuaweiId authHuaweiId)
+    private void OnAccountKitLoginSuccess(AuthAccount authHuaweiId)
     {
         AGConnectAuthCredential credential = HwIdAuthProvider.CredentialWithToken(authHuaweiId.AccessToken);
         authServiceManager.SignIn(credential);
@@ -91,10 +89,9 @@ public class AuthServiceDemo : MonoBehaviour
 
     public void SignInWithHuaweiAccount()
     {
-        accountManager = AccountManager.GetInstance();
-        accountManager.OnSignInSuccess = OnAccountKitLoginSuccess;
-        accountManager.OnSignInFailed = OnAuthSericeSignInFailed;
-        accountManager.SignIn();
+        HMSAccountManager.Instance.OnSignInSuccess = OnAccountKitLoginSuccess;
+        HMSAccountManager.Instance.OnSignInFailed = OnAuthSericeSignInFailed;
+        HMSAccountManager.Instance.SignIn();
     }
 
     public void SignInAnonymously() => authServiceManager.SignInAnonymously();

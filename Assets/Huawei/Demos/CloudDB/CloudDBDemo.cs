@@ -18,8 +18,6 @@ public class CloudDBDemo : MonoBehaviour
     private AGConnectUser user = null;
     private Text loggedInUser;
 
-    private AccountManager accountManager;
-
     private const string NOT_LOGGED_IN = "No user logged in";
     private const string LOGGED_IN = "{0} is logged in";
     private const string LOGGED_IN_ANONYMOUSLY = "Anonymously Logged In";
@@ -57,7 +55,7 @@ public class CloudDBDemo : MonoBehaviour
         cloudDBManager.OnExecuteQueryFailed = OnExecuteQueryFailed;
     }
 
-    private void OnAccountKitLoginSuccess(AuthHuaweiId authHuaweiId)
+    private void OnAccountKitLoginSuccess(AuthAccount authHuaweiId)
     {
         AGConnectAuthCredential credential = HwIdAuthProvider.CredentialWithToken(authHuaweiId.AccessToken);
         authServiceManager.SignIn(credential);
@@ -65,10 +63,9 @@ public class CloudDBDemo : MonoBehaviour
 
     public void SignInWithHuaweiAccount()
     {
-        accountManager = AccountManager.GetInstance();
-        accountManager.OnSignInSuccess = OnAccountKitLoginSuccess;
-        accountManager.OnSignInFailed = OnAuthSericeSignInFailed;
-        accountManager.SignIn();
+        HMSAccountManager.Instance.OnSignInSuccess = OnAccountKitLoginSuccess;
+        HMSAccountManager.Instance.OnSignInFailed = OnAuthSericeSignInFailed;
+        HMSAccountManager.Instance.SignIn();
     }
 
     private void OnAuthSericeSignInFailed(HMSException error)

@@ -46,7 +46,7 @@ public class IapDemoManager : MonoBehaviour
         HMSAccountManager.Instance.SignIn();
     }
 
-    private void SignedIn(AuthHuaweiId authHuaweiId)
+    private void SignedIn(AuthAccount authHuaweiId)
     {
         Debug.Log("[HMS]: SignedIn");
         HMSIAPManager.Instance.OnCheckIapAvailabilitySuccess = LoadStore;

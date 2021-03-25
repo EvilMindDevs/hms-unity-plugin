@@ -37,7 +37,7 @@ namespace HmsPlugin
                 Debug.Log("HMS GAMES: Achievements init");
                 if (HMSAccountManager.Instance.HuaweiId != null)
                 {
-                    achievementsClient = Games.GetAchievementsClient(HMSAccountManager.Instance.HuaweiId);
+                    achievementsClient = Games.GetAchievementsClient();
                 }
             }
         }
@@ -46,7 +46,7 @@ namespace HmsPlugin
         {
             if (HMSAccountManager.Instance.HuaweiId != null)
             {
-                IAchievementsClient achievementsClient = Games.GetAchievementsClient(HMSAccountManager.Instance.HuaweiId);
+                IAchievementsClient achievementsClient = Games.GetAchievementsClient();
                 achievementsClient.ShowAchievementList(() =>
                 {
                     Debug.Log("[HMS GAMES:] ShowAchievements SUCCESS");

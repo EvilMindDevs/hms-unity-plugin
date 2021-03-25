@@ -9,37 +9,37 @@ namespace HmsPlugin
 {
     public class HMSAccountManager : HMSSingleton<HMSAccountManager>
     {
-        private static HuaweiIdAuthService DefaultAuthService
+        private static AccountAuthService DefaultAuthService
         {
             get
             {
                 Debug.Log("[HMS]: GET AUTH");
-                var authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetIdToken().CreateParams();
+                var authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetIdToken().CreateParams();
                 Debug.Log("[HMS]: AUTHPARAMS AUTHSERVICE" + authParams);
-                var result = HuaweiIdAuthManager.GetService(authParams);
+                var result = AccountAuthManager.GetService(authParams);
                 Debug.Log("[HMS]: RESULT AUTHSERVICE" + result);
                 return result;
             }
         }
-        private static HuaweiIdAuthService DefaultGameAuthService
+        private static AccountAuthService DefaultGameAuthService
         {
             get
             {
                 IList<Scope> scopes = new List<Scope>();
                 scopes.Add(GameScopes.DRIVE_APP_DATA);
                 Debug.Log("[HMS]: GET AUTH GAME");
-                var authParams = new HuaweiIdAuthParamsHelper(HuaweiIdAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).SetScopeList(scopes).CreateParams();
+                var authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).SetScopeList(scopes).CreateParams();
                 Debug.Log("[HMS]: AUTHPARAMS GAME" + authParams);
-                var result = HuaweiIdAuthManager.GetService(authParams);
+                var result = AccountAuthManager.GetService(authParams);
                 Debug.Log("[HMS]: RESULT GAME" + result);
                 return result;
             }
         }
-        public AuthHuaweiId HuaweiId { get; set; }
-        public Action<AuthHuaweiId> OnSignInSuccess { get; set; }
+        public AuthAccount HuaweiId { get; set; }
+        public Action<AuthAccount> OnSignInSuccess { get; set; }
         public Action<HMSException> OnSignInFailed { get; set; }
 
-        private HuaweiIdAuthService authService;
+        private AccountAuthService authService;
 
         private void Awake()
         {
@@ -48,7 +48,7 @@ namespace HmsPlugin
         }
 
         //Game Service authentication
-        public HuaweiIdAuthService GetGameAuthService()
+        public AccountAuthService GetGameAuthService()
         {
             return DefaultGameAuthService;
         }
@@ -68,7 +68,7 @@ namespace HmsPlugin
         }
         public void SilentSign()
         {
-            ITask<AuthHuaweiId> taskAuthHuaweiId = authService.SilentSignIn();
+            ITask<AuthAccount> taskAuthHuaweiId = authService.SilentSignIn();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>
             {
                 HuaweiId = result;

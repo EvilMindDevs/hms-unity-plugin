@@ -20,14 +20,14 @@ namespace HmsPlugin
         {
             gradleSettings = new Dictionary<string, string[]>()
             {
-                { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:4.0.1.300"} },
-                { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.29.303", "com.huawei.hms:ads-consent:3.4.30.301" } },
-                { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:5.0.3.300" } },
-                { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.4.1.300" } },
-                { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:4.0.1.300" } },
-                { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:4.0.2.300" } },
-                { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:4.0.2.300" } },
-                { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.4.1.300" } },
+                { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:5.2.0.300" } },
+                { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.39.302", "com.huawei.hms:ads-consent:3.4.39.302", "com.huawei.hms:ads-identifier:3.4.39.302" } },
+                { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:5.2.0.301" } },
+                { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.4.2.301" } },
+                { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:5.0.4.302" } },
+                { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:5.1.0.300" } },
+                { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:5.1.1.301" } },
+                { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.5.0.300" } },
             };
 
             //TODO: register nearby serive, cloud db and auth.

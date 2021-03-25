@@ -32,7 +32,7 @@ public class AccountDemoManager : MonoBehaviour
         loggedInUser.text = NOT_LOGGED_IN;
     }
 
-    public void OnLoginSuccess(AuthHuaweiId authHuaweiId)
+    public void OnLoginSuccess(AuthAccount authHuaweiId)
     {
         loggedInUser.text = string.Format(LOGGED_IN, authHuaweiId.DisplayName);
     }

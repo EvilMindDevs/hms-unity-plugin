@@ -11,10 +11,10 @@ namespace HmsPlugin
     {
         public Action<Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }
-        public Action<AuthHuaweiId> SignInSuccess { get; set; }
+        public Action<AuthAccount> SignInSuccess { get; set; }
         public Action<HMSException> SignInFailure { get; set; }
 
-        private HuaweiIdAuthService authService;
+        private AccountAuthService authService;
         // Make sure user already signed in!
         public void Start()
         {
@@ -28,12 +28,12 @@ namespace HmsPlugin
             Debug.Log("HMS GAMES init");
             authService = HMSAccountManager.Instance.GetGameAuthService();
 
-            ITask<AuthHuaweiId> taskAuthHuaweiId = authService.SilentSignIn();
+            ITask<AuthAccount> taskAuthHuaweiId = authService.SilentSignIn();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>
             {
                 HMSAccountManager.Instance.HuaweiId = result;
                 Debug.Log("HMS GAMES: Setted app");
-                IJosAppsClient josAppsClient = JosApps.GetJosAppsClient(HMSAccountManager.Instance.HuaweiId);
+                IJosAppsClient josAppsClient = JosApps.GetJosAppsClient();
                 Debug.Log("HMS GAMES: jossClient");
                 josAppsClient.Init();
                 Debug.Log("HMS GAMES: jossClient init");
@@ -52,15 +52,15 @@ namespace HmsPlugin
             HMSSaveGameManager.Instance.SavedGameAuth();
             HMSSaveGameManager.Instance.GetArchivesClient();
             //Leaderboard Initilize
-            HMSLeaderboardManager.Instance.rankingsClient = Games.GetRankingsClient(HMSAccountManager.Instance.HuaweiId);
+            HMSLeaderboardManager.Instance.rankingsClient = Games.GetRankingsClient();
             //Achievements Initilize
-            HMSAchievementsManager.Instance.achievementsClient = Games.GetAchievementsClient(HMSAccountManager.Instance.HuaweiId);
+            HMSAchievementsManager.Instance.achievementsClient = Games.GetAchievementsClient();
         }
         public void GetPlayerInfo()
         {
             if (HMSAccountManager.Instance.HuaweiId != null)
             {
-                IPlayersClient playersClient = Games.GetPlayersClient(HMSAccountManager.Instance.HuaweiId);
+                IPlayersClient playersClient = Games.GetPlayersClient();
                 ITask<Player> task = playersClient.CurrentPlayer;
                 task.AddOnSuccessListener((result) =>
                 {

@@ -28,9 +28,9 @@ namespace HmsPlugin
                 { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:5.1.0.300" } },
                 { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:5.1.1.301" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.5.0.300" } },
+                { CloudDBToggleEditor.CloudDBEnabled, new string[] { "com.huawei.agconnect:agconnect-cloud-database:1.4.5.300" } },
+                { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.4.2.301" } },
             };
-
-            //TODO: register nearby serive, cloud db and auth.
         }
 
         private void CreateGradleFiles(string[] gradleConfigs)

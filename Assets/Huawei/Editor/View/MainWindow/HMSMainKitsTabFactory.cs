@@ -27,6 +27,8 @@ internal class HMSMainKitsTabFactory
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new AccountToggleEditor(), new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), analyticsEditor, new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new CrashToggleEditor(analyticsEditor), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new CloudDBToggleEditor(), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new AuthToggleEditor(), new Spacer()));
         tab.AddDrawer(new HorizontalLine());
         tab.AddDrawer(new Spacer());
         tab.AddDrawer(new HelpBox("Please import your agconnect-services.json file to StreamingAssets folder", MessageType.Error));

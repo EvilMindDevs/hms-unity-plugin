@@ -12,7 +12,7 @@ public class HMSAppMessaging : HMSSingleton<HMSAppMessaging>
 {
     public Action<AppMessage> OnMessageClicked { get; set; }
     public Action<AppMessage> OnMessageDisplay { get; set; }
-    public Action<AppMessage, AGConnectAppMessagingCallbackWrapper.DismissType> OnMessageDissmiss { get; set; }
+    public Action<AppMessage, DismissType> OnMessageDissmiss { get; set; }
     public Action<AAIDResult> AAIDResultAction { get; set; }
 
     void Start()
@@ -49,9 +49,9 @@ public class HMSAppMessaging : HMSSingleton<HMSAppMessaging>
         Debug.Log("AppMessaging OnMessageDisplayFunction" + obj.MessageType);
     }
 
-    private void OnMessageDissmissFunction(AppMessage obj, AGConnectAppMessagingCallbackWrapper.DismissType dismissType)
+    private void OnMessageDissmissFunction(AppMessage obj, DismissType dismissType)
     {
-        Debug.Log("AppMessaging  display(AppMessage obj)!!!!" + obj.MessageType);
+        Debug.Log("AppMessaging  OnMessageDissmissFunction" + obj.MessageType);
     }
 
 

@@ -7,17 +7,16 @@ using System;
 
 public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
 {
-    //public static HMSAnalyticsManager GetInstance(string name = "AnalyticsManager") => GameObject.Find(name).GetComponent<AnalyticsManager>();
+    private HiAnalyticsInstance hiAnalyticsInstance;
 
-    private HiAnalyticsInstance instance;
     void InitilizeAnalyticsInstane()
     {
         AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
 
         HiAnalyticsTools.EnableLog();
-        instance = HiAnalytics.GetInstance(activity);
-        instance.SetAnalyticsEnabled(true);
+        hiAnalyticsInstance = HiAnalytics.GetInstance(activity);
+        hiAnalyticsInstance.SetAnalyticsEnabled(true);
 
     }
 
@@ -26,18 +25,12 @@ public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
         Bundle bundleUnity = new Bundle();
         bundleUnity.PutString(key, value);
         Debug.Log($"[HMS] : Analytics Kits Event Id:{eventID} Key:{key} Value:{value}");
-        instance.OnEvent(eventID, bundleUnity);
+        hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
     // Start is called before the first frame update
     void Start()
     {
         InitilizeAnalyticsInstane();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

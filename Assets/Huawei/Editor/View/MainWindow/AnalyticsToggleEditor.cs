@@ -2,6 +2,7 @@
 using UnityEditor;
 using HmsPlugin;
 using System;
+using UnityEditor.SceneManagement;
 
 namespace HmsPlugin
 {
@@ -19,14 +20,46 @@ namespace HmsPlugin
 
         private void OnStateChanged(bool value)
         {
-            if (!value && HMSMainEditorSettings.Instance.Settings.GetBool(CrashToggleEditor.CrashKitEnabled))
+            if (value)
             {
-                EditorUtility.DisplayDialog("Error", "CrashKit is dependent on AnalyticsKit. Please disable CrashKit first.", "OK");
-                _toggle.SetChecked(true);
+                CreateManagerObject();
             }
             else
             {
-                HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, value);
+                //TODO: Improve handling here.
+                if (HMSMainEditorSettings.Instance.Settings.GetBool(CrashToggleEditor.CrashKitEnabled))
+                {
+                    EditorUtility.DisplayDialog("Error", "CrashKit is dependent on AnalyticsKit. Please disable CrashKit first.", "OK");
+                    _toggle.SetChecked(true);
+                    return;
+                }
+                else if (HMSMainEditorSettings.Instance.Settings.GetBool(RemoteConfigToggleEditor.RemoteConfigEnabled))
+                {
+                    EditorUtility.DisplayDialog("Error", "Remote Config is dependent on AnalyticsKit. Please disable Remote Config first.", "OK");
+                    _toggle.SetChecked(true);
+                    return;
+                }
+
+                var analyticManagers = GameObject.FindObjectsOfType<HMSAnalyticsManager>();
+                if (analyticManagers.Length > 0)
+                {
+                    for (int i = 0; i < analyticManagers.Length; i++)
+                    {
+                        GameObject.DestroyImmediate(analyticManagers[i].gameObject);
+                    }
+                }
+
+            }
+            HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, value);
+        }
+
+        private void CreateManagerObject()
+        {
+            if (GameObject.FindObjectOfType<HMSAnalyticsManager>() == null)
+            {
+                GameObject obj = new GameObject("HMSAnalyticsManager");
+                obj.AddComponent<HMSAnalyticsManager>();
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             }
         }
 
@@ -35,15 +68,16 @@ namespace HmsPlugin
             _toggle.Draw();
         }
 
-        public void SetToggle(bool value)
+        public void SetToggle()
         {
-            _toggle.SetChecked(value);
-            HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, value);
+            _toggle.SetChecked(true);
+            HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, true);
+            CreateManagerObject();
         }
     }
 
     public interface IDependentToggle
     {
-        void SetToggle(bool value);
+        void SetToggle();
     }
 }

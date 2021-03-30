@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor.SceneManagement;
+using UnityEngine;
 
 namespace HmsPlugin
 {
@@ -27,10 +29,24 @@ namespace HmsPlugin
             if (value)
             {
                 _tabBar.AddTab(_tabView);
+                if (GameObject.FindObjectOfType<HMSIAPManager>() == null)
+                {
+                    GameObject obj = new GameObject("HMSIAPManager");
+                    obj.AddComponent<HMSIAPManager>();
+                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                }
             }
             else
             {
-                _tabBar.RemoteTab(_tabView);
+                var iapManagers = GameObject.FindObjectsOfType<HMSIAPManager>();
+                if (iapManagers.Length > 0)
+                {
+                    for (int i = 0; i < iapManagers.Length; i++)
+                    {
+                        GameObject.DestroyImmediate(iapManagers[i].gameObject);
+                    }
+                }
+                _tabBar.RemoveTab(_tabView);
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(IAPKitEnabled, value);
         }

@@ -10,9 +10,7 @@ namespace HmsPlugin
     public class HMSLeaderboardManager : HMSSingleton<HMSLeaderboardManager>
     {
 
-    //public static LeaderboardManager GetInstance(string name = "GameManager") => GameObject.Find(name).GetComponent<LeaderboardManager>();
-
-    public IRankingsClient rankingsClient;
+        public IRankingsClient rankingsClient;
 
         public Action<int> OnIsUserScoreShownOnLeaderboardsSuccess { get; set; }
         public Action<HMSException> OnIsUserScoreShownOnLeaderboardsFailure { get; set; }
@@ -34,11 +32,6 @@ namespace HmsPlugin
 
         public Action<ScoreSubmissionInfo> OnSubmitScoreSuccess { get; set; }
         public Action<HMSException> OnSubmitScoreFailure { get; set; }
-
-        public void Start()
-        {
-
-        }
 
         public void IsUserScoreShownOnLeaderboards()
         {

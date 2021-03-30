@@ -14,10 +14,12 @@ public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
         AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
 
-        HiAnalyticsTools.EnableLog();
-        hiAnalyticsInstance = HiAnalytics.GetInstance(activity);
-        hiAnalyticsInstance.SetAnalyticsEnabled(true);
-
+        activity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
+        {
+            HiAnalyticsTools.EnableLog();
+            hiAnalyticsInstance = HiAnalytics.GetInstance(activity);
+            hiAnalyticsInstance.SetAnalyticsEnabled(true);
+        }));
     }
 
     public void SendEventWithBundle(String eventID, String key, String value)
@@ -28,7 +30,14 @@ public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
-    // Start is called before the first frame update
+    public void SendEventWithBundle(String eventID, String key, int value)
+    {
+        Bundle bundleUnity = new Bundle();
+        bundleUnity.PutInt(key, value);
+        Debug.Log($"[HMS] : Analytics Kits Event Id:{eventID} Key:{key} Value:{value}");
+        hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
+    }
+
     void Start()
     {
         InitilizeAnalyticsInstane();

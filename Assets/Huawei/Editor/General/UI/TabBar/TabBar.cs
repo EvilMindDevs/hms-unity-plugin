@@ -15,7 +15,7 @@ namespace HmsPlugin
             RefreshTabNames();
         }
 
-        public void RemoteTab(TabView tab)
+        public void RemoveTab(TabView tab)
         {
             if (_tabs.Remove(tab))
                 RefreshTabNames();

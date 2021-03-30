@@ -15,7 +15,7 @@ namespace HmsPlugin
         public Action<HMSException> SignInFailure { get; set; }
 
         private AccountAuthService authService;
-        // Make sure user already signed in!
+
         public void Start()
         {
             Debug.Log("HMS GAMES: Game init");

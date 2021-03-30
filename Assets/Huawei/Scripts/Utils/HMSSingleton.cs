@@ -19,11 +19,9 @@ public class HMSSingleton<T> : MonoBehaviour where T : MonoBehaviour
 
     private void Awake()
     {
+        DontDestroyOnLoad(this);
         if (instance == null)
-        {
             instance = this as T;
-            DontDestroyOnLoad(this);
-        }
         else if (instance != this)
             Destroy(this);
     }

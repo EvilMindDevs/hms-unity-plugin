@@ -173,6 +173,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
             AdId = settings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestInterstitialAdId : settings.Get(HMSAdsKitSettings.InterstitialAdID),
             AdListener = new InterstitialAdListener(this)
         };
+        interstitialView.LoadAd(new AdParam.Builder().Build());
     }
 
     public void ShowInterstitialAd()

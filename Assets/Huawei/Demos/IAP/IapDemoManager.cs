@@ -93,17 +93,10 @@ public class IapDemoManager : MonoBehaviour
 
     private void RestorePurchases()
     {
-        HMSIAPManager.Instance.OnObtainOwnedPurchasesSuccess = (ownedPurchaseResult) =>
+        HMSIAPManager.Instance.RestorePurchases((restoredProducts) =>
         {
-            productPurchasedList = (List<string>)ownedPurchaseResult.InAppPurchaseDataList;
-        };
-
-        HMSIAPManager.Instance.OnObtainOwnedPurchasesFailure = (error) =>
-        {
-            Debug.Log("[HMS:] RestorePurchasesError" + error.Message);
-        };
-
-        HMSIAPManager.Instance.ObtainOwnedPurchases();
+            productPurchasedList = new List<string>(restoredProducts);
+        });
     }
 
     public ProductInfo GetProductInfo(string productID)
@@ -111,48 +104,11 @@ public class IapDemoManager : MonoBehaviour
         return productInfoList.Find(productInfo => productInfo.ProductId == productID);
     }
 
-    
+
 
     public void BuyProduct(string productID)
     {
-        HMSIAPManager.Instance.OnBuyProductSuccess = (purchaseResultInfo) =>
-        {
-            // Verify signature with purchaseResultInfo.InAppDataSignature
-
-            // If signature ok, deliver product
-
-            // Consume product purchaseResultInfo.InAppDataSignature
-            HMSIAPManager.Instance.ConsumePurchase(purchaseResultInfo);
-
-        };
-
-        HMSIAPManager.Instance.OnBuyProductFailure = (errorCode) =>
-        {
-           
-            switch (errorCode)
-            {
-                case OrderStatusCode.ORDER_STATE_CANCEL:
-                    // User cancel payment.
-                    Debug.Log("[HMS]: User cancel payment");
-                    break;
-                case OrderStatusCode.ORDER_STATE_FAILED:
-                    Debug.Log("[HMS]: order payment failed");
-                    break;
-
-                case OrderStatusCode.ORDER_PRODUCT_OWNED:
-                    Debug.Log("[HMS]: Product owned");
-                    break;
-                default:
-                    Debug.Log("[HMS:] BuyProduct ERROR" + errorCode);
-                    break;
-            }
-        };
-
-        var productInfo = productInfoList.Find(info => info.ProductId == productID);
-        var payload = "test";
-
-        HMSIAPManager.Instance.BuyProduct(productInfo, payload);
-
+        HMSIAPManager.Instance.BuyProduct(productID);
     }
 
 

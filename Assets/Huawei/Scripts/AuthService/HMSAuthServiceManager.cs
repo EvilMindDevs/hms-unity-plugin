@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class AuthServiceManager : MonoBehaviour
+    public class HMSAuthServiceManager : HMSSingleton<HMSAuthServiceManager>
     {
         public Action<SignInResult> OnSignInSuccess { get; set; }
         public Action<HMSException> OnSignInFailed { get; set; }

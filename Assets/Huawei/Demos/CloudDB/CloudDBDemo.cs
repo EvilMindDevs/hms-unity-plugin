@@ -14,7 +14,7 @@ using Text = UnityEngine.UI.Text;
 public class CloudDBDemo : MonoBehaviour
 {
     private string TAG = "CloudDBDemo";
-    private AuthServiceManager authServiceManager = null;
+    private HMSAuthServiceManager authServiceManager = null;
     private AGConnectUser user = null;
     private Text loggedInUser;
 
@@ -23,7 +23,7 @@ public class CloudDBDemo : MonoBehaviour
     private const string LOGGED_IN_ANONYMOUSLY = "Anonymously Logged In";
     private const string LOGIN_ERROR = "Error or cancelled login";
 
-    private CloudDBManager cloudDBManager = null;
+    private HMSCloudDBManager cloudDBManager = null;
     private readonly string cloudDBZoneName = "QuickStartDemo";
     private readonly string BookInfoClass = "com.clouddbdemo.kb.huawei.BookInfo";
     private readonly string ObjectTypeInfoHelper = "com.clouddbdemo.kb.huawei.ObjectTypeInfoHelper";
@@ -34,7 +34,7 @@ public class CloudDBDemo : MonoBehaviour
         loggedInUser = GameObject.Find("LoggedUserText").GetComponent<Text>();
         loggedInUser.text = NOT_LOGGED_IN;
 
-        authServiceManager = new AuthServiceManager();
+        authServiceManager = HMSAuthServiceManager.Instance;
         authServiceManager.GetInstance();
         authServiceManager.OnSignInSuccess = OnAuthSericeSignInSuccess;
         authServiceManager.OnSignInFailed = OnAuthSericeSignInFailed;
@@ -43,12 +43,13 @@ public class CloudDBDemo : MonoBehaviour
         {
             user = authServiceManager.GetCurrentUser();
             loggedInUser.text = user.IsAnonymous() ? LOGGED_IN_ANONYMOUSLY : string.Format(LOGGED_IN, user.DisplayName);
-        } else
+        }
+        else
         {
             SignInWithHuaweiAccount();
         }
 
-        cloudDBManager = new CloudDBManager();
+        cloudDBManager = HMSCloudDBManager.Instance;
         cloudDBManager.Initialize();
         cloudDBManager.GetInstance();
         cloudDBManager.OnExecuteQuerySuccess = OnExecuteQuerySuccess;
@@ -177,16 +178,21 @@ public class CloudDBDemo : MonoBehaviour
     {
         CloudDBZoneObjectList<BookInfo> bookInfoCursor = snapshot.GetSnapshotObjects();
         bookInfoList = new List<BookInfo>();
-        try {
+        try
+        {
             while (bookInfoCursor.HasNext())
             {
                 BookInfo bookInfo = bookInfoCursor.Next();
                 bookInfoList.Add(bookInfo);
                 Debug.Log($"{TAG} bookInfoCursor.HasNext() {bookInfo.Id}  {bookInfo.Author}");
             }
-        } catch (Exception e){
+        }
+        catch (Exception e)
+        {
             Debug.Log($"{TAG} processQueryResult:  Exception => " + e.Message);
-        } finally {
+        }
+        finally
+        {
             snapshot.Release();
         }
     }

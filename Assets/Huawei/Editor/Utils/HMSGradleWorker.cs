@@ -159,7 +159,7 @@ namespace HmsPlugin
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t\t}\n\n\t\t");
                 file.Write("dependencies {\n\t\t\t");
                 file.Write(AddClasspath("com.android.tools.build:gradle:3.4.0"));
-                file.Write(AddClasspath("com.huawei.agconnect:agcp:1.4.1.300"));
+                file.Write(AddClasspath("com.huawei.agconnect:agcp:1.4.2.300"));
                 file.Write("**BUILD_SCRIPT_DEPS**\n\t\t}\n\t}\n\n\t");
                 file.Write("repositories {**ARTIFACTORYREPOSITORY**\n\t\t");
                 file.Write("google()\n\t\t");

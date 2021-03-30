@@ -70,7 +70,7 @@ namespace HmsPlugin
                     file.WriteLine("public class HMSLeaderboardConstants\n{");
                     for (int i = 0; i < _leaderboardSettings.Keys.Count(); i++)
                     {
-                        file.WriteLine($"\tpublic const string {_leaderboardSettings.Values.ElementAt(i).Replace(".", "").Trim()} = \"{_leaderboardSettings.Keys.ElementAt(i)}\";");
+                        file.WriteLine($"\tpublic const string {_leaderboardSettings.Values.ElementAt(i).Replace(".", "").Replace(" ", "")} = \"{_leaderboardSettings.Keys.ElementAt(i)}\";");
                     }
                     file.WriteLine("}");
                 }

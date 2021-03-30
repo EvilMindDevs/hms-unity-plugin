@@ -2,10 +2,11 @@
 using UnityEditor;
 using HmsPlugin;
 using System;
+using UnityEditor.SceneManagement;
 
 namespace HmsPlugin
 {
-    public class AccountToggleEditor : IDrawer
+    public class AccountToggleEditor : IDrawer, IDependentToggle
     {
         private Toggle.Toggle _toggle;
 
@@ -19,12 +20,51 @@ namespace HmsPlugin
 
         private void OnStateChanged(bool value)
         {
+            if (value)
+            {
+                CreateManagerObject();
+            }
+            else
+            {
+                if (HMSMainEditorSettings.Instance.Settings.GetBool(GameServiceToggleEditor.GameServiceEnabled))
+                {
+                    EditorUtility.DisplayDialog("Error", "Game Service is dependent on AccountKit. Please disable Game Service first.", "OK");
+                    _toggle.SetChecked(true);
+                    return;
+                }
+
+                var accountManagers = GameObject.FindObjectsOfType<HMSAccountManager>();
+                if (accountManagers.Length > 0)
+                {
+                    for (int i = 0; i < accountManagers.Length; i++)
+                    {
+                        GameObject.DestroyImmediate(accountManagers[i].gameObject);
+                    }
+                }
+            }
             HMSMainEditorSettings.Instance.Settings.SetBool(AccountKitEnabled, value);
         }
 
         public void Draw()
         {
             _toggle.Draw();
+        }
+
+        public void SetToggle()
+        {
+            _toggle.SetChecked(true);
+            HMSMainEditorSettings.Instance.Settings.SetBool(AccountKitEnabled, true);
+            CreateManagerObject();
+        }
+
+        private void CreateManagerObject()
+        {
+            if (GameObject.FindObjectOfType<HMSAccountManager>() == null)
+            {
+                GameObject obj = new GameObject("HMSAccountManager");
+                obj.AddComponent<HMSAccountManager>();
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
         }
     }
 }

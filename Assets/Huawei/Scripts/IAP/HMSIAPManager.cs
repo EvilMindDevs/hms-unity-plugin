@@ -33,6 +33,7 @@ namespace HmsPlugin
 
         private IIapClient iapClient;
         private bool? iapAvailable = null;
+        private List<ProductInfo> productInfoList = new List<ProductInfo>();
 
         public void CheckIapAvailability()
         {
@@ -52,15 +53,27 @@ namespace HmsPlugin
 
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("HMSP: Error on ObtainOwnedPurchases");
-                iapClient = null;
-                iapAvailable = false;
-                OnCheckIapAvailabilityFailure?.Invoke(exception);
+                Debug.Log("[HMSPlugin]: Error on EnvReady");
+                IapApiException iapEx = exception.AsIapApiException();
+                iapEx.Status.StartResolutionForResult
+                (
+                    (intent) =>
+                    {
+                        Debug.Log("[HMSPlugin]: Success on iapEx Resolution");
+                        OnCheckIapAvailabilitySuccess?.Invoke();
+                    },
+                    (ex) =>
+                    {
+                        iapClient = null;
+                        iapAvailable = false;
 
+                        Debug.Log("[HMSPlugin]: ERROR on StartResolutionForResult: " + ex.WrappedCauseMessage + " " + ex.WrappedExceptionMessage);
+                        OnCheckIapAvailabilityFailure?.Invoke(exception);
+                    }
+                );
             });
         }
 
-        // TODO Obtain non-consumables too!
         public void ObtainProductInfo(List<string> productIdConsumablesList, List<string> productIdNonConsumablesList, List<string> productIdSubscriptionList)
         {
 
@@ -83,6 +96,7 @@ namespace HmsPlugin
                 ObtainProductInfo(new List<string>(productIdSubscriptionList), 2);
             }
         }
+
         private void ObtainProductInfo(IList<string> productIdNonConsumablesList, int priceType)
         {
 
@@ -183,7 +197,20 @@ namespace HmsPlugin
             });
         }
 
-        public void BuyProduct(ProductInfo productInfo, string payload)
+        public void BuyProduct(string productId, bool consumeAfter = true, string payload = "")
+        {
+            var productInfo = GetProductInfo(productId);
+            if (productInfo != null)
+            {
+                InternalBuyProduct(productInfo, consumeAfter, payload);
+            }
+            else
+            {
+                Debug.LogError($"[HMSPlugin->HMSIAPManager]: Specified: {productId} could not be found in retrieved product list!");
+            }
+        }
+
+        public void InternalBuyProduct(ProductInfo productInfo, bool consumeAfter = true, string payload = "")
         {
 
             if (iapAvailable != true)
@@ -217,14 +244,32 @@ namespace HmsPlugin
                         Debug.Log("HMS: HMSInAppPurchaseData" + purchaseResultInfo.InAppPurchaseData);
                         Debug.Log("HMS: HMSInAppDataSignature" + purchaseResultInfo.InAppDataSignature);
 
-                        switch (purchaseResultInfo.ReturnCode)
+                        if (purchaseResultInfo.ReturnCode == OrderStatusCode.ORDER_STATE_SUCCESS)
                         {
-                            case OrderStatusCode.ORDER_STATE_SUCCESS:
-                                OnBuyProductSuccess.Invoke(purchaseResultInfo);
-                                break;
-                            default:
-                                OnBuyProductFailure.Invoke(purchaseResultInfo.ReturnCode);
-                                break;
+                            OnBuyProductSuccess.Invoke(purchaseResultInfo);
+                            if (consumeAfter)
+                                ConsumePurchase(purchaseResultInfo);
+                        }
+                        else
+                        {
+                            switch (purchaseResultInfo.ReturnCode)
+                            {
+                                case OrderStatusCode.ORDER_STATE_CANCEL:
+
+                                    Debug.Log("[HMS]: User cancel payment");
+                                    break;
+                                case OrderStatusCode.ORDER_STATE_FAILED:
+                                    Debug.Log("[HMS]: order payment failed");
+                                    break;
+
+                                case OrderStatusCode.ORDER_PRODUCT_OWNED:
+                                    Debug.Log("[HMS]: Product owned");
+                                    break;
+                                default:
+                                    Debug.Log("[HMS:] BuyProduct ERROR" + purchaseResultInfo.ReturnCode);
+                                    break;
+                            }
+                            OnBuyProductFailure?.Invoke(purchaseResultInfo.ReturnCode);
                         }
 
                     }, (exception) =>
@@ -267,6 +312,36 @@ namespace HmsPlugin
                 OnObtainProductInfoFailure?.Invoke(exception);
             });
         }
+
+        public void RestorePurchases(Action<IList<string>> action)
+        {
+            //TODO: Return a list of classes instead of a list of strings.
+            OnObtainOwnedPurchasesSuccess = (ownedPurchaseResult) =>
+            {
+                Debug.Log("Return Code: " + ownedPurchaseResult.ReturnCode);
+                Debug.Log("InAppPurchaseDataList: " + ownedPurchaseResult.InAppPurchaseDataList.Count);
+                Debug.Log("ItemList: " + ownedPurchaseResult.ItemList.Count);
+                foreach (var item in ownedPurchaseResult.InAppPurchaseDataList)
+                {
+                    Debug.Log("Restored Product: " + item);
+                }
+
+                action.Invoke(ownedPurchaseResult.InAppPurchaseDataList);
+            };
+
+            OnObtainOwnedPurchasesFailure = (error) =>
+            {
+                Debug.Log("[HMSPlugin:] RestorePurchasesError" + error.Message);
+            };
+
+            ObtainOwnedPurchases();
+        }
+
+        public ProductInfo GetProductInfo(string productID)
+        {
+            return productInfoList.Find(productInfo => productInfo.ProductId == productID);
+        }
+
         public bool IsNullOrEmpty(List<string> array)
         {
             return (array == null || array.Count == 0);

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor.SceneManagement;
+using UnityEngine;
 
 namespace HmsPlugin
 {
@@ -22,11 +24,28 @@ namespace HmsPlugin
 
         private void OnStateChanged(bool value)
         {
-            HMSMainEditorSettings.Instance.Settings.SetBool(CrashKitEnabled, value);
             if (value)
             {
-                _dependentToggle.SetToggle(value);
+                if (GameObject.FindObjectOfType<HMSCrashManager>() == null)
+                {
+                    GameObject obj = new GameObject("HMSCrashManager");
+                    obj.AddComponent<HMSCrashManager>();
+                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                }
+                _dependentToggle.SetToggle();
             }
+            else
+            {
+                var crashManagers = GameObject.FindObjectsOfType<HMSCrashManager>();
+                if (crashManagers.Length > 0)
+                {
+                    for (int i = 0; i < crashManagers.Length; i++)
+                    {
+                        GameObject.DestroyImmediate(crashManagers[i].gameObject);
+                    }
+                }
+            }
+            HMSMainEditorSettings.Instance.Settings.SetBool(CrashKitEnabled, value);
         }
 
         public void Draw()

@@ -5,7 +5,6 @@ using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static HuaweiMobileServices.Drive.Drive;
 
 namespace HmsPlugin
 {
@@ -38,21 +37,21 @@ namespace HmsPlugin
             }
         }
 
-        private static AccountAuthService DefaultDriveAuthService
-        {
-            get
-            {
+        //private static AccountAuthService DefaultDriveAuthService
+        //{
+        //    get
+        //    {
 
-                List<Scope> scopeList = new List<Scope>();
-                scopeList.Add(new Scope(DriveScopes.SCOPE_DRIVE_FILE)); // Permissions to upload and store app data. 
-                var authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetAccessToken().SetIdToken().SetScopeList(scopeList).CreateParams();
-                Debug.Log("[HMS]: AUTHPARAMS DRIVE" + authParams);
-                var result = AccountAuthManager.GetService(authParams);
-                Debug.Log("[HMS]: RESULT DRIVE" + result);
-                return result;
+        //        List<Scope> scopeList = new List<Scope>();
+        //        scopeList.Add(new Scope(DriveScopes.SCOPE_DRIVE_FILE)); // Permissions to upload and store app data. 
+        //        var authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetAccessToken().SetIdToken().SetScopeList(scopeList).CreateParams();
+        //        Debug.Log("[HMS]: AUTHPARAMS DRIVE" + authParams);
+        //        var result = AccountAuthManager.GetService(authParams);
+        //        Debug.Log("[HMS]: RESULT DRIVE" + result);
+        //        return result;
 
-            }
-        }
+        //    }
+        //}
 
         public AuthAccount HuaweiId { get; set; }
         public Action<AuthAccount> OnSignInSuccess { get; set; }
@@ -64,7 +63,7 @@ namespace HmsPlugin
         {
             Debug.Log("[HMS]: AWAKE AUTHSERVICE");
             authService = DefaultAuthService;
-            authServiceDrive = DefaultDriveAuthService;
+            //authServiceDrive = DefaultDriveAuthService;
         }
 
         //Game Service authentication

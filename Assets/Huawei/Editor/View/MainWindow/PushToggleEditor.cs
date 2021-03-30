@@ -2,6 +2,7 @@
 using UnityEditor;
 using HmsPlugin;
 using System;
+using UnityEditor.SceneManagement;
 
 namespace HmsPlugin
 {
@@ -19,6 +20,26 @@ namespace HmsPlugin
 
         private void OnStateChanged(bool value)
         {
+            if(value)
+            {
+                if (GameObject.FindObjectOfType<HMSPushKitManager>() == null)
+                {
+                    GameObject obj = new GameObject("HMSPushKitManager");
+                    obj.AddComponent<HMSPushKitManager>();
+                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                }
+            }
+            else
+            {
+                var pushManagers = GameObject.FindObjectsOfType<HMSPushKitManager>();
+                if (pushManagers.Length > 0)
+                {
+                    for (int i = 0; i < pushManagers.Length; i++)
+                    {
+                        GameObject.DestroyImmediate(pushManagers[i].gameObject);
+                    }
+                }
+            }
             HMSMainEditorSettings.Instance.Settings.SetBool(PushKitEnabled, value);
         }
 

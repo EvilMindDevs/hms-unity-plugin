@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace HmsPlugin
 {
-    public class CloudDBManager : MonoBehaviour
+    public class HMSCloudDBManager : HMSSingleton<HMSCloudDBManager>
     {
         string TAG = "CloudDB Manager";
         AGConnectCloudDB mCloudDB = null;

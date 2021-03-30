@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 public class AuthServiceDemo : MonoBehaviour
 {
-    private AuthServiceManager authServiceManager = null;
+    private HMSAuthServiceManager authServiceManager = null;
     private AGConnectUser user = null;
     private Text loggedInUser;
 
@@ -41,7 +41,7 @@ public class AuthServiceDemo : MonoBehaviour
         EmailVerifyCode = verifyCodeEmail.transform.Find("EmailVerifyCode").GetComponent<InputField>();
         EmailPassword = verifyCodeEmail.transform.Find("EmailPassword").GetComponent<InputField>();
 
-        authServiceManager = new AuthServiceManager();
+        authServiceManager = HMSAuthServiceManager.Instance;
         authServiceManager.GetInstance();
         authServiceManager.OnSignInSuccess = OnAuthSericeSignInSuccess;
         authServiceManager.OnSignInFailed = OnAuthSericeSignInFailed;

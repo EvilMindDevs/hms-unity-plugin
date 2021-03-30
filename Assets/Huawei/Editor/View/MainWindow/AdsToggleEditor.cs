@@ -2,6 +2,7 @@
 using UnityEditor;
 using HmsPlugin;
 using System;
+using UnityEditor.SceneManagement;
 
 namespace HmsPlugin
 {
@@ -26,10 +27,24 @@ namespace HmsPlugin
             if (value)
             {
                 _tabBar.AddTab(_tabView);
+                if (GameObject.FindObjectOfType<HMSAdsKitManager>() == null)
+                {
+                    GameObject obj = new GameObject("HMSAdsKitManager");
+                    obj.AddComponent<HMSAdsKitManager>();
+                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+                }
             }
             else
             {
-                _tabBar.RemoteTab(_tabView);
+                var adsKitManagers = GameObject.FindObjectsOfType<HMSAdsKitManager>();
+                if (adsKitManagers.Length > 0)
+                {
+                    for (int i = 0; i < adsKitManagers.Length; i++)
+                    {
+                        GameObject.DestroyImmediate(adsKitManagers[i].gameObject);
+                    }
+                }
+                _tabBar.RemoveTab(_tabView);
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AdsKitEnabled, value);
         }

@@ -117,6 +117,8 @@ namespace HmsPlugin
                 Debug.Log("[HMSPlugin]:" + type.ErrMsg + type.ReturnCode.ToString());
                 Debug.Log("[HMSPlugin]: {0=Consumable}  {1=Non-Consumable}  {2=Subscription}");
                 Debug.Log("[HMSPlugin]: Found " + type.ProductInfoList.Count + " type of " + priceType + " products");
+                productInfoList.AddRange(type.ProductInfoList);
+
                 OnObtainProductInfoSuccess?.Invoke(new List<ProductInfoResult> { type });
             }).AddOnFailureListener((exception) =>
             {

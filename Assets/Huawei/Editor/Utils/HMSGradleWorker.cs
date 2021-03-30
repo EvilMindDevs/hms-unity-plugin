@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class HMSGradleWorker : HMSEditorSingleton<HMSGradleWorker>, IPreprocessBuildWithReport
+    public class HMSGradleWorker : HMSEditorSingleton<HMSGradleWorker>, IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
         private Dictionary<string, string[]> gradleSettings;
         public int callbackOrder => 1;
@@ -205,6 +205,27 @@ namespace HmsPlugin
         public void OnPreprocessBuild(BuildReport report)
         {
             PrepareGradleFile();
+            if (!HMSMainEditorSettings.Instance.Settings.GetBool(CloudDBToggleEditor.CloudDBEnabled))
+            {
+                if (File.Exists(Application.dataPath + "/Plugins/Android/BookInfo.java"))
+                    File.Move(Application.dataPath + "/Plugins/Android/BookInfo.java", Application.dataPath + "/Plugins/Android/.BookInfo.java");
+
+                if (File.Exists(Application.dataPath + "/Plugins/Android/ObjectTypeInfoHelper.java"))
+                    File.Move(Application.dataPath + "/Plugins/Android/ObjectTypeInfoHelper.java", Application.dataPath + "/Plugins/Android/.ObjectTypeInfoHelper.java");
+            }
+
+        }
+
+        public void OnPostprocessBuild(BuildReport report)
+        {
+            if (!HMSMainEditorSettings.Instance.Settings.GetBool(CloudDBToggleEditor.CloudDBEnabled))
+            {
+                if (File.Exists(Application.dataPath + "/Plugins/Android/.BookInfo.java"))
+                    File.Move(Application.dataPath + "/Plugins/Android/.BookInfo.java", Application.dataPath + "/Plugins/Android/BookInfo.java");
+
+                if (File.Exists(Application.dataPath + "/Plugins/Android/.ObjectTypeInfoHelper.java"))
+                    File.Move(Application.dataPath + "/Plugins/Android/.ObjectTypeInfoHelper.java", Application.dataPath + "/Plugins/Android/ObjectTypeInfoHelper.java");
+            }
         }
     }
 }

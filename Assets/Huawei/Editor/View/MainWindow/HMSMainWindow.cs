@@ -8,7 +8,7 @@ using UnityEditor;
 
 public class HMSMainWindow : HMSEditorWindow
 {
-    [MenuItem("Huawei/Settings")]
+    [MenuItem("Huawei/Kit Settings")]
     public static void ShowWindow()
     {
         GetWindow(typeof(HMSMainWindow), false, "HMS Settings");

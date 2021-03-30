@@ -33,7 +33,7 @@ internal class HMSMainKitsTabFactory
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new CloudDBToggleEditor(authEditor), new Spacer()));
         tab.AddDrawer(new HorizontalLine());
         tab.AddDrawer(new Spacer());
-        tab.AddDrawer(new HelpBox("Please import your agconnect-services.json file to StreamingAssets folder", MessageType.Error));
+        tab.AddDrawer(new HelpboxAGConnectFile());
 
         return tab;
     }

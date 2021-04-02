@@ -9,9 +9,9 @@ namespace HmsPlugin
 {
     public interface IIAPProductManipulator : ICollectionManipulator
     {
-        IEnumerable<IAPProductEntry> GetAllProducts();
-        void RemoveProduct(IAPProductEntry product);
-        AddIAPProductValueResult AddProduct(string identifier, IAPProductType type);
+        IEnumerable<HMSIAPProductEntry> GetAllProducts();
+        void RemoveProduct(HMSIAPProductEntry product);
+        AddIAPProductValueResult AddProduct(string identifier, HMSIAPProductType type);
     }
 
 
@@ -20,25 +20,25 @@ namespace HmsPlugin
         public event Action OnRefreshRequired;
 
         private Settings _settings;
-        private List<IAPProductEntry> _productList;
+        private List<HMSIAPProductEntry> _productList;
 
         public IAPProductManipulator(Settings settings)
         {
             _settings = settings;
-            _productList = new List<IAPProductEntry>();
+            _productList = new List<HMSIAPProductEntry>();
             for (int i = 0; i < _settings.Keys.Count(); i++)
             {
-                _productList.Add(new IAPProductEntry(_settings.Keys.ElementAt(i), (IAPProductType)Enum.Parse(typeof(IAPProductType), _settings.Values.ElementAt(i))));
+                _productList.Add(new HMSIAPProductEntry(_settings.Keys.ElementAt(i), (HMSIAPProductType)Enum.Parse(typeof(HMSIAPProductType), _settings.Values.ElementAt(i))));
             }
         }
 
-        public AddIAPProductValueResult AddProduct(string identifier, IAPProductType type)
+        public AddIAPProductValueResult AddProduct(string identifier, HMSIAPProductType type)
         {
             identifier = identifier.PreprocessValue();
             var canAdd = CanAdd(identifier);
             if (canAdd == AddIAPProductValueResult.OK)
             {
-                _productList.Add(new IAPProductEntry(identifier, type));
+                _productList.Add(new HMSIAPProductEntry(identifier, type));
                 _settings.Set(identifier, type.ToString());
                 RequireRefresh();
             }
@@ -70,12 +70,12 @@ namespace HmsPlugin
             OnRefreshRequired = null;
         }
 
-        public IEnumerable<IAPProductEntry> GetAllProducts()
+        public IEnumerable<HMSIAPProductEntry> GetAllProducts()
         {
             return _productList;
         }
 
-        public void RemoveProduct(IAPProductEntry product)
+        public void RemoveProduct(HMSIAPProductEntry product)
         {
             Debug.Assert(_productList.Contains(product), "Failed to find " + product.Identifier + " in IAP Product Settings file!");
             _productList.Remove(product);

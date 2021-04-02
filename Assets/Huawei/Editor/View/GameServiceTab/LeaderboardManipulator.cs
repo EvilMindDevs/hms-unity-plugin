@@ -9,8 +9,8 @@ namespace HmsPlugin
 {
     public interface ILeaderboardManipulator : ICollectionManipulator
     {
-        IEnumerable<LeaderboardEntry> GetAllLeaderboards();
-        void RemoveLeaderboard(LeaderboardEntry value);
+        IEnumerable<HMSLeaderboardEntry> GetAllLeaderboards();
+        void RemoveLeaderboard(HMSLeaderboardEntry value);
         AddLeaderboardResult AddLeaderboard(string leaderboardName, string id);
     }
 
@@ -26,15 +26,15 @@ namespace HmsPlugin
     {
         public event Action OnRefreshRequired;
         private Settings _settings;
-        private List<LeaderboardEntry> _leaderboardList;
+        private List<HMSLeaderboardEntry> _leaderboardList;
 
         public LeaderboardManipulator(Settings settings)
         {
             _settings = settings;
-            _leaderboardList = new List<LeaderboardEntry>();
+            _leaderboardList = new List<HMSLeaderboardEntry>();
             for (int i = 0; i < settings.Keys.Count(); i++)
             {
-                _leaderboardList.Add(new LeaderboardEntry(_settings.Keys.ElementAt(i), _settings.Values.ElementAt(i)));
+                _leaderboardList.Add(new HMSLeaderboardEntry(_settings.Keys.ElementAt(i), _settings.Values.ElementAt(i)));
             }
         }
 
@@ -46,7 +46,7 @@ namespace HmsPlugin
             var canAdd = CanAdd(id);
             if (canAdd == AddLeaderboardResult.OK)
             {
-                _leaderboardList.Add(new LeaderboardEntry(id, leaderboardName));
+                _leaderboardList.Add(new HMSLeaderboardEntry(id, leaderboardName));
                 _settings.Set(id, leaderboardName);
                 RequireRefresh();
             }
@@ -78,7 +78,7 @@ namespace HmsPlugin
             OnRefreshRequired = null;
         }
 
-        public void RemoveLeaderboard(LeaderboardEntry value)
+        public void RemoveLeaderboard(HMSLeaderboardEntry value)
         {
             Debug.Assert(_leaderboardList.Contains(value), "Failed to find " + value.Id + " in Leaderboard Settings file!");
             _leaderboardList.Remove(value);
@@ -86,7 +86,7 @@ namespace HmsPlugin
             RequireRefresh();
         }
 
-        public IEnumerable<LeaderboardEntry> GetAllLeaderboards()
+        public IEnumerable<HMSLeaderboardEntry> GetAllLeaderboards()
         {
             return _leaderboardList;
         }

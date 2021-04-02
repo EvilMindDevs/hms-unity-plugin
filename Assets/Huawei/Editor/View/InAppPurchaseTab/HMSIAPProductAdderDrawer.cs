@@ -19,7 +19,7 @@ namespace HmsPlugin
             _productManipulator = productManipulator;
 
             _identifierTextField = new TextField.TextField("Identifier: ", "").SetLabelWidth(70);
-            _typeDropdown = new EnumDropdown(IAPProductType.Consumable);
+            _typeDropdown = new EnumDropdown(HMSIAPProductType.Consumable);
 
             SetupSequence();
         }
@@ -32,7 +32,7 @@ namespace HmsPlugin
         private void OnAddProduct()
         {
             string identifier = _identifierTextField.GetCurrentText();
-            IAPProductType type = (IAPProductType)_typeDropdown.GetCurrentValue();
+            HMSIAPProductType type = (HMSIAPProductType)_typeDropdown.GetCurrentValue();
 
             _productManipulator.AddProduct(identifier, type);
             _identifierTextField.ClearInput();

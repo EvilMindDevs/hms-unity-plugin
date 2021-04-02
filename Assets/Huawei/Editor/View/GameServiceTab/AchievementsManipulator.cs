@@ -9,8 +9,8 @@ namespace HmsPlugin
 {
     public interface IAchievementsManipulator : ICollectionManipulator
     {
-        IEnumerable<AchievementEntry> GetAllAchievements();
-        void RemoveAchievement(AchievementEntry value);
+        IEnumerable<HMSAchievementEntry> GetAllAchievements();
+        void RemoveAchievement(HMSAchievementEntry value);
         AddAchievementResult AddAchievement(string achievementName, string id);
     }
 
@@ -26,15 +26,15 @@ namespace HmsPlugin
     {
         public event Action OnRefreshRequired;
         private Settings _settings;
-        private List<AchievementEntry> _achievementList;
+        private List<HMSAchievementEntry> _achievementList;
 
         public AchievementManipulator(Settings settings)
         {
             _settings = settings;
-            _achievementList = new List<AchievementEntry>();
+            _achievementList = new List<HMSAchievementEntry>();
             for (int i = 0; i < settings.Keys.Count(); i++)
             {
-                _achievementList.Add(new AchievementEntry(_settings.Keys.ElementAt(i), _settings.Values.ElementAt(i)));
+                _achievementList.Add(new HMSAchievementEntry(_settings.Keys.ElementAt(i), _settings.Values.ElementAt(i)));
             }
         }
 
@@ -46,7 +46,7 @@ namespace HmsPlugin
             var canAdd = CanAdd(id);
             if (canAdd == AddAchievementResult.OK)
             {
-                _achievementList.Add(new AchievementEntry(id, achievementName));
+                _achievementList.Add(new HMSAchievementEntry(id, achievementName));
                 _settings.Set(id, achievementName);
                 RequireRefresh();
             }
@@ -78,7 +78,7 @@ namespace HmsPlugin
             OnRefreshRequired = null;
         }
 
-        public void RemoveAchievement(AchievementEntry value)
+        public void RemoveAchievement(HMSAchievementEntry value)
         {
             Debug.Assert(_achievementList.Contains(value), "Failed to find " + value.Id + " in Achievement Settings file!");
             _achievementList.Remove(value);
@@ -86,7 +86,7 @@ namespace HmsPlugin
             RequireRefresh();
         }
 
-        public IEnumerable<AchievementEntry> GetAllAchievements()
+        public IEnumerable<HMSAchievementEntry> GetAllAchievements()
         {
             return _achievementList;
         }

@@ -36,19 +36,19 @@ namespace HmsPlugin
             _instance = null;
         }
 
-        public List<IAPProductEntry> GetAllIAPProducts()
+        public List<HMSIAPProductEntry> GetAllIAPProducts()
         {
-            var returnList = new List<IAPProductEntry>();
+            var returnList = new List<HMSIAPProductEntry>();
 
             for (int i = 0; i < _settings.Keys.Count(); i++)
             {
-                returnList.Add(new IAPProductEntry(_settings.Keys.ElementAt(i), (IAPProductType)Enum.Parse(typeof(IAPProductType), _settings.Values.ElementAt(i))));
+                returnList.Add(new HMSIAPProductEntry(_settings.Keys.ElementAt(i), (HMSIAPProductType)Enum.Parse(typeof(HMSIAPProductType), _settings.Values.ElementAt(i))));
             }
 
             return returnList;
         }
 
-        public List<string> GetProductIdentifiersByType(IAPProductType type)
+        public List<string> GetProductIdentifiersByType(HMSIAPProductType type)
         {
             var returnList = new List<string>();
 

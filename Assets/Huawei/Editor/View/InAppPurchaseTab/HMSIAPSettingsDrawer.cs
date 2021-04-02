@@ -53,12 +53,12 @@ namespace HmsPlugin
             _productsFoldout.AddDrawer(CreateIAPProductListDrawer(_productManipulator.GetAllProducts()));
         }
 
-        private IDrawer CreateIAPProductListDrawer(IEnumerable<IAPProductEntry> products)
+        private IDrawer CreateIAPProductListDrawer(IEnumerable<HMSIAPProductEntry> products)
         {
-            return ListDrawer<IAPProductEntry>.CreateButtonedLabelList(products, s => "Identifier: " + s.Identifier + " | Type: " + s.Type.ToString(), null, new List<Button.ButtonInfo<IAPProductEntry>> { new Button.ButtonInfo<IAPProductEntry>("x", 25, OnRemovePressed) }).SetEmptyDrawer(new Label.Label("No Products Found."));
+            return ListDrawer<HMSIAPProductEntry>.CreateButtonedLabelList(products, s => "Identifier: " + s.Identifier + " | Type: " + s.Type.ToString(), null, new List<Button.ButtonInfo<HMSIAPProductEntry>> { new Button.ButtonInfo<HMSIAPProductEntry>("x", 25, OnRemovePressed) }).SetEmptyDrawer(new Label.Label("No Products Found."));
         }
 
-        private void OnRemovePressed(IAPProductEntry product)
+        private void OnRemovePressed(HMSIAPProductEntry product)
         {
             _productManipulator.RemoveProduct(product);
         }
@@ -100,7 +100,7 @@ namespace HmsPlugin
                         i++;
                         identifier = reader.ReadLine().Split(',')[0];
                         if (i == 1) continue;
-                        _productManipulator.AddProduct(identifier, IAPProductType.Consumable);
+                        _productManipulator.AddProduct(identifier, HMSIAPProductType.Consumable);
                     }
                 }
             }

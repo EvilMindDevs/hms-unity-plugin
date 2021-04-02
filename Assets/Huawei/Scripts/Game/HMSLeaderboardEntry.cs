@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace HmsPlugin
 {
-    public class LeaderboardEntry
+    public class HMSLeaderboardEntry
     {
         public string Id { get; set; }
         public string Name { get; set; }
 
-        public LeaderboardEntry(string id, string name)
+        public HMSLeaderboardEntry(string id, string name)
         {
             Id = id;
             Name = name;

@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace HmsPlugin
 {
-    public class IAPProductEntry
+    public class HMSIAPProductEntry
     {
         public string Identifier { get; set; }
-        public IAPProductType Type { get; set; }
+        public HMSIAPProductType Type { get; set; }
 
-        public IAPProductEntry(string identifier, IAPProductType type)
+        public HMSIAPProductEntry(string identifier, HMSIAPProductType type)
         {
             Identifier = identifier;
             Type = type;
         }
     }
 
-    public enum IAPProductType
+    public enum HMSIAPProductType
     {
         Consumable = 0,
         NonConsumable = 1,

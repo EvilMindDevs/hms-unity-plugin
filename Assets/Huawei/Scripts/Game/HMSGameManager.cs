@@ -9,7 +9,7 @@ namespace HmsPlugin
 {
     public class HMSGameManager : HMSSingleton<HMSGameManager>
     {
-        public Action<Player> OnGetPlayerInfoSuccess { get; set; }
+        public Action<HuaweiMobileServices.Game.Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }
         public Action<AuthAccount> SignInSuccess { get; set; }
         public Action<HMSException> SignInFailure { get; set; }
@@ -61,7 +61,7 @@ namespace HmsPlugin
             if (HMSAccountManager.Instance.HuaweiId != null)
             {
                 IPlayersClient playersClient = Games.GetPlayersClient();
-                ITask<Player> task = playersClient.CurrentPlayer;
+                ITask<HuaweiMobileServices.Game.Player> task = playersClient.CurrentPlayer;
                 task.AddOnSuccessListener((result) =>
                 {
                     Debug.Log("[HMSP:] GetPlayerInfo Success");

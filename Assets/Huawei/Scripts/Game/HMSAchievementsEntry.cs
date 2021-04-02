@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace HmsPlugin
 {
-    public class AchievementEntry
+    public class HMSAchievementEntry
     {
         public string Id { get; set; }
         public string Name { get; set; }
 
-        public AchievementEntry(string id, string name)
+        public HMSAchievementEntry(string id, string name)
         {
             Id = id;
             Name = name;

@@ -105,22 +105,22 @@ namespace HmsPlugin
             _achievementsFoldout.AddDrawer(CreateAchievementListDrawer(_achievementManipulator.GetAllAchievements()));
         }
 
-        private IDrawer CreateAchievementListDrawer(IEnumerable<AchievementEntry> achievements)
+        private IDrawer CreateAchievementListDrawer(IEnumerable<HMSAchievementEntry> achievements)
         {
-            return ListDrawer<AchievementEntry>.CreateButtonedLabelList(achievements, s => "Name: " + s.Name + " | ID: " + s.Id, null, new List<Button.ButtonInfo<AchievementEntry>> { new Button.ButtonInfo<AchievementEntry>("x", 25, OnRemoveAchievementsPressed) }).SetEmptyDrawer(new Label.Label("No Achievement Found."));
+            return ListDrawer<HMSAchievementEntry>.CreateButtonedLabelList(achievements, s => "Name: " + s.Name + " | ID: " + s.Id, null, new List<Button.ButtonInfo<HMSAchievementEntry>> { new Button.ButtonInfo<HMSAchievementEntry>("x", 25, OnRemoveAchievementsPressed) }).SetEmptyDrawer(new Label.Label("No Achievement Found."));
         }
 
-        private IDrawer CreateLeaderboardListDrawer(IEnumerable<LeaderboardEntry> leaderboards)
+        private IDrawer CreateLeaderboardListDrawer(IEnumerable<HMSLeaderboardEntry> leaderboards)
         {
-            return ListDrawer<LeaderboardEntry>.CreateButtonedLabelList(leaderboards, s => "Name: " + s.Name + " | ID: " + s.Id, null, new List<Button.ButtonInfo<LeaderboardEntry>> { new Button.ButtonInfo<LeaderboardEntry>("x", 25, OnRemoveLeaderboardPressed) }).SetEmptyDrawer(new Label.Label("No Leaderboard Found."));
+            return ListDrawer<HMSLeaderboardEntry>.CreateButtonedLabelList(leaderboards, s => "Name: " + s.Name + " | ID: " + s.Id, null, new List<Button.ButtonInfo<HMSLeaderboardEntry>> { new Button.ButtonInfo<HMSLeaderboardEntry>("x", 25, OnRemoveLeaderboardPressed) }).SetEmptyDrawer(new Label.Label("No Leaderboard Found."));
         }
 
-        private void OnRemoveLeaderboardPressed(LeaderboardEntry leaderboard)
+        private void OnRemoveLeaderboardPressed(HMSLeaderboardEntry leaderboard)
         {
             _leaderboardManipulator.RemoveLeaderboard(leaderboard);
         }
 
-        private void OnRemoveAchievementsPressed(AchievementEntry achievement)
+        private void OnRemoveAchievementsPressed(HMSAchievementEntry achievement)
         {
             _achievementManipulator.RemoveAchievement(achievement);
         }

@@ -46,9 +46,9 @@ namespace HmsPlugin
                 OnCheckIapAvailabilitySuccess?.Invoke();
                 if (HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart))
                 {
-                    ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(IAPProductType.Consumable),
-                        HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(IAPProductType.NonConsumable),
-                        HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(IAPProductType.Subscription));
+                    ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Consumable),
+                        HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.NonConsumable),
+                        HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Subscription));
                 }
 
             }).AddOnFailureListener((exception) =>
@@ -117,16 +117,20 @@ namespace HmsPlugin
                 Debug.Log("[HMSPlugin]:" + type.ErrMsg + type.ReturnCode.ToString());
                 Debug.Log("[HMSPlugin]: {0=Consumable}  {1=Non-Consumable}  {2=Subscription}");
                 Debug.Log("[HMSPlugin]: Found " + type.ProductInfoList.Count + " type of " + priceType + " products");
-                productInfoList.AddRange(type.ProductInfoList);
+                foreach (var productInfo in type.ProductInfoList)
+                {
+                    if (!productInfoList.Exists(c => c.ProductId == productInfo.ProductId))
+                        productInfoList.Add(productInfo);
+                }
 
                 OnObtainProductInfoSuccess?.Invoke(new List<ProductInfoResult> { type });
             }).AddOnFailureListener((exception) =>
             {
                 Debug.Log("[HMSPlugin]: ERROR non  Consumable ObtainInfo" + exception.Message);
                 OnObtainProductInfoFailure?.Invoke(exception);
-
             });
         }
+
         public void ConsumeOwnedPurchases()
         {
 
@@ -142,7 +146,7 @@ namespace HmsPlugin
             task.AddOnSuccessListener((result) =>
             {
                 Debug.Log("HMSP: recoverPurchases");
-                foreach (string inAppPurchaseData in result.InAppPurchaseDataList)
+                foreach (var inAppPurchaseData in result.InAppPurchaseDataList)
                 {
                     ConsumePurchaseWithPurchaseData(inAppPurchaseData);
                     Debug.Log("HMSP: recoverPurchases result> " + result.ReturnCode);
@@ -163,10 +167,9 @@ namespace HmsPlugin
             ConsumePurchaseWithPurchaseData(purchaseResultInfo.InAppPurchaseData);
         }
 
-        public void ConsumePurchaseWithPurchaseData(string inAppPurchaseData)
+        public void ConsumePurchaseWithPurchaseData(InAppPurchaseData inAppPurchaseData)
         {
-            var inAppPurchaseDataBean = new InAppPurchaseData(inAppPurchaseData);
-            string purchaseToken = inAppPurchaseDataBean.PurchaseToken;
+            string purchaseToken = inAppPurchaseData.PurchaseToken;
             ConsumePurchaseWithToken(purchaseToken);
         }
 
@@ -214,7 +217,6 @@ namespace HmsPlugin
 
         public void InternalBuyProduct(ProductInfo productInfo, bool consumeAfter = true, string payload = "")
         {
-
             if (iapAvailable != true)
             {
                 OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
@@ -231,7 +233,6 @@ namespace HmsPlugin
             ITask<PurchaseIntentResult> task = iapClient.CreatePurchaseIntent(purchaseIntentReq);
             task.AddOnSuccessListener((result) =>
             {
-
                 if (result != null)
                 {
                     Debug.Log("[HMSPlugin]:" + result.ErrMsg + result.ReturnCode.ToString());
@@ -257,9 +258,9 @@ namespace HmsPlugin
                             switch (purchaseResultInfo.ReturnCode)
                             {
                                 case OrderStatusCode.ORDER_STATE_CANCEL:
-
                                     Debug.Log("[HMS]: User cancel payment");
                                     break;
+
                                 case OrderStatusCode.ORDER_STATE_FAILED:
                                     Debug.Log("[HMS]: order payment failed");
                                     break;
@@ -267,6 +268,7 @@ namespace HmsPlugin
                                 case OrderStatusCode.ORDER_PRODUCT_OWNED:
                                     Debug.Log("[HMS]: Product owned");
                                     break;
+
                                 default:
                                     Debug.Log("[HMS:] BuyProduct ERROR" + purchaseResultInfo.ReturnCode);
                                     break;
@@ -315,20 +317,15 @@ namespace HmsPlugin
             });
         }
 
-        public void RestorePurchases(Action<IList<string>> action)
+        public void RestorePurchases(Action<OwnedPurchasesResult> action)
         {
-            //TODO: Return a list of classes instead of a list of strings.
             OnObtainOwnedPurchasesSuccess = (ownedPurchaseResult) =>
             {
                 Debug.Log("Return Code: " + ownedPurchaseResult.ReturnCode);
                 Debug.Log("InAppPurchaseDataList: " + ownedPurchaseResult.InAppPurchaseDataList.Count);
                 Debug.Log("ItemList: " + ownedPurchaseResult.ItemList.Count);
-                foreach (var item in ownedPurchaseResult.InAppPurchaseDataList)
-                {
-                    Debug.Log("Restored Product: " + item);
-                }
 
-                action.Invoke(ownedPurchaseResult.InAppPurchaseDataList);
+                action.Invoke(ownedPurchaseResult);
             };
 
             OnObtainOwnedPurchasesFailure = (error) =>

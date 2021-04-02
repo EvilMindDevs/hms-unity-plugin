@@ -199,7 +199,7 @@ namespace HmsPlugin
 
         private string[] CoreGradles()
         {
-            return new string[] { "com.huawei.hms:base:4.0.1.300", "com.android.support:appcompat-v7:28.0.0", "com.huawei.agconnect:agconnect-core:1.4.1.300" };
+            return new string[] { "com.huawei.hms:base:5.2.0.300", "com.android.support:appcompat-v7:28.0.0", "com.huawei.agconnect:agconnect-core:1.4.1.300" };
         }
 
         public void OnPreprocessBuild(BuildReport report)

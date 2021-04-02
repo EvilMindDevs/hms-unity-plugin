@@ -24,7 +24,7 @@ public class IapDemoManager : MonoBehaviour
 
 
     List<ProductInfo> productInfoList = new List<ProductInfo>();
-    List<string> productPurchasedList = new List<string>();
+    List<InAppPurchaseData> productPurchasedList = new List<InAppPurchaseData>();
 
     UnityEvent loadedEvent;
 
@@ -95,7 +95,7 @@ public class IapDemoManager : MonoBehaviour
     {
         HMSIAPManager.Instance.RestorePurchases((restoredProducts) =>
         {
-            productPurchasedList = new List<string>(restoredProducts);
+            productPurchasedList = new List<InAppPurchaseData>(restoredProducts.InAppPurchaseDataList);
         });
     }
 

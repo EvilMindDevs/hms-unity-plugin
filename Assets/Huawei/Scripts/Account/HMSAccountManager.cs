@@ -100,7 +100,7 @@ namespace HmsPlugin
             });
         }
 
-        public void SilentSign()
+        public void SilentSignIn()
         {
             ITask<AuthAccount> taskAuthHuaweiId = authService.SilentSignIn();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>

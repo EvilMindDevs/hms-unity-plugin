@@ -22,7 +22,7 @@ namespace HmsPlugin
 
         AGConnectAuth _AGConnectAuth = null;
 
-        public void GetInstance()
+        private void Awake()
         {
             _AGConnectAuth = AGConnectAuth.GetInstance();
         }

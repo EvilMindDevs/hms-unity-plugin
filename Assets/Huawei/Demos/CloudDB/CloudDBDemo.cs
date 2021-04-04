@@ -35,7 +35,6 @@ public class CloudDBDemo : MonoBehaviour
         loggedInUser.text = NOT_LOGGED_IN;
 
         authServiceManager = HMSAuthServiceManager.Instance;
-        authServiceManager.GetInstance();
         authServiceManager.OnSignInSuccess = OnAuthSericeSignInSuccess;
         authServiceManager.OnSignInFailed = OnAuthSericeSignInFailed;
 

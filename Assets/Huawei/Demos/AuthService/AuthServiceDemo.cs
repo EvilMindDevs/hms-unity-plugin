@@ -42,7 +42,6 @@ public class AuthServiceDemo : MonoBehaviour
         EmailPassword = verifyCodeEmail.transform.Find("EmailPassword").GetComponent<InputField>();
 
         authServiceManager = HMSAuthServiceManager.Instance;
-        authServiceManager.GetInstance();
         authServiceManager.OnSignInSuccess = OnAuthSericeSignInSuccess;
         authServiceManager.OnSignInFailed = OnAuthSericeSignInFailed;
         authServiceManager.OnCreateUserSuccess = OnAuthSericeCreateUserSuccess;
@@ -104,10 +103,12 @@ public class AuthServiceDemo : MonoBehaviour
             .SendInterval(30).Build();
 
         PhoneAuthProvider.RequestVerifyCode(PhoneCountryCode.text, PhoneNumber.text, verifyCodeSettings)
-            .AddOnSuccessListener(verifyCodeResult => {
+            .AddOnSuccessListener(verifyCodeResult =>
+            {
                 verifyCodePhone.SetActive(true);
             })
-            .AddOnFailureListener(exception => {
+            .AddOnFailureListener(exception =>
+            {
                 loggedInUser.text = exception.WrappedExceptionMessage;
             });
     }
@@ -130,10 +131,12 @@ public class AuthServiceDemo : MonoBehaviour
             .SendInterval(30).Build();
 
         EmailAuthProvider.RequestVerifyCode(EmailAddress.text, verifyCodeSettings)
-            .AddOnSuccessListener(result => {
+            .AddOnSuccessListener(result =>
+            {
                 verifyCodeEmail.SetActive(true);
             })
-            .AddOnFailureListener(error => {
+            .AddOnFailureListener(error =>
+            {
                 loggedInUser.text = error.WrappedExceptionMessage;
             });
     }
@@ -144,14 +147,16 @@ public class AuthServiceDemo : MonoBehaviour
         authServiceManager.CreateUser(emailUser);
     }
 
-    public void CloseVerifyCodePanel() {verifyCodePhone.SetActive(false); verifyCodeEmail.SetActive(false); }
+    public void CloseVerifyCodePanel() { verifyCodePhone.SetActive(false); verifyCodeEmail.SetActive(false); }
 
-    public void DeleteUser() {
+    public void DeleteUser()
+    {
         authServiceManager.DeleteUser();
         loggedInUser.text = NOT_LOGGED_IN;
     }
 
-    public void SignOut() { 
+    public void SignOut()
+    {
         authServiceManager.SignOut();
         loggedInUser.text = NOT_LOGGED_IN;
     }

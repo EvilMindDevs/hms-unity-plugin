@@ -12,32 +12,14 @@ using UnityEngine.UI;
 
 public class GameDemoManager : MonoBehaviour
 {
-
-    /*private bool achievements = true;
-    private bool leaderboards = true;*/
     private bool customUnit = false;
     private const string MAX_FILE_SIZE = "Max File Size: {0}";
     private const string MAX_IMAGE_SIZE = "Max Image Size: {0}";
-    
 
-    IAchievementsClient achievementsClient;
-    IRankingsClient rankingsClient;
-
-    /*HMSGameManager gameManager;
-    LeaderboardManager leaderboardManager;
-    AchievementsManager achievementsManager;
-    SaveGameManager saveGameManager;*/
     private Text fileSize, imageSize;
     private InputField InputFieldDesc, InputFieldPlayedTime, InputFieldProgress;
     void Start()
     {
-        /*gameManager = GameManager.GetInstance();
-
-        saveGameManager = SaveGameManager.GetInstance();
-
-        leaderboardManager = LeaderboardManager.GetInstance();*/
-
-        //achievementsManager = AchievementsManager.GetInstance();
         HMSAchievementsManager.Instance.OnShowAchievementsSuccess = OnShowAchievementsSuccess;
         HMSAchievementsManager.Instance.OnShowAchievementsFailure = OnShowAchievementsFailure;
         HMSAchievementsManager.Instance.OnRevealAchievementSuccess = OnRevealAchievementSuccess;
@@ -53,12 +35,12 @@ public class GameDemoManager : MonoBehaviour
         InputFieldPlayedTime = GameObject.Find("PlayedTime").GetComponent<InputField>();
         InputFieldProgress = GameObject.Find("Progress").GetComponent<InputField>();
 
-
-
+        HMSAccountManager.Instance.SignIn();
     }
+
     public void GetMaxImageSize()
     {
-        ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxImageSize(); ;
+        ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxImageSize();
         detailSizeTask.AddOnSuccessListener((result) =>
         {
             Debug.Log("[HMSP:] GetMaxImageSize Success " + result);
@@ -68,9 +50,10 @@ public class GameDemoManager : MonoBehaviour
             Debug.Log("[HMSP:] GetMaxImageSize Failed");
         });
     }
+
     public void GetMaxFileSize()
     {
-        ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxFileSize(); ;
+        ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxFileSize();
         detailSizeTask.AddOnSuccessListener((result) =>
         {
             Debug.Log("[HMSP:] GetMaxFileSize Success " + result);
@@ -80,17 +63,18 @@ public class GameDemoManager : MonoBehaviour
             Debug.Log("[HMSP:] GetMaxFileSize Failed");
         });
     }
+
     public void CommitGame()
     {
         //Example Image Path: give statics path of image on phone
-        string ImagePath = Application.streamingAssetsPath; 
-        if( InputFieldDesc.text != null && InputFieldProgress.text != null && InputFieldPlayedTime.text != null)
+        string ImagePath = Application.streamingAssetsPath;
+        if (InputFieldDesc.text != null && InputFieldProgress.text != null && InputFieldPlayedTime.text != null)
         {
             string description = InputFieldDesc.text;
             long playedTime = long.Parse(InputFieldPlayedTime.text);
             long progress = long.Parse(InputFieldPlayedTime.text);
             HMSSaveGameManager.Instance.Commit(description, playedTime, progress, ImagePath, "png");
-        }    
+        }
         else
             Debug.Log("[HMSP:] Fill box");
     }
@@ -99,7 +83,6 @@ public class GameDemoManager : MonoBehaviour
         HMSSaveGameManager.Instance.ShowArchive();
     }
 
-    // SHOW ACHIEVEMENTS
     public void ShowAchievements()
     {
 
@@ -115,8 +98,6 @@ public class GameDemoManager : MonoBehaviour
     {
         Debug.Log("HMS Games: ShowAchievements ERROR ");
     }
-
-    // GET ACHIEVEMENT LIST
 
     public void GetAchievementsList()
     {
@@ -136,7 +117,6 @@ public class GameDemoManager : MonoBehaviour
         Debug.Log("HMS Games: GetAchievementsList ERROR ");
     }
 
-    // REVEAL ACHIEVEMENT
     public void RevealAchievement(string achievementId)
     {
         HMSAchievementsManager.Instance.RevealAchievement(achievementId);
@@ -152,7 +132,6 @@ public class GameDemoManager : MonoBehaviour
         Debug.Log("HMS Games: RevealAchievement ERROR ");
     }
 
-    // INCREASE STEP ACHIEVEMENT
     public void IncreaseStepAchievement(string achievementId, int stepIncrement = 1)
     {
         HMSAchievementsManager.Instance.IncreaseStepAchievement(achievementId, stepIncrement);
@@ -168,7 +147,6 @@ public class GameDemoManager : MonoBehaviour
         Debug.Log("HMS Games: IncreaseStepAchievement ERROR ");
     }
 
-    // Set Step Achivement
     public void SetStepAchievement(string achievementId, int stepsNum)
     {
         HMSAchievementsManager.Instance.SetStepAchievement(achievementId, stepsNum);
@@ -183,8 +161,6 @@ public class GameDemoManager : MonoBehaviour
     {
         Debug.Log("HMS Games: SetStepAchievement ERROR ");
     }
-
-    // Unlock Achievement
 
     public void UnlockAchievement(string achievementId)
     {
@@ -207,8 +183,6 @@ public class GameDemoManager : MonoBehaviour
     // Get User Score Shown
     public void GetUserScoreShownOnLeaderboards()
     {
-
-        /// Todo Hay que cambiar en el manager isUser por el getUser
         HMSLeaderboardManager.Instance.IsUserScoreShownOnLeaderboards();
         HMSLeaderboardManager.Instance.OnIsUserScoreShownOnLeaderboardsSuccess = OnIsUserScoreShownOnLeaderboardsSuccess;
         HMSLeaderboardManager.Instance.OnIsUserScoreShownOnLeaderboardsFailure = OnIsUserScoreShownOnLeaderboardsFailure;
@@ -223,8 +197,6 @@ public class GameDemoManager : MonoBehaviour
     {
         Debug.Log("HMS Games: GetUserScoreShownOnLeaderboards ERROR ");
     }
-
-    // Set User Score Shown
 
     public void SetUserScoreShownOnLeaderboards(int active)
     {
@@ -243,9 +215,6 @@ public class GameDemoManager : MonoBehaviour
     {
         Debug.Log("HMS Games: SetUserScoreShownOnLeaderboards ERROR ");
     }
-
-
-    // Submit Score
 
     public void SubmitScore(string leaderboardId, long score, string scoreTips)
     {
@@ -273,8 +242,6 @@ public class GameDemoManager : MonoBehaviour
 
     }
 
-    // Show Leaderboards
-
     public void ShowLeaderboards()
     {
         HMSLeaderboardManager.Instance.ShowLeaderboards();
@@ -295,8 +262,6 @@ public class GameDemoManager : MonoBehaviour
 
     }
 
-    // Get Leadeboards Data
-
     public void GetLeaderboardsData(string leaderboardId)
     {
         HMSLeaderboardManager.Instance.GetLeaderboardData(leaderboardId);
@@ -315,8 +280,6 @@ public class GameDemoManager : MonoBehaviour
         Debug.Log("HMS Games: GetLeaderboardsData ERROR ");
 
     }
-
-    // Get Scores From Leaderboard
 
     public void GetScoresFromLeaderboard(string leaderboardId, int timeDimension, int maxResults, int offsetPlayerRank, int pageDirection)
     {
@@ -337,6 +300,4 @@ public class GameDemoManager : MonoBehaviour
     {
         Debug.Log("HMS Games: GetScoresFromLeaderboard ERROR ");
     }
-
-
 }

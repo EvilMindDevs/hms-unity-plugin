@@ -75,6 +75,11 @@ namespace HmsPlugin
             return _productList;
         }
 
+        public int GetProductCount()
+        {
+            return _productList.Count;
+        }
+
         public void RemoveProduct(HMSIAPProductEntry product)
         {
             Debug.Assert(_productList.Contains(product), "Failed to find " + product.Identifier + " in IAP Product Settings file!");

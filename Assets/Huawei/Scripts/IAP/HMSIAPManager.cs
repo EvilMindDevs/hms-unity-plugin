@@ -35,6 +35,12 @@ namespace HmsPlugin
         private bool? iapAvailable = null;
         private List<ProductInfo> productInfoList = new List<ProductInfo>();
 
+        private void Start()
+        {
+            if (HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart))
+                CheckIapAvailability();
+        }
+
         public void CheckIapAvailability()
         {
             iapClient = Iap.GetIapClient();
@@ -44,12 +50,10 @@ namespace HmsPlugin
                 Debug.Log("HMSP: checkIapAvailabity SUCCESS");
                 iapAvailable = true;
                 OnCheckIapAvailabilitySuccess?.Invoke();
-                if (HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart))
-                {
-                    ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Consumable),
-                        HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.NonConsumable),
-                        HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Subscription));
-                }
+                ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Consumable),
+                    HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.NonConsumable),
+                    HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Subscription));
+
 
             }).AddOnFailureListener((exception) =>
             {
@@ -61,6 +65,9 @@ namespace HmsPlugin
                     {
                         Debug.Log("[HMSPlugin]: Success on iapEx Resolution");
                         OnCheckIapAvailabilitySuccess?.Invoke();
+                        ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Consumable),
+                            HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.NonConsumable),
+                            HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Subscription));
                     },
                     (ex) =>
                     {
@@ -291,7 +298,6 @@ namespace HmsPlugin
 
         public void ObtainOwnedPurchases()
         {
-
             if (iapAvailable != true)
             {
                 OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);

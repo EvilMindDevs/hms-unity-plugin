@@ -8,7 +8,7 @@ allprojects {
 
 		dependencies {
 			classpath 'com.android.tools.build:gradle:3.4.0'
-			classpath 'com.huawei.agconnect:agcp:1.4.1.300'
+			classpath 'com.huawei.agconnect:agcp:1.4.2.300'
 			**BUILD_SCRIPT_DEPS**
 		}
 	}

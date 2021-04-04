@@ -27,7 +27,7 @@ namespace HmsPlugin
             _iapSettings = HMSIAPKitSettings.Instance.Settings;
             _productListSettings = HMSIAPProductListSettings.Instance.Settings;
             _productManipulator = new IAPProductManipulator(_productListSettings);
-            _initializeOnStartToggle = new Toggle.Toggle("Initialize On Availability*", HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart), OnInitializeOnStartToggle).SetTooltip("Obtains product info after IAP is available.");
+            _initializeOnStartToggle = new Toggle.Toggle("Initialize On Start*", HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart), OnInitializeOnStartToggle).SetTooltip("Obtains product info in Start function.");
 
             _productManipulator.OnRefreshRequired += OnIAPProductChanged;
             OnIAPProductChanged();
@@ -71,6 +71,12 @@ namespace HmsPlugin
             AddDrawer(new Space(10));
             AddDrawer(new HMSIAPProductAdderDrawer(_productManipulator));
             AddDrawer(new Space(10));
+            if (_productManipulator.GetProductCount() <= 0)
+            {
+                AddDrawer(new HelpBox.HelpBox("Example product would be : Identifier = com.yourcompany.yourapp.removeAds, Product Type = Non Consumable", MessageType.Info));
+                AddDrawer(new Space(10));
+            }
+
             AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Clear All Products", ClearAllIAPProducts).SetWidth(250), new Spacer()));
             AddDrawer(new Space(3));
             AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Constant Classes", CreateIAPConstants).SetWidth(250), new Spacer()));

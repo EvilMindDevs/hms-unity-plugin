@@ -8,17 +8,16 @@ using UnityEngine.UI;
 
 public class PushDemoManager : MonoBehaviour, IPushListener
 {
-
     private string pushToken;
-    private Text remoteMessageText;
+    [SerializeField]
+    private Text remoteMessageText, tokenText;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        remoteMessageText = GameObject.Find("RemoteMessageText").GetComponent<Text>();
         PushManager.Listener = this;
         pushToken = PushManager.Token;
         Debug.Log($"[HMS] Push token from GetToken is {pushToken}");
+        tokenText.text = "Push Token: " + pushToken;
     }
 
     public void OnNewToken(string token)

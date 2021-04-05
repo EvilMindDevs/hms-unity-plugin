@@ -37,7 +37,6 @@ This is an ongoing project, currently WIP. Feel free to contact us if you'd like
 1. Register your app at Huawei Developer
 2. Import the Plugin to your Unity project
 3. Connect your game with the HMS Kit Managers
-4. 
 
 ### 1 - Register your app at Huawei Developer
 

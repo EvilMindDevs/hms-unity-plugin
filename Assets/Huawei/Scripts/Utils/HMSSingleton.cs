@@ -17,7 +17,7 @@ public class HMSSingleton<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
-    private void Awake()
+    public virtual void Awake()
     {
         DontDestroyOnLoad(this);
         if (instance == null)

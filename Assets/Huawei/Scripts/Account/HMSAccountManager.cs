@@ -59,8 +59,9 @@ namespace HmsPlugin
 
         private AccountAuthService authService, authServiceDrive;
 
-        private void Start()
+        public override void Awake()
         {
+            base.Awake();
             Debug.Log("[HMS]: AWAKE AUTHSERVICE");
             authService = DefaultAuthService;
             //authServiceDrive = DefaultDriveAuthService;

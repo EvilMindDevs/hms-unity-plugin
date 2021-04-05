@@ -23,7 +23,7 @@ namespace HmsPlugin
             Init();
         }
 
-        private void Init()
+        public void Init()
         {
             Debug.Log("HMS GAMES init");
             authService = HMSAccountManager.Instance.GetGameAuthService();
@@ -46,6 +46,7 @@ namespace HmsPlugin
                 InitGameManagers();
             });
         }
+
         public void InitGameManagers()
         {
             //SavedGame Initilize
@@ -56,6 +57,7 @@ namespace HmsPlugin
             //Achievements Initilize
             HMSAchievementsManager.Instance.achievementsClient = Games.GetAchievementsClient();
         }
+
         public void GetPlayerInfo()
         {
             if (HMSAccountManager.Instance.HuaweiId != null)

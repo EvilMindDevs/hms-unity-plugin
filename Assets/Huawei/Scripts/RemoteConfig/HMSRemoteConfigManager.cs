@@ -18,8 +18,9 @@ public class HMSRemoteConfigManager : HMSSingleton<HMSRemoteConfigManager>
 
     IAGConnectConfig agc = null;
 
-    void Start()
+    public override void Awake()
     {
+        base.Awake();
         GetInstance();
         if (HMSRemoteConfigSettings.Instance != null)
         {

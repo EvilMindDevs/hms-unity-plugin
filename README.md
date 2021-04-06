@@ -10,6 +10,10 @@ The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services
 * Huawei Anayltics kit
 * Crash Service
 * Remote Config
+* Auth Service
+* Drive Kit
+* Nearby Service
+* App Messaging
 
 
 ## Requirements
@@ -108,8 +112,7 @@ ____
 ### 4 - Connect your game with any HMS Kit
 
 In order for the plugin to work, you need to select the needed kits Huawei > Kit Settings.
-
-![image](https://user-images.githubusercontent.com/6827857/113576579-7b836900-9628-11eb-89a5-724c7188c819.png)
+![image](https://user-images.githubusercontent.com/6827857/113670088-57259c00-96bd-11eb-86d2-d53e4567fba1.png)
 
 It will automaticly create the GameObject for you and it has DontDestroyOnLoad implemented so you don't need to worry about reference being lost.
 
@@ -237,6 +240,10 @@ Find below the specific information on the included functionalities in this plug
 7. Remote Config
 8. Crash
 9. Cloud DB
+10. Auth Service
+11. Drive Kit
+12. Nearby Service
+13. App Messaging
 
 ### Account
 
@@ -264,15 +271,31 @@ Official Documentation on Analytics Kit: [ Documentation](https://developer.huaw
 
 ### Remote Config
 
-Official Documentation on Analytics Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-get-started)
+Official Documentation on Remote Config: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-get-started)
 
 ### Crash
 
-Official Documentation on Analytics Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-crash-getstarted-0000001055260538)
+Official Documentation on Crash Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-crash-getstarted-0000001055260538)
 
 ### Cloud DB
 
-Official Documentation on Analytics Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-clouddb-introduction)
+Official Documentation on Cloud DB: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-clouddb-introduction)
+
+### Auth Service
+
+Official Documentation on Auth Service: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050048870)
+
+### Drive Kit
+
+Official Documentation on Drive Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050039630)
+
+### Nearby Service
+
+Official Documentation on Nearby Service: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/contactshield--0000001057494465)
+
+### App Messaging
+
+Official Documentation on App Messaging: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-appmessage-introduction-0000001071884501)
 ______
 
 ## License

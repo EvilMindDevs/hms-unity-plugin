@@ -41,7 +41,7 @@ namespace HmsPlugin
         public AddLeaderboardResult AddLeaderboard(string leaderboardName, string id)
         {
             id = id.PreprocessValue();
-            leaderboardName = leaderboardName.PreprocessValue();
+            leaderboardName = leaderboardName.RemoveSpecialCharacters();
 
             var canAdd = CanAdd(id);
             if (canAdd == AddLeaderboardResult.OK)

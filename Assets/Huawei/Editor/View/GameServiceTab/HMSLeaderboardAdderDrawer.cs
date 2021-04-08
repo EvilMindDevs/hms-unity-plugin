@@ -34,7 +34,7 @@ namespace HmsPlugin
 
             _leaderboardManipulator.AddLeaderboard(name, id);
             _leaderboardIdTextField.ClearInput();
-            _leaderboardIdTextField.ClearInput();
+            _leaderboardNameTextField.ClearInput();
         }
     }
 }

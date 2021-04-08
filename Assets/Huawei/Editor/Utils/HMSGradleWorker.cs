@@ -193,7 +193,6 @@ namespace HmsPlugin
                     gradle.AddRange(gradleSettings[settings.Keys.ElementAt(i)]);
                 }
             }
-            //gradle.AddRange(CoreGradles());
             CreateGradleFiles(gradle.ToArray());
         }
 

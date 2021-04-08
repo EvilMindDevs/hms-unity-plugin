@@ -41,7 +41,7 @@ namespace HmsPlugin
         public AddAchievementResult AddAchievement(string achievementName, string id)
         {
             id = id.PreprocessValue();
-            achievementName = achievementName.PreprocessValue();
+            achievementName = achievementName.RemoveSpecialCharacters();
 
             var canAdd = CanAdd(id);
             if (canAdd == AddAchievementResult.OK)

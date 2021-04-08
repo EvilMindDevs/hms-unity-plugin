@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 namespace HmsPlugin
@@ -70,10 +71,11 @@ namespace HmsPlugin
                     file.WriteLine("public class HMSLeaderboardConstants\n{");
                     for (int i = 0; i < _leaderboardSettings.Keys.Count(); i++)
                     {
-                        file.WriteLine($"\tpublic const string {_leaderboardSettings.Values.ElementAt(i).Replace(".", "").Replace(" ", "")} = \"{_leaderboardSettings.Keys.ElementAt(i)}\";");
+                        file.WriteLine($"\tpublic const string {_leaderboardSettings.Values.ElementAt(i)} = \"{_leaderboardSettings.Keys.ElementAt(i)}\";");
                     }
                     file.WriteLine("}");
                 }
+                AssetDatabase.Refresh();
             }
         }
 
@@ -86,7 +88,7 @@ namespace HmsPlugin
                     file.WriteLine("public class HMSAchievementConstants\n{");
                     for (int i = 0; i < _achievementsSettings.Keys.Count(); i++)
                     {
-                        file.WriteLine($"\tpublic const string {_achievementsSettings.Values.ElementAt(i).Replace(".", "").Replace(" ", "")} = \"{_achievementsSettings.Keys.ElementAt(i)}\";");
+                        file.WriteLine($"\tpublic const string {_achievementsSettings.Values.ElementAt(i)} = \"{_achievementsSettings.Keys.ElementAt(i)}\";");
                     }
                     file.WriteLine("}");
                 }

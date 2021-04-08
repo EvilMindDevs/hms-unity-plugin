@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace HmsPlugin
@@ -73,6 +74,17 @@ namespace HmsPlugin
 
             value.Trim(' ');
             value.Trim('\n');
+
+            return value;
+        }
+
+        public static string RemoveSpecialCharacters(this string value)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+
+            value.Replace(" ", "");
+            value.Trim('\n');
+            value = Regex.Replace(value, @"[^0-9a-zA-Z_]+", "");
 
             return value;
         }

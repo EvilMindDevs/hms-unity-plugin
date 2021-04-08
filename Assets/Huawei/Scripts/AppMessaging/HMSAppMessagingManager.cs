@@ -8,16 +8,17 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class HMSAppMessaging : HMSSingleton<HMSAppMessaging>
+public class HMSAppMessagingManager : HMSSingleton<HMSAppMessagingManager>
 {
     public Action<AppMessage> OnMessageClicked { get; set; }
     public Action<AppMessage> OnMessageDisplay { get; set; }
+
     public Action<AppMessage, DismissType> OnMessageDissmiss { get; set; }
     public Action<AAIDResult> AAIDResultAction { get; set; }
 
     void Start()
     {
-        Debug.Log("HMSAppMessaging: Start");
+        Debug.Log("AppMessaging: Start");
 
         HmsInstanceId inst = HmsInstanceId.GetInstance();
         ITask<AAIDResult> idResult = inst.AAID;
@@ -51,9 +52,7 @@ public class HMSAppMessaging : HMSSingleton<HMSAppMessaging>
 
     private void OnMessageDissmissFunction(AppMessage obj, DismissType dismissType)
     {
-        Debug.Log("AppMessaging  OnMessageDissmissFunction" + obj.MessageType);
+        Debug.Log("AppMessaging OnMessageDissmissFunction" + obj.MessageType);
     }
-
-
 }
 

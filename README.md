@@ -298,6 +298,11 @@ Official Documentation on Nearby Service: [ Documentation](https://developer.hua
 Official Documentation on App Messaging: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-appmessage-introduction-0000001071884501)
 ______
 
+
+# Merge from 1.2 to 2.0
+TODO
+
+
 ## License
 
 This project is licensed under the MIT License

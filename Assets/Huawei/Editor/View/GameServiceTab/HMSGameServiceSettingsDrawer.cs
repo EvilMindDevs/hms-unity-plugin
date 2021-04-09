@@ -60,6 +60,16 @@ namespace HmsPlugin
             AddDrawer(new HMSAchievementsAdderDrawer(_achievementManipulator));
             AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Constant Classes", CreateAchievementsConstants).SetWidth(250), new Spacer()));
             AddDrawer(new HorizontalLine());
+
+            AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Utilities").SetBold(true), new HorizontalLine()));
+            AddDrawer(new Space(3));
+            AddDrawer(new Toggle.Toggle("Initialize On Start*", HMSGameServiceSettings.Instance.Settings.GetBool(HMSGameServiceSettings.InitializeOnStart), OnToggleChanged, false).SetTooltip("Game Service will be initialized on Start function."));
+            AddDrawer(new HorizontalLine());
+        }
+
+        private void OnToggleChanged(bool value)
+        {
+            HMSGameServiceSettings.Instance.Settings.SetBool(HMSGameServiceSettings.InitializeOnStart, value);
         }
 
         private void CreateLeaderboardConstants()

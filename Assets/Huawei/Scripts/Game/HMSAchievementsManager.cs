@@ -29,19 +29,6 @@ namespace HmsPlugin
         public Action OnUnlockAchievementSuccess { get; set; }
         public Action<HMSException> OnUnlockAchievementFailure { get; set; }
 
-        public void Start()
-        {
-            Debug.Log("HMS GAMES: Achievements init");
-            if (HMSAccountManager.Instance.HuaweiId != null)
-            {
-                Debug.Log("HMS GAMES: Achievements init");
-                if (HMSAccountManager.Instance.HuaweiId != null)
-                {
-                    achievementsClient = Games.GetAchievementsClient();
-                }
-            }
-        }
-
         public void ShowAchievements()
         {
             if (HMSAccountManager.Instance.HuaweiId != null)

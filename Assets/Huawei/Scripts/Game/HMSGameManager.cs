@@ -18,9 +18,9 @@ namespace HmsPlugin
 
         public void Start()
         {
-            Debug.Log("HMS GAMES: Game init");
             HuaweiMobileServicesUtil.SetApplication();
-            Init();
+            if (HMSGameServiceSettings.Instance.Settings.GetBool(HMSGameServiceSettings.InitializeOnStart))
+                Init();
         }
 
         public void Init()
@@ -38,11 +38,12 @@ namespace HmsPlugin
                 josAppsClient.Init();
                 Debug.Log("HMS GAMES: jossClient init");
                 InitGameManagers();
+                SignInSuccess?.Invoke(result);
 
             }).AddOnFailureListener((exception) =>
             {
                 Debug.Log("HMS GAMES: The app has not been authorized");
-                authService.StartSignIn(SignInSuccess,SignInFailure);
+                authService.StartSignIn(SignInSuccess, SignInFailure);
                 InitGameManagers();
             });
         }
@@ -73,7 +74,6 @@ namespace HmsPlugin
                 {
                     Debug.Log("[HMSP:] GetPlayerInfo Failed");
                     OnGetPlayerInfoFailure?.Invoke(exception);
-
                 });
             }
         }

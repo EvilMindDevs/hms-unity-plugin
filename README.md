@@ -118,14 +118,14 @@ It will automaticly create the GameObject for you and it has DontDestroyOnLoad i
 
 Now you need your game to call the Kit Managers from your game. See below for further instructions.
     
-##### Account Kit (Sign In)
+## Account Kit (Sign In)
 Call login method in order to open the login dialog. Be sure to have AccountKit enabled in Huawei > Kit Settings.
 
 ```csharp
 HMSAccountManager.Instance.SignIn();
 ```
 
-##### Analytics kit
+## Analytics kit
  
 1. Enable Analtics kit from AGC
 2. Update ...Assets\StreamingAssets\agconnect-services.json file
@@ -136,7 +136,7 @@ HMSAccountManager.Instance.SignIn();
 HMSAnalyticsManager.Instance.SendEventWithBundle(eventId, key, value);
   ```
   
-##### In App Purchases
+## In App Purchases
 Register your products via custom editor under Huawei > Kit Settings > IAP tab.
 ![image](https://user-images.githubusercontent.com/6827857/113579431-f8184680-962c-11eb-9bfd-13ec69402536.png)
 Write your product identifier that is in AGC and select product type.
@@ -150,7 +150,7 @@ HMSIAPManager.Instance.CheckIapAvailability();
 HMSIAPManager.Instance.OnCheckIapAvailabilitySuccess += OnCheckIapAvailabilitySuccess;
 HMSIAPManager.Instance.OnCheckIapAvailabilityFailure += OnCheckIapAvailabilityFailure;
 
-private void OnCheckIapAvailabilityFailure(HMSException obj)
+private void OnCheckIapAvailabilityFailure(HMSException ex)
     {
         
     }
@@ -167,9 +167,9 @@ HMSIAPManager.Instance.BuyProduct(string productID)
 
 HMSIAPManager.Instance.OnBuyProductSuccess += OnBuyProductSuccess;
 
-private void OnBuyProductSuccess(PurchaseResultInfo obj)
+private void OnBuyProductSuccess(PurchaseResultInfo result)
     {
-        if(obj.InAppPurchaseData.ProductId == "removeAds")
+        if (result.InAppPurchaseData.ProductId == "removeAds")
         {
             // Write your remove ads logic here.
         }
@@ -189,7 +189,7 @@ You can also use "Create Constant Classes" button to create a class called HMSIA
 HMSIAPManager.Instance.BuyProduct(HMSIAPConstants.testProduct);
 ```
 
-##### Ads kit
+## Ads kit
 There is a custom editor in Huawei > Kit Settings > Ads tab.
 ![image](https://user-images.githubusercontent.com/6827857/113583224-0ae14a00-9632-11eb-83c3-a45ab2699e4f.png)
 
@@ -212,13 +212,19 @@ Then you can call certain functions such as
     }
 ```
 
-##### Game kit
+## Game kit
 There is a custom editor in Huawei > Kit Settings > Game Service tab.
-![image](https://user-images.githubusercontent.com/6827857/113587013-e6d43780-9636-11eb-8621-8fc4d0fdb433.png)
+![image](https://user-images.githubusercontent.com/6827857/114309121-cef52b80-9aee-11eb-93d8-e69fda402ee3.png)
 
-You can also use "Create Constant Classes" button to create a class called HMSLeaderboardConstants or HMSAchievementConstants which will contain all achievements and leaderboards as constants and you can call it from your code. Such as;
+Check "Initialize on Start" checkbox to initialize the Game Service Kit on Start or call HMSGameManager.Instance.Init() in your custom logic.
+
 ```csharp
-    HMSLeaderboardManager.Instance.ReportScore(HMSLeaderboardConstants.topleaderboard,50);
+   HMSGameManager.Instance.Init();
+```
+
+You can use "Create Constant Classes" button to create a class called HMSLeaderboardConstants or HMSAchievementConstants which will contain all achievements and leaderboards as constants and you can call it from your code. Such as;
+```csharp
+    HMSLeaderboardManager.Instance.SubmitScore(HMSLeaderboardConstants.topleaderboard,50);
     HMSAchievementsManager.Instance.RevealAchievement(HMSAchievementConstants.firstshot);
 ```
 

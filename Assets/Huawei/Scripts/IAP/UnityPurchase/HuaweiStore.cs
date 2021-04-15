@@ -156,10 +156,9 @@ namespace HmsPlugin
         {
             if (result == null || result.InAppPurchaseDataList == null) return;
 
-            foreach (string inAppPurchaseData in result.InAppPurchaseDataList)
+            foreach (var inAppPurchaseData in result.InAppPurchaseDataList)
             {
-                InAppPurchaseData inAppPurchaseDataBean             = new InAppPurchaseData(inAppPurchaseData);
-                this.purchasedData[inAppPurchaseDataBean.ProductId] = inAppPurchaseDataBean;
+                this.purchasedData[inAppPurchaseData.ProductId] = inAppPurchaseData;
             }
         }
 
@@ -180,7 +179,7 @@ namespace HmsPlugin
 
                 if(this.purchasedData.TryGetValue(product.ProductId, out var purchaseData))
                 {                    
-                    prodDesc  = new ProductDescription(product.ProductId, prodMeta, CreateReciept(purchaseData),purchaseData.OrderID);
+                    prodDesc  = new ProductDescription(product.ProductId, prodMeta, CreateReceipt(purchaseData),purchaseData.OrderID);
                 }
                 else prodDesc = new ProductDescription(product.ProductId, prodMeta);
 
@@ -190,7 +189,7 @@ namespace HmsPlugin
             this.storeEvents.OnProductsRetrieved(descList);
         }
 
-        string CreateReciept(InAppPurchaseData purchaseData)
+        string CreateReceipt(InAppPurchaseData purchaseData)
         {
             var sb = new StringBuilder(1024);
 
@@ -247,9 +246,8 @@ namespace HmsPlugin
                 switch (purchaseResultInfo.ReturnCode)
                 {
                     case OrderStatusCode.ORDER_STATE_SUCCESS:
-                        var data = new InAppPurchaseData(purchaseResultInfo.InAppPurchaseData);
-                        this.purchasedData[product.storeSpecificId] = data;
-                        storeEvents.OnPurchaseSucceeded(product.storeSpecificId, purchaseResultInfo.InAppDataSignature, data.OrderID );
+                        this.purchasedData[product.storeSpecificId] = purchaseResultInfo.InAppPurchaseData;
+                        storeEvents.OnPurchaseSucceeded(product.storeSpecificId, purchaseResultInfo.InAppDataSignature, purchaseResultInfo.InAppPurchaseData.OrderID );
                         break;
 
                     case OrderStatusCode.ORDER_PRODUCT_OWNED:

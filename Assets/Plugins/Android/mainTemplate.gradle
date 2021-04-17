@@ -1,20 +1,43 @@
-apply plugin: 'com.android.library'
+buildscript {
+	repositories {**ARTIFACTORYREPOSITORY**
+		google()
+		jcenter()
+		maven { url 'https://developer.huawei.com/repo/' }
+	}
+
+	dependencies {
+		classpath 'com.android.tools.build:gradle:3.4.0'
+			classpath 'com.huawei.agconnect:agcp:1.4.2.300'
+			**BUILD_SCRIPT_DEPS**
+	}
+}
+
+allprojects {
+	repositories {**ARTIFACTORYREPOSITORY**
+		google()
+		jcenter()
+		flatDir {
+			dirs 'libs'
+		}
+		maven { url 'https://developer.huawei.com/repo/' }
+	}
+}
+
+apply plugin: 'com.android.application'
 **APPLY_PLUGINS**
+
+apply plugin: 'com.huawei.agconnect'
 
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
-	implementation 'com.huawei.hms:hianalytics:5.0.3.300'
-	implementation 'com.huawei.hms:base:4.0.1.300'
-	implementation 'com.huawei.hms:hwid:4.0.1.300'
-	implementation 'com.huawei.hms:game:4.0.1.300'
-	implementation 'com.huawei.hms:iap:4.0.2.300'
-	implementation 'com.huawei.hms:push:4.0.2.300'
-	implementation 'com.huawei.hms:ads-lite:13.4.29.303'
-	implementation 'com.huawei.hms:ads-consent:3.4.30.301'
+	implementation 'com.huawei.hms:base:5.2.0.300'
 	implementation 'com.android.support:appcompat-v7:28.0.0'
-	implementation 'com.huawei.agconnect:agconnect-crash:1.4.1.300'
 	implementation 'com.huawei.agconnect:agconnect-core:1.4.1.300'
-	implementation 'com.huawei.agconnect:agconnect-remoteconfig:1.4.1.300'
+	implementation 'com.huawei.agconnect:agconnect-auth:1.4.2.301'
+	implementation 'com.huawei.hms:ads-lite:13.4.39.302'
+	implementation 'com.huawei.hms:ads-consent:3.4.39.302'
+	implementation 'com.huawei.hms:ads-identifier:3.4.39.302'
+	implementation 'com.huawei.agconnect:agconnect-cloud-database:1.4.5.300'
 	**DEPS**}
 
 android {
@@ -29,6 +52,7 @@ android {
 	defaultConfig {
 		minSdkVersion **MINSDKVERSION**
 		targetSdkVersion **TARGETSDKVERSION**
+		applicationId '**APPLICATIONID**'
 		ndk {
 			abiFilters **ABIFILTERS**
 		}
@@ -42,7 +66,32 @@ android {
 	}
 
 	aaptOptions {
-		ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
-	}**PACKAGING_OPTIONS**
-}**REPOSITORIES****SOURCE_BUILD_SETUP**
-**EXTERNAL_SOURCES**
+		noCompress = ['.unity3d', '.ress', '.resource', '.obb'**STREAMING_ASSETS**]
+	}**SIGN**
+
+	buildTypes {
+		debug {
+			minifyEnabled **MINIFY_DEBUG**
+			useProguard **PROGUARD_DEBUG**
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'**USER_PROGUARD**
+			jniDebuggable true
+		}
+		release {
+			minifyEnabled **MINIFY_RELEASE**
+			useProguard **PROGUARD_RELEASE**
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'**USER_PROGUARD****SIGNCONFIG**
+		}
+	}**PACKAGING_OPTIONS****SPLITS**
+**BUILT_APK_LOCATION**
+	bundle {
+		language {
+			enableSplit = false
+		}
+		density {
+			enableSplit = false
+		}
+		abi {
+			enableSplit = true
+		}
+	}
+}**SPLITS_VERSION_CODE****REPOSITORIES****SOURCE_BUILD_SETUP**

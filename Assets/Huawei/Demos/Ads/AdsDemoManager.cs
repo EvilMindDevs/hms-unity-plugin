@@ -15,6 +15,7 @@ public class AdsDemoManager : MonoBehaviour
     {
         HMSAdsKitManager.Instance.OnRewarded = OnRewarded;
         HMSAdsKitManager.Instance.OnInterstitialAdClosed = OnInterstitialAdClosed;
+        testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
     }
 
     public void ShowBannerAd()

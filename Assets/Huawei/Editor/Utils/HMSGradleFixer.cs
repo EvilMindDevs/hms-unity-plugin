@@ -12,7 +12,12 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
     {
         string fileName = "agconnect-services.json";
         var filePath = Path.Combine(Application.streamingAssetsPath, fileName);
-        string destPath = Path.Combine(Directory.GetParent(path).FullName + "//launcher", fileName);
+        string destPath = "";
+#if UNITY_2019
+        destPath = Path.Combine(Directory.GetParent(path).FullName + "//launcher", fileName);
+#elif UNITY_2018
+        destPath = Path.Combine(path, fileName);
+#endif
         if (File.Exists(destPath))
             File.Delete(destPath);
         File.Copy(filePath, destPath);

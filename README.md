@@ -22,8 +22,8 @@ Net 4.x
 
 ## Important
 This plugin supports:
-* Unity version 2019, 2020 - Developed in Master Branch
-* Unity version 2018 - Developed in 2018 Branch
+* Unity version 2019, 2020 - Developed in 2.0 Branch
+* Unity version 2018 - Developed in 2.0-2018 Branch
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
 

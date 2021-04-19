@@ -43,7 +43,7 @@ namespace HmsPlugin
             {
                 AssetDatabase.CreateFolder("Assets/Plugins", "Android");
             }
-#if UNITY_2019
+#if UNITY_2019 || UNITY_2020
             CreateMainGradleFile(gradleConfigs);
             CreateLauncherGradleFile(gradleConfigs);
             BaseProjectGradleFile();
@@ -56,7 +56,7 @@ namespace HmsPlugin
 
         private void CreateMainGradleFile(string[] gradleConfigs)
         {
-#if UNITY_2019
+#if UNITY_2019 || UNITY_2020
             using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/mainTemplate.gradle"))
             {
                 file.WriteLine("apply plugin: 'com.android.library'\n**APPLY_PLUGINS**\n");
@@ -89,6 +89,9 @@ namespace HmsPlugin
                 file.Write("lintOptions {\n\t\t");
                 file.Write("abortOnError false\n\t}\n\n\t");
                 file.Write("aaptOptions {\n\t\t");
+#if UNITY_2020_3
+                file.Write("noCompress = ['.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')\n");
+#endif
                 file.Write("ignoreAssetsPattern = \"!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~\"\n\t}**PACKAGING_OPTIONS**\n}");
             #endregion
                 file.Write("**REPOSITORIES****SOURCE_BUILD_SETUP**\n");
@@ -202,19 +205,27 @@ namespace HmsPlugin
                 file.Write("versionCode **VERSIONCODE**\n\t\t");
                 file.Write("versionName '**VERSIONNAME**'\n\t}\n\n\t");
                 file.Write("aaptOptions {\n\t\t");
+#if UNITY_2020_3
+                file.Write("noCompress = ['.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')\n");
+#else
                 file.Write("noCompress = ['.unity3d', '.ress', '.resource', '.obb'**STREAMING_ASSETS**]\n\t\t");
+#endif
                 file.Write("ignoreAssetsPattern = \"!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~\"\n\t}**SIGN**\n\n\t");
                 file.Write("lintOptions {\n\t\t");
                 file.Write("abortOnError false\n\t}\n\n\t");
                 file.Write("buildTypes {\n\t\t");
                 file.Write("debug {\n\t\t\t");
                 file.Write("minifyEnabled **MINIFY_DEBUG**\n\t\t\t");
+#if UNITY_2019 || UNITY_2018
                 file.Write("useProguard **PROGUARD_DEBUG**\n\t\t\t");
+#endif
                 file.Write("proguardFiles getDefaultProguardFile('proguard-android.txt')**SIGNCONFIG**\n\t\t\t");
                 file.Write("jniDebuggable true\n\t\t}\n\t\t");
                 file.Write("release {\n\t\t\t");
                 file.Write("minifyEnabled **MINIFY_RELEASE**\n\t\t\t");
+#if UNITY_2019 || UNITY_2018
                 file.Write("useProguard **PROGUARD_RELEASE**\n\t\t\t");
+#endif
                 file.Write("proguardFiles getDefaultProguardFile('proguard-android.txt')**SIGNCONFIG**\n\t\t}\n\t}");
                 file.Write("**PACKAGING_OPTIONS****SPLITS**\n");
                 file.Write("**BUILT_APK_LOCATION**\n\t");

@@ -41,7 +41,7 @@ namespace HmsPlugin
             _interstitialAdsDisabledDrawer = new DisabledDrawer(_interstitialAdsTextField).SetEnabled(!_enableInterstitialAdsToggle.IsChecked());
 
             _enableRewardedAdsToggle = new Toggle.Toggle("Enable Rewarded Ads", _settings.GetBool(HMSAdsKitSettings.EnableRewardedAd), OnRewardedAdsToggleChanged, false);
-            _rewardedAdsTextField = new TextFieldWithAccept("Interstitial Ad ID", _settings.Get(HMSAdsKitSettings.InterstitialAdID), "Save", OnRewardedAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
+            _rewardedAdsTextField = new TextFieldWithAccept("Rewarded Ad ID", _settings.Get(HMSAdsKitSettings.RewardedAdID), "Save", OnRewardedAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _rewardedAdsDisabledDrawer = new DisabledDrawer(_rewardedAdsTextField).SetEnabled(!_enableRewardedAdsToggle.IsChecked());
 
             _testAdstoggle = new Toggle.Toggle("Use Test Ads*", _settings.GetBool(HMSAdsKitSettings.UseTestAds), OnTestAdsToggleChanged);

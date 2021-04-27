@@ -69,20 +69,6 @@ namespace HmsPlugin
                 file.Write("}\n");
             }
 
-            string filePath = Application.dataPath + "/Plugins/Android/mainTemplate.gradle";
-
-            if (File.Exists(filePath)) // Check if a gradle file already exists.
-            {
-                AddMainTemplateLine(filePath);
-            }
-            else
-            {
-                var mainGradleFilePath = gradleTemplatesPath + @"/mainTemplate.gradle";
-                FileUtil.CopyFileOrDirectory(mainGradleFilePath, filePath);
-                AddMainTemplateLine(filePath);
-            }
-
-
 #elif UNITY_2018
             using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/mainTemplate.gradle"))
             {
@@ -161,20 +147,6 @@ namespace HmsPlugin
 #endif
         }
 
-        private void AddMainTemplateLine(string filePath)
-        {
-            var lines = File.ReadAllLines(filePath);
-
-            var hasLine = lines.Any(p => p == "apply from: 'hmsMainTemplate.gradle'");
-            if (!hasLine)
-            {
-                using (var writer = File.AppendText(filePath))
-                {
-                    writer.WriteLine("apply from: 'hmsMainTemplate.gradle'");
-                }
-            }
-        }
-
         private void CreateLauncherGradleFile(string[] gradleConfigs)
         {
             using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/hmsLauncherTemplate.gradle"))
@@ -188,33 +160,6 @@ namespace HmsPlugin
                 }
 
                 file.Write("\n}\n");
-            }
-
-            string filePath = Application.dataPath + "/Plugins/Android/launcherTemplate.gradle";
-
-            if (File.Exists(filePath)) // Check if a gradle file already exists.
-            {
-                AddLauncherTemplateLine(filePath);
-            }
-            else
-            {
-                var launcherGradleFilePath = gradleTemplatesPath + @"/launcherTemplate.gradle";
-                FileUtil.CopyFileOrDirectory(launcherGradleFilePath, filePath);
-                AddLauncherTemplateLine(filePath);
-            }
-        }
-
-        private void AddLauncherTemplateLine(string filePath)
-        {
-            var lines = File.ReadAllLines(filePath);
-
-            var hasLine = lines.Any(p => p == "apply from: 'hmsLauncherTemplate.gradle'");
-            if (!hasLine)
-            {
-                using (var writer = File.AppendText(filePath))
-                {
-                    writer.WriteLine("apply from: 'hmsLauncherTemplate.gradle'");
-                }
             }
         }
 
@@ -231,33 +176,6 @@ namespace HmsPlugin
                 file.Write("\n\t\t}\n\t}\n\n\t");
                 file.Write("repositories {\n\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n}\n\n");
-            }
-
-            string filePath = Application.dataPath + "/Plugins/Android/baseProjectTemplate.gradle";
-
-            if (File.Exists(filePath)) // Check if a gradle file already exists.
-            {
-                AddBaseProjectTemplateLine(filePath);
-            }
-            else
-            {
-                var baseProjectGradleFilePath = gradleTemplatesPath + @"/baseProjectTemplate.gradle";
-                FileUtil.CopyFileOrDirectory(baseProjectGradleFilePath, filePath);
-                AddBaseProjectTemplateLine(filePath);
-            }
-        }
-
-        private void AddBaseProjectTemplateLine(string filePath)
-        {
-            var lines = File.ReadAllLines(filePath);
-
-            var hasLine = lines.Any(p => p == "apply from: 'hmsBaseProjectTemplate.gradle'");
-            if (!hasLine)
-            {
-                using (var writer = File.AppendText(filePath))
-                {
-                    writer.WriteLine("apply from: 'hmsBaseProjectTemplate.gradle'");
-                }
             }
         }
 

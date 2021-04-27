@@ -16,6 +16,8 @@ namespace HmsPlugin
         private Dictionary<string, string[]> gradleSettings;
         public int callbackOrder => 0;
 
+        private string gradleTemplatesPath = EditorApplication.applicationContentsPath + @"\PlaybackEngines\AndroidPlayer\Tools\GradleTemplates";
+
         public HMSGradleWorker()
         {
             gradleSettings = new Dictionary<string, string[]>()
@@ -47,7 +49,7 @@ namespace HmsPlugin
             CreateMainGradleFile(gradleConfigs);
             CreateLauncherGradleFile(gradleConfigs);
             BaseProjectGradleFile();
-            
+
 #elif UNITY_2018
             CreateMainGradleFile(gradleConfigs);
 #endif
@@ -57,211 +59,74 @@ namespace HmsPlugin
         private void CreateMainGradleFile(string[] gradleConfigs)
         {
 #if UNITY_2019 || UNITY_2020
-            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/mainTemplate.gradle"))
+            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/hmsMainTemplate.gradle"))
             {
-                file.WriteLine("apply plugin: 'com.android.library'\n**APPLY_PLUGINS**\n");
-
-            #region Dependencies
                 file.Write("dependencies {\n\t");
-                file.Write("implementation fileTree(dir: 'libs', include: ['*.jar'])\n\t");
                 for (int i = 0; i < gradleConfigs.Length; i++)
                 {
                     file.Write(AddDependency(gradleConfigs[i]));
                 }
-                file.Write("**DEPS**}\n\n");
-            #endregion
-
-            #region Android Settings
-                file.Write("android {\n\t");
-                file.Write("compileSdkVersion **APIVERSION**\n\t");
-                file.Write("buildToolsVersion '**BUILDTOOLS**'\n\n\t");
-                file.Write("compileOptions {\n\t\t");
-                file.Write("sourceCompatibility JavaVersion.VERSION_1_8\n\t\t");
-                file.Write("targetCompatibility JavaVersion.VERSION_1_8\n\t}\n\n\t");
-                file.Write("defaultConfig {\n\t\t");
-                file.Write("minSdkVersion **MINSDKVERSION**\n\t\t");
-                file.Write("targetSdkVersion **TARGETSDKVERSION**\n\t\t");
-                file.Write("ndk {\n\t\t\t");
-                file.Write("abiFilters **ABIFILTERS**\n\t\t}\n\t\t");
-                file.Write("versionCode **VERSIONCODE**\n\t\t");
-                file.Write("versionName '**VERSIONNAME**'\n\t\t");
-                file.Write("consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**\n\t}\n\n\t");
-                file.Write("lintOptions {\n\t\t");
-                file.Write("abortOnError false\n\t}\n\n\t");
-                file.Write("aaptOptions {\n\t\t");
-#if UNITY_2020_3
-                file.Write("noCompress = ['.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')\n");
-#endif
-                file.Write("ignoreAssetsPattern = \"!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~\"\n\t}**PACKAGING_OPTIONS**\n}");
-            #endregion
-                file.Write("**REPOSITORIES****SOURCE_BUILD_SETUP**\n");
-                file.Write("**EXTERNAL_SOURCES**");
+                file.Write("}\n");
             }
+
 #elif UNITY_2018
-            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/mainTemplate.gradle"))
+            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/hmsMainTemplate.gradle"))
             {
                 file.Write("buildscript {\n\t");
-                file.Write("repositories {**ARTIFACTORYREPOSITORY**\n\t\t");
+                file.Write("repositories {\n\t\t");
                 file.Write("google()\n\t\t");
                 file.Write("jcenter()\n\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n\n\t");
                 file.Write("dependencies {\n\t\t");
-                file.Write(AddClasspath("com.android.tools.build:gradle:3.4.0"));
                 file.Write(AddClasspath("com.huawei.agconnect:agcp:1.4.2.300"));
-                file.Write("**BUILD_SCRIPT_DEPS**\n\t}\n}\n\n");
+                file.Write("\t}\n}\n\n");
                 file.Write("allprojects {\n\t");
-                file.Write("repositories {**ARTIFACTORYREPOSITORY**\n\t\t");
+                file.Write("repositories {\n\t\t");
                 file.Write("google()\n\t\t");
                 file.Write("jcenter()\n\t\t");
-                file.Write("flatDir {\n\t\t\t");
-                file.Write("dirs 'libs'\n\t\t}\n\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n}\n\n");
 
-                file.WriteLine("apply plugin: 'com.android.application'\n**APPLY_PLUGINS**\n");
                 file.WriteLine("apply plugin: 'com.huawei.agconnect'\n");
 
-                #region Dependencies
                 file.Write("dependencies {\n\t");
-                file.Write("implementation fileTree(dir: 'libs', include: ['*.jar'])\n\t");
                 for (int i = 0; i < gradleConfigs.Length; i++)
                 {
                     file.Write(AddDependency(gradleConfigs[i]));
                 }
-                file.Write("**DEPS**}\n\n");
-                #endregion
-
-                #region Android Settings
-                file.Write("android {\n\t");
-                file.Write("compileSdkVersion **APIVERSION**\n\t");
-                file.Write("buildToolsVersion '**BUILDTOOLS**'\n\n\t");
-                file.Write("compileOptions {\n\t\t");
-                file.Write("sourceCompatibility JavaVersion.VERSION_1_8\n\t\t");
-                file.Write("targetCompatibility JavaVersion.VERSION_1_8\n\t}\n\n\t");
-                file.Write("defaultConfig {\n\t\t");
-                file.Write("minSdkVersion **MINSDKVERSION**\n\t\t");
-                file.Write("targetSdkVersion **TARGETSDKVERSION**\n\t\t");
-                file.Write("applicationId '**APPLICATIONID**'\n\t\t");
-                file.Write("ndk {\n\t\t\t");
-                file.Write("abiFilters **ABIFILTERS**\n\t\t}\n\t\t");
-                file.Write("versionCode **VERSIONCODE**\n\t\t");
-                file.Write("versionName '**VERSIONNAME**'\n\t\t");
-                file.Write("consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**\n\t}\n\n\t");
-                file.Write("lintOptions {\n\t\t");
-                file.Write("abortOnError false\n\t}\n\n\t");
-                file.Write("aaptOptions {\n\t\t");
-                file.Write("noCompress = ['.unity3d', '.ress', '.resource', '.obb'**STREAMING_ASSETS**]\n\t}**SIGN**\n\n\t");
-                file.Write("buildTypes {\n\t\t");
-                file.Write("debug {\n\t\t\t");
-                file.Write("minifyEnabled **MINIFY_DEBUG**\n\t\t\t");
-                file.Write("useProguard **PROGUARD_DEBUG**\n\t\t\t");
-                file.Write("proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'**USER_PROGUARD**\n\t\t\t");
-                file.Write("jniDebuggable true\n\t\t}\n\t\t");
-                file.Write("release {\n\t\t\t");
-                file.Write("minifyEnabled **MINIFY_RELEASE**\n\t\t\t");
-                file.Write("useProguard **PROGUARD_RELEASE**\n\t\t\t");
-                file.Write("proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'**USER_PROGUARD****SIGNCONFIG**\n\t\t}\n\t}");
-                file.Write("**PACKAGING_OPTIONS****SPLITS**\n");
-                file.Write("**BUILT_APK_LOCATION**\n\t");
-                file.Write("bundle {\n\t\t");
-                file.Write("language {\n\t\t\t");
-                file.Write("enableSplit = false\n\t\t}\n\t\t");
-                file.Write("density {\n\t\t\t");
-                file.Write("enableSplit = false\n\t\t}\n\t\t");
-                file.Write("abi {\n\t\t\t");
-                file.Write("enableSplit = true\n\t\t}\n\t}\n}");
-                file.Write("**SPLITS_VERSION_CODE****REPOSITORIES****SOURCE_BUILD_SETUP**");
-                #endregion
+                file.Write("}\n\n");
             }
 #endif
         }
 
         private void CreateLauncherGradleFile(string[] gradleConfigs)
         {
-            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/launcherTemplate.gradle"))
+            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/hmsLauncherTemplate.gradle"))
             {
-                file.Write("apply plugin: 'com.android.application'\n");
                 file.Write("apply plugin: 'com.huawei.agconnect'\n\n");
                 file.Write("dependencies {\n\t");
-                file.Write("implementation project(':unityLibrary')\n\n\t");
 
                 for (int i = 0; i < gradleConfigs.Length; i++)
                 {
                     file.Write(AddDependency(gradleConfigs[i]));
                 }
 
-                file.Write("\n\t}\n\n");
-                file.Write("android {\n\t");
-                file.Write("compileSdkVersion **APIVERSION**\n\t");
-                file.Write("buildToolsVersion '**BUILDTOOLS**'\n\n\t");
-                file.Write("compileOptions {\n\t\t");
-                file.Write("sourceCompatibility JavaVersion.VERSION_1_8\n\t\t");
-                file.Write("targetCompatibility JavaVersion.VERSION_1_8\n\t}\n\n\t");
-                file.Write("defaultConfig {\n\t\t");
-                file.Write("minSdkVersion **MINSDKVERSION**\n\t\t");
-                file.Write("targetSdkVersion **TARGETSDKVERSION**\n\t\t");
-                file.Write("applicationId '**APPLICATIONID**'\n\t\t");
-                file.Write("ndk {\n\t\t\t");
-                file.Write("abiFilters **ABIFILTERS**\n\t\t}\n\t\t");
-                file.Write("versionCode **VERSIONCODE**\n\t\t");
-                file.Write("versionName '**VERSIONNAME**'\n\t}\n\n\t");
-                file.Write("aaptOptions {\n\t\t");
-#if UNITY_2020_3
-                file.Write("noCompress = ['.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')\n");
-#else
-                file.Write("noCompress = ['.unity3d', '.ress', '.resource', '.obb'**STREAMING_ASSETS**]\n\t\t");
-#endif
-                file.Write("ignoreAssetsPattern = \"!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~\"\n\t}**SIGN**\n\n\t");
-                file.Write("lintOptions {\n\t\t");
-                file.Write("abortOnError false\n\t}\n\n\t");
-                file.Write("buildTypes {\n\t\t");
-                file.Write("debug {\n\t\t\t");
-                file.Write("minifyEnabled **MINIFY_DEBUG**\n\t\t\t");
-#if UNITY_2019 || UNITY_2018
-                file.Write("useProguard **PROGUARD_DEBUG**\n\t\t\t");
-#endif
-                file.Write("proguardFiles getDefaultProguardFile('proguard-android.txt')**SIGNCONFIG**\n\t\t\t");
-                file.Write("jniDebuggable true\n\t\t}\n\t\t");
-                file.Write("release {\n\t\t\t");
-                file.Write("minifyEnabled **MINIFY_RELEASE**\n\t\t\t");
-#if UNITY_2019 || UNITY_2018
-                file.Write("useProguard **PROGUARD_RELEASE**\n\t\t\t");
-#endif
-                file.Write("proguardFiles getDefaultProguardFile('proguard-android.txt')**SIGNCONFIG**\n\t\t}\n\t}");
-                file.Write("**PACKAGING_OPTIONS****SPLITS**\n");
-                file.Write("**BUILT_APK_LOCATION**\n\t");
-                file.Write("bundle {\n\t\t");
-                file.Write("language {\n\t\t\t");
-                file.Write("enableSplit = false\n\t\t}\n\t\t");
-                file.Write("density {\n\t\t\t");
-                file.Write("enableSplit = false\n\t\t}\n\t\t");
-                file.Write("abi {\n\t\t\t");
-                file.Write("enableSplit = true\n\t\t}\n\t}\n}");
-                file.Write("**SPLITS_VERSION_CODE****LAUNCHER_SOURCE_BUILD_SETUP**");
+                file.Write("\n}\n");
             }
         }
 
         private void BaseProjectGradleFile()
         {
-            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/baseProjectTemplate.gradle"))
+            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/hmsBaseProjectTemplate.gradle"))
             {
                 file.Write("allprojects {\n\t");
                 file.Write("buildscript {\n\t\t");
-                file.Write("repositories {**ARTIFACTORYREPOSITORY**\n\t\t\t");
-                file.Write("google()\n\t\t\t");
-                file.Write("jcenter()\n\t\t\t");
+                file.Write("repositories {\n\t\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t\t}\n\n\t\t");
                 file.Write("dependencies {\n\t\t\t");
-                file.Write(AddClasspath("com.android.tools.build:gradle:3.4.0"));
                 file.Write(AddClasspath("com.huawei.agconnect:agcp:1.4.2.300"));
-                file.Write("**BUILD_SCRIPT_DEPS**\n\t\t}\n\t}\n\n\t");
-                file.Write("repositories {**ARTIFACTORYREPOSITORY**\n\t\t");
-                file.Write("google()\n\t\t");
-                file.Write("jcenter()\n\t\t");
-                file.Write("flatDir {\n\t\t\t");
-                file.Write("dirs \"${project(':unityLibrary').projectDir}/libs\"\n\t\t}\n\t\t");
+                file.Write("\n\t\t}\n\t}\n\n\t");
+                file.Write("repositories {\n\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n}\n\n");
-                file.Write("task clean(type: Delete) {\n\t");
-                file.Write("delete rootProject.buildDir\n}");
             }
         }
 

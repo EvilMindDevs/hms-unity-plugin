@@ -39,7 +39,7 @@ namespace HmsPlugin
         {
             if (playersClient == null && HuaweiId != null)
             {
-                playersClient = Games.GetArchiveClient(HuaweiId);
+                playersClient = Games.GetArchiveClient();
                 Debug.Log("[HMSP:] GetArchivesClient Success");
             }
             return playersClient;
@@ -78,7 +78,7 @@ namespace HmsPlugin
             archiveContents.Set(arrayOfByte1);
             //4- Call the ArchivesClient.addArchive method to submit the archive.
             bool isSupportCache = true;
-            ITask<ArchiveSummary> addArchiveTask = Games.GetArchiveClient(HuaweiId).AddArchive(archiveContents, archiveSummaryUpdate, isSupportCache);
+            ITask<ArchiveSummary> addArchiveTask = Games.GetArchiveClient().AddArchive(archiveContents, archiveSummaryUpdate, isSupportCache);
             ArchiveSummary archiveSummary = null;
             addArchiveTask.AddOnSuccessListener((result) =>
             {
@@ -145,7 +145,7 @@ namespace HmsPlugin
                 {
                     return;
                 }
-                ITask<OperationResult> task = Games.GetArchiveClient(HuaweiId).UpdateArchive(serverArchive);
+                ITask<OperationResult> task = Games.GetArchiveClient().UpdateArchive(serverArchive);
                 task.AddOnSuccessListener((result) =>
                 {
                     Debug.Log("OperationResult:" + ((operationResult == null) ? "" : operationResult.Different.ToString()));
@@ -168,7 +168,7 @@ namespace HmsPlugin
         public void UpdateSavedGame(String archiveID,ArchiveSummaryUpdate archiveSummaryUpdate, ArchiveDetails archiveContents)
         {
             String archiveId = archiveID;
-            ITask<OperationResult> taskUpdateArchive = Games.GetArchiveClient(HuaweiId).UpdateArchive(archiveId, archiveSummaryUpdate, archiveContents);
+            ITask<OperationResult> taskUpdateArchive = Games.GetArchiveClient().UpdateArchive(archiveId, archiveSummaryUpdate, archiveContents);
             taskUpdateArchive.AddOnSuccessListener((archiveDataOrConflict) =>
             {
                 Debug.Log("[HMS:] taskUpdateArchive" + archiveDataOrConflict.Difference);
@@ -186,11 +186,11 @@ namespace HmsPlugin
             ITask<OperationResult> taskLoadSavedGame;
             if (conflictPolicy == -1)
             {
-                taskLoadSavedGame = Games.GetArchiveClient(HuaweiId).LoadArchiveDetails(archiveId);
+                taskLoadSavedGame = Games.GetArchiveClient().LoadArchiveDetails(archiveId);
             }
             else
             {
-                taskLoadSavedGame = Games.GetArchiveClient(HuaweiId).LoadArchiveDetails(archiveId, conflictPolicy);
+                taskLoadSavedGame = Games.GetArchiveClient().LoadArchiveDetails(archiveId, conflictPolicy);
             }
             taskLoadSavedGame.AddOnSuccessListener((archiveDataOrConflict) =>
             {
@@ -205,7 +205,7 @@ namespace HmsPlugin
         public void DeleteSavedGames(ArchiveSummary archiveSummary)
         {
             // Deleting a Saved Games
-            ITask<String> removeArchiveTask = Games.GetArchiveClient(HuaweiId).RemoveArchive(archiveSummary);
+            ITask<String> removeArchiveTask = Games.GetArchiveClient().RemoveArchive(archiveSummary);
             removeArchiveTask.AddOnSuccessListener((result) =>
             {
                 String deletedArchiveId = result;
@@ -227,7 +227,7 @@ namespace HmsPlugin
         {
             if (archive.Summary.HasThumbnail())
             {
-                ITask<AndroidBitmap> coverImageTask = Games.GetArchiveClient(HuaweiId).GetThumbnail(archive.Summary.Id);
+                ITask<AndroidBitmap> coverImageTask = Games.GetArchiveClient().GetThumbnail(archive.Summary.Id);
                 coverImageTask.AddOnSuccessListener((result) =>
                 {
                     Debug.Log("[HMS:] AndroidBitmap put it UI");

@@ -6,14 +6,15 @@ namespace HuaweiConstants
 {
     public static class IAP
     {
-        public enum IapType :int
+        public enum IapType : int
         {
             CONSUMABLE = 0,
             NON_CONSUMABLE = 1,
             SUBSCRIPTION = 2
         }
-        
+
     }
+
 	public static class UnityBannerAdPositionCode
     {
         public enum UnityBannerAdPositionCodeType : int

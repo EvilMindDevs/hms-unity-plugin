@@ -1,4 +1,4 @@
-﻿# define DEBUG
+﻿
 
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.IAP;
@@ -85,9 +85,8 @@ namespace HmsPlugin
             {
                 ObtainProductInfo(new List<string>(productIdSubscriptionList), 2);
             }
-          
         }
-		private void ObtainProductInfo(IList<string> productIdNonConsumablesList, int priceType)
+        private void ObtainProductInfo(IList<string> productIdNonConsumablesList, int priceType)
         {
 
             if (iapAvailable != true)
@@ -130,7 +129,7 @@ namespace HmsPlugin
             task.AddOnSuccessListener((result) =>
             {
                 Debug.Log("HMSP: recoverPurchases");
-                foreach (string inAppPurchaseData in result.InAppPurchaseDataList)
+                foreach (InAppPurchaseData inAppPurchaseData in result.InAppPurchaseDataList)
                 {
                     ConsumePurchaseWithPurchaseData(inAppPurchaseData);
                     Debug.Log("HMSP: recoverPurchases result> " + result.ReturnCode);
@@ -151,10 +150,9 @@ namespace HmsPlugin
             ConsumePurchaseWithPurchaseData(purchaseResultInfo.InAppPurchaseData);
         }
 
-        public void ConsumePurchaseWithPurchaseData(string inAppPurchaseData)
+        public void ConsumePurchaseWithPurchaseData(InAppPurchaseData inAppPurchaseData)
         {
-            var inAppPurchaseDataBean = new InAppPurchaseData(inAppPurchaseData);
-            string purchaseToken = inAppPurchaseDataBean.PurchaseToken;
+            string purchaseToken = inAppPurchaseData.PurchaseToken;
             ConsumePurchaseWithToken(purchaseToken);
         }
 

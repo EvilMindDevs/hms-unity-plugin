@@ -15,6 +15,7 @@ public class CrashManager : MonoBehaviour
         agConnectCrash.EnableCrashCollection(value);
         Debug.Log($"[HMS]: Crash enableCrashCollection {value}");
     }
+
     public void testIt()
     {
         Debug.Log("[HMS]: Crash testIt");

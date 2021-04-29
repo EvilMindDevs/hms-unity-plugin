@@ -3,12 +3,16 @@
 The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services in your Unity game:
 
 * Huawei Account Kit
-* In App purchases: Consumable and non consumables.
-* Ads: Interstitial,banner and rewarded videos
+* In App purchases: Consumable, non consumables and Subscriptions.
+* Ads: Interstitial, rewarded videos and banner
 * Push notifications
 * Game leaderboards and achievements
 * Huawei Anayltics kit
 * Crash Service
+* Remote Config
+* Auth Service
+* Cloud DB
+
 
 ## Requirements
 Android SDK min 21
@@ -19,9 +23,13 @@ This plugin supports:
 * Unity version 2019 - Developed in Master Branch
 * Unity version 2018 - Developed in 2018 Branch
 
-**If analytics kit will not used, delete "agconnect-credential-1.0.0.300.aar" and "hianalytics-5.0.3.300.aar" from "...Assets\Plugins\Android"**
+
+**If analytics kit will not used, delete "agconnect-credential-1.0.0.300.aar" and  "hianalytics-5.0.3.300.aar" from "...Assets\Plugins\Android"**
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
+
+## Troubleshooting
+Please check our [wiki page](https://github.com/EvilMindDevs/hms-unity-plugin/wiki/Troubleshooting)
 
 ## Status
 This is an ongoing project, currently WIP. Feel free to contact us if you'd like to collaborate and use Github issues for any problems you might encounter. We'd try to answer in no more than a working day.
@@ -142,6 +150,8 @@ And your manifest should look now like these:
         <meta-data android:name="com.huawei.hms.client.appid" android:value="appid=9999" />
         <meta-data android:name="com.huawei.hms.client.cpid" android:value="cpid=1234567890" />
         <meta-data android:name="com.huawei.hms.version" android:value="2.6.1" />
+        <provider android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
+ 
         <provider android:name="com.huawei.hms.update.provider.UpdateProvider" android:authorities="com.yourco.huawei.hms.update.provider" android:exported="false" android:grantUriPermissions="true" />
         <provider android:name="com.huawei.updatesdk.fileprovider.UpdateSdkFileProvider" android:authorities="com.yourco.huawei.updateSdk.fileProvider" android:exported="false" android:grantUriPermissions="true" />
         </application>
@@ -177,6 +187,31 @@ Call login method in order to open the login dialog
 hmsManager.Login();
 ```
 
+#### Analytics kit
+ 
+1. Enable Analtics kit from AGC
+2. Update ...Assets\Plugins\Android\assets\agconnect-services.json file
+3. Add this provider to AndroidManifest.xml
+
+```xml
+<provider android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
+ ```
+ 
+ Invoke analytics funtions:
+ 
+``` csharp
+AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
+
+HiAnalyticsTools.EnableLog();
+instance = HiAnalytics.GetInstance(activity);
+instance.SetAnalyticsEnabled(true);
+Bundle bundleUnity = new Bundle();
+bundleUnity.PutString(key, value);
+instance.OnEvent(eventID, bundleUnity);
+  ```
+  4. Analytics kit should be initialized in "onCreate()" for that we use ...Assets\Plugins\Android\assets\agconnect-services.json file.
+  
 ##### In App Purchases
 You can retrieve a products information from App Gallery:
 * Name
@@ -242,6 +277,10 @@ Official Documentation on Push Kit: [Documentation](https://developer.huawei.com
 
 Official Documentation on Game Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/game-introduction-v4)
 
+
+### Analytics
+
+Official Documentation on Analytics Kit: [ Documentation](https://developer.huawei.com/consumer/en/hms/huawei-analyticskit)
 ______
 
 ## License

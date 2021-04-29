@@ -1,0 +1,5 @@
+<remoteconfig>
+    <value key="test1">test</value>
+    <value key="test2">true</value>
+    <value key="test3">123</value>
+</remoteconfig>

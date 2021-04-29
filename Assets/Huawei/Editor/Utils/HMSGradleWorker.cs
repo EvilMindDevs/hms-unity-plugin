@@ -70,79 +70,30 @@ namespace HmsPlugin
             }
 
 #elif UNITY_2018
-            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/mainTemplate.gradle"))
+            using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/hmsMainTemplate.gradle"))
             {
                 file.Write("buildscript {\n\t");
-                file.Write("repositories {**ARTIFACTORYREPOSITORY**\n\t\t");
+                file.Write("repositories {\n\t\t");
                 file.Write("google()\n\t\t");
                 file.Write("jcenter()\n\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n\n\t");
                 file.Write("dependencies {\n\t\t");
-                file.Write(AddClasspath("com.android.tools.build:gradle:3.4.0"));
                 file.Write(AddClasspath("com.huawei.agconnect:agcp:1.4.2.300"));
-                file.Write("**BUILD_SCRIPT_DEPS**\n\t}\n}\n\n");
+                file.Write("\t}\n}\n\n");
                 file.Write("allprojects {\n\t");
-                file.Write("repositories {**ARTIFACTORYREPOSITORY**\n\t\t");
+                file.Write("repositories {\n\t\t");
                 file.Write("google()\n\t\t");
                 file.Write("jcenter()\n\t\t");
-                file.Write("flatDir {\n\t\t\t");
-                file.Write("dirs 'libs'\n\t\t}\n\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n}\n\n");
 
-                file.WriteLine("apply plugin: 'com.android.application'\n**APPLY_PLUGINS**\n");
                 file.WriteLine("apply plugin: 'com.huawei.agconnect'\n");
 
-            #region Dependencies
                 file.Write("dependencies {\n\t");
-                file.Write("implementation fileTree(dir: 'libs', include: ['*.jar'])\n\t");
                 for (int i = 0; i < gradleConfigs.Length; i++)
                 {
                     file.Write(AddDependency(gradleConfigs[i]));
                 }
-                file.Write("**DEPS**}\n\n");
-            #endregion
-
-            #region Android Settings
-                file.Write("android {\n\t");
-                file.Write("compileSdkVersion **APIVERSION**\n\t");
-                file.Write("buildToolsVersion '**BUILDTOOLS**'\n\n\t");
-                file.Write("compileOptions {\n\t\t");
-                file.Write("sourceCompatibility JavaVersion.VERSION_1_8\n\t\t");
-                file.Write("targetCompatibility JavaVersion.VERSION_1_8\n\t}\n\n\t");
-                file.Write("defaultConfig {\n\t\t");
-                file.Write("minSdkVersion **MINSDKVERSION**\n\t\t");
-                file.Write("targetSdkVersion **TARGETSDKVERSION**\n\t\t");
-                file.Write("applicationId '**APPLICATIONID**'\n\t\t");
-                file.Write("ndk {\n\t\t\t");
-                file.Write("abiFilters **ABIFILTERS**\n\t\t}\n\t\t");
-                file.Write("versionCode **VERSIONCODE**\n\t\t");
-                file.Write("versionName '**VERSIONNAME**'\n\t\t");
-                file.Write("consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**\n\t}\n\n\t");
-                file.Write("lintOptions {\n\t\t");
-                file.Write("abortOnError false\n\t}\n\n\t");
-                file.Write("aaptOptions {\n\t\t");
-                file.Write("noCompress = ['.unity3d', '.ress', '.resource', '.obb'**STREAMING_ASSETS**]\n\t}**SIGN**\n\n\t");
-                file.Write("buildTypes {\n\t\t");
-                file.Write("debug {\n\t\t\t");
-                file.Write("minifyEnabled **MINIFY_DEBUG**\n\t\t\t");
-                file.Write("useProguard **PROGUARD_DEBUG**\n\t\t\t");
-                file.Write("proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'**USER_PROGUARD**\n\t\t\t");
-                file.Write("jniDebuggable true\n\t\t}\n\t\t");
-                file.Write("release {\n\t\t\t");
-                file.Write("minifyEnabled **MINIFY_RELEASE**\n\t\t\t");
-                file.Write("useProguard **PROGUARD_RELEASE**\n\t\t\t");
-                file.Write("proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-unity.txt'**USER_PROGUARD****SIGNCONFIG**\n\t\t}\n\t}");
-                file.Write("**PACKAGING_OPTIONS****SPLITS**\n");
-                file.Write("**BUILT_APK_LOCATION**\n\t");
-                file.Write("bundle {\n\t\t");
-                file.Write("language {\n\t\t\t");
-                file.Write("enableSplit = false\n\t\t}\n\t\t");
-                file.Write("density {\n\t\t\t");
-                file.Write("enableSplit = false\n\t\t}\n\t\t");
-                file.Write("abi {\n\t\t\t");
-                file.Write("enableSplit = true\n\t\t}\n\t}\n}");
-                file.Write("**SPLITS_VERSION_CODE****REPOSITORIES****SOURCE_BUILD_SETUP**");
-            #endregion
+                file.Write("}\n\n");
             }
 #endif
         }

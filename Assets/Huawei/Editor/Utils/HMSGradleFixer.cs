@@ -32,14 +32,17 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/build.gradle"))
             writer.WriteLine("apply from: 'hmsBaseProjectTemplate.gradle'");
 
-
 #elif UNITY_2018
+        string hmsMainTemplatePath = Application.dataPath + @"/Plugins/Android/hmsMainTemplate.gradle";
+        var lines = File.ReadAllLines(hmsMainTemplatePath);
+
+        File.AppendAllLines(path + "/build.gradle", lines);
+
+        //FileUtil.CopyFileOrDirectory(hmsMainTemplatePath, Path.GetFullPath(path) + @"/hmsMainTemplate.gradle");
         destPath = Path.Combine(path, fileName);
 #endif
         if (File.Exists(destPath))
             FileUtil.DeleteFileOrDirectory(destPath);
         FileUtil.CopyFileOrDirectory(filePath, destPath);
-
-
     }
 }

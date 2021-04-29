@@ -42,7 +42,7 @@ namespace HmsPlugin
             {
                 accountManager.HuaweiId = result;
                 Debug.Log("HMS GAMES: Setted app");
-                IJosAppsClient josAppsClient = JosApps.GetJosAppsClient(accountManager.HuaweiId);
+                IJosAppsClient josAppsClient = JosApps.GetJosAppsClient();
                 Debug.Log("HMS GAMES: jossClient");
                 josAppsClient.Init();
                 Debug.Log("HMS GAMES: jossClient init");
@@ -61,13 +61,13 @@ namespace HmsPlugin
             saveGameManager.SavedGameAuth();
             saveGameManager.GetArchivesClient();
             //Leaderboard Initilize
-            leaderboardManager.rankingsClient = Games.GetRankingsClient(accountManager.HuaweiId);
+            leaderboardManager.rankingsClient = Games.GetRankingsClient();
         }
         public void GetPlayerInfo()
         {
             if (accountManager.HuaweiId != null)
             {
-                IPlayersClient playersClient = Games.GetPlayersClient(accountManager.HuaweiId);
+                IPlayersClient playersClient = Games.GetPlayersClient();
                 ITask<Player> task = playersClient.CurrentPlayer;
                 task.AddOnSuccessListener((result) =>
                 {

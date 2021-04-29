@@ -12,7 +12,9 @@ The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services
 * Remote Config
 * Auth Service
 * Cloud DB
-
+* Drive Kit
+* Nearby Service
+* App Messaging
 
 ## Requirements
 Android SDK min 21
@@ -20,11 +22,8 @@ Net 4.x
 
 ## Important
 This plugin supports:
-* Unity version 2019 - Developed in Master Branch
+* Unity version 2019/2020 - Developed in Master Branch
 * Unity version 2018 - Developed in 2018 Branch
-
-
-**If analytics kit will not used, delete "agconnect-credential-1.0.0.300.aar" and  "hianalytics-5.0.3.300.aar" from "...Assets\Plugins\Android"**
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
 
@@ -33,9 +32,6 @@ Please check our [wiki page](https://github.com/EvilMindDevs/hms-unity-plugin/wi
 
 ## Status
 This is an ongoing project, currently WIP. Feel free to contact us if you'd like to collaborate and use Github issues for any problems you might encounter. We'd try to answer in no more than a working day.
-
-### Expected soon features
-* Analytics integration
 
 ## Connect your game Huawei Mobile Services in 5 easy steps
 
@@ -108,94 +104,44 @@ To import the plugin:
 5. Select Import and Unity will deploy the Unity plugin into your Assets Folder
 ____
 
-### 3 - Configure your Manifest
+### 3 - Update your agconnect-services.json file.
 
-In order for the plugin to work you need to add some information to your Android's Manifest. Make sure you have this information before proceeding.
-
-* App ID. The app's unique ID.
-* CPID. The developer's unique ID.
-* Package Name
-
-Get all this info from [Huawei Developer](https://developer.huawei.com/consumer/en/). Open the developers console go to My Services > HUAWEI IAP, and click on your apps name to enter the Detail page.
-
-![Detail page](http://evil-mind.com/huawei/images/appInfo.png "Detail page")
+In order for the plugin to work, some kits are in need of agconnect-json file. Please download your latest config file from AGC and import into Assets/StreamingAssets folder.
+![image](https://user-images.githubusercontent.com/6827857/113585485-f488bd80-9634-11eb-8b1e-6d0b5e06ecf0.png)
 ____
 
-#### How to configure the Manifest
-
-1. Open Unity and choose **Huawei> App Gallery> Configure** The manifest configuration dialog will appear.
-
-    ![Editor Tool](http://evil-mind.com/huawei/images/unityMenu.png "Editor tool")
-
-2. Fill out the fields: AppID, CPID and package name.
-3. Click Configure Manifest
-    The plugin will include all the necessary information inside the Android Manifest
-    * Permissions
-    * Meta Data
-    * Providers
-And your manifest should look now like these:
-
-``` xml
-<?xml version="1.0" encoding="utf-8"?>
-    <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.unity3d.player" xmlns:tools="http://schemas.android.com/tools" android:installLocation="preferExternal">
-        <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true" android:anyDensity="true" />
-        <application android:theme="@style/UnityThemeSelector" android:icon="@mipmap/app_icon" android:label="@string/app_name">
-        <activity android:name="com.unity3d.player.UnityPlayerActivity" android:label="@string/app_name">
-            <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
-        </activity>
-        <meta-data android:name="com.huawei.hms.client.appid" android:value="appid=9999" />
-        <meta-data android:name="com.huawei.hms.client.cpid" android:value="cpid=1234567890" />
-        <meta-data android:name="com.huawei.hms.version" android:value="2.6.1" />
-        <provider android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
- 
-        <provider android:name="com.huawei.hms.update.provider.UpdateProvider" android:authorities="com.yourco.huawei.hms.update.provider" android:exported="false" android:grantUriPermissions="true" />
-        <provider android:name="com.huawei.updatesdk.fileprovider.UpdateSdkFileProvider" android:authorities="com.yourco.huawei.updateSdk.fileProvider" android:exported="false" android:grantUriPermissions="true" />
-        </application>
-        <uses-permission android:name="com.huawei.appmarket.service.commondata.permission.GET_COMMON_DATA" />
-        <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-        <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-        <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    </manifest>
-```
-____
 ### 4 Connect your game with any HMS Manager
 
-In order for the plugin to work, you need to deploy the needed HMS Manager prefab inside your scene.
+In order for the plugin to work, you need to deploy the needed Manager prefab inside your scene.
 
 1. In Unity's project view, locate the plugins prefab folder
-2. Drag and drop the HMS Manager to your scene
+2. Drag and drop the Manager to your scene
 
-Now you need your game to call the HMS Manager from your game. You can do this by code or as a UI event. See below for further instructions.
+Now you need your game to call the Manager from your game. You can do this by code or as a UI event. See below for further instructions.
     
 #### Call the HMS by code
 
-First, get the reference to the HMSManager
+First, get the reference to the Manager
 
 ```csharp
-private HMSManager hmsManager =  GameObject.Find("HMSManager").GetComponent<HMSManager>();
+private AccountManager accountManager =  GameObject.Find("AccountManager").GetComponent<AccountManager>();
 ```
-##### Account Kit (login)
+### Account Kit (login)
 Call login method in order to open the login dialog
 ```csharp
-hmsManager.Login();
+accountManager.Login();
 ```
 
-#### Analytics kit
+## Analytics kit
  
 1. Enable Analtics kit from AGC
-2. Update ...Assets\Plugins\Android\assets\agconnect-services.json file
-3. Add this provider to AndroidManifest.xml
-
-```xml
-<provider android:name="org.m0skit0.android.hms.unity.provider.AnalyticsContentProvider" android:authorities="org.m0skit0.android.hms.unity.activity.HMSContentProvider" android:exported="false" android:grantUriPermissions="true"/>
- ```
+2. Update ...Assets\StreamingAssets\agconnect-services.json file
+ 
+ Send analytics function:
+ 
+``` csharp
+HMSAnalyticsManager.Instance.SendEventWithBundle(eventId, key, value);
+  ```
  
  Invoke analytics funtions:
  
@@ -210,7 +156,7 @@ Bundle bundleUnity = new Bundle();
 bundleUnity.PutString(key, value);
 instance.OnEvent(eventID, bundleUnity);
   ```
-  4. Analytics kit should be initialized in "onCreate()" for that we use ...Assets\Plugins\Android\assets\agconnect-services.json file.
+  4. Analytics kit should be initialized in "onCreate()" for that we use ...Assets\StreamingAssets\agconnect-services.json file.
   
 ##### In App Purchases
 You can retrieve a products information from App Gallery:
@@ -255,38 +201,68 @@ Find below the specific information on the included functionalities in this plug
 3. Ads
 4. Push notifications
 5. Game
+6. Analytics
+7. Remote Config
+8. Crash
+9. Cloud DB
+10. Auth Service
+11. Drive Kit
+12. Nearby Service
+13. App Messaging
 
 ### Account
 
-Official Documentation on Account Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/account-introduction-v4)
-
+Official Documentation on Account Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050048870)
 
 ### In App Purchases
 
-Official Documentation on IAP Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/iap-service-introduction-v4)
+Official Documentation on IAP Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050033062)
 
 ### Ads
 
-Official Documentation on Ads Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/ads-sdk-introduction)
+Official Documentation on Ads Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/publisher-service-introduction-0000001070671805)
 
 ### Push
 
-Official Documentation on Push Kit: [Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/push-introduction)
+Official Documentation on Push Kit: [Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/service-introduction-0000001050040060)
 
 ### Game
 
-Official Documentation on Game Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMS-Guides/game-introduction-v4)
-
+Official Documentation on Game Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050121216)
 
 ### Analytics
 
-Official Documentation on Analytics Kit: [ Documentation](https://developer.huawei.com/consumer/en/hms/huawei-analyticskit)
+Official Documentation on Analytics Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050745149)
+
+### Remote Config
+
+Official Documentation on Remote Config: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-get-started)
+
+### Crash
+
+Official Documentation on Crash Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-crash-getstarted-0000001055260538)
+
+### Cloud DB
+
+Official Documentation on Cloud DB: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-clouddb-introduction)
+
+### Auth Service
+
+Official Documentation on Auth Service: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050048870)
+
+### Drive Kit
+
+Official Documentation on Drive Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050039630)
+
+### Nearby Service
+
+Official Documentation on Nearby Service: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/contactshield--0000001057494465)
+
+### App Messaging
+
+Official Documentation on App Messaging: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-appmessage-introduction-0000001071884501)
 ______
 
 ## License
 
 This project is licensed under the MIT License
-
-
-
-

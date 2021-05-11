@@ -12,18 +12,30 @@ namespace HmsPlugin
     {
         public Action<string> OnTokenSuccess { get; set; }
         public Action<Exception> OnTokenFailure { get; set; }
-        public Action<RemoteMessage> OnMessageReceivedSuccess { get; set; }
         public Action<string, Bundle> OnTokenBundleSuccess { get; set; }
         public Action<Exception, Bundle> OnTokenBundleFailure { get; set; }
         public Action<string> OnMessageSentSuccess { get; set; }
-        public Action<string, Exception> OnMessageDeliveredSuccess { get; set; }
         public Action<string, Exception> OnSendFailure { get; set; }
+        public Action<string, Exception> OnMessageDeliveredSuccess { get; set; }
+        public Action<RemoteMessage> OnMessageReceivedSuccess { get; set; }
+        public Action<NotificationData> OnNotificationMessage { get; set; }
+        public Action<NotificationData> NotificationMessageOnStart { get; set; }
 
+        public NotificationData notificationDataOnStart;
 
-        // Start is called before the first frame update
         void Start()
         {
             PushManager.Listener = this;
+            notificationDataOnStart = PushManager.NotificationDataOnStart;
+            if (notificationDataOnStart.NotifyId != -1)
+            {
+                NotificationMessageOnStart?.Invoke(notificationDataOnStart);
+            }
+            PushManager.RegisterOnNotificationMessage((data) =>
+            {
+                OnNotificationMessage?.Invoke(data);
+            });
+
             var token = PushManager.Token;
             Debug.Log($"[HMS] Push token from GetToken is {token}");
             if (token != null)
@@ -50,6 +62,20 @@ namespace HmsPlugin
 
         public void OnMessageReceived(RemoteMessage remoteMessage)
         {
+            Debug.Log("Message received");
+            if (remoteMessage.GetNotification != null)
+            {
+                Debug.Log("Notification not null so its good");
+                Debug.Log("Title: " + remoteMessage.GetNotification.Title);
+                Debug.Log("TitleLocalizationKey: " + remoteMessage.GetNotification.TitleLocalizationKey);
+                Debug.Log("TitleLocalizationArgs: " + remoteMessage.GetNotification.TitleLocalizationArgs.Length);
+                Debug.Log("BodyLocalizationKey: " + remoteMessage.GetNotification.BodyLocalizationKey);
+                Debug.Log("BodyLocalizationArgs: " + remoteMessage.GetNotification.BodyLocalizationArgs.Length);
+            }
+            else
+            {
+                Debug.Log("Notification null");
+            }
             OnMessageReceivedSuccess?.Invoke(remoteMessage);
         }
 

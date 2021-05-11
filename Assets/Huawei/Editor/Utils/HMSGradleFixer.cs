@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using HmsPlugin;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEditor.Android;
 using UnityEngine;
@@ -31,6 +33,39 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         FileUtil.CopyFileOrDirectory(baseProjectTemplatePath, Directory.GetParent(path).FullName + @"/hmsBaseProjectTemplate.gradle");
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/build.gradle"))
             writer.WriteLine("apply from: 'hmsBaseProjectTemplate.gradle'");
+
+        if (HMSMainEditorSettings.Instance.Settings.GetBool(PushToggleEditor.PushKitEnabled))
+        {
+            string unityPlayerActivityJavaPath = path + @"\src\main\java\com\unity3d\player\UnityPlayerActivity.java";
+
+            var sb = new StringBuilder();
+            FileStream fs = new FileStream(unityPlayerActivityJavaPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            using (StreamReader sr = new StreamReader(fs))
+            {
+                string line;
+                do
+                {
+                    line = sr.ReadLine();
+                    sb.AppendLine(line);
+                }
+                while (line.Trim().TrimStart().TrimEnd() != "import android.os.Process;");
+                sb.AppendLine("import org.m0skit0.android.hms.unity.push.PushBridge;");
+
+                do
+                {
+                    line = sr.ReadLine();
+                    sb.AppendLine(line);
+                }
+                while (line.Trim().TrimStart().TrimEnd() != "mUnityPlayer.newIntent(intent);");
+                sb.AppendLine("PushBridge.OnNotificationMessage(intent);");
+                sb.Append(sr.ReadToEnd());
+            }
+
+            using (var sw = new StreamWriter(unityPlayerActivityJavaPath))
+            {
+                sw.Write(sb.ToString());
+            }
+        }
 
 #elif UNITY_2018
         string hmsMainTemplatePath = Application.dataPath + @"/Plugins/Android/hmsMainTemplate.gradle";

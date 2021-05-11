@@ -70,6 +70,7 @@ public class HMSPluginUpdateRequest : MonoBehaviour
             {
                 Debug.LogError("HMS Plugin Update Checker encountered an error: " + request.error);
             }
+            DestroyImmediate(gameObject);
             yield break;
         }
 

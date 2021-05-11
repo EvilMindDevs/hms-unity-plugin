@@ -60,22 +60,11 @@ namespace HmsPlugin
             OnTokenFailure?.Invoke(e);
         }
 
+        // This method only gets triggered if Data Message is sent by Push Kit Server/AGC.
         public void OnMessageReceived(RemoteMessage remoteMessage)
         {
-            Debug.Log("Message received");
-            if (remoteMessage.GetNotification != null)
-            {
-                Debug.Log("Notification not null so its good");
-                Debug.Log("Title: " + remoteMessage.GetNotification.Title);
-                Debug.Log("TitleLocalizationKey: " + remoteMessage.GetNotification.TitleLocalizationKey);
-                Debug.Log("TitleLocalizationArgs: " + remoteMessage.GetNotification.TitleLocalizationArgs.Length);
-                Debug.Log("BodyLocalizationKey: " + remoteMessage.GetNotification.BodyLocalizationKey);
-                Debug.Log("BodyLocalizationArgs: " + remoteMessage.GetNotification.BodyLocalizationArgs.Length);
-            }
-            else
-            {
-                Debug.Log("Notification null");
-            }
+            Debug.Log("[HMSPushKit] Data Message received");
+            Debug.Log("Data: " + remoteMessage.Data);
             OnMessageReceivedSuccess?.Invoke(remoteMessage);
         }
 

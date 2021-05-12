@@ -243,19 +243,19 @@ namespace HmsPlugin
                 if (result != null)
                 {
                     Debug.Log("[HMSPlugin]:" + result.ErrMsg + result.ReturnCode.ToString());
-                    Debug.Log("[HMSPlugin]: Bought " + purchaseIntentReq.ProductId);
+                    Debug.Log("[HMSPlugin]: Buying " + purchaseIntentReq.ProductId);
                     Status status = result.Status;
                     status.StartResolutionForResult((androidIntent) =>
                     {
                         PurchaseResultInfo purchaseResultInfo = iapClient.ParsePurchaseResultInfoFromIntent(androidIntent);
 
                         Debug.Log("HMSPluginResult: " + purchaseResultInfo.ReturnCode);
-                        Debug.Log("HMErrorMssg: " + purchaseResultInfo.ErrMsg);
-                        Debug.Log("HMS: HMSInAppPurchaseData" + purchaseResultInfo.InAppPurchaseData);
-                        Debug.Log("HMS: HMSInAppDataSignature" + purchaseResultInfo.InAppDataSignature);
+                        Debug.Log("HMSErrorMsg: " + purchaseResultInfo.ErrMsg);
 
                         if (purchaseResultInfo.ReturnCode == OrderStatusCode.ORDER_STATE_SUCCESS)
                         {
+                            Debug.Log("HMS: HMSInAppPurchaseData" + purchaseResultInfo.InAppPurchaseData);
+                            Debug.Log("HMS: HMSInAppDataSignature" + purchaseResultInfo.InAppDataSignature);
                             OnBuyProductSuccess.Invoke(purchaseResultInfo);
                             if (consumeAfter)
                                 ConsumePurchase(purchaseResultInfo);

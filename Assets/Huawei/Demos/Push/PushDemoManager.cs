@@ -1,4 +1,5 @@
-﻿using HuaweiMobileServices.Base;
+﻿using HmsPlugin;
+using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Push;
 using HuaweiMobileServices.Utils;
@@ -6,18 +7,43 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PushDemoManager : MonoBehaviour, IPushListener
+public class PushDemoManager : MonoBehaviour
 {
     private string pushToken;
     [SerializeField]
     private Text remoteMessageText, tokenText;
 
-    void Awake()
+    void Start()
     {
-        PushManager.Listener = this;
-        pushToken = PushManager.Token;
+        HMSPushKitManager.Instance.OnTokenSuccess = OnNewToken;
+        HMSPushKitManager.Instance.OnTokenFailure = OnTokenError;
+        HMSPushKitManager.Instance.OnTokenBundleSuccess = OnNewToken;
+        HMSPushKitManager.Instance.OnTokenBundleFailure = OnTokenError;
+        HMSPushKitManager.Instance.OnMessageSentSuccess = OnMessageSent;
+        HMSPushKitManager.Instance.OnSendFailure = OnSendError;
+        HMSPushKitManager.Instance.OnMessageDeliveredSuccess = OnMessageDelivered;
+        HMSPushKitManager.Instance.OnMessageReceivedSuccess = OnMessageReceived;
+        HMSPushKitManager.Instance.OnNotificationMessage = OnNotificationMessage;
+        HMSPushKitManager.Instance.NotificationMessageOnStart = NotificationMessageOnStart;
+
         Debug.Log($"[HMS] Push token from GetToken is {pushToken}");
         tokenText.text = "Push Token: " + pushToken;
+    }
+
+    private void OnNotificationMessage(NotificationData data)
+    {
+        Debug.Log("[HMSPushDemo] CmdType: " + data.CmdType);
+        Debug.Log("[HMSPushDemo] MsgId: " + data.MsgId);
+        Debug.Log("[HMSPushDemo] NotifyId: " + data.NotifyId);
+        Debug.Log("[HMSPushDemo] KeyValueJSON: " + data.KeyValueJSON);
+    }
+
+    private void NotificationMessageOnStart(NotificationData data)
+    {
+        Debug.Log("[HMSPushDemo] CmdType: " + data.CmdType);
+        Debug.Log("[HMSPushDemo] MsgId: " + data.MsgId);
+        Debug.Log("[HMSPushDemo] NotifyId: " + data.NotifyId);
+        Debug.Log("[HMSPushDemo] KeyValueJSON: " + data.KeyValueJSON);
     }
 
     public void OnNewToken(string token)

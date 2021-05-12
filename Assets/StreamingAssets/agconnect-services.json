@@ -1,12 +1,35 @@
 {
-	"client":{
-		"cp_id":"890034000004105619",
-		"product_id":"9105385871708180467",
-		"client_id":"216523459440673792",
-		"client_secret":"757250B4EDB145465555F3DA1DCED0DE80FEBCC62F1DB54179386D97BE84BFFB",
-		"app_id":"101282883",
-		"package_name":"com.evilmind.huawei",
-		"api_key":"CV6ZZ1VxmIBeluFQcSgu2kMVxZTApK1jXplA26sUDZZ+e553ywArAzLCHSSpnQAnCV2fZP6GY8LoC+lI+80vtUwV0dct"
+	"agcgw":{
+		"backurl":"connect-dre.dbankcloud.cn",
+		"url":"connect-dre.hispace.hicloud.com"
 	},
+	"client":{
+		"appType":"1",
+		"cp_id":"890090000023105639",
+		"product_id":"736430079244750151",
+		"client_id":"522090895772746816",
+		"client_secret":"1D5135B5241E2851BCEBBA2EA805D6C1DA44FC78CB4FF1ECC17FDB0E5824A1C4",
+		"project_id":"736430079244750151",
+		"app_id":"103529037",
+		"api_key":"CgB6e3x95lA0rHd75ERaIyHgJ8GoljKm1uoJ85UMIK9UFWMtuSymDYDbAZ2gUDSVDhwfx64g2VnOrsbna/BPwsdx",
+		"package_name":"com.samet.reffapp.huawei"
+	},
+	"service":{
+		"analytics":{
+			"collector_url":"datacollector-dre.dt.hicloud.com,datacollector-dre.dt.dbankcloud.cn",
+			"resource_id":"p1",
+			"channel_id":""
+		},
+		"search":{
+			"url":"https://search-dre.cloud.huawei.com"
+		},
+		"cloudstorage":{
+			"storage_url":"https://ops-dre.agcstorage.link"
+		},
+		"ml":{
+			"mlservice_url":"ml-api-dre.ai.dbankcloud.com,ml-api-dre.ai.dbankcloud.cn"
+		}
+	},
+	"region":"DE",
 	"configuration_version":"1.0"
 }

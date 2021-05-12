@@ -12,7 +12,11 @@ namespace HmsPlugin
         {
             string[] hmsFileNames =
             {
-                "Assets/Huawei",
+                "Assets/Huawei/Demos",
+                "Assets/Huawei/Dlls",
+                "Assets/Huawei/Editor",
+                "Assets/Huawei/Scripts",
+                "Assets/Huawei/VERSION",
                 "Assets/Plugins",
                 "Assets/Resources",
                 "Assets/StreamingAssets"

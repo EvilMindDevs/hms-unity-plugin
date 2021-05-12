@@ -14,6 +14,12 @@ public class HMSMainWindow : HMSEditorWindow
         GetWindow(typeof(HMSMainWindow), false, "HMS Settings");
     }
 
+    [MenuItem("Huawei/Check for Updates")]
+    public static void CheckForUpdates()
+    {
+        HMSPluginUpdater.Request(true);
+    }
+
 
     public override IDrawer CreateDrawer()
     {

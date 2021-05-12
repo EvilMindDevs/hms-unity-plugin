@@ -88,5 +88,20 @@ namespace HmsPlugin
 
             return value;
         }
+
+        public static string RemoveAfter(this string value, char toRemove)
+        {
+            int index = 0;
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (value[i] == toRemove)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            index = index == 0 ? value.Length : index;
+            return value.Substring(0, index);
+        }
     }
 }

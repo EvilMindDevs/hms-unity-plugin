@@ -92,19 +92,19 @@ namespace HmsPlugin
 
             if (!IsNullOrEmpty(productIdConsumablesList))
             {
-                ObtainProductInfo(new List<string>(productIdConsumablesList), 0);
+                ObtainProductInfo(new List<string>(productIdConsumablesList), PriceType.IN_APP_CONSUMABLE);
             }
             if (!IsNullOrEmpty(productIdNonConsumablesList))
             {
-                ObtainProductInfo(new List<string>(productIdNonConsumablesList), 1);
+                ObtainProductInfo(new List<string>(productIdNonConsumablesList), PriceType.IN_APP_NONCONSUMABLE);
             }
             if (!IsNullOrEmpty(productIdSubscriptionList))
             {
-                ObtainProductInfo(new List<string>(productIdSubscriptionList), 2);
+                ObtainProductInfo(new List<string>(productIdSubscriptionList), PriceType.IN_APP_SUBSCRIPTION);
             }
         }
 
-        private void ObtainProductInfo(IList<string> productIdNonConsumablesList, int priceType)
+        private void ObtainProductInfo(IList<string> productIdNonConsumablesList, PriceType priceType)
         {
 
             if (iapAvailable != true)
@@ -123,11 +123,12 @@ namespace HmsPlugin
             {
                 Debug.Log("[HMSPlugin]:" + type.ErrMsg + type.ReturnCode.ToString());
                 Debug.Log("[HMSPlugin]: {0=Consumable}  {1=Non-Consumable}  {2=Subscription}");
-                Debug.Log("[HMSPlugin]: Found " + type.ProductInfoList.Count + " type of " + priceType + " products");
+                Debug.Log("[HMSPlugin]: Found " + type.ProductInfoList.Count + " type of " + priceType.Value + " products");
                 foreach (var productInfo in type.ProductInfoList)
                 {
                     if (!productInfoList.Exists(c => c.ProductId == productInfo.ProductId))
                         productInfoList.Add(productInfo);
+                    Debug.Log("[HMSPlugin]: ProductId: " + productInfo.ProductId + ", ProductName: " + productInfo.ProductName + ", Price: " + productInfo.Price);
                 }
 
                 OnObtainProductInfoSuccess?.Invoke(new List<ProductInfoResult> { type });
@@ -304,16 +305,23 @@ namespace HmsPlugin
                 return;
             }
 
-            Debug.Log("HMSP: ObtainOwnedPurchaseRequest");
-            OwnedPurchasesReq ownedPurchasesReq = new OwnedPurchasesReq
-            {
-                PriceType = 1
-            };
 
+            Debug.Log("HMSP: ObtainOwnedPurchaseRequest");
+            ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_CONSUMABLE });
+            ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_NONCONSUMABLE });
+            ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_SUBSCRIPTION });
+        }
+
+        private void ObtainOwnedPurchases(OwnedPurchasesReq ownedPurchasesReq)
+        {
             ITask<OwnedPurchasesResult> task = iapClient.ObtainOwnedPurchases(ownedPurchasesReq);
             task.AddOnSuccessListener((result) =>
             {
                 Debug.Log("HMSP: ObtainOwnedPurchases");
+                foreach (var item in result.InAppPurchaseDataList)
+                {
+                    Debug.Log("[HMSPlugin]: ProductId: " + item.ProductId + ", ProductName: " + item.ProductName + ", Price: " + item.Price);
+                }
                 OnObtainOwnedPurchasesSuccess?.Invoke(result);
 
             }).AddOnFailureListener((exception) =>

@@ -65,7 +65,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 
     #region PUBLIC METHODS
 
-    public void LoadBannerAd(UnityBannerAdPositionCodeType position, bool show = true, string bannerSize = UnityBannerAdSize.BANNER_SIZE_320_50)
+    public void LoadBannerAd(UnityBannerAdPositionCodeType position, string bannerSize = UnityBannerAdSize.BANNER_SIZE_320_50)
     {
         if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableBannerAd)) return;
 
@@ -85,7 +85,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         bannerView.SizeType = bannerSize;
         bannerView.AdStatusListener = bannerAdStatusListener;
         bannerView.LoadBanner(new AdParam.Builder().Build());
-        if (show)
+        if (adsKitSettings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad))
             bannerView.ShowBanner();
         else
             bannerView.HideBanner();

@@ -14,6 +14,7 @@ namespace HmsPlugin
 
         private Toggle.Toggle _enableBannerAdsToggle;
         private TextField.TextFieldWithAccept _bannerAdsTextField;
+        private Toggle.Toggle _enableBannerAdLoadToggle;
         private DisabledDrawer _bannerAdsDisabledDrawer;
 
         private Toggle.Toggle _enableInterstitialAdsToggle;
@@ -34,7 +35,8 @@ namespace HmsPlugin
             _settings = HMSAdsKitSettings.Instance.Settings;
             _enableBannerAdsToggle = new Toggle.Toggle("Enable Banner Ads", _settings.GetBool(HMSAdsKitSettings.EnableBannerAd), OnBannerAdsToggleChanged, false);
             _bannerAdsTextField = new TextFieldWithAccept("Banner Ad ID", _settings.Get(HMSAdsKitSettings.BannerAdID), "Save", OnBannerAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
-            _bannerAdsDisabledDrawer = new DisabledDrawer(_bannerAdsTextField).SetEnabled(!_enableBannerAdsToggle.IsChecked());
+            _enableBannerAdLoadToggle = new Toggle.Toggle("Show Banner on Load*", _settings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad), OnShowBannerOnLoadChanged, false).SetTooltip("Enabling this will make the banner to be shown right after it finishes loading.");
+            _bannerAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_bannerAdsTextField, _enableBannerAdLoadToggle)).SetEnabled(!_enableBannerAdsToggle.IsChecked());
 
             _enableInterstitialAdsToggle = new Toggle.Toggle("Enable Interstitial Ads", _settings.GetBool(HMSAdsKitSettings.EnableInterstitialAd), OnInterstitialAdsToggleChanged, false);
             _interstitialAdsTextField = new TextFieldWithAccept("Interstitial Ad ID", _settings.Get(HMSAdsKitSettings.InterstitialAdID), "Save", OnInterstitialAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
@@ -85,6 +87,11 @@ namespace HmsPlugin
         private void OnTestAdsToggleChanged(bool value)
         {
             _settings.SetBool(HMSAdsKitSettings.UseTestAds, value);
+        }
+
+        private void OnShowBannerOnLoadChanged(bool value)
+        {
+            _settings.SetBool(HMSAdsKitSettings.ShowBannerOnLoad, value);
         }
 
         private void SetupSequence()

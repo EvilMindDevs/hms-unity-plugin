@@ -25,7 +25,7 @@ internal class HMSPluginUpdater
         Task.Delay(2000).ContinueWith(t =>
         {
             GameObject obj = new GameObject();
-
+            obj.hideFlags = HideFlags.HideAndDontSave;
             request = obj.AddComponent<HMSPluginUpdateRequest>();
 
             request.StartRequest(ignoreSession);

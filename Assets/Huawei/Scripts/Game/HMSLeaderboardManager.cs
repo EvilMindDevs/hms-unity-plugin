@@ -51,7 +51,7 @@ namespace HmsPlugin
 
         public void SetUserScoreShownOnLeaderboards(int active)
         {
-            ITask<int> task = rankingsClient.SetRankingSwitchStatus(1);
+            ITask<int> task = rankingsClient.SetRankingSwitchStatus(active);
             task.AddOnSuccessListener((result) =>
             {
                 Debug.Log("[HMS GAMES] SetUserScoreShownOnLeaderboards SUCCESS" + result);

@@ -125,6 +125,7 @@ namespace HmsPlugin
                     }
                     file.WriteLine("}");
                 }
+                AssetDatabase.Refresh();
             }
         }
     }

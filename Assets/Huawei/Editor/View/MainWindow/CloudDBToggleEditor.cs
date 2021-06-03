@@ -11,13 +11,18 @@ namespace HmsPlugin
     public class CloudDBToggleEditor : IDrawer
     {
         private Toggle.Toggle _toggle;
+        private TabBar _tabBar;
+        private TabView _tabView;
         private IDependentToggle _dependentToggle;
 
         public const string CloudDBEnabled = "CloudDB";
 
-        public CloudDBToggleEditor(IDependentToggle dependentToggle)
+        public CloudDBToggleEditor(TabBar tabBar, IDependentToggle dependentToggle)
         {
             _dependentToggle = dependentToggle;
+            _tabView = HMSCloudDBTabFactory.CreateTab("Cloud DB");
+            _tabBar = tabBar;
+
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(CloudDBEnabled);
             _toggle = new Toggle.Toggle("Cloud DB*", enabled, OnStateChanged, true).SetTooltip("CloudDB is dependent on Auth Service.");
         }
@@ -33,6 +38,7 @@ namespace HmsPlugin
                     EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
                 }
                 _dependentToggle.SetToggle();
+                _tabBar.AddTab(_tabView);
             }
             else
             {
@@ -46,6 +52,7 @@ namespace HmsPlugin
                 }
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(CloudDBEnabled, value);
+            _tabBar.RemoveTab(_tabView);
         }
 
         public void Draw()

@@ -39,7 +39,7 @@ internal class HMSMainKitsTabFactory
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new RemoteConfigToggleEditor(tabBar, analyticsEditor), new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new CrashToggleEditor(analyticsEditor), new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), authEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new CloudDBToggleEditor(authEditor), new Spacer()));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new CloudDBToggleEditor(tabBar, authEditor), new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new DriveKitToggleEditor(), new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new NearbyServiceToggleEditor(), new Spacer()));
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new AppMessagingToggleEditor(), new Spacer()));

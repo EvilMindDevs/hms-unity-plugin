@@ -42,6 +42,7 @@ namespace HmsPlugin
 
             }).AddOnFailureListener((exception) =>
             {
+
                 Debug.Log("HMS GAMES: The app has not been authorized");
                 authService.StartSignIn(SignInSuccess, SignInFailure);
                 InitGameManagers();
@@ -72,7 +73,7 @@ namespace HmsPlugin
 
                 }).AddOnFailureListener((exception) =>
                 {
-                    Debug.Log("[HMSP:] GetPlayerInfo Failed");
+                    Debug.LogError("[HMSGameManager]: GetPlayerInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                     OnGetPlayerInfoFailure?.Invoke(exception);
                 });
             }

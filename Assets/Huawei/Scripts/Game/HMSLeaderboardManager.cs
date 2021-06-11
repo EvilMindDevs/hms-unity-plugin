@@ -38,12 +38,12 @@ namespace HmsPlugin
             ITask<int> task = rankingsClient.GetRankingSwitchStatus();
             task.AddOnSuccessListener((result) =>
             {
-                Debug.Log("[HMS GAMES] isUserScoreShownOnLeaderboards SUCCESS" + result);
+                Debug.Log("[HMSLeaderboardManager] isUserScoreShownOnLeaderboards SUCCESS" + result);
                 OnIsUserScoreShownOnLeaderboardsSuccess?.Invoke(result);
 
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMS GAMES] isUserScoreShownOnLeaderboards ERROR");
+                Debug.LogError("[HMSLeaderboardManager]: IsUserScoreShownOnLeaderboards failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnIsUserScoreShownOnLeaderboardsFailure?.Invoke(exception);
             });
 
@@ -54,12 +54,12 @@ namespace HmsPlugin
             ITask<int> task = rankingsClient.SetRankingSwitchStatus(active);
             task.AddOnSuccessListener((result) =>
             {
-                Debug.Log("[HMS GAMES] SetUserScoreShownOnLeaderboards SUCCESS" + result);
+                Debug.Log("[HMSLeaderboardManager] SetUserScoreShownOnLeaderboards SUCCESS" + result);
                 OnSetUserScoreShownOnLeaderboardsSuccess?.Invoke(result);
 
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMS GAMES] SetUserScoreShownOnLeaderboards ERROR");
+                Debug.LogError("[HMSLeaderboardManager]: SetUserScoreShownOnLeaderboards failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnSetUserScoreShownOnLeaderboardsFailure?.Invoke(exception);
             });
         }
@@ -69,9 +69,11 @@ namespace HmsPlugin
             ITask<ScoreSubmissionInfo> task = rankingsClient.SubmitScoreWithResult(leaderboardId, score);
             task.AddOnSuccessListener((scoreInfo) =>
             {
+                Debug.Log("[HMSLeaderboardManager] SubmitScore SUCCESS");
                 OnSubmitScoreSuccess?.Invoke(scoreInfo);
             }).AddOnFailureListener((error) =>
             {
+                Debug.LogError("[HMSLeaderboardManager]: SubmitScore failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                 OnSubmitScoreFailure?.Invoke(error);
             });
         }
@@ -81,9 +83,11 @@ namespace HmsPlugin
             ITask<ScoreSubmissionInfo> task = rankingsClient.SubmitScoreWithResult(leaderboardId, score, scoreTips);
             task.AddOnSuccessListener((scoreInfo) =>
             {
+                Debug.Log("[HMSLeaderboardManager] SubmitScore SUCCESS");
                 OnSubmitScoreSuccess?.Invoke(scoreInfo);
             }).AddOnFailureListener((error) =>
             {
+                Debug.LogError("[HMSLeaderboardManager]: SubmitScore failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                 OnSubmitScoreFailure?.Invoke(error);
             });
         }
@@ -92,12 +96,12 @@ namespace HmsPlugin
         {
             rankingsClient.ShowTotalRankings(() =>
             {
-                Debug.Log("[HMS GAMES] ShowLeaderboards SUCCESS");
+                Debug.Log("[HMSLeaderboardManager] ShowLeaderboards SUCCESS");
                 OnShowLeaderboardsSuccess?.Invoke();
 
             }, (exception) =>
             {
-                Debug.Log("[HMS GAMES] ShowLeaderboards ERROR");
+                Debug.LogError("[HMSLeaderboardManager]: ShowLeaderboards failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnShowLeaderboardsFailure?.Invoke(exception);
             });
         }
@@ -107,11 +111,11 @@ namespace HmsPlugin
             ITask<IList<Ranking>> task = rankingsClient.GetRankingSummary(true);
             task.AddOnSuccessListener((result) =>
             {
-                Debug.Log("[HMS GAMES] GetLeaderboardsData SUCCESS");
+                Debug.Log("[HMSLeaderboardManager] GetLeaderboardsData SUCCESS");
                 OnGetLeaderboardsDataSuccess?.Invoke(result);
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMS GAMES] GetLeaderboardsData ERROR");
+                Debug.LogError("[HMSLeaderboardManager]: GetLeaderboardsData failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnGetLeaderboardsDataFailure?.Invoke(exception);
             });
         }
@@ -121,12 +125,12 @@ namespace HmsPlugin
             ITask<Ranking> task = rankingsClient.GetRankingSummary(leaderboardId, true);
             task.AddOnSuccessListener((result) =>
             {
-                Debug.Log("[HMS GAMES] GetLeaderboardsData SUCCESS");
+                Debug.Log("[HMSLeaderboardManager] GetLeaderboardsData SUCCESS");
                 OnGetLeaderboardDataSuccess?.Invoke(result);
 
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMS GAMES] GetLeaderboardsData ERROR");
+                Debug.LogError("[HMSLeaderboardManager]: GetLeaderboardData failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnGetLeaderboardDataFailure?.Invoke(exception);
             });
         }
@@ -139,12 +143,12 @@ namespace HmsPlugin
 
             task.AddOnSuccessListener((result) =>
             {
-                Debug.Log("[HMS GAMES] GetScoresFromLeaderboard SUCCESS");
+                Debug.Log("[HMSLeaderboardManager] GetScoresFromLeaderboard SUCCESS");
                 OnGetScoresFromLeaderboardSuccess?.Invoke(result);
 
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMS GAMES] GetScoresFromLeaderboard ERROR");
+                Debug.LogError("[HMSLeaderboardManager]: GetScoresFromLeaderboard failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnGetScoresFromLeaderboardFailure?.Invoke(exception);
             });
         }

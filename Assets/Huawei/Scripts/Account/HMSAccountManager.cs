@@ -84,6 +84,7 @@ namespace HmsPlugin
             }, (error) =>
             {
                 HuaweiId = null;
+                Debug.LogError("[HMSAccountManager]: Sign in failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                 OnSignInFailed?.Invoke(error);
             });
         }
@@ -98,6 +99,7 @@ namespace HmsPlugin
             }, (error) =>
             {
                 HuaweiId = null;
+                Debug.LogError("[HMSAccountManager]: Sign in Drive failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                 OnSignInFailed?.Invoke(error);
             });
         }
@@ -112,6 +114,7 @@ namespace HmsPlugin
             }).AddOnFailureListener((exception) =>
             {
                 HuaweiId = null;
+                Debug.LogError("[HMSAccountManager]: Silent Sign in failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnSignInFailed?.Invoke(exception);
             });
         }
@@ -129,6 +132,7 @@ namespace HmsPlugin
                 Debug.Log("[HMS]: CancelAuthorization onSuccess ");
             }).AddOnFailureListener((exception) =>
             {
+                Debug.LogError("[HMSAccountManager]: Cancel Authorization failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnSignInFailed?.Invoke(exception);
             });
         }

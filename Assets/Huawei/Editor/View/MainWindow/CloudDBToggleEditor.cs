@@ -50,9 +50,9 @@ namespace HmsPlugin
                         GameObject.DestroyImmediate(cloudDBManagers[i].gameObject);
                     }
                 }
+                _tabBar.RemoveTab(_tabView);
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(CloudDBEnabled, value);
-            _tabBar.RemoveTab(_tabView);
         }
 
         public void Draw()

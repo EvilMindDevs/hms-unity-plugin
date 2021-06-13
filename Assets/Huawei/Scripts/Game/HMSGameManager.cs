@@ -11,10 +11,17 @@ namespace HmsPlugin
     {
         public Action<HuaweiMobileServices.Game.Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }
+        public Action<string> OnSubmitPlayerEventSuccess { get; set; }
+        public Action<HMSException> OnSubmitPlayerEventFailure { get; set; }
+        public Action<HuaweiMobileServices.Game.PlayerExtraInfo> OnGetPlayerExtraInfoSuccess { get; set; }
+        public Action<HMSException> OnGetPlayerExtraInfoFailure { get; set; }
         public Action<AuthAccount> SignInSuccess { get; set; }
         public Action<HMSException> SignInFailure { get; set; }
 
         private AccountAuthService authService;
+        private IBuoyClient buoyClient;
+        private IPlayersClient playersClient;
+        private IArchivesClient archivesClient;
 
         public void Start()
         {
@@ -51,30 +58,73 @@ namespace HmsPlugin
 
         public void InitGameManagers()
         {
-            //SavedGame Initilize
             HMSSaveGameManager.Instance.SavedGameAuth();
-            HMSSaveGameManager.Instance.GetArchivesClient();
-            //Leaderboard Initilize
             HMSLeaderboardManager.Instance.rankingsClient = Games.GetRankingsClient();
-            //Achievements Initilize
             HMSAchievementsManager.Instance.achievementsClient = Games.GetAchievementsClient();
+
+            playersClient = Games.GetPlayersClient();
+            archivesClient = Games.GetArchiveClient();
+            buoyClient = Games.GetBuoyClient();
+        }
+
+        public void ShowFloatWindow()
+        {
+            buoyClient.ShowFloatWindow();
+        }
+
+        public void HideFloatWindow()
+        {
+            buoyClient.HideFloatWindow();
         }
 
         public void GetPlayerInfo()
         {
             if (HMSAccountManager.Instance.HuaweiId != null)
             {
-                IPlayersClient playersClient = Games.GetPlayersClient();
                 ITask<HuaweiMobileServices.Game.Player> task = playersClient.CurrentPlayer;
                 task.AddOnSuccessListener((result) =>
                 {
-                    Debug.Log("[HMSP:] GetPlayerInfo Success");
+                    Debug.Log("[HMSGameManager] GetPlayerInfo Success");
                     OnGetPlayerInfoSuccess?.Invoke(result);
 
                 }).AddOnFailureListener((exception) =>
                 {
                     Debug.LogError("[HMSGameManager]: GetPlayerInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                     OnGetPlayerInfoFailure?.Invoke(exception);
+                });
+            }
+        }
+
+        public void SubmitPlayerEvent(string playerId, string eventId, string eventType)
+        {
+            if (HMSAccountManager.Instance.HuaweiId != null)
+            {
+                var task = playersClient.SubmitPlayerEvent(playerId, eventId, eventType);
+                task.AddOnSuccessListener((result) =>
+                {
+                    Debug.Log("[HMSGameManager] SubmitPlayerEvent Success");
+                    OnSubmitPlayerEventSuccess?.Invoke(result);
+                }).AddOnFailureListener((exception) =>
+                {
+                    Debug.LogError("[HMSGameManager]: SubmitPlayerEvent failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                    OnSubmitPlayerEventFailure?.Invoke(exception);
+                });
+            }
+        }
+
+        public void GetPlayerExtraInfo(string transactionId)
+        {
+            if (HMSAccountManager.Instance.HuaweiId != null)
+            {
+                var task = playersClient.GetPlayerExtraInfo(transactionId);
+                task.AddOnSuccessListener((result) =>
+                {
+                    Debug.Log("[HMSGameManager] GetPlayerExtraInfo Success");
+                    OnGetPlayerExtraInfoSuccess?.Invoke(result);
+                }).AddOnFailureListener((exception) =>
+                {
+                    Debug.LogError("[HMSGameManager]: GetPlayerExtraInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                    OnGetPlayerExtraInfoFailure?.Invoke(exception);
                 });
             }
         }

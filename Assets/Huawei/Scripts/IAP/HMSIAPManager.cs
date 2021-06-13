@@ -31,6 +31,9 @@ namespace HmsPlugin
         public Action<OwnedPurchasesResult> OnObtainOwnedPurchasesSuccess { get; set; }
         public Action<HMSException> OnObtainOwnedPurchasesFailure { get; set; }
 
+        public Action<IsSandboxActivatedResult> OnIsSandboxActivatedSuccess { get; set; }
+        public Action<HMSException> OnIsSandboxActivatedFailure { get; set; }
+
         private IIapClient iapClient;
         private bool? iapAvailable = null;
         private List<ProductInfo> productInfoList = new List<ProductInfo>();
@@ -355,6 +358,26 @@ namespace HmsPlugin
         public bool IsNullOrEmpty(List<string> array)
         {
             return (array == null || array.Count == 0);
+        }
+
+        public void IsSandboxActivated()
+        {
+            if (iapClient != null)
+            {
+                var task = iapClient.SandboxActivated;
+                task.AddOnSuccessListener((result) =>
+                {
+                    Debug.Log("[HMSIAPManager]: IsSandboxActivated success!");
+                    OnIsSandboxActivatedSuccess?.Invoke(result);
+                }).AddOnFailureListener((exception) =>
+                {
+                    Debug.LogError("[HMSIAPManager]: IsSandboxActivated failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                });
+            }
+            else
+            {
+                Debug.LogError("[HMSIAPManager]: IsSandboxActivated failed. IAP is not initialized.");
+            }
         }
     }
 }

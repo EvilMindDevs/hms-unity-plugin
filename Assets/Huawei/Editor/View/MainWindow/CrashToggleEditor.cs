@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class CrashToggleEditor : IDrawer
+    public class CrashToggleEditor : ToggleEditor, IDrawer
     {
         private Toggle.Toggle _toggle;
         private IDependentToggle _dependentToggle;
@@ -26,24 +26,12 @@ namespace HmsPlugin
         {
             if (value)
             {
-                if (GameObject.FindObjectOfType<HMSCrashManager>() == null)
-                {
-                    GameObject obj = new GameObject("HMSCrashManager");
-                    obj.AddComponent<HMSCrashManager>();
-                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                }
+                CreateManagers();
                 _dependentToggle.SetToggle();
             }
             else
             {
-                var crashManagers = GameObject.FindObjectsOfType<HMSCrashManager>();
-                if (crashManagers.Length > 0)
-                {
-                    for (int i = 0; i < crashManagers.Length; i++)
-                    {
-                        GameObject.DestroyImmediate(crashManagers[i].gameObject);
-                    }
-                }
+                DestroyManagers();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(CrashKitEnabled, value);
         }
@@ -51,6 +39,30 @@ namespace HmsPlugin
         public void Draw()
         {
             _toggle.Draw();
+        }
+
+        public override void CreateManagers()
+        {
+            if (GameObject.FindObjectOfType<HMSCrashManager>() == null)
+            {
+                GameObject obj = new GameObject("HMSCrashManager");
+                obj.AddComponent<HMSCrashManager>();
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
+            Enabled = true;
+        }
+
+        public override void DestroyManagers()
+        {
+            var crashManagers = GameObject.FindObjectsOfType<HMSCrashManager>();
+            if (crashManagers.Length > 0)
+            {
+                for (int i = 0; i < crashManagers.Length; i++)
+                {
+                    GameObject.DestroyImmediate(crashManagers[i].gameObject);
+                }
+            }
+            Enabled = false;
         }
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class NearbyServiceToggleEditor : IDrawer
+    public class NearbyServiceToggleEditor : ToggleEditor, IDrawer
     {
         private Toggle.Toggle _toggle;
 
@@ -24,23 +24,11 @@ namespace HmsPlugin
         {
             if (value)
             {
-                if (GameObject.FindObjectOfType<HMSNearbyServiceManager>() == null)
-                {
-                    GameObject obj = new GameObject("HMSNearbyServiceManager");
-                    obj.AddComponent<HMSNearbyServiceManager>();
-                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                }
+                CreateManagers();
             }
             else
             {
-                var nearbyServiceManagers = GameObject.FindObjectsOfType<HMSNearbyServiceManager>();
-                if (nearbyServiceManagers.Length > 0)
-                {
-                    for (int i = 0; i < nearbyServiceManagers.Length; i++)
-                    {
-                        GameObject.DestroyImmediate(nearbyServiceManagers[i].gameObject);
-                    }
-                }
+                DestroyManagers();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(NearbyServiceEnabled, value);
         }
@@ -48,6 +36,30 @@ namespace HmsPlugin
         public void Draw()
         {
             _toggle.Draw();
+        }
+
+        public override void CreateManagers()
+        {
+            if (GameObject.FindObjectOfType<HMSNearbyServiceManager>() == null)
+            {
+                GameObject obj = new GameObject("HMSNearbyServiceManager");
+                obj.AddComponent<HMSNearbyServiceManager>();
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
+            Enabled = true;
+        }
+
+        public override void DestroyManagers()
+        {
+            var nearbyServiceManagers = GameObject.FindObjectsOfType<HMSNearbyServiceManager>();
+            if (nearbyServiceManagers.Length > 0)
+            {
+                for (int i = 0; i < nearbyServiceManagers.Length; i++)
+                {
+                    GameObject.DestroyImmediate(nearbyServiceManagers[i].gameObject);
+                }
+            }
+            Enabled = false;
         }
     }
 }

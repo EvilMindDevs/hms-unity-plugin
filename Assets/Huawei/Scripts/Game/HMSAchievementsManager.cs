@@ -91,6 +91,11 @@ namespace HmsPlugin
             });
         }
 
+        public void Grow(string achievementId, int stepIncrement)
+        {
+            achievementsClient.Grow(achievementId, stepIncrement);
+        }
+
         public void SetStepAchievement(string achievementId, int stepsNum)
         {
             ITask<bool> task = achievementsClient.MakeStepsWithResult(achievementId, stepsNum);

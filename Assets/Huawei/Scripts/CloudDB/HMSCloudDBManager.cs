@@ -8,7 +8,7 @@ namespace HmsPlugin
 {
     public class HMSCloudDBManager : HMSSingleton<HMSCloudDBManager>
     {
-        string TAG = "CloudDB Manager";
+        string TAG = "HMSCloudDBManager";
         AGConnectCloudDB mCloudDB = null;
         CloudDBZoneConfig mConfig = null;
         CloudDBZone mCloudDBZone = null;
@@ -78,7 +78,7 @@ namespace HmsPlugin
             }
             catch (Exception e)
             {
-                Debug.Log($"[{TAG}]: CloudDBZoneConfig() exception " + e.Message);
+                Debug.LogError($"[{TAG}]: CloudDBZoneConfig() exception " + e.Message);
             }
 
             Debug.Log($"[{TAG}]: OpenCloudDBZone");

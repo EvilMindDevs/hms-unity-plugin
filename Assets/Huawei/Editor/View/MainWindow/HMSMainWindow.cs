@@ -1,8 +1,5 @@
 ﻿
 using HmsPlugin;
-using HmsPlugin.HelpBox;
-using HmsPlugin.Label;
-using HmsPlugin.TextField;
 using HmsPlugin.Window;
 using UnityEditor;
 
@@ -19,7 +16,6 @@ public class HMSMainWindow : HMSEditorWindow
     {
         HMSPluginUpdater.Request(true);
     }
-
 
     public override IDrawer CreateDrawer()
     {

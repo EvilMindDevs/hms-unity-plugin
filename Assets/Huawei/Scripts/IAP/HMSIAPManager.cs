@@ -31,6 +31,9 @@ namespace HmsPlugin
         public Action<OwnedPurchasesResult> OnObtainOwnedPurchasesSuccess { get; set; }
         public Action<HMSException> OnObtainOwnedPurchasesFailure { get; set; }
 
+        public Action<OwnedPurchasesResult> OnObtainOwnedPurchaseRecordSuccess { get; set; }
+        public Action<HMSException> OnObtainOwnedPurchaseRecordFailure { get; set; }
+
         private IIapClient iapClient;
         private bool? iapAvailable = null;
         private List<ProductInfo> productInfoList = new List<ProductInfo>();
@@ -328,6 +331,39 @@ namespace HmsPlugin
             {
                 Debug.Log("HMSP: Error on ObtainOwnedPurchases");
                 OnObtainProductInfoFailure?.Invoke(exception);
+            });
+        }
+
+        public void ObtainOwnedPurchaseRecord()
+        {
+            if (iapAvailable != true)
+            {
+                OnObtainOwnedPurchaseRecordFailure?.Invoke(IAP_NOT_AVAILABLE);
+                return;
+            }
+
+            Debug.Log("HMSP: ObtainOwnedPurchaseRecord");
+            ObtainOwnedPurchaseRecord(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_CONSUMABLE });
+            ObtainOwnedPurchaseRecord(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_NONCONSUMABLE });
+            ObtainOwnedPurchaseRecord(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_SUBSCRIPTION });
+        }
+
+        private void ObtainOwnedPurchaseRecord(OwnedPurchasesReq req)
+        {
+            ITask<OwnedPurchasesResult> task = iapClient.ObtainOwnedPurchaseRecord(req);
+            task.AddOnSuccessListener((result) =>
+            {
+                Debug.Log("HMSP: ObtainOwnedPurchaseRecord");
+                foreach (var item in result.InAppPurchaseDataList)
+                {
+                    Debug.Log("[HMSPlugin]: ProductId: " + item.ProductId + ", ProductName: " + item.ProductName + ", Price: " + item.Price);
+                }
+                OnObtainOwnedPurchaseRecordSuccess?.Invoke(result);
+
+            }).AddOnFailureListener((exception) =>
+            {
+                Debug.Log("HMSP: Error on ObtainOwnedPurchaseRecord");
+                OnObtainOwnedPurchaseRecordFailure?.Invoke(exception);
             });
         }
 

@@ -285,6 +285,16 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         }
     }
 
+    public bool IsRewardedAdLoaded
+    {
+        get
+        {
+            if (rewardedView == null)
+                return false;
+            return rewardedView.Loaded;
+        }
+    }
+
     #endregion
 
     #region LISTENERS

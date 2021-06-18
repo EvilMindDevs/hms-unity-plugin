@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class AppMessagingToggleEditor : IDrawer
+    public class AppMessagingToggleEditor : ToggleEditor, IDrawer
     {
         private Toggle.Toggle _toggle;
 
@@ -24,23 +24,11 @@ namespace HmsPlugin
         {
             if (value)
             {
-                if (GameObject.FindObjectOfType<HMSAppMessagingManager>() == null)
-                {
-                    GameObject obj = new GameObject("HMSAppMessagingManager");
-                    obj.AddComponent<HMSAppMessagingManager>();
-                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                }
+                CreateManagers();
             }
             else
             {
-                var appMessagingManagers = GameObject.FindObjectsOfType<HMSAppMessagingManager>();
-                if (appMessagingManagers.Length > 0)
-                {
-                    for (int i = 0; i < appMessagingManagers.Length; i++)
-                    {
-                        GameObject.DestroyImmediate(appMessagingManagers[i].gameObject);
-                    }
-                }
+                DestroyManagers();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AppMessagingEnabled, value);
         }
@@ -48,6 +36,30 @@ namespace HmsPlugin
         public void Draw()
         {
             _toggle.Draw();
+        }
+
+        public override void CreateManagers()
+        {
+            if (GameObject.FindObjectOfType<HMSAppMessagingManager>() == null)
+            {
+                GameObject obj = new GameObject("HMSAppMessagingManager");
+                obj.AddComponent<HMSAppMessagingManager>();
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
+            Enabled = true;
+        }
+
+        public override void DestroyManagers()
+        {
+            var appMessagingManagers = GameObject.FindObjectsOfType<HMSAppMessagingManager>();
+            if (appMessagingManagers.Length > 0)
+            {
+                for (int i = 0; i < appMessagingManagers.Length; i++)
+                {
+                    GameObject.DestroyImmediate(appMessagingManagers[i].gameObject);
+                }
+            }
+            Enabled = false;
         }
     }
 }

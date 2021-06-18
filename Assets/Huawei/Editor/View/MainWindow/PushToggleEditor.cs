@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 
 namespace HmsPlugin
 {
-    public class PushToggleEditor : IDrawer
+    public class PushToggleEditor : ToggleEditor, IDrawer
     {
         private Toggle.Toggle _toggle;
 
@@ -20,25 +20,13 @@ namespace HmsPlugin
 
         private void OnStateChanged(bool value)
         {
-            if(value)
+            if (value)
             {
-                if (GameObject.FindObjectOfType<HMSPushKitManager>() == null)
-                {
-                    GameObject obj = new GameObject("HMSPushKitManager");
-                    obj.AddComponent<HMSPushKitManager>();
-                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                }
+                CreateManagers();
             }
             else
             {
-                var pushManagers = GameObject.FindObjectsOfType<HMSPushKitManager>();
-                if (pushManagers.Length > 0)
-                {
-                    for (int i = 0; i < pushManagers.Length; i++)
-                    {
-                        GameObject.DestroyImmediate(pushManagers[i].gameObject);
-                    }
-                }
+                DestroyManagers();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(PushKitEnabled, value);
         }
@@ -46,6 +34,30 @@ namespace HmsPlugin
         public void Draw()
         {
             _toggle.Draw();
+        }
+
+        public override void CreateManagers()
+        {
+            if (GameObject.FindObjectOfType<HMSPushKitManager>() == null)
+            {
+                GameObject obj = new GameObject("HMSPushKitManager");
+                obj.AddComponent<HMSPushKitManager>();
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
+            Enabled = true;
+        }
+
+        public override void DestroyManagers()
+        {
+            var pushManagers = GameObject.FindObjectsOfType<HMSPushKitManager>();
+            if (pushManagers.Length > 0)
+            {
+                for (int i = 0; i < pushManagers.Length; i++)
+                {
+                    GameObject.DestroyImmediate(pushManagers[i].gameObject);
+                }
+            }
+            Enabled = false;
         }
     }
 }

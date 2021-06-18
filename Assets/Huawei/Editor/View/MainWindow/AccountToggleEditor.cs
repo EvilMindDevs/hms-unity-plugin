@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 
 namespace HmsPlugin
 {
-    public class AccountToggleEditor : IDrawer, IDependentToggle
+    public class AccountToggleEditor : ToggleEditor, IDrawer, IDependentToggle
     {
         private Toggle.Toggle _toggle;
 
@@ -22,7 +22,7 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagerObject();
+                CreateManagers();
             }
             else
             {
@@ -33,14 +33,7 @@ namespace HmsPlugin
                     return;
                 }
 
-                var accountManagers = GameObject.FindObjectsOfType<HMSAccountManager>();
-                if (accountManagers.Length > 0)
-                {
-                    for (int i = 0; i < accountManagers.Length; i++)
-                    {
-                        GameObject.DestroyImmediate(accountManagers[i].gameObject);
-                    }
-                }
+                DestroyManagers();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AccountKitEnabled, value);
         }
@@ -54,10 +47,10 @@ namespace HmsPlugin
         {
             _toggle.SetChecked(true);
             HMSMainEditorSettings.Instance.Settings.SetBool(AccountKitEnabled, true);
-            CreateManagerObject();
+            CreateManagers();
         }
 
-        private void CreateManagerObject()
+        public override void CreateManagers()
         {
             if (GameObject.FindObjectOfType<HMSAccountManager>() == null)
             {
@@ -65,6 +58,20 @@ namespace HmsPlugin
                 obj.AddComponent<HMSAccountManager>();
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             }
+            Enabled = true;
+        }
+
+        public override void DestroyManagers()
+        {
+            var accountManagers = GameObject.FindObjectsOfType<HMSAccountManager>();
+            if (accountManagers.Length > 0)
+            {
+                for (int i = 0; i < accountManagers.Length; i++)
+                {
+                    GameObject.DestroyImmediate(accountManagers[i].gameObject);
+                }
+            }
+            Enabled = false;
         }
     }
 }

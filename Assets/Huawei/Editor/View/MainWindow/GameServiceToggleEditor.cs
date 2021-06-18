@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class GameServiceToggleEditor : IDrawer
+    public class GameServiceToggleEditor : ToggleEditor, IDrawer
     {
         private Toggle.Toggle _toggle;
         private TabBar _tabBar;
@@ -31,27 +31,12 @@ namespace HmsPlugin
             if (value)
             {
                 _tabBar.AddTab(_tabView);
-                if (GameObject.FindObjectOfType<HMSGameManager>() == null)
-                {
-                    GameObject obj = new GameObject("HMSGameManager");
-                    obj.AddComponent<HMSGameManager>();
-                    obj.AddComponent<HMSAchievementsManager>();
-                    obj.AddComponent<HMSLeaderboardManager>();
-                    obj.AddComponent<HMSSaveGameManager>();
-                    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                }
+                CreateManagers();
                 _dependentToggle.SetToggle();
             }
             else
             {
-                var gameKitManagers = GameObject.FindObjectsOfType<HMSGameManager>();
-                if (gameKitManagers.Length > 0)
-                {
-                    for (int i = 0; i < gameKitManagers.Length; i++)
-                    {
-                        GameObject.DestroyImmediate(gameKitManagers[i].gameObject);
-                    }
-                }
+                DestroyManagers();
                 _tabBar.RemoveTab(_tabView);
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(GameServiceEnabled, value);
@@ -60,6 +45,33 @@ namespace HmsPlugin
         public void Draw()
         {
             _toggle.Draw();
+        }
+
+        public override void CreateManagers()
+        {
+            if (GameObject.FindObjectOfType<HMSGameManager>() == null)
+            {
+                GameObject obj = new GameObject("HMSGameManager");
+                obj.AddComponent<HMSGameManager>();
+                obj.AddComponent<HMSAchievementsManager>();
+                obj.AddComponent<HMSLeaderboardManager>();
+                obj.AddComponent<HMSSaveGameManager>();
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
+            Enabled = true;
+        }
+
+        public override void DestroyManagers()
+        {
+            var gameKitManagers = GameObject.FindObjectsOfType<HMSGameManager>();
+            if (gameKitManagers.Length > 0)
+            {
+                for (int i = 0; i < gameKitManagers.Length; i++)
+                {
+                    GameObject.DestroyImmediate(gameKitManagers[i].gameObject);
+                }
+            }
+            Enabled = false;
         }
     }
 }

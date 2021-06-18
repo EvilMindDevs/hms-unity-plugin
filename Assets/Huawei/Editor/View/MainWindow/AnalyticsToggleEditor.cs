@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 
 namespace HmsPlugin
 {
-    public class AnalyticsToggleEditor : IDrawer, IDependentToggle
+    public class AnalyticsToggleEditor : ToggleEditor, IDrawer, IDependentToggle
     {
         private Toggle.Toggle _toggle;
 
@@ -22,7 +22,7 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagerObject();
+                CreateManagers();
             }
             else
             {
@@ -40,27 +40,10 @@ namespace HmsPlugin
                     return;
                 }
 
-                var analyticManagers = GameObject.FindObjectsOfType<HMSAnalyticsManager>();
-                if (analyticManagers.Length > 0)
-                {
-                    for (int i = 0; i < analyticManagers.Length; i++)
-                    {
-                        GameObject.DestroyImmediate(analyticManagers[i].gameObject);
-                    }
-                }
+                DestroyManagers();
 
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, value);
-        }
-
-        private void CreateManagerObject()
-        {
-            if (GameObject.FindObjectOfType<HMSAnalyticsManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSAnalyticsManager");
-                obj.AddComponent<HMSAnalyticsManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
         }
 
         public void Draw()
@@ -72,7 +55,31 @@ namespace HmsPlugin
         {
             _toggle.SetChecked(true);
             HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, true);
-            CreateManagerObject();
+            CreateManagers();
+        }
+
+        public override void CreateManagers()
+        {
+            if (GameObject.FindObjectOfType<HMSAnalyticsManager>() == null)
+            {
+                GameObject obj = new GameObject("HMSAnalyticsManager");
+                obj.AddComponent<HMSAnalyticsManager>();
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
+            Enabled = true;
+        }
+
+        public override void DestroyManagers()
+        {
+            var analyticManagers = GameObject.FindObjectsOfType<HMSAnalyticsManager>();
+            if (analyticManagers.Length > 0)
+            {
+                for (int i = 0; i < analyticManagers.Length; i++)
+                {
+                    GameObject.DestroyImmediate(analyticManagers[i].gameObject);
+                }
+            }
+            Enabled = false;
         }
     }
 

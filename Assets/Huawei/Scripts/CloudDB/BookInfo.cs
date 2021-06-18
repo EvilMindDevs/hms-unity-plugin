@@ -1,45 +1,44 @@
-﻿using HuaweiMobileServices.CloudDB;
+using HuaweiMobileServices.CloudDB;
 using HuaweiMobileServices.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
+
+using System;
 
 namespace HmsPlugin
 {
-    public class BookInfo : JavaObjectWrapper, ICloudDBZoneObject
+	public class BookInfo : JavaObjectWrapper, ICloudDBZoneObject
 	{
-		public BookInfo() : base("com.clouddbdemo.kb.huawei.BookInfo") { }
+		public BookInfo() : base("selam") { }
 		public BookInfo(AndroidJavaObject javaObject) : base(javaObject) { }
-
-		private int _id;
-		private string _bookName;
-		private string _author;
-		private double _price;
-		private string _publisher;
-		private Date _publishTime;
-		private bool _shadowFlag = true;
+		private int id;
+		private string bookName;
+		private string author;
+		private double price;
+		private string publisher;
+		private DateTime publishTime;
+		private bool shadowFlag;
 
 		public int Id
 		{
 			get { return Call<AndroidJavaObject>("getId").Call<int>("intValue"); }
 			set { Call("setId", new AndroidJavaObject("java.lang.Integer", value)); }
 		}
+
 		public string BookName
 		{
 			get { return Call<string>("getBookName"); }
 			set { Call("setBookName", value); }
 		}
+
 		public string Author
 		{
 			get { return Call<string>("getAuthor"); }
 			set { Call("setAuthor", value); }
 		}
+
 		public double Price
 		{
-			get { return Call<AndroidJavaObject>("getPrice").Call<int>("doubleValue"); }
+			get { return Call<AndroidJavaObject>("getPrice").Call<double>("doubleValue"); }
 			set { Call("setPrice", new AndroidJavaObject("java.lang.Double", value)); }
 		}
 
@@ -49,10 +48,10 @@ namespace HmsPlugin
 			set { Call("setPublisher", value); }
 		}
 
-		public Date PublishTime
+		public DateTime PublishTime
 		{
-			get { return Call<Date>("getPublishTime"); }
-			set { Call("setPublishTime", value); }
+			get { return new DateTime(Call<AndroidJavaObject>("getPublishTime").Call<long>("getTime")); }
+			set { Call("setPublishTime", new AndroidJavaObject("java.util.Date", value.Ticks)); }
 		}
 
 		public bool ShadowFlag
@@ -61,8 +60,7 @@ namespace HmsPlugin
 			set { Call("setShadowFlag", value); }
 		}
 
-        public AndroidJavaObject GetObj() => base.JavaObject;
-        public void SetObj(AndroidJavaObject arg0) => base.JavaObject = arg0; 
-
-    }
+		public AndroidJavaObject GetObj() => base.JavaObject;
+		public void SetObj(AndroidJavaObject arg0) => base.JavaObject = arg0;
+	}
 }

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    internal class AuthToggleEditor : IDrawer, IDependentToggle
+    internal class AuthToggleEditor : ToggleEditor, IDrawer, IDependentToggle
     {
         private Toggle.Toggle _toggle;
 
@@ -25,7 +25,7 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagerObject();
+                CreateManagers();
             }
             else
             {
@@ -35,26 +35,9 @@ namespace HmsPlugin
                     _toggle.SetChecked(true);
                     return;
                 }
-                var authManagers = GameObject.FindObjectsOfType<HMSAuthServiceManager>();
-                if (authManagers.Length > 0)
-                {
-                    for (int i = 0; i < authManagers.Length; i++)
-                    {
-                        GameObject.DestroyImmediate(authManagers[i].gameObject);
-                    }
-                }
+                DestroyManagers();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AuthEnabled, value);
-        }
-
-        private void CreateManagerObject()
-        {
-            if (GameObject.FindObjectOfType<HMSAuthServiceManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSAuthServiceManager");
-                obj.AddComponent<HMSAuthServiceManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
         }
 
         public void Draw()
@@ -66,7 +49,31 @@ namespace HmsPlugin
         {
             _toggle.SetChecked(true);
             HMSMainEditorSettings.Instance.Settings.SetBool(AuthEnabled, true);
-            CreateManagerObject();
+            CreateManagers();
+        }
+
+        public override void CreateManagers()
+        {
+            if (GameObject.FindObjectOfType<HMSAuthServiceManager>() == null)
+            {
+                GameObject obj = new GameObject("HMSAuthServiceManager");
+                obj.AddComponent<HMSAuthServiceManager>();
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
+            Enabled = true;
+        }
+
+        public override void DestroyManagers()
+        {
+            var authManagers = GameObject.FindObjectsOfType<HMSAuthServiceManager>();
+            if (authManagers.Length > 0)
+            {
+                for (int i = 0; i < authManagers.Length; i++)
+                {
+                    GameObject.DestroyImmediate(authManagers[i].gameObject);
+                }
+            }
+            Enabled = false;
         }
     }
 }

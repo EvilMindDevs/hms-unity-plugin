@@ -19,8 +19,11 @@ namespace HmsPlugin
             if (packageName.Contains("HMSUnityPackage"))
             {
                 var enabledEditors = HMSMainKitsTabFactory.GetEnabledEditors();
-                enabledEditors.ForEach(c => c.DestroyManagers());
-                enabledEditors.ForEach(f => f.CreateManagers());
+                if (enabledEditors != null && enabledEditors.Count > 0)
+                {
+                    enabledEditors.ForEach(c => c.DestroyManagers());
+                    enabledEditors.ForEach(f => f.CreateManagers());
+                }
             }
         }
     }

@@ -82,8 +82,6 @@ internal class HMSMainKitsTabFactory
 
     public static List<ToggleEditor> GetEnabledEditors()
     {
-        var editors = toggleEditors.FindAll(c => c.Enabled);
-        Debug.Log("Editor count: " + editors.Count);
-        return editors;
+        return toggleEditors.FindAll(c => c.Enabled);
     }
 }

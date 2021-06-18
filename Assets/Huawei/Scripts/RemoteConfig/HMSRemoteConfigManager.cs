@@ -72,10 +72,12 @@ public class HMSRemoteConfigManager : HMSSingleton<HMSRemoteConfigManager>
         ITask<ConfigValues> x = agc.Fetch();
         x.AddOnSuccessListener((configValues) =>
         {
+            Debug.Log("[HMSRemoteConfigManager] Fetch success.");
             OnFecthSuccess?.Invoke(configValues);
         });
         x.AddOnFailureListener((exception) =>
         {
+            Debug.LogError("[HMSRemoteConfigManager]: Fetch failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
             OnFecthFailure?.Invoke(exception);
         });
     }

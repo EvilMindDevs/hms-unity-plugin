@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HmsPlugin
 {
-    public class DriveKitToggleEditor : IDrawer
+    public class DriveKitToggleEditor : ToggleEditor, IDrawer
     {
         private Toggle.Toggle _toggle;
 
@@ -47,6 +47,16 @@ namespace HmsPlugin
         public void Draw()
         {
             _toggle.Draw();
+        }
+
+        public override void CreateManagers()
+        {
+            //throw new NotImplementedException();
+        }
+
+        public override void DestroyManagers()
+        {
+            //throw new NotImplementedException();
         }
     }
 }

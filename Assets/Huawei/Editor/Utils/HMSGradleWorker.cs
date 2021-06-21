@@ -45,12 +45,12 @@ namespace HmsPlugin
             {
                 AssetDatabase.CreateFolder("Assets/Plugins", "Android");
             }
-#if UNITY_2019 || UNITY_2020
+#if UNITY_2019_3_OR_NEWER || UNITY_2020
             CreateMainGradleFile(gradleConfigs);
             CreateLauncherGradleFile(gradleConfigs);
             BaseProjectGradleFile();
 
-#elif UNITY_2018
+#elif UNITY_2018_1_OR_NEWER
             CreateMainGradleFile(gradleConfigs);
 #endif
             AssetDatabase.Refresh();
@@ -58,7 +58,7 @@ namespace HmsPlugin
 
         private void CreateMainGradleFile(string[] gradleConfigs)
         {
-#if UNITY_2019 || UNITY_2020
+#if UNITY_2019_3_OR_NEWER || UNITY_2020
             using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/hmsMainTemplate.gradle"))
             {
                 file.Write("dependencies {\n\t");
@@ -69,7 +69,7 @@ namespace HmsPlugin
                 file.Write("}\n");
             }
 
-#elif UNITY_2018
+#elif UNITY_2018_1_OR_NEWER
             using (var file = File.CreateText(Application.dataPath + "/Plugins/Android/hmsMainTemplate.gradle"))
             {
                 file.Write("buildscript {\n\t");

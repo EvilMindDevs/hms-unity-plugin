@@ -25,10 +25,10 @@ namespace HmsPlugin
     {
         public event Action OnRefreshRequired;
 
-        private Settings _settings;
+        private HMSSettings _settings;
         private List<DefaultValue> _defaultValues;
 
-        public DefaultValueManipulator(Settings settings)
+        public DefaultValueManipulator(HMSSettings settings)
         {
             _settings = settings;
             _defaultValues = new List<DefaultValue>();

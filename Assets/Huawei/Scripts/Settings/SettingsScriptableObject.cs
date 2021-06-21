@@ -4,7 +4,7 @@ namespace HmsPlugin
 {
     public class SettingsScriptableObject : ScriptableObject
     {
-        public Settings settings = new Settings();
+        public HMSSettings settings = new HMSSettings();
 
         public void Save()
         {

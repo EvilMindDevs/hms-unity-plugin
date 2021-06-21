@@ -16,7 +16,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         string fileName = "agconnect-services.json";
         string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
         string destPath = "";
-#if UNITY_2019  || UNITY_2020
+#if UNITY_2019_3_OR_NEWER || UNITY_2020
         destPath = Path.Combine(Directory.GetParent(path).FullName + "//launcher", fileName);
 
         string hmsMainTemplatePath = Application.dataPath + "/Plugins/Android/hmsMainTemplate.gradle";
@@ -67,13 +67,11 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
             }
         }
 
-#elif UNITY_2018
+#elif UNITY_2018_1_OR_NEWER
         string hmsMainTemplatePath = Application.dataPath + @"/Plugins/Android/hmsMainTemplate.gradle";
         var lines = File.ReadAllLines(hmsMainTemplatePath);
 
         File.AppendAllLines(path + "/build.gradle", lines);
-
-        //FileUtil.CopyFileOrDirectory(hmsMainTemplatePath, Path.GetFullPath(path) + @"/hmsMainTemplate.gradle");
         destPath = Path.Combine(path, fileName);
 #endif
         if (File.Exists(destPath))

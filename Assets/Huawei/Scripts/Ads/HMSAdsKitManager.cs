@@ -70,7 +70,6 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableBannerAd)) return;
 
         Debug.Log("[HMS] HMSAdsKitManager Loading Banner Ad.");
-
         var bannerAdStatusListener = new AdStatusListener();
         bannerAdStatusListener.mOnAdLoaded += BannerAdStatusListener_mOnAdLoaded;
         bannerAdStatusListener.mOnAdClosed += BannerAdStatusListener_mOnAdClosed;
@@ -84,6 +83,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         bannerView.PositionType = (int)position;
         bannerView.SizeType = bannerSize;
         bannerView.AdStatusListener = bannerAdStatusListener;
+        _isBannerAdLoaded = false;
         bannerView.LoadBanner(new AdParam.Builder().Build());
         if (adsKitSettings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad))
             bannerView.ShowBanner();
@@ -121,6 +121,9 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         bannerView.DestroyBanner();
     }
 
+    private bool _isBannerAdLoaded;
+    public bool IsBannerAdLoaded { get => _isBannerAdLoaded; set => _isBannerAdLoaded = value; }
+
     #endregion
 
     #region LISTENERS
@@ -157,6 +160,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     private void BannerAdStatusListener_mOnAdLoaded(object sender, EventArgs e)
     {
         Debug.Log("[HMS] HMSAdsKitManager BannerAdLoadSuccess : ");
+        _isBannerAdLoaded = true;
         OnBannerLoadEvent?.Invoke();
     }
 
@@ -189,7 +193,17 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
             interstitialView.Show();
         }
         else
-            Debug.LogError("[HMS] HMSAdsKitManager Interstitial Still Ad Not Loaded Yet!");
+            Debug.LogError("[HMS] HMSAdsKitManager Interstitial Ad Still Not Loaded Yet!");
+    }
+
+    public bool IsInterstitialAdLoaded
+    {
+        get
+        {
+            if (interstitialView == null)
+                return false;
+            return interstitialView.Loaded;
+        }
     }
 
     #endregion
@@ -281,7 +295,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         }
         else
         {
-            Debug.LogError("[HMS] HMSAdsKitManager still not loaded");
+            Debug.LogError("[HMS] HMSAdsKitManager Rewarded Ad still not loaded");
         }
     }
 

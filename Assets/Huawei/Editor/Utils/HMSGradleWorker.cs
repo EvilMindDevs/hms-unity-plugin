@@ -142,7 +142,7 @@ namespace HmsPlugin
 
         public void PrepareGradleFile()
         {
-            Settings settings = HMSMainEditorSettings.Instance.Settings;
+            HMSSettings settings = HMSMainEditorSettings.Instance.Settings;
             List<string> gradle = new List<string>(CoreGradles());
             for (int i = 0; i < settings.Keys.Count(); i++)
             {

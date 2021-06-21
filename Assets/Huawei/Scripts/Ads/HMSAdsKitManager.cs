@@ -18,7 +18,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     private InterstitialAd interstitialView;
     private RewardAd rewardedView;
 
-    private Settings adsKitSettings;
+    private HMSSettings adsKitSettings;
 
     private bool isInitialized;
 

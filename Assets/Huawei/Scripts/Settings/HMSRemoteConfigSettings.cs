@@ -16,8 +16,8 @@ namespace HmsPlugin
 
         private SettingsScriptableObject loadedSettings;
 
-        private Settings _settings;
-        public Settings Settings => _settings;
+        private HMSSettings _settings;
+        public HMSSettings Settings => _settings;
 
         public HMSRemoteConfigSettings()
         {

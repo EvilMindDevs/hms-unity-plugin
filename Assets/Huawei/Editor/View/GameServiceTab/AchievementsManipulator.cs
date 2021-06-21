@@ -25,10 +25,10 @@ namespace HmsPlugin
     public class AchievementManipulator : IAchievementsManipulator
     {
         public event Action OnRefreshRequired;
-        private Settings _settings;
+        private HMSSettings _settings;
         private List<HMSAchievementEntry> _achievementList;
 
-        public AchievementManipulator(Settings settings)
+        public AchievementManipulator(HMSSettings settings)
         {
             _settings = settings;
             _achievementList = new List<HMSAchievementEntry>();

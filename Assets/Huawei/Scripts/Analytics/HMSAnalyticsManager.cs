@@ -30,6 +30,31 @@ public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
+    public void SendEventWithBundle(string eventID, Dictionary<string, dynamic> values)
+    {
+        Bundle bundleUnity = new Bundle();
+        foreach (var item in values)
+        {
+            if (item.Value is int)
+            {
+                bundleUnity.PutInt(item.Key, (int)item.Value);
+            }
+            else if (item.Value is string)
+            {
+                bundleUnity.PutString(item.Key, (string)item.Value);
+            }
+            else if (item.Value is bool)
+            {
+                bundleUnity.PutBoolean(item.Key, (bool)item.Value);
+            }
+        }
+
+        Debug.Log($"[HMS] : Analytics Kits Event Id:{eventID}");
+        foreach (var item in values)
+            Debug.Log($"[HMS] : Analytics Kits Key: {item.Key}, Value: {item.Value}");
+        hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
+    }
+
     public void SendEventWithBundle(String eventID, String key, int value)
     {
         Bundle bundleUnity = new Bundle();

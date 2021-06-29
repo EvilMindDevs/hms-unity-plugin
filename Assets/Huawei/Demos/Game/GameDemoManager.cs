@@ -72,7 +72,7 @@ public class GameDemoManager : MonoBehaviour
         {
             string description = InputFieldDesc.text;
             long playedTime = long.Parse(InputFieldPlayedTime.text);
-            long progress = long.Parse(InputFieldPlayedTime.text);
+            long progress = long.Parse(InputFieldProgress.text);
             HMSSaveGameManager.Instance.Commit(description, playedTime, progress, ImagePath, "png");
         }
         else

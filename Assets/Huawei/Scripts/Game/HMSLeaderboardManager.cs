@@ -33,6 +33,9 @@ namespace HmsPlugin
         public Action<ScoreSubmissionInfo> OnSubmitScoreSuccess { get; set; }
         public Action<HMSException> OnSubmitScoreFailure { get; set; }
 
+        public Action<RankingScores> OnGetPlayerCenteredRankingScoresSuccess { get; set; }
+        public Action<HMSException> OnSGetPlayerCenteredRankingScoresFailure { get; set; }
+
         public void IsUserScoreShownOnLeaderboards()
         {
             ITask<int> task = rankingsClient.GetRankingSwitchStatus();
@@ -62,6 +65,18 @@ namespace HmsPlugin
                 Debug.LogError("[HMSLeaderboardManager]: SetUserScoreShownOnLeaderboards failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnSetUserScoreShownOnLeaderboardsFailure?.Invoke(exception);
             });
+        }
+
+        public void SubmitRankingScore(string leaderboardId, long score)
+        {
+            Debug.Log("[HMSLeaderboardManager] SubmitRankingScore");
+            rankingsClient.SubmitRankingScore(leaderboardId, score);
+        }
+
+        public void SubmitRankingScore(string leaderboardId, long score, string scoreTips)
+        {
+            Debug.Log("[HMSLeaderboardManager] SubmitRankingScore");
+            rankingsClient.SubmitRankingScore(leaderboardId, score, scoreTips);
         }
 
         public void SubmitScore(string leaderboardId, long score)
@@ -150,6 +165,43 @@ namespace HmsPlugin
             {
                 Debug.LogError("[HMSLeaderboardManager]: GetScoresFromLeaderboard failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnGetScoresFromLeaderboardFailure?.Invoke(exception);
+            });
+        }
+
+        public void GetPlayerCenteredRankingScores(string leaderboardId, int timeDimension, int maxResults, bool isRealTime)
+        {
+            var task = rankingsClient.GetPlayerCenteredRankingScores(leaderboardId, timeDimension, maxResults, isRealTime);
+
+            task.AddOnSuccessListener((result) =>
+            {
+                Debug.Log("[HMSLeaderboardManager] GetPlayerCenteredRankingScores SUCCESS");
+                OnGetPlayerCenteredRankingScoresSuccess?.Invoke(result);
+            }).AddOnFailureListener((exception) =>
+            {
+                Debug.LogError("[HMSLeaderboardManager]: GetPlayerCenteredRankingScores failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                OnSGetPlayerCenteredRankingScoresFailure?.Invoke(exception);
+            });
+        }
+
+        public void GetPlayerCenteredRankingScores(string leaderboardId, int timeDimension, int maxResults, long offsetPlayerRank, int pageDirection)
+        {
+            var task = rankingsClient.GetPlayerCenteredRankingScores(leaderboardId, timeDimension, maxResults, offsetPlayerRank, pageDirection);
+
+            task.AddOnSuccessListener((result) =>
+            {
+                Debug.Log("[HMSLeaderboardManager] GetPlayerCenteredRankingScores SUCCESS");
+                Debug.LogWarning("[HMSLeaderboardManager] " + result == null ? "null" : "not null");
+                Debug.LogWarning("[HMSLeaderboardManager]" + result.Ranking.RankingDisplayName + ", Count: " + result.RankingScore.Count);
+                if (result.RankingScore.Count > 0)
+                {
+                    Debug.LogWarning("Name: " + result.RankingScore[0].DisplayRank);
+                    Debug.LogWarning("Score: " + result.RankingScore[0].PlayerRawScore);
+                }
+                OnGetPlayerCenteredRankingScoresSuccess?.Invoke(result);
+            }).AddOnFailureListener((exception) =>
+            {
+                Debug.LogError("[HMSLeaderboardManager]: GetPlayerCenteredRankingScores failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                OnSGetPlayerCenteredRankingScoresFailure?.Invoke(exception);
             });
         }
     }

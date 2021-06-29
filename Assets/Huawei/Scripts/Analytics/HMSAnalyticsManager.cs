@@ -30,7 +30,7 @@ public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
-    public void SendEventWithBundle(string eventID, Dictionary<string, dynamic> values)
+    public void SendEventWithBundle(string eventID, Dictionary<string, object> values)
     {
         Bundle bundleUnity = new Bundle();
         foreach (var item in values)

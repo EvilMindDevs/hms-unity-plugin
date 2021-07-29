@@ -73,12 +73,18 @@ namespace HmsPlugin
 
         public void ShowFloatWindow()
         {
-            buoyClient.ShowFloatWindow();
+            if (buoyClient != null)
+                buoyClient.ShowFloatWindow();
+            else
+                Debug.LogError("[HMSGameManager] ShowFloatWindow BuoyClient is null.");
         }
 
         public void HideFloatWindow()
         {
-            buoyClient.HideFloatWindow();
+            if (buoyClient != null)
+                buoyClient.HideFloatWindow();
+            else
+                Debug.LogError("[HMSGameManager] ShowFloatWindow BuoyClient is null.");
         }
 
         public void GetPlayerInfo()

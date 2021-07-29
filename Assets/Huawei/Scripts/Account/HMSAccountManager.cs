@@ -56,6 +56,8 @@ namespace HmsPlugin
         public AuthAccount HuaweiId { get; set; }
         public Action<AuthAccount> OnSignInSuccess { get; set; }
         public Action<HMSException> OnSignInFailed { get; set; }
+        public Action<AuthAccount> OnIndependentSignInSuccess { get; set; }
+        public Action<HMSException> OnIndependentSignInFailed { get; set; }
         public bool IsSignedIn { get { return HuaweiId != null; } }
 
         private AccountAuthService authService, authServiceDrive;
@@ -63,7 +65,7 @@ namespace HmsPlugin
         public override void Awake()
         {
             base.Awake();
-            Debug.Log("[HMS]: AWAKE AUTHSERVICE");
+            Debug.Log("[HMSAccountManager]: AWAKE AUTHSERVICE");
             authService = DefaultAuthService;
             //authServiceDrive = DefaultDriveAuthService;
         }
@@ -76,11 +78,12 @@ namespace HmsPlugin
 
         public void SignIn()
         {
-            Debug.Log("[HMS]: Sign in " + authService);
+            Debug.Log("[HMSAccountManager]: Sign in " + authService);
             authService.StartSignIn((authId) =>
             {
                 HuaweiId = authId;
                 OnSignInSuccess?.Invoke(authId);
+
             }, (error) =>
             {
                 HuaweiId = null;
@@ -118,6 +121,7 @@ namespace HmsPlugin
                 OnSignInFailed?.Invoke(exception);
             });
         }
+
         public void SignOut()
         {
             authService.SignOut();
@@ -129,11 +133,30 @@ namespace HmsPlugin
             ITask<HuaweiMobileServices.Utils.Void> taskAuthHuaweiId = authService.CancelAuthorization();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>
             {
-                Debug.Log("[HMS]: CancelAuthorization onSuccess ");
+                Debug.Log("[HMSAccountManager]: CancelAuthorization onSuccess ");
             }).AddOnFailureListener((exception) =>
             {
                 Debug.LogError("[HMSAccountManager]: Cancel Authorization failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnSignInFailed?.Invoke(exception);
+            });
+        }
+
+        // check this link for different scopes: https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/independentsignin-0000001140395573
+        public void IndependentSignIn(string accessToken)
+        {
+            AccountAuthParams authParams = new AccountAuthParamsHelper().SetEmail().CreateParams();
+            AccountAuthService authService = AccountAuthManager.GetService(authParams);
+            Debug.Log("[HMSAccountManager]: Independent Sign in ");
+            authService.StartIndependentSignIn(accessToken,
+            (success) =>
+            {
+                Debug.LogWarning("[HMSAccountManager]: Independent Sign in Success. Auth Code: " + success.AuthorizationCode);
+                OnIndependentSignInSuccess?.Invoke(success);
+            },
+            (error) =>
+            {
+                Debug.LogError("[HMSAccountManager]: Independent Sign in failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+                OnIndependentSignInFailed?.Invoke(error);
             });
         }
     }

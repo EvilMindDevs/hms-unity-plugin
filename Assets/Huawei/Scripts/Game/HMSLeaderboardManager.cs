@@ -34,7 +34,10 @@ namespace HmsPlugin
         public Action<HMSException> OnSubmitScoreFailure { get; set; }
 
         public Action<RankingScores> OnGetPlayerCenteredRankingScoresSuccess { get; set; }
-        public Action<HMSException> OnSGetPlayerCenteredRankingScoresFailure { get; set; }
+        public Action<HMSException> OnGetPlayerCenteredRankingScoresFailure { get; set; }
+
+        public Action<RankingScores> OnGetMoreScoresFromLeaderboardSuccess { get; set; }
+        public Action<HMSException> OnGetMoreScoresFromLeaderboardFailure { get; set; }
 
         public void IsUserScoreShownOnLeaderboards()
         {
@@ -150,9 +153,25 @@ namespace HmsPlugin
             });
         }
 
+        public void GetScoresFromLeaderboard(string leaderboardId, int timeDimension, int maxResults, bool isRealTime)
+        {
+            ITask<RankingScores> task =
+                rankingsClient.GetRankingTopScores(leaderboardId, timeDimension, maxResults, isRealTime);
+
+            task.AddOnSuccessListener((result) =>
+            {
+                Debug.Log("[HMSLeaderboardManager] GetScoresFromLeaderboard SUCCESS");
+                OnGetScoresFromLeaderboardSuccess?.Invoke(result);
+
+            }).AddOnFailureListener((exception) =>
+            {
+                Debug.LogError("[HMSLeaderboardManager]: GetScoresFromLeaderboard failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                OnGetScoresFromLeaderboardFailure?.Invoke(exception);
+            });
+        }
+
         public void GetScoresFromLeaderboard(string leaderboardId, int timeDimension, int maxResults, int offsetPlayerRank, int pageDirection)
         {
-
             ITask<RankingScores> task =
                 rankingsClient.GetRankingTopScores(leaderboardId, timeDimension, maxResults, offsetPlayerRank, pageDirection);
 
@@ -168,6 +187,22 @@ namespace HmsPlugin
             });
         }
 
+        public void GetMoreScoresFromLeaderboard(string leaderboardId, long offsetPlayerRank, int maxResults, int pageDirection, int timeDimention)
+        {
+            var task = rankingsClient.GetMoreRankingScores(leaderboardId, offsetPlayerRank, maxResults, pageDirection, timeDimention);
+
+            task.AddOnSuccessListener((result) =>
+            {
+                Debug.Log("[HMSLeaderboardManager] GetMoreScoresFromLeaderboard SUCCESS");
+                OnGetMoreScoresFromLeaderboardSuccess?.Invoke(result);
+
+            }).AddOnFailureListener((exception) =>
+            {
+                Debug.LogError("[HMSLeaderboardManager]: GetMoreScoresFromLeaderboard failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                OnGetMoreScoresFromLeaderboardFailure?.Invoke(exception);
+            });
+        }
+
         public void GetPlayerCenteredRankingScores(string leaderboardId, int timeDimension, int maxResults, bool isRealTime)
         {
             var task = rankingsClient.GetPlayerCenteredRankingScores(leaderboardId, timeDimension, maxResults, isRealTime);
@@ -179,7 +214,7 @@ namespace HmsPlugin
             }).AddOnFailureListener((exception) =>
             {
                 Debug.LogError("[HMSLeaderboardManager]: GetPlayerCenteredRankingScores failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
-                OnSGetPlayerCenteredRankingScoresFailure?.Invoke(exception);
+                OnGetPlayerCenteredRankingScoresFailure?.Invoke(exception);
             });
         }
 
@@ -201,7 +236,7 @@ namespace HmsPlugin
             }).AddOnFailureListener((exception) =>
             {
                 Debug.LogError("[HMSLeaderboardManager]: GetPlayerCenteredRankingScores failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
-                OnSGetPlayerCenteredRankingScoresFailure?.Invoke(exception);
+                OnGetPlayerCenteredRankingScoresFailure?.Invoke(exception);
             });
         }
     }

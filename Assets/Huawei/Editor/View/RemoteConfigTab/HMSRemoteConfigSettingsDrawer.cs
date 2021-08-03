@@ -12,8 +12,8 @@ namespace HmsPlugin
 {
     internal class HMSRemoteConfigSettingsDrawer : VerticalSequenceDrawer
     {
-        private Settings _defaultValueSettings;
-        private Settings _remoteConfigSettings;
+        private HMSSettings _defaultValueSettings;
+        private HMSSettings _remoteConfigSettings;
 
         private Foldout _defaultValuesFoldout = new Foldout("Default Value List");
         private Toggle.Toggle _applyDefaultValuesToggle;

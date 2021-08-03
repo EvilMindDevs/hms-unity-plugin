@@ -13,8 +13,8 @@ namespace HmsPlugin
         public const string InitializeOnStart = "InitializeOnStart";
         private SettingsScriptableObject loadedSettings;
 
-        private Settings _settings;
-        public Settings Settings => _settings;
+        private HMSSettings _settings;
+        public HMSSettings Settings => _settings;
 
         public HMSIAPKitSettings()
         {

@@ -25,10 +25,10 @@ namespace HmsPlugin
     public class LeaderboardManipulator : ILeaderboardManipulator
     {
         public event Action OnRefreshRequired;
-        private Settings _settings;
+        private HMSSettings _settings;
         private List<HMSLeaderboardEntry> _leaderboardList;
 
-        public LeaderboardManipulator(Settings settings)
+        public LeaderboardManipulator(HMSSettings settings)
         {
             _settings = settings;
             _leaderboardList = new List<HMSLeaderboardEntry>();

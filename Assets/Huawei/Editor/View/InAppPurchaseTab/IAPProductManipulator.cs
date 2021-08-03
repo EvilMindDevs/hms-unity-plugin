@@ -19,10 +19,10 @@ namespace HmsPlugin
     {
         public event Action OnRefreshRequired;
 
-        private Settings _settings;
+        private HMSSettings _settings;
         private List<HMSIAPProductEntry> _productList;
 
-        public IAPProductManipulator(Settings settings)
+        public IAPProductManipulator(HMSSettings settings)
         {
             _settings = settings;
             _productList = new List<HMSIAPProductEntry>();

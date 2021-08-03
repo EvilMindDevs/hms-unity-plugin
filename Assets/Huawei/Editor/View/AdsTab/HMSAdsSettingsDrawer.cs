@@ -27,7 +27,7 @@ namespace HmsPlugin
 
         private Toggle.Toggle _testAdstoggle;
 
-        private Settings _settings;
+        private HMSSettings _settings;
 
 
         public HMSAdsSettingsDrawer()

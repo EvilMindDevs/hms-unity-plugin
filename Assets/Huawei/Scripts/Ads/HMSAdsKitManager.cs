@@ -18,7 +18,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     private InterstitialAd interstitialView;
     private RewardAd rewardedView;
 
-    private Settings adsKitSettings;
+    private HMSSettings adsKitSettings;
 
     private bool isInitialized;
 
@@ -282,7 +282,16 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableRewardedAd)) return;
         Debug.Log("[HMS] HMSAdsKitManager LoadRewardedAd");
         rewardedView = new RewardAd(adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestRewardedAdId : adsKitSettings.Get(HMSAdsKitSettings.RewardedAdID));
-        rewardedView.LoadAd(new AdParam.Builder().Build(), () => { Debug.Log("[HMS] HMSAdsKitManager Rewarded ad loaded!"); }, (errorCode) => { Debug.Log($"[HMS] HMSAdsKitManager Rewarded ad loading failed with error ${errorCode}"); });
+        rewardedView.LoadAd(new AdParam.Builder().Build(), () =>
+        {
+            Debug.Log("[HMS] HMSAdsKitManager Rewarded ad loaded!");
+            OnRewardedAdLoaded?.Invoke();
+        },
+        (errorCode) =>
+        {
+            Debug.Log($"[HMS] HMSAdsKitManager Rewarded ad loading failed with error ${errorCode}");
+            OnRewardedAdFailedToLoad?.Invoke(errorCode);
+        });
     }
 
     public void ShowRewardedAd()
@@ -352,6 +361,8 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     public Action<int> OnRewardAdFailedToShow { get; set; }
     public Action OnRewardAdOpened { get; set; }
     public Action<Reward> OnRewarded { get; set; }
+    public Action OnRewardedAdLoaded { get; set; }
+    public Action<int> OnRewardedAdFailedToLoad { get; set; }
 
     #endregion
 

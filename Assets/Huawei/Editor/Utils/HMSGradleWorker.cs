@@ -22,16 +22,17 @@ namespace HmsPlugin
         {
             gradleSettings = new Dictionary<string, string[]>()
             {
-                { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:5.2.0.300" } },
+                { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:5.3.0.302" } },
                 { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.39.302", "com.huawei.hms:ads-consent:3.4.39.302", "com.huawei.hms:ads-identifier:3.4.39.302" } },
-                { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:5.2.0.301" } },
+                { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:5.3.1.300" } },
                 { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.4.2.301" } },
-                { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:5.0.4.302" } },
-                { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:5.1.0.300" } },
-                { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:5.1.1.301" } },
+                { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:5.0.4.303" } },
+                { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:5.3.0.300" } },
+                { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:5.3.0.301" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.5.0.300" } },
                 { CloudDBToggleEditor.CloudDBEnabled, new string[] { "com.huawei.agconnect:agconnect-cloud-database:1.4.5.300" } },
                 { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.4.2.301" } },
+                { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.4.2.301" } }
             };
         }
 
@@ -142,7 +143,7 @@ namespace HmsPlugin
 
         public void PrepareGradleFile()
         {
-            Settings settings = HMSMainEditorSettings.Instance.Settings;
+            HMSSettings settings = HMSMainEditorSettings.Instance.Settings;
             List<string> gradle = new List<string>(CoreGradles());
             for (int i = 0; i < settings.Keys.Count(); i++)
             {

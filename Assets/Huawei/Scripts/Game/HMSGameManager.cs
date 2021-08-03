@@ -38,22 +38,27 @@ namespace HmsPlugin
             ITask<AuthAccount> taskAuthHuaweiId = authService.SilentSignIn();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>
             {
-                HMSAccountManager.Instance.HuaweiId = result;
-                Debug.Log("HMS GAMES: Setted app");
-                IJosAppsClient josAppsClient = JosApps.GetJosAppsClient();
-                Debug.Log("HMS GAMES: jossClient");
-                josAppsClient.Init();
-                Debug.Log("HMS GAMES: jossClient init");
-                InitGameManagers();
+                InitJosApps(result);
                 SignInSuccess?.Invoke(result);
 
             }).AddOnFailureListener((exception) =>
             {
 
                 Debug.Log("HMS GAMES: The app has not been authorized");
-                authService.StartSignIn(SignInSuccess, SignInFailure);
+                authService.StartSignIn((auth) => { InitJosApps(auth); SignInSuccess?.Invoke(auth); }, SignInFailure);
                 InitGameManagers();
             });
+        }
+
+        private void InitJosApps(AuthAccount result)
+        {
+            HMSAccountManager.Instance.HuaweiId = result;
+            Debug.Log("HMS GAMES: Setted app");
+            IJosAppsClient josAppsClient = JosApps.GetJosAppsClient();
+            Debug.Log("HMS GAMES: jossClient");
+            josAppsClient.Init();
+            Debug.Log("HMS GAMES: jossClient init");
+            InitGameManagers();
         }
 
         public void InitGameManagers()
@@ -69,12 +74,18 @@ namespace HmsPlugin
 
         public void ShowFloatWindow()
         {
-            buoyClient.ShowFloatWindow();
+            if (buoyClient != null)
+                buoyClient.ShowFloatWindow();
+            else
+                Debug.LogError("[HMSGameManager] ShowFloatWindow BuoyClient is null.");
         }
 
         public void HideFloatWindow()
         {
-            buoyClient.HideFloatWindow();
+            if (buoyClient != null)
+                buoyClient.HideFloatWindow();
+            else
+                Debug.LogError("[HMSGameManager] ShowFloatWindow BuoyClient is null.");
         }
 
         public void GetPlayerInfo()

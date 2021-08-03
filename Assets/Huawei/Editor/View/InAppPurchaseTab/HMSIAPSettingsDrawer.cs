@@ -13,8 +13,8 @@ namespace HmsPlugin
 {
     public class HMSIAPSettingsDrawer : VerticalSequenceDrawer
     {
-        private Settings _iapSettings;
-        private Settings _productListSettings;
+        private HMSSettings _iapSettings;
+        private HMSSettings _productListSettings;
 
         private Foldout _productsFoldout = new Foldout("Product List");
 

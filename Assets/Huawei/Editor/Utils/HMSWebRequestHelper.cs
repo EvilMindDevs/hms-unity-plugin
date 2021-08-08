@@ -30,6 +30,11 @@ internal class HMSWebRequestHelper
     {
         persistedObj.GetComponent<HMSWebRequestBehaviour>().Post(url, bodyJsonString, callback);
     }
+
+    internal static async Task<UnityWebRequest> PostRequest(string url, string bodyJsonString)
+    {
+        return await persistedObj.GetComponent<HMSWebRequestBehaviour>().PostAsync(url, bodyJsonString);
+    }
 }
 
 public class HMSWebRequestBehaviour : MonoBehaviour
@@ -37,6 +42,23 @@ public class HMSWebRequestBehaviour : MonoBehaviour
     public void Post(string url, string bodyJsonString, Action<UnityWebRequest> callback)
     {
         StartCoroutine(PostCoroutine(url, bodyJsonString, callback));
+    }
+
+    public async Task<UnityWebRequest> PostAsync(string url, string bodyJsonString)
+    {
+        UnityWebRequest request = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
+        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        var asyncOp = request.SendWebRequest();
+        while (true)
+        {
+            if (asyncOp.progress == 1)
+                break;
+        }
+        return request;
+
     }
 
     private IEnumerator PostCoroutine(string url, string bodyJsonString, Action<UnityWebRequest> callback)

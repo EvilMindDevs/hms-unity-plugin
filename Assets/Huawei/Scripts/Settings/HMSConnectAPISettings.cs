@@ -13,6 +13,8 @@ namespace HmsPlugin
 
         public const string ClientID = "ClientID";
         public const string ClientSecret = "ClientSecret";
+        public const string AccessToken = "AccessToken";
+        public const string ExpiresInTicks = "ExpiresInTicks";
 
         private SettingsScriptableObject loadedSettings;
 

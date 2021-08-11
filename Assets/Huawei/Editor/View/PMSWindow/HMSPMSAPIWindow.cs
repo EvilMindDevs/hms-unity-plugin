@@ -7,19 +7,19 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 
-public class HMSConnectAPIWindow : HMSEditorWindow
+public class HMSPMSAPIWindow : HMSEditorWindow
 {
-    [MenuItem("Huawei/Connect API/Token Obtainer")]
+    [MenuItem("Huawei/Connect API/PMS API")]
     public static void ShowWindow()
     {
-        GetWindow(typeof(HMSConnectAPIWindow), false, "HMS Connect API");
+        GetWindow(typeof(HMSPMSAPIWindow), false, "HMS PMS API");
     }
+
 
     public override IDrawer CreateDrawer()
     {
         var tabBar = new TabBar();
-        HMSConnectAPITabFactory.CreateConnectAPITab(tabBar);
+       // HMSConnectAPITabFactory.CreateConnectAPITab(tabBar);
         return tabBar;
     }
 }
-

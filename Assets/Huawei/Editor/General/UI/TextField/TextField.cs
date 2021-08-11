@@ -18,6 +18,7 @@ namespace HmsPlugin.TextField
         private string _text;
         private int? labelWidth;
         private int? fieldWidth;
+        private int? fieldHeight;
 
         public event Action<string> OnValueChanged;
 
@@ -60,6 +61,12 @@ namespace HmsPlugin.TextField
             return this;
         }
 
+        public TextField SetFieldHeight(int height)
+        {
+            fieldHeight = height;
+            return this;
+        }
+
         public void Draw()
         {
             Rect rect = EditorGUILayout.GetControlRect();
@@ -76,6 +83,11 @@ namespace HmsPlugin.TextField
             if (fieldWidth.HasValue)
             {
                 rect.width = fieldWidth.Value;
+            }
+
+            if (fieldHeight.HasValue)
+            {
+                rect.height = fieldHeight.Value;
             }
 
             if (_label != null)

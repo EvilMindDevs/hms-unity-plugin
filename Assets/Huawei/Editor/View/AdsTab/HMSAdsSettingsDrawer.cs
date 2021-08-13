@@ -14,6 +14,7 @@ namespace HmsPlugin
 
         private Toggle.Toggle _enableBannerAdsToggle;
         private TextField.TextFieldWithAccept _bannerAdsTextField;
+        private TextField.TextFieldWithAccept _bannerAdsRefreshField;
         private Toggle.Toggle _enableBannerAdLoadToggle;
         private DisabledDrawer _bannerAdsDisabledDrawer;
 
@@ -35,8 +36,9 @@ namespace HmsPlugin
             _settings = HMSAdsKitSettings.Instance.Settings;
             _enableBannerAdsToggle = new Toggle.Toggle("Enable Banner Ads", _settings.GetBool(HMSAdsKitSettings.EnableBannerAd), OnBannerAdsToggleChanged, false);
             _bannerAdsTextField = new TextFieldWithAccept("Banner Ad ID", _settings.Get(HMSAdsKitSettings.BannerAdID), "Save", OnBannerAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
+            _bannerAdsRefreshField = new TextFieldWithAccept("Banner Refresh Interval*", _settings.Get(HMSAdsKitSettings.BannerRefreshInterval), "Save", OnBannerRefreshIntervalSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100).AddTooltip("Default is 60 seconds. Value can be between 30 and 120 seconds");
             _enableBannerAdLoadToggle = new Toggle.Toggle("Show Banner on Load*", _settings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad), OnShowBannerOnLoadChanged, false).SetTooltip("Enabling this will make the banner to be shown right after it finishes loading.");
-            _bannerAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_bannerAdsTextField, _enableBannerAdLoadToggle)).SetEnabled(!_enableBannerAdsToggle.IsChecked());
+            _bannerAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_bannerAdsTextField, _bannerAdsRefreshField, _enableBannerAdLoadToggle)).SetEnabled(!_enableBannerAdsToggle.IsChecked());
 
             _enableInterstitialAdsToggle = new Toggle.Toggle("Enable Interstitial Ads", _settings.GetBool(HMSAdsKitSettings.EnableInterstitialAd), OnInterstitialAdsToggleChanged, false);
             _interstitialAdsTextField = new TextFieldWithAccept("Interstitial Ad ID", _settings.Get(HMSAdsKitSettings.InterstitialAdID), "Save", OnInterstitialAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
@@ -49,6 +51,11 @@ namespace HmsPlugin
             _testAdstoggle = new Toggle.Toggle("Use Test Ads*", _settings.GetBool(HMSAdsKitSettings.UseTestAds), OnTestAdsToggleChanged);
             _testAdstoggle.SetTooltip("This will overwrite all ads with test ads.");
             SetupSequence();
+        }
+
+        private void OnBannerRefreshIntervalSaveButtonClick()
+        {
+            _settings.Set(HMSAdsKitSettings.BannerRefreshInterval, _bannerAdsRefreshField.GetCurrentText());
         }
 
         private void OnRewardedAdsToggleChanged(bool value)

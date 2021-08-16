@@ -7,20 +7,21 @@ using UnityEngine;
 
 namespace HmsPlugin.Dropdown
 {
-    public class StringDropdown : IDrawer, IDropdown
+    public class StringDropdown : IDrawer, IDropdown<int>
     {
-        public event Action OnChangedSelection;
+        public event Action<int> OnChangedSelection;
 
         private readonly string[] _options;
         private readonly string _text;
 
         private int _index;
 
-        public StringDropdown(string[] options, int initialIndex, string text = "")
+        public StringDropdown(string[] options, int initialIndex, string text = "", Action<int> onChangedSelection = null)
         {
             _options = options;
             _text = text;
             _index = initialIndex;
+            OnChangedSelection = onChangedSelection;
 
             Debug.Assert(options.Length > 0);
             Debug.Assert(initialIndex < options.Length);
@@ -39,7 +40,7 @@ namespace HmsPlugin.Dropdown
 
             if (!Equals(prevIndex, _index))
             {
-                OnChangedSelection.InvokeSafe();
+                OnChangedSelection.InvokeSafe(_index);
             }
         }
     }

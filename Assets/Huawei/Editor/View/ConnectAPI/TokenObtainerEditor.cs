@@ -7,8 +7,8 @@ namespace HmsPlugin.ConnectAPI
 {
     public class TokenObtainerEditor : VerticalSequenceDrawer
     {
-        TextField.TextField clientIdTextField;
-        TextField.TextField clientSecretTextField;
+        TextField.TextFieldBase clientIdTextField;
+        TextField.TextFieldBase clientSecretTextField;
 
         public TokenObtainerEditor()
         {

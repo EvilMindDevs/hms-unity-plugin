@@ -41,6 +41,11 @@ namespace HmsPlugin.Label
             return this;
         }
 
+        public string GetText()
+        {
+            return _text;
+        }
+
         public Label SetBold(bool bold)
         {
             SetFontStyle(bold ? FontStyle.Bold : FontStyle.Normal);

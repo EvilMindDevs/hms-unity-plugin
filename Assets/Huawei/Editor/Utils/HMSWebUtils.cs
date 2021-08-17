@@ -11,6 +11,7 @@ public static class HMSWebUtils
 {
     public static async Task<string> GetAccessTokenAsync()
     {
+        //TODO: check if entered client Id and client secret is changed. If it changed, we need to get the new token ASAP.
         string accessToken = "";
 
         if (!string.IsNullOrEmpty(HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken)))

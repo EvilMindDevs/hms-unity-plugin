@@ -278,6 +278,7 @@ namespace HmsPlugin
             };
         }
 
+        [Serializable]
         public class CountryInfo
         {
             public CountryInfo(string region, string currency, string locale, string country)
@@ -288,10 +289,10 @@ namespace HmsPlugin
                 Country = country;
             }
 
-            public string Region { get; set; }
-            public string Currency { get; set; }
-            public string Locale { get; set; }
-            public string Country { get; set; }
+            public string Region;
+            public string Currency;
+            public string Locale;
+            public string Country;
         }
     }
 

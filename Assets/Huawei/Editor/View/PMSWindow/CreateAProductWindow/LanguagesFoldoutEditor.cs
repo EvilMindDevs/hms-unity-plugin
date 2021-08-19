@@ -16,7 +16,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         public LanguagesFoldoutEditor()
         {
             languages = new List<ProductLanguage>();
-            languagesFoldout = new Foldout("Languages", true);
+            languagesFoldout = new Foldout("Languages (Optional)", false);
 
             AddDrawer(languagesFoldout);
             RefreshLanguages();

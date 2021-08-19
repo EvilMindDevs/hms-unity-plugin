@@ -24,9 +24,7 @@ namespace HmsPlugin.ConnectAPI
 
         private async void OnButtonClick()
         {
-            HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.ClientID, clientIdTextField.GetCurrentText());
-            HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.ClientSecret, clientSecretTextField.GetCurrentText());
-            var token = await HMSWebUtils.GetAccessTokenAsync();
+            var token = await HMSWebUtils.GetAccessTokenAsync(clientIdTextField.GetCurrentText(), clientSecretTextField.GetCurrentText());
             Debug.Log("Token async: " + token);
         }
     }

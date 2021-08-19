@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace HmsPlugin
 {
@@ -278,6 +280,12 @@ namespace HmsPlugin
             };
         }
 
+        public static HMSAGConnectConfig GetAGConnectConfig()
+        {
+            var obj = JsonUtility.FromJson<HMSAGConnectConfig>(File.ReadAllText(Application.streamingAssetsPath + "/agconnect-services.json"));
+            return obj;
+        }
+
         [Serializable]
         public class CountryInfo
         {
@@ -294,6 +302,76 @@ namespace HmsPlugin
             public string Locale;
             public string Country;
         }
+
+        #region AGConnect Config Classes
+
+        [Serializable]
+        public class Agcgw
+        {
+            public string backurl;
+            public string url;
+        }
+
+        [Serializable]
+        public class Client
+        {
+            public string appType;
+            public string cp_id;
+            public string product_id;
+            public string client_id;
+            public string client_secret;
+            public string project_id;
+            public string app_id;
+            public string api_key;
+            public string package_name;
+        }
+
+        [Serializable]
+        public class Analytics
+        {
+            public string collector_url;
+            public string resource_id;
+            public string channel_id;
+        }
+
+        [Serializable]
+        public class Search
+        {
+            public string url;
+        }
+
+        [Serializable]
+        public class Cloudstorage
+        {
+            public string storage_url;
+        }
+
+        [Serializable]
+        public class Ml
+        {
+            public string mlservice_url;
+        }
+
+        [Serializable]
+        public class Service
+        {
+            public Analytics analytics;
+            public Search search;
+            public Cloudstorage cloudstorage;
+            public Ml ml;
+        }
+
+        [Serializable]
+        public class HMSAGConnectConfig
+        {
+            public Agcgw agcgw;
+            public Client client;
+            public Service service;
+            public string region;
+            public string configuration_version;
+        }
+
+        #endregion
     }
 
 }

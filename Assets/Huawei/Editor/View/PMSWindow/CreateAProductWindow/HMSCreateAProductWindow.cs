@@ -10,19 +10,16 @@ using UnityEditor;
 
 public class HMSCreateAProductWindow : HMSEditorWindow
 {
-
     [MenuItem("Huawei/Connect API/PMS API/Create a Product")]
     public static void ShowProductWindow()
     {
-        GetWindow(typeof(HMSCreateAProductWindow), false, "Create a Product");
+        GetWindow(typeof(HMSCreateAProductWindow), false, "Create a Product").minSize = new UnityEngine.Vector2(400, 700);
     }
-
 
     public override IDrawer CreateDrawer()
     {
         var tabBar = new TabBar();
         HMSPMSAPITabFactory.CreateCreateProductTab(tabBar);
-
         return tabBar;
     }
 }

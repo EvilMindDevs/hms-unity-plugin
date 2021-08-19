@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace HmsPlugin.ConnectAPI.PMSAPI
@@ -19,9 +20,9 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private Dropdown.StringDropdown defaultLocaleDropdown;
         private TextField.TextField defaultPriceTextField;
         private TextField.TextField descriptionTextField;
-        private TextField.TextFieldBase jsonField;
+        private TextArea.TextArea jsonField;
 
-        //private LanguagesFoldoutEditor languagesFoldout;
+        private LanguagesFoldoutEditor languagesFoldout;
         private string[] purchaseTypes = { "Consumable", "Non_Consumable", "Auto_Subscription" };
 
         public List<HMSEditorUtils.CountryInfo> countryInfos;
@@ -47,11 +48,11 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             countryDropdown = new Dropdown.StringDropdown(countryInfos.Select(c => c.Country).ToArray(), 0, "Country", OnCountrySelected);
             defaultLocaleDropdown = new Dropdown.StringDropdown(supportedLanguages.Keys.ToArray(), 14, "Default Language", OnLanguageSelected);
             defaultPriceTextField = new TextField.TextField("Price:", "");
-            jsonField = new TextField.TextField("").SetFieldHeight(300);
+            jsonField = new TextArea.TextArea("").SetFieldHeight(300);
 
             OnCountrySelected(0);
             OnLanguageSelected(14);
-            //languagesFoldout = new LanguagesFoldoutEditor();
+            languagesFoldout = new LanguagesFoldoutEditor();
 
             AddDrawer(new HorizontalLine());
             AddDrawer(productNoTextField);
@@ -72,15 +73,15 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(new Space(5));
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Currency:"), new Space(92), currencyLabel));
             AddDrawer(new Space(5));
-            // AddDrawer(languagesFoldout);
+            AddDrawer(languagesFoldout);
 
             AddDrawer(new Space(15));
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Generate JSON", OnGenerateJsonClick).SetWidth(300).SetBGColor(UnityEngine.Color.yellow), new Spacer()));
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Generate JSON", OnGenerateJsonClick).SetWidth(300).SetBGColor(Color.yellow), new Spacer()));
             AddDrawer(new HorizontalLine());
 
             AddDrawer(jsonField);
             AddDrawer(new Space(300));
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Product", OnCreateProductClick).SetWidth(300).SetBGColor(UnityEngine.Color.green), new Spacer()));
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Product", OnCreateProductClick).SetWidth(300).SetBGColor(Color.green), new Spacer()));
         }
 
         private void OnCountrySelected(int index)
@@ -102,7 +103,6 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private void OnGenerateJsonClick()
         {
-            //TODO: we need to clear focus on json field or the text won't be updated.
             GenerateJsonClass();
         }
 
@@ -112,7 +112,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             jsonClass.requestId = Guid.NewGuid().ToString();
             jsonClass.product = new ProductInfo();
             jsonClass.product.productNo = productNoTextField.GetCurrentText();
-            jsonClass.product.appId = "103529037"; //TODO: Read from agconnect-services.json file
+            jsonClass.product.appId = HMSEditorUtils.GetAGConnectConfig().client.app_id;
             jsonClass.product.productName = productNameTextField.GetCurrentText();
             jsonClass.product.purchaseType = purchaseTypes[selectedPurchaseType].ToLower();
             jsonClass.product.status = statusToggle.IsChecked() ? "active" : "inactive";
@@ -122,7 +122,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             jsonClass.product.productDesc = descriptionTextField.GetCurrentText();
             jsonClass.product.defaultPrice = (double.Parse(defaultPriceTextField.GetCurrentText()) * 100).ToString();
 
-            jsonField.SetCurrentText(UnityEditor.EditorJsonUtility.ToJson(jsonClass, true));
+            jsonField.SetCurrentText(EditorJsonUtility.ToJson(jsonClass, true));
         }
 
         private async void OnCreateProductClick()
@@ -134,7 +134,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
             var token = await HMSWebUtils.GetAccessTokenAsync();
             HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
-                UnityEditor.EditorJsonUtility.ToJson(jsonClass),
+                EditorJsonUtility.ToJson(jsonClass),
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
@@ -145,17 +145,16 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private void OnCreateProductResponse(UnityWebRequest response)
         {
-            var responseJson = UnityEngine.JsonUtility.FromJson<CreateProductResJson>(response.downloadHandler.text);
+            var responseJson = JsonUtility.FromJson<CreateProductResJson>(response.downloadHandler.text);
 
             if (responseJson.error.errorCode == 0) // request was successful.
             {
-                UnityEngine.Debug.Log("[HMS PMSAPI] Product has been created succesfully.");
+                Debug.Log("[HMS PMSAPI] Product has been created succesfully.");
                 EditorUtility.DisplayDialog("HMS PMS API", "Product has been created succesfully!", "Ok");
-                //TODO: clear all inputs and selected variables or don't clear it at all.
             }
             else
             {
-                UnityEngine.Debug.LogError($"[HMS PMSAPI] Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
+                Debug.LogError($"[HMS PMSAPI] Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
             }
         }
 

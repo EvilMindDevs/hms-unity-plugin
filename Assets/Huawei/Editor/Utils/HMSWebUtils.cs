@@ -5,36 +5,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 public static class HMSWebUtils
 {
-    public static async Task<string> GetAccessTokenAsync()
+    public static async Task<string> GetAccessTokenAsync(string clientId = "", string clientSecret = "")
     {
-        //TODO: check if entered client Id and client secret is changed. If it changed, we need to get the new token ASAP.
-        string accessToken = "";
-
-        if (!string.IsNullOrEmpty(HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken)))
+        if (string.IsNullOrEmpty(HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID, "")))
         {
-            var endDate = new DateTime(HMSConnectAPISettings.Instance.Settings.GetLong(HMSConnectAPISettings.ExpiresInTicks));
-            if (endDate > DateTime.Now)
+            if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret)) //Abort here because it cant be empty to get the token.
             {
-                accessToken = HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken);
+                if (EditorUtility.DisplayDialog("Token Error", "Please enter clientId and clientSecret before obtaining the access token.", "Ok"))
+                {
+                    HMSConnectAPIWindow.ShowWindow();
+                }
             }
             else
             {
-                accessToken = await GetToken(accessToken);
+                HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.ClientID, clientId);
+                HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.ClientSecret, clientSecret);
+                return await GetToken();
             }
         }
         else
         {
-            accessToken = await GetToken(accessToken);
-        }
+            if (!string.IsNullOrEmpty(clientId) && HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) != clientId)
+                HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.ClientID, clientId);
 
-        return accessToken;
+            if (!string.IsNullOrEmpty(clientSecret) && HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientSecret) != clientSecret)
+                HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.ClientSecret, clientSecret);
+
+            if (!string.IsNullOrEmpty(HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken)))
+            {
+                var endDate = new DateTime(HMSConnectAPISettings.Instance.Settings.GetLong(HMSConnectAPISettings.ExpiresInTicks));
+                if (endDate > DateTime.Now)
+                {
+                    return HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken);
+                }
+                else
+                {
+                    return await GetToken();
+                }
+            }
+            else
+            {
+                return await GetToken();
+            }
+        }
+        return string.Empty;
+
     }
 
-    private static async Task<string> GetToken(string accessToken)
+    private static async Task<string> GetToken()
     {
         var tokenRequest = new TokenRequest("client_credentials", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID), HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientSecret));
         var request = await HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/oauth2/v1/token", JsonUtility.ToJson(tokenRequest));
@@ -43,9 +66,9 @@ public static class HMSWebUtils
 
         if (response.ret.code == 0)
         {
-            accessToken = response.access_token;
             HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.AccessToken, response.access_token);
             HMSConnectAPISettings.Instance.Settings.SetLong(HMSConnectAPISettings.ExpiresInTicks, DateTime.Now.AddSeconds(response.expires_in).Ticks);
+            return response.access_token;
         }
         else
         {
@@ -53,7 +76,7 @@ public static class HMSWebUtils
         }
 
         request.Dispose();
-        return accessToken;
+        return response.access_token;
     }
 
     [Serializable]

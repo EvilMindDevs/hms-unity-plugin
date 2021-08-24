@@ -66,6 +66,11 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             RefreshLanguages();
         }
 
+        public List<ProductLanguage> GetLanguages()
+        {
+            return languages;
+        }
+
         public class ProductLanguage
         {
             public ProductLanguage(string language, string name, string desc)

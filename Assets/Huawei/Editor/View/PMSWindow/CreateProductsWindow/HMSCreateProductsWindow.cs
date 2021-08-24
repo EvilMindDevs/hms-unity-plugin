@@ -8,19 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 
-public class HMSCreateAProductWindow : HMSEditorWindow
+public class HMSCreateProductsWindow : HMSEditorWindow
 {
-    [MenuItem("Huawei/Connect API/PMS API/Create a Product")]
+    [MenuItem("Huawei/Connect API/PMS API/Create Products")]
     public static void ShowProductWindow()
     {
-        GetWindow(typeof(HMSCreateAProductWindow), false, "Create a Product").minSize = new UnityEngine.Vector2(400, 700);
+        //TODO: set minimum size see example in HMSCreateAProductWindow
+        GetWindow(typeof(HMSCreateProductsWindow), false, "Create Products");
     }
 
     public override IDrawer CreateDrawer()
     {
         var tabBar = new TabBar();
-        HMSPMSAPITabFactory.CreateProductTab(tabBar);
+        HMSPMSAPITabFactory.CreateProductsTab(tabBar);
         return tabBar;
     }
 }
-

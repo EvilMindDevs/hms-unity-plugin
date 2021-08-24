@@ -14,6 +14,7 @@ namespace HmsPlugin.TextArea
         private string _text;
         private int? fieldWidth;
         private int? fieldHeight;
+        private Vector2 _position = Vector2.zero;
 
         private bool clearFocus;
 
@@ -52,6 +53,7 @@ namespace HmsPlugin.TextArea
 
         public void Draw()
         {
+            _position = GUILayout.BeginScrollView(_position, false, false);
             if (clearFocus)
             {
                 GUI.FocusControl(null);
@@ -66,8 +68,12 @@ namespace HmsPlugin.TextArea
             if (fieldHeight.HasValue)
                 rect.height = fieldHeight.Value;
 
-            EditorGUI.SelectableLabel(rect, _text, style: EditorStyles.textField);
-            
+
+            var minHeight = EditorStyles.textField.CalcHeight(new GUIContent(_text), rect.width);
+
+            EditorGUILayout.SelectableLabel(_text, EditorStyles.textField, GUILayout.MinHeight(Mathf.Clamp(minHeight, 300, minHeight)));
+
+            GUILayout.EndScrollView();
         }
     }
 }

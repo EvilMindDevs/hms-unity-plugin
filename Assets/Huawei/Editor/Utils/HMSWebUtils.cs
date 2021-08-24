@@ -59,6 +59,7 @@ public static class HMSWebUtils
 
     private static async Task<string> GetToken()
     {
+        Debug.Log("[HMSWebUtils] Getting token from AGC.");
         var tokenRequest = new TokenRequest("client_credentials", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID), HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientSecret));
         var request = await HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/oauth2/v1/token", JsonUtility.ToJson(tokenRequest));
 

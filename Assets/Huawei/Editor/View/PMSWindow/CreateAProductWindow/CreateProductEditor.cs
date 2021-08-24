@@ -48,7 +48,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             countryDropdown = new Dropdown.StringDropdown(countryInfos.Select(c => c.Country).ToArray(), 0, "Country", OnCountrySelected);
             defaultLocaleDropdown = new Dropdown.StringDropdown(supportedLanguages.Keys.ToArray(), 14, "Default Language", OnLanguageSelected);
             defaultPriceTextField = new TextField.TextField("Price:", "");
-            jsonField = new TextArea.TextArea("").SetFieldHeight(300);
+            jsonField = new TextArea.TextArea("").SetFieldHeight(500);
 
             OnCountrySelected(0);
             OnLanguageSelected(14);
@@ -80,7 +80,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(new HorizontalLine());
 
             AddDrawer(jsonField);
-            AddDrawer(new Space(300));
+            AddDrawer(new Space(10));
             AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Product", OnCreateProductClick).SetWidth(300).SetBGColor(Color.green), new Spacer()));
         }
 
@@ -121,6 +121,8 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             jsonClass.product.defaultLocale = selectedLocale;
             jsonClass.product.productDesc = descriptionTextField.GetCurrentText();
             jsonClass.product.defaultPrice = (double.Parse(defaultPriceTextField.GetCurrentText()) * 100).ToString();
+            if (languagesFoldout.GetLanguages().Count > 0)
+                jsonClass.product.languages = Language.FromProductLanguage(languagesFoldout.GetLanguages());
 
             jsonField.SetCurrentText(EditorJsonUtility.ToJson(jsonClass, true));
         }
@@ -191,6 +193,25 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             public string defaultLocale;
             public string productDesc;
             public string defaultPrice;
+            public List<Language> languages;
+        }
+
+        [Serializable]
+        private class Language
+        {
+            public string locale;
+            public string productName;
+            public string productDesc;
+
+            public static List<Language> FromProductLanguage(List<LanguagesFoldoutEditor.ProductLanguage> productLanguages)
+            {
+                var languages = new List<Language>();
+                foreach (var item in productLanguages)
+                {
+                    languages.Add(new Language() { locale = item.Language, productDesc = item.Desc, productName = item.Name });
+                }
+                return languages;
+            }
         }
     }
 }

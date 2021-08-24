@@ -40,6 +40,11 @@ internal class HMSWebRequestHelper
     {
         persistedObj.GetComponent<HMSWebRequestBehaviour>().Post(url, bodyJsonString, requestHeaders, callback);
     }
+
+    internal static void GetFile(string url, string path, Action<bool> result = null)
+    {
+        persistedObj.GetComponent<HMSWebRequestBehaviour>().GetFile(url, path, result);
+    }
 }
 
 public class HMSWebRequestBehaviour : MonoBehaviour
@@ -52,6 +57,11 @@ public class HMSWebRequestBehaviour : MonoBehaviour
     public void Post(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
         StartCoroutine(PostCoroutine(url, bodyJsonString, requestHeaders, callback));
+    }
+
+    public void GetFile(string url, string path, Action<bool> result = null)
+    {
+        StartCoroutine(GetFileCoroutine(url, path, result));
     }
 
     public async Task<UnityWebRequest> PostAsync(string url, string bodyJsonString)
@@ -128,6 +138,40 @@ public class HMSWebRequestBehaviour : MonoBehaviour
             }
 
             callback(request);
+        }
+    }
+
+    private IEnumerator GetFileCoroutine(string url, string path, Action<bool> result = null)
+    {
+        using (UnityWebRequest request = new UnityWebRequest(url, "GET"))
+        {
+            request.downloadHandler = new DownloadHandlerFile(path, true);
+            yield return request.SendWebRequest();
+
+#if UNITY_2020_1_OR_NEWER
+         var requestError =
+            request.result == UnityWebRequest.Result.ProtocolError ||
+            request.result == UnityWebRequest.Result.ConnectionError;
+#else
+            bool requestError =
+               request.isNetworkError ||
+               request.isHttpError;
+#endif
+
+            if (requestError)
+            {
+                if (request.error == null)
+                {
+                    Debug.LogError("HMSWebRequestHelper encountered an unknown error");
+                }
+                else
+                {
+                    Debug.LogError("HMSWebRequestHelper encountered an error: " + request.error);
+                }
+                result?.Invoke(false);
+                yield break;
+            }
+            result?.Invoke(true);
         }
     }
 }

@@ -9,15 +9,19 @@ using System.Threading.Tasks;
 
 internal class HMSPMSAPITabFactory
 {
-    public static TabView CreateCreateProductTab(TabBar tabBar)
+    public static TabView CreateProductTab(TabBar tabBar)
     {
         var tab = new TabView("Create a Product");
         tabBar.AddTab(tab);
-
-        //tab.AddDrawer(new HorizontalLine());
         tab.AddDrawer(new CreateProductEditor());
-        //tab.AddDrawer(new HorizontalLine());
-        tab.AddDrawer(new Spacer());
+        return tab;
+    }
+
+    public static TabView CreateProductsTab(TabBar tabBar)
+    {
+        var tab = new TabView("Create Products");
+        tabBar.AddTab(tab);
+        tab.AddDrawer(new CreateProductsEditor());
         return tab;
     }
 }

@@ -16,6 +16,7 @@ namespace HmsPlugin.TextField
     {
         private string _label = null;
         private string _text;
+        private string _tooltip;
         private int? labelWidth;
 
         public event Action<string> OnValueChanged;
@@ -39,6 +40,11 @@ namespace HmsPlugin.TextField
         public void SetCurrentText(string text)
         {
             _text = text;
+        }
+
+        public void SetTooltip(string tooltip)
+        {
+            _tooltip = tooltip;
         }
 
         public void ClearInput()
@@ -67,7 +73,7 @@ namespace HmsPlugin.TextField
 
             if (_label != null)
             {
-                _text = EditorGUI.TextField(rect, _label, _text);
+                _text = EditorGUI.TextField(rect, new GUIContent(_label, _tooltip), _text);
             }
             else
             {

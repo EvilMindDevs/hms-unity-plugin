@@ -43,7 +43,6 @@ namespace HmsPlugin
 
             }).AddOnFailureListener((exception) =>
             {
-
                 Debug.Log("HMS GAMES: The app has not been authorized");
                 authService.StartSignIn((auth) => { InitJosApps(auth); SignInSuccess?.Invoke(auth); }, SignInFailure);
                 InitGameManagers();
@@ -85,7 +84,7 @@ namespace HmsPlugin
             if (buoyClient != null)
                 buoyClient.HideFloatWindow();
             else
-                Debug.LogError("[HMSGameManager] ShowFloatWindow BuoyClient is null.");
+                Debug.LogError("[HMSGameManager] HideFloatWindow BuoyClient is null.");
         }
 
         public void GetPlayerInfo()

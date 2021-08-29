@@ -7,6 +7,7 @@ namespace HmsPlugin
         private const string SettingsFilename = "HMSAdsKitSettings";
         public const string EnableBannerAd = "EnableBannerAd";
         public const string BannerAdID = "BannerAdID";
+        public const string BannerRefreshInterval = "BannerRefreshInterval";
         public const string ShowBannerOnLoad = "ShowBannerOnLoad";
         public const string EnableInterstitialAd = "EnableInterstitialAd";
         public const string InterstitialAdID = "InterstitialAdID";

@@ -55,5 +55,11 @@ namespace HmsPlugin.TextField
         {
             _textField.SetCurrentText(text);
         }
+
+        public TextFieldWithAccept AddTooltip(string value)
+        {
+            _textField.SetTooltip(value);
+            return this;
+        }
     }
 }

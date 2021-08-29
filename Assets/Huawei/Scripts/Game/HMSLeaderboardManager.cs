@@ -39,6 +39,9 @@ namespace HmsPlugin
         public Action<RankingScores> OnGetMoreScoresFromLeaderboardSuccess { get; set; }
         public Action<HMSException> OnGetMoreScoresFromLeaderboardFailure { get; set; }
 
+        public Action OnGetRankingsSuccess { get; set; }
+        public Action<HMSException> OnGetRankingsFailure { get; set; }
+
         public void IsUserScoreShownOnLeaderboards()
         {
             ITask<int> task = rankingsClient.GetRankingSwitchStatus();
@@ -238,6 +241,32 @@ namespace HmsPlugin
                 Debug.LogError("[HMSLeaderboardManager]: GetPlayerCenteredRankingScores failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnGetPlayerCenteredRankingScoresFailure?.Invoke(exception);
             });
+        }
+
+        public void GetRankings(string leaderboardId)
+        {
+            rankingsClient.GetRankingIntent(leaderboardId, () =>
+             {
+                 Debug.Log("[HMSLeaderboardManager] GetRankings SUCCESS");
+                 OnGetRankingsSuccess?.Invoke();
+             }, (exception) =>
+             {
+                 Debug.LogError("[HMSLeaderboardManager]: GetRankings failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                 OnGetRankingsFailure?.Invoke(exception);
+             });
+        }
+
+        public void GetRankings(string leaderboardId, int timeDimension)
+        {
+            rankingsClient.GetRankingIntent(leaderboardId, timeDimension, () =>
+             {
+                 Debug.Log("[HMSLeaderboardManager] GetRankings SUCCESS");
+                 OnGetRankingsSuccess?.Invoke();
+             }, (exception) =>
+             {
+                 Debug.LogError("[HMSLeaderboardManager]: GetRankings failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                 OnGetRankingsFailure?.Invoke(exception);
+             });
         }
     }
 }

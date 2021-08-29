@@ -1,0 +1,18 @@
+{
+    "name": "HuaweiMobileServices.Demo",
+    "references": [
+        "HuaweiMobileServices.Core"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "Android"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

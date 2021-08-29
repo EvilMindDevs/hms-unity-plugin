@@ -81,10 +81,10 @@ namespace HmsPlugin
             });
         }
 
-        public void MakeSteps(string achievementId, int stepIncrement)
+        public void Grow(string achievementId, int stepIncrement)
         {
-            achievementsClient.MakeSteps(achievementId, stepIncrement);
-            Debug.Log("[HMS GAMES] MakeSteps");
+            achievementsClient.Grow(achievementId, stepIncrement);
+            Debug.Log("[HMS GAMES] Grow");
         }
 
         public void IncreaseStepAchievement(string achievementId, int stepIncrement)
@@ -102,10 +102,10 @@ namespace HmsPlugin
             });
         }
 
-        public void Grow(string achievementId, int stepIncrement)
+        public void MakeSteps(string achievementId, int stepIncrement)
         {
-            achievementsClient.Grow(achievementId, stepIncrement);
-            Debug.Log("[HMS GAMES] Grow");
+            achievementsClient.MakeSteps(achievementId, stepIncrement);
+            Debug.Log("[HMS GAMES] MakeSteps");
         }
 
         public void SetStepAchievement(string achievementId, int stepsNum)

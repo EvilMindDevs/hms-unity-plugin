@@ -17,6 +17,7 @@ namespace HmsPlugin
                 "Assets/Huawei/Editor",
                 "Assets/Huawei/Scripts",
                 "Assets/Huawei/VERSION",
+                "Assets/Huawei/HuaweiMobileServices.Core.asmdef",
                 "Assets/Plugins",
                 "Assets/Resources",
                 "Assets/StreamingAssets"

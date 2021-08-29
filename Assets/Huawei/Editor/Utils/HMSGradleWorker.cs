@@ -162,14 +162,44 @@ namespace HmsPlugin
 
         public void OnPreprocessBuild(BuildReport report)
         {
-            PrepareGradleFile();
+            Application.logMessageReceived += OnBuildError;
+            bool pluginEnabled = HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true);
+            if (report.summary.platform != BuildTarget.Android && pluginEnabled)
+            {
+                //TODO: Maybe add a button called "Don't Remind" and stop this popup getting shown and auto disable the plugin.
+                EditorUtility.DisplayDialog("HMS Unity Plugin Warning!", "HMS Unity Plugin only works on Android platforms. Plugin is getting disabled for this build.", "Ok");
+                pluginEnabled = false;
+            }
+
+            var huaweiMobileServicesDLL = AssetImporter.GetAtPath("Assets/Huawei/Dlls/HuaweiMobileServices.dll") as PluginImporter;
+            var appDebugAar = AssetImporter.GetAtPath("Assets/Plugins/Android/app-debug.aar") as PluginImporter;
             var bookInfo = AssetImporter.GetAtPath("Assets/Plugins/Android/BookInfo.java") as PluginImporter;
             var objectTypeInfoHelper = AssetImporter.GetAtPath("Assets/Plugins/Android/ObjectTypeInfoHelper.java") as PluginImporter;
 
+            if (pluginEnabled)
+                PrepareGradleFile();
+
             if (bookInfo != null)
-                bookInfo.SetCompatibleWithPlatform(BuildTarget.Android, HMSMainEditorSettings.Instance.Settings.GetBool(CloudDBToggleEditor.CloudDBEnabled));
+                bookInfo.SetCompatibleWithPlatform(BuildTarget.Android, HMSMainEditorSettings.Instance.Settings.GetBool(CloudDBToggleEditor.CloudDBEnabled) && pluginEnabled);
             if (objectTypeInfoHelper != null)
-                objectTypeInfoHelper.SetCompatibleWithPlatform(BuildTarget.Android, HMSMainEditorSettings.Instance.Settings.GetBool(CloudDBToggleEditor.CloudDBEnabled));
+                objectTypeInfoHelper.SetCompatibleWithPlatform(BuildTarget.Android, HMSMainEditorSettings.Instance.Settings.GetBool(CloudDBToggleEditor.CloudDBEnabled) && pluginEnabled);
+            if (huaweiMobileServicesDLL != null)
+                huaweiMobileServicesDLL.SetCompatibleWithPlatform(BuildTarget.Android, pluginEnabled);
+            
+            if (appDebugAar != null)
+                appDebugAar.SetCompatibleWithPlatform(BuildTarget.Android, pluginEnabled);
+
+            HMSEditorUtils.HandleAssemblyDefinitions(pluginEnabled);
+        }
+
+        private void OnBuildError(string condition, string stackTrace, LogType type)
+        {
+            if (type == LogType.Error)
+            {
+                Application.logMessageReceived -= OnBuildError;
+                HMSEditorUtils.HandleAssemblyDefinitions(true);
+            }
         }
     }
 }
+

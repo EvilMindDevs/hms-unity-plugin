@@ -13,6 +13,12 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 
     public void OnPostGenerateGradleAndroidProject(string path)
     {
+        if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
+        {
+            HMSEditorUtils.HandleAssemblyDefinitions(true);
+            return;
+        }
+
         string fileName = "agconnect-services.json";
         string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
         string destPath = "";

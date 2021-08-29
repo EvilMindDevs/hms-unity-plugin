@@ -17,6 +17,7 @@ internal class HMSMainKitsTabFactory
     private static string versionInfo = "";
 
     private static List<ToggleEditor> toggleEditors;
+    public static DisabledDrawer _disabledDrawer;
 
     static HMSMainKitsTabFactory()
     {
@@ -30,6 +31,7 @@ internal class HMSMainKitsTabFactory
         var tab = new TabView("Kits");
         tabBar.AddTab(tab);
 
+        var pluginToggleEditor = new PluginToggleEditor();
         var adsToggleEditor = new AdsToggleEditor(tabBar);
         var accountEditor = new AccountToggleEditor();
         var gameServiceToggleEditor = new GameServiceToggleEditor(tabBar, accountEditor);
@@ -44,20 +46,28 @@ internal class HMSMainKitsTabFactory
         var nearbyServiceToggleEditor = new NearbyServiceToggleEditor();
         var appMessagingToggleEditor = new AppMessagingToggleEditor();
 
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), pluginToggleEditor, new Spacer()));
         tab.AddDrawer(new HorizontalLine());
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), adsToggleEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), gameServiceToggleEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), pushToggleEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), iapToggleEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), accountEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), analyticsEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), remoteConfigToggleEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), crashToggleEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), authEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), cloudDBToggleEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), driveToggleEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), nearbyServiceToggleEditor, new Spacer()));
-        tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), appMessagingToggleEditor, new Spacer()));
+        tab.AddDrawer(_disabledDrawer = new DisabledDrawer
+            (
+                new VerticalSequenceDrawer
+                (
+                    new HorizontalSequenceDrawer(new Spacer(), adsToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), gameServiceToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), pushToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), iapToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), accountEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), analyticsEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), remoteConfigToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), crashToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), authEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), cloudDBToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), driveToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), nearbyServiceToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), appMessagingToggleEditor, new Spacer())
+
+                )
+            ));
         tab.AddDrawer(new HorizontalLine());
         tab.AddDrawer(new Spacer());
         tab.AddDrawer(new Clickable(new Label("HMS Unity Plugin v" + versionInfo).SetBold(true), () => { Application.OpenURL("https://github.com/EvilMindDevs/hms-unity-plugin/"); }));
@@ -76,6 +86,7 @@ internal class HMSMainKitsTabFactory
         toggleEditors.Add(driveToggleEditor);
         toggleEditors.Add(nearbyServiceToggleEditor);
         toggleEditors.Add(appMessagingToggleEditor);
+        _disabledDrawer.SetEnabled(!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
 
         return tab;
     }

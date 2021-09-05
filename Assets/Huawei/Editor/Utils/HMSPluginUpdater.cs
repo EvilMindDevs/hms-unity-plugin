@@ -78,6 +78,7 @@ public class HMSPluginUpdateRequest : MonoBehaviour
         string latestVersionString = json.tags[0].name.RemoveAfter('-').Replace("v", "");
         string currentVersionString = File.ReadAllText(Application.dataPath + "/Huawei/VERSION");
 
+        //TODO: This does not work if version is like 2.0.10.
         int latestVersion = int.Parse(latestVersionString.Replace(".", ""));
         int localVersion = int.Parse(currentVersionString.Replace(".", ""));
         if (latestVersion > localVersion)

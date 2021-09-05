@@ -14,6 +14,8 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private TextField.TextField productNoTextField;
         private TextField.TextField productNameTextField;
         private Dropdown.StringDropdown purchaseTypeDropdown;
+        private Dropdown.StringDropdown subGroupDropdown;
+        private Dropdown.StringDropdown subPeriodDropdown;
         private Toggle.Toggle statusToggle;
         private Label.Label currencyLabel;
         private Dropdown.StringDropdown countryDropdown;
@@ -24,12 +26,16 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private LanguagesFoldoutEditor languagesFoldout;
         private string[] purchaseTypes = { "Consumable", "Non_Consumable", "Auto_Subscription" };
+        private List<SubPeriod> subPeriods;
 
         public List<HMSEditorUtils.CountryInfo> countryInfos;
         private Dictionary<string, string> supportedLanguages;
 
+        private bool subscriptionSelected;
         private HMSEditorUtils.CountryInfo selectedCountry;
         private int selectedPurchaseType;
+        private int selectedSubPeriodIndex;
+        private int selectedSubGroupIndex;
         private string selectedLocale;
         private CreateProductReqJson jsonClass;
 
@@ -37,12 +43,15 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         {
             supportedLanguages = HMSEditorUtils.SupportedLanguages();
             countryInfos = HMSEditorUtils.SupportedCountries();
+            subPeriods = SetupSubPeriods();
 
 
             productNoTextField = new TextField.TextField("Product Id:", "");
             productNameTextField = new TextField.TextField("Product Name:", "");
             descriptionTextField = new TextField.TextField("Description:", "");
             purchaseTypeDropdown = new Dropdown.StringDropdown(purchaseTypes, 0, "Purchase Type:", OnPurchaseTypeChanged);
+            subPeriodDropdown = new Dropdown.StringDropdown(subPeriods.Select(c => c.Content).ToArray(), 0, "Sub Period:", OnSubPeriodChanged);
+            subGroupDropdown = new Dropdown.StringDropdown(new string[] { }, 0, "Sub Group:", OnSubGroupChanged);
             statusToggle = new Toggle.Toggle("Status(Active/Inactive):");
             currencyLabel = new Label.Label();
             countryDropdown = new Dropdown.StringDropdown(countryInfos.Select(c => c.Country).ToArray(), 0, "Country", OnCountrySelected);
@@ -63,6 +72,11 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(new Space(5));
             AddDrawer(purchaseTypeDropdown);
             AddDrawer(new Space(5));
+            if (subscriptionSelected)
+            {
+                AddDrawer(subPeriodDropdown);
+                AddDrawer(new HorizontalSequenceDrawer(subGroupDropdown, new Button.Button("Get", OnGetButtonClick).SetBGColor(Color.yellow).SetWidth(100)));
+            }
             AddDrawer(statusToggle);
             AddDrawer(new Space(5));
             AddDrawer(defaultLocaleDropdown);
@@ -84,6 +98,21 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Product", OnCreateProductClick).SetWidth(300).SetBGColor(Color.green), new Spacer()));
         }
 
+        private void OnGetButtonClick()
+        {
+            //TODO: Do request to get all sub groups.
+        }
+
+        private void OnSubGroupChanged(int index)
+        {
+            selectedSubGroupIndex = index;
+        }
+
+        private void OnSubPeriodChanged(int index)
+        {
+            selectedSubPeriodIndex = index;
+        }
+
         private void OnCountrySelected(int index)
         {
             selectedCountry = countryInfos[index];
@@ -99,6 +128,15 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private void OnPurchaseTypeChanged(int selectedIndex)
         {
             selectedPurchaseType = selectedIndex;
+            if (selectedIndex == 2)
+            {
+
+            }
+            else
+            {
+
+            }
+
         }
 
         private void OnGenerateJsonClick()
@@ -160,6 +198,18 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             }
         }
 
+        private List<SubPeriod> SetupSubPeriods()
+        {
+            var returnList = new List<SubPeriod>();
+            returnList.Add(new SubPeriod { Period = 1, PeriodUnit = "W", Content = "1 Week" });
+            returnList.Add(new SubPeriod { Period = 1, PeriodUnit = "M", Content = "1 Month" });
+            returnList.Add(new SubPeriod { Period = 2, PeriodUnit = "M", Content = "2 Months" });
+            returnList.Add(new SubPeriod { Period = 3, PeriodUnit = "M", Content = "3 Months" });
+            returnList.Add(new SubPeriod { Period = 6, PeriodUnit = "M", Content = "6 Months" });
+            returnList.Add(new SubPeriod { Period = 1, PeriodUnit = "Y", Content = "1 Year" });
+            return returnList;
+        }
+
         [Serializable]
         private class CreateProductReqJson
         {
@@ -211,6 +261,19 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     languages.Add(new Language() { locale = item.Language, productDesc = item.Desc, productName = item.Name });
                 }
                 return languages;
+            }
+        }
+
+        [Serializable]
+        private class SubPeriod
+        {
+            public int Period;
+            public string PeriodUnit;
+            public string Content;
+
+            public override string ToString()
+            {
+                return Content;
             }
         }
     }

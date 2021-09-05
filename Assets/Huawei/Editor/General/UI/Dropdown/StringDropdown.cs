@@ -11,7 +11,7 @@ namespace HmsPlugin.Dropdown
     {
         public event Action<int> OnChangedSelection;
 
-        private readonly string[] _options;
+        private string[] _options;
         private readonly string _text;
 
         private int _index;
@@ -30,6 +30,12 @@ namespace HmsPlugin.Dropdown
         public int GetCurrentIndex()
         {
             return _index;
+        }
+
+        public StringDropdown SetOptions(string[] options)
+        {
+            _options = options;
+            return this;
         }
 
         public void Draw()

@@ -22,7 +22,7 @@ Net 4.x
 
 ## Important
 This plugin supports:
-* Unity version 2019, 2020 - Developed in 2.0 Branch
+* Unity version 2019, 2020 - Developed in master Branch
 * Unity version 2018 - Developed in 2.0-2018 Branch
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
@@ -32,9 +32,6 @@ Please check our [wiki page](https://github.com/EvilMindDevs/hms-unity-plugin/wi
 
 ## Status
 This is an ongoing project, currently WIP. Feel free to contact us if you'd like to collaborate and use Github issues for any problems you might encounter. We'd try to answer in no more than a working day.
-
-### Expected soon features
-* Native Ads Integration
 
 ## Connect your game Huawei Mobile Services in 5 easy steps
 
@@ -50,17 +47,19 @@ This is an ongoing project, currently WIP. Feel free to contact us if you'd like
 During this step, you will create an app in AppGallery Connect (AGC) of HUAWEI Developer. When creating the app, you will need to enter the app name, app category, default language, and signing certificate fingerprint. After the app has been created, you will be able to obtain the basic configurations for the app, for example, the app ID and the CPID.
 
 1. Sign in to Huawei Developer and click **Console**.
-2. Click the HUAWEI AppGallery card and access AppGallery Connect.
-3. On the **AppGallery Connect** page, click **My apps**.
-4. On the displayed **My apps** page, click **New**.
-5. Enter the App name, select App category (Game), and select Default language as needed.
-6. Upon successful app creation, the App information page will automatically display. There you can find the App ID and CPID that are assigned by the system to your app.
+2. Click the under **Ecosystem services**, click on **App Services**.
+3. Click on the **AppGallery Connect** under Distribution and Promotion.
+4. Click **My apps**.
+5. On the displayed **My apps** page, click **New app** on top right.
+6. Enter the App name, select App category (Game), and select Default language as needed.
+7. Upon successful app creation, the App information page will automatically display. There you can find the App ID that is assigned by the system to your app.
 
 #### 1.3 Add Package Name
 Set the package name of the created application on the AGC.
 
-1. Open the previously created application in AGC application management and select the **Develop TAB** to pop up an entry to manually enter the package name and select **manually enter the package name**.
-2. Fill in the application package name in the input box and click save.
+1. In app information page, there is a label at top saying **"My Apps"**. Mouse hover on it and select **My Project**. This will lead you to the project information of your application
+2. You should see a pop up asking about your package name for the application. Select **Manually enter a package name**
+3. Fill in the application package name in the input box and click save.
 
 > Your package name should end in .huawei in order to release in App Gallery
 
@@ -84,8 +83,8 @@ During this step, you will need to export the SHA-256 fingerprint by using keyto
 #### Add fingerprint certificate to AppGallery Connect
 During this step, you will configure the generated SHA-256 fingerprint in AppGallery Connect.
 
-1. In AppGallery Connect, click the app that you have created and go to **Develop> Overview**
-2. Go to the App information section and enter the SHA-256 fingerprint that you generated earlier.
+1. In AppGallery Connect, go to **My Project** and select your project.
+2. Go to the App information section, click on **+** button and enter the SHA-256 fingerprint that you generated earlier.
 3. Click √ to save the fingerprint.
 
 ____

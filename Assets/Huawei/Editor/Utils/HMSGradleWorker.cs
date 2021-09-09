@@ -32,7 +32,7 @@ namespace HmsPlugin
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.5.0.300" } },
                 { CloudDBToggleEditor.CloudDBEnabled, new string[] { "com.huawei.agconnect:agconnect-cloud-database:1.4.5.300" } },
                 { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.4.2.301" } },
-				{ NearbyServiceToggleEditor.NearbyServiceEnabled, new string[] { "com.huawei.hms:nearby:5.3.0.300" } },
+		{ NearbyServiceToggleEditor.NearbyServiceEnabled, new string[] { "com.huawei.hms:nearby:5.3.0.300" } },
                 { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.4.2.301" } }
             };
         }

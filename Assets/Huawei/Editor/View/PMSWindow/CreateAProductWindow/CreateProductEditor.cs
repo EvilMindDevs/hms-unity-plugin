@@ -30,15 +30,17 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         public List<HMSEditorUtils.CountryInfo> countryInfos;
         private Dictionary<string, string> supportedLanguages;
+        private VerticalSequenceDrawer bottomDrawer;
 
-        private bool subscriptionSelected;
         private HMSEditorUtils.CountryInfo selectedCountry;
         private int selectedPurchaseType;
         private int selectedSubPeriodIndex;
         private int selectedSubGroupIndex;
         private string selectedLocale;
         private CreateProductReqJson jsonClass;
+        private List<SimpleGroupInfo> subGroupList;
 
+        //TODO: Add check for inputs and warn user if fields are not filled.
         public CreateProductEditor()
         {
             supportedLanguages = HMSEditorUtils.SupportedLanguages();
@@ -57,6 +59,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             countryDropdown = new Dropdown.StringDropdown(countryInfos.Select(c => c.Country).ToArray(), 0, "Country", OnCountrySelected);
             defaultLocaleDropdown = new Dropdown.StringDropdown(supportedLanguages.Keys.ToArray(), 14, "Default Language", OnLanguageSelected);
             defaultPriceTextField = new TextField.TextField("Price:", "");
+            bottomDrawer = new VerticalSequenceDrawer();
             jsonField = new TextArea.TextArea("").SetFieldHeight(500);
 
             OnCountrySelected(0);
@@ -72,35 +75,13 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(new Space(5));
             AddDrawer(purchaseTypeDropdown);
             AddDrawer(new Space(5));
-            if (subscriptionSelected)
-            {
-                AddDrawer(subPeriodDropdown);
-                AddDrawer(new HorizontalSequenceDrawer(subGroupDropdown, new Button.Button("Get", OnGetButtonClick).SetBGColor(Color.yellow).SetWidth(100)));
-            }
-            AddDrawer(statusToggle);
-            AddDrawer(new Space(5));
-            AddDrawer(defaultLocaleDropdown);
-            AddDrawer(new Space(5));
-            AddDrawer(countryDropdown);
-            AddDrawer(new Space(5));
-            AddDrawer(defaultPriceTextField);
-            AddDrawer(new Space(5));
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Currency:"), new Space(92), currencyLabel));
-            AddDrawer(new Space(5));
-            AddDrawer(languagesFoldout);
-
-            AddDrawer(new Space(15));
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Generate JSON", OnGenerateJsonClick).SetWidth(300).SetBGColor(Color.yellow), new Spacer()));
-            AddDrawer(new HorizontalLine());
-
-            AddDrawer(jsonField);
-            AddDrawer(new Space(10));
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Product", OnCreateProductClick).SetWidth(300).SetBGColor(Color.green), new Spacer()));
+            AddDrawer(bottomDrawer);
+            GenerateBottomDrawer(false);
         }
 
-        private void OnGetButtonClick()
+        private async void OnGetButtonClick()
         {
-            //TODO: Do request to get all sub groups.
+            await RequestSubGroups();
         }
 
         private void OnSubGroupChanged(int index)
@@ -128,15 +109,35 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private void OnPurchaseTypeChanged(int selectedIndex)
         {
             selectedPurchaseType = selectedIndex;
-            if (selectedIndex == 2)
+            GenerateBottomDrawer(selectedIndex == 2);
+        }
+
+        private void GenerateBottomDrawer(bool isSubscriptionSelected)
+        {
+            if (bottomDrawer != null)
+                bottomDrawer.RemoveAllDrawers();
+            if (isSubscriptionSelected)
             {
-
+                bottomDrawer.AddDrawer(subPeriodDropdown);
+                bottomDrawer.AddDrawer(new HorizontalSequenceDrawer(subGroupDropdown, new Button.Button("Get", OnGetButtonClick).SetBGColor(Color.yellow).SetWidth(100)));
             }
-            else
-            {
-
-            }
-
+            bottomDrawer.AddDrawer(statusToggle);
+            bottomDrawer.AddDrawer(new Space(5));
+            bottomDrawer.AddDrawer(defaultLocaleDropdown);
+            bottomDrawer.AddDrawer(new Space(5));
+            bottomDrawer.AddDrawer(countryDropdown);
+            bottomDrawer.AddDrawer(new Space(5));
+            bottomDrawer.AddDrawer(defaultPriceTextField);
+            bottomDrawer.AddDrawer(new Space(5));
+            bottomDrawer.AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Currency:"), new Space(92), currencyLabel));
+            bottomDrawer.AddDrawer(new Space(5));
+            bottomDrawer.AddDrawer(languagesFoldout);
+            bottomDrawer.AddDrawer(new Space(15));
+            bottomDrawer.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Generate JSON", OnGenerateJsonClick).SetWidth(300).SetBGColor(Color.yellow), new Spacer()));
+            bottomDrawer.AddDrawer(new HorizontalLine());
+            bottomDrawer.AddDrawer(jsonField);
+            bottomDrawer.AddDrawer(new Space(10));
+            bottomDrawer.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Product", OnCreateProductClick).SetWidth(300).SetBGColor(Color.green), new Spacer()));
         }
 
         private void OnGenerateJsonClick()
@@ -159,10 +160,25 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             jsonClass.product.defaultLocale = selectedLocale;
             jsonClass.product.productDesc = descriptionTextField.GetCurrentText();
             jsonClass.product.defaultPrice = (double.Parse(defaultPriceTextField.GetCurrentText()) * 100).ToString();
+
+            if (selectedPurchaseType == 2)
+            {
+                jsonClass.product.subGroupId = subGroupList[selectedSubGroupIndex].groupId;
+                jsonClass.product.subPeriodUnit = subPeriods[selectedSubPeriodIndex].PeriodUnit;
+                jsonClass.product.subPeriod = subPeriods[selectedSubPeriodIndex].Period;
+            }
+
             if (languagesFoldout.GetLanguages().Count > 0)
                 jsonClass.product.languages = Language.FromProductLanguage(languagesFoldout.GetLanguages());
 
-            jsonField.SetCurrentText(EditorJsonUtility.ToJson(jsonClass, true));
+            string jsonValue = EditorJsonUtility.ToJson(jsonClass, true);
+
+            if (languagesFoldout.GetLanguages().Count <= 0)
+                jsonValue = jsonValue.Replace("\n        \"languages\": [],", "");
+            if (selectedPurchaseType != 2)
+                jsonValue = jsonValue.Replace(",\n        \"subGroupId\": \"\",\n        \"subPeriod\": 0,\n        \"subGroupUnit\": \"\"\n    ", "\n    ");
+
+            jsonField.SetCurrentText(jsonValue);
         }
 
         private async void OnCreateProductClick()
@@ -174,7 +190,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
             var token = await HMSWebUtils.GetAccessTokenAsync();
             HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
-                EditorJsonUtility.ToJson(jsonClass),
+                jsonField.GetCurrentText(),
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
@@ -191,6 +207,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             {
                 Debug.Log("[HMS PMSAPI] Product has been created succesfully.");
                 EditorUtility.DisplayDialog("HMS PMS API", "Product has been created succesfully!", "Ok");
+                jsonClass = null;
             }
             else
             {
@@ -208,6 +225,61 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             returnList.Add(new SubPeriod { Period = 6, PeriodUnit = "M", Content = "6 Months" });
             returnList.Add(new SubPeriod { Period = 1, PeriodUnit = "Y", Content = "1 Year" });
             return returnList;
+        }
+
+        private async Task RequestSubGroups()
+        {
+            var token = await HMSWebUtils.GetAccessTokenAsync();
+            HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/group/list", JsonUtility.ToJson(new GetSubGroupsReqJson() { requestId = Guid.NewGuid().ToString() }),
+                new Dictionary<string, string>()
+                {
+                    {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
+                    {"Authorization","Bearer " + token},
+                    {"appId",HMSEditorUtils.GetAGConnectConfig().client.app_id}
+                }, OnRequestSubGroupsResponse);
+        }
+
+        private void OnRequestSubGroupsResponse(UnityWebRequest response)
+        {
+            var responseJson = JsonUtility.FromJson<GetSubGroupResJson>(response.downloadHandler.text);
+
+            if (responseJson.error.errorCode == 0) // request was successful.
+            {
+                Debug.Log("[HMS PMSAPI] Sub Groups parsed successfully.");
+                subGroupList = responseJson.simpleGroups;
+                subGroupDropdown.SetOptions(responseJson.simpleGroups.Select(c => c.groupName).ToArray());
+            }
+            else
+            {
+                Debug.LogError($"[HMS PMSAPI] GetSubGroups failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
+            }
+        }
+
+        [Serializable]
+        private class GetSubGroupsReqJson
+        {
+            public string requestId;
+            public int pageNum;
+            public int pageSize;
+            public string orderBy;
+        }
+
+        [Serializable]
+        private class GetSubGroupResJson
+        {
+            public ErrorResult error;
+            public int totalNumber;
+            public List<SimpleGroupInfo> simpleGroups;
+        }
+
+        [Serializable]
+        private class SimpleGroupInfo
+        {
+            public string appId;
+            public string groupId;
+            public string groupName;
+            public int totalProductNumber;
+            public int effectiveProductNumber;
         }
 
         [Serializable]
@@ -244,6 +316,9 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             public string productDesc;
             public string defaultPrice;
             public List<Language> languages;
+            public string subGroupId;
+            public int subPeriod;
+            public string subPeriodUnit;
         }
 
         [Serializable]

@@ -43,18 +43,13 @@ public static class HMSWebUtils
                 {
                     return HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken);
                 }
-                else
-                {
-                    return await GetToken();
-                }
             }
-            else
-            {
-                return await GetToken();
-            }
-        }
-        return string.Empty;
 
+            return await GetToken();
+
+        }
+
+        return string.Empty;
     }
 
     private static async Task<string> GetToken()

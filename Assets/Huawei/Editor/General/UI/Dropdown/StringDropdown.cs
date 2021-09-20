@@ -22,9 +22,6 @@ namespace HmsPlugin.Dropdown
             _text = text;
             _index = initialIndex;
             OnChangedSelection = onChangedSelection;
-
-            Debug.Assert(options.Length > 0);
-            Debug.Assert(initialIndex < options.Length);
         }
 
         public int GetCurrentIndex()

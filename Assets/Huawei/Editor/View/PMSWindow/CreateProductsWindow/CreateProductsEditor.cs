@@ -51,6 +51,11 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             if (responseJson.error.errorCode == 0) // request was successful.
             {
                 Debug.Log($"[HMS PMS API] Products have been created succesfully. Success Number:{responseJson.successNumber}. Failed Number:{responseJson.failedNumber}");
+                EditorUtility.DisplayDialog("HMS PMS API", "Products has been created succesfully!", "Ok");
+            }
+            else
+            {
+                Debug.LogError($"[HMS PMSAPI]: Batch Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
                 if (responseJson.failedNumber > 0 && responseJson.resultInfo.Count > 0)
                 {
                     Debug.LogError("[HMS PMS API]: Several products could not be created and they are listed below.");
@@ -59,11 +64,6 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                         Debug.LogError($"[HMS PMS API]: Product No:{item.productNo}, Error Code:{item.errorCode}, Error Reason:{item.errorReason}");
                     }
                 }
-                EditorUtility.DisplayDialog("HMS PMS API", "Products has been created succesfully!", "Ok");
-            }
-            else
-            {
-                Debug.LogError($"[HMS PMSAPI]: Batch Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
             }
         }
 
@@ -73,7 +73,12 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             if (!string.IsNullOrEmpty(path))
             {
                 var data = HMSCSVReader.Read(path);
-                jsonField.SetCurrentText(JsonUtility.ToJson(new CreateProductsReq() { requestId = Guid.NewGuid().ToString(), products = ParseExcelToJson(data) }, true));
+                string json = JsonUtility.ToJson(new CreateProductsReq() { requestId = Guid.NewGuid().ToString(), products = ParseExcelToJson(data) }, true);
+
+                json = json.Replace(",\n            \"subPeriod\": \"\",\n            \"subPeriodUnit\": \"\",\n            \"subGroupId\": \"\",\n            ", ",\n            ");
+                json = json.Replace(",\n            \"languages\": [],", ",");
+
+                jsonField.SetCurrentText(json);
             }
         }
 
@@ -88,7 +93,6 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                      string message = result ? $"File saved to {path}." : "File could not be saved. Please check Unity console.";
                      DisplayDialog.Create("Product Template File", message, "Ok", null);
                  });
-
             }
         }
 
@@ -98,17 +102,31 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             for (int i = 39; i < dict.Count; i++)
             {
                 var pair = dict.ElementAt(i);
-                returnList.Add(new ProductImportInfo
+                var product = new ProductImportInfo();
+                product.defaultPriceInfo = new DefaultProductPriceInfo();
+
+                var supportedCountry = HMSEditorUtils.SupportedCountries().FirstOrDefault(c => c.Locale == pair["Locale Title Description"].ToString().Split('|')[0]);
+                var prices = GetPricesFromExcel(pair["Price"].ToString());
+
+                product.productNo = pair["ProductId"].ToString();
+                product.status = pair["Status"].ToString() == "3" ? "inactive" : "active";
+                product.productName = pair["Locale Title Description"].ToString().Split('|')[1];
+                product.productDesc = pair["Locale Title Description"].ToString().Split('|')[2];
+                product.purchaseType = GetProductType(pair["ProductType"].ToString());
+                product.defaultPriceInfo.country = supportedCountry.Country;
+                product.defaultPriceInfo.currency = supportedCountry.Currency;
+                product.defaultPriceInfo.price = prices.Find(f => f.country == supportedCountry.Currency).price;
+                product.defaultLocale = pair["Locale Title Description"].ToString().Split('|')[0];
+                product.languages = GetLanguagesFromExcel(pair["Locale Title Description"].ToString());
+                product.prices = prices;
+                product.subGroupId = pair["Subgroup ID"].ToString();
+                if (!string.IsNullOrEmpty(pair["SubPeriod"].ToString()))
                 {
-                    productNo = pair["ProductId"].ToString(),
-                    status = pair["Status"].ToString(),
-                    productName = pair["Locale Title Description"].ToString().Split('|')[1],
-                    productDesc = pair["Locale Title Description"].ToString().Split('|')[2],
-                    purchaseType = GetProductType(pair["ProductType"].ToString()),
-                    defaultLocale = pair["Locale Title Description"].ToString().Split('|')[0],
-                    languages = GetLanguagesFromExcel(pair["Locale Title Description"].ToString()),
-                    prices = GetPricesFromExcel(pair["Price"].ToString())
-                });
+                    product.subPeriod = pair["SubPeriod"].ToString().Split(' ')[0];
+                    product.subPeriodUnit = GetSubPeriodUnit(pair["SubPeriod"].ToString().Split(' ')[1]);
+                }
+                
+                returnList.Add(product);
             }
             return returnList;
         }
@@ -134,6 +152,25 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     return "auto_subscription";
                 case "3":
                     return "non_consumable";
+                default:
+                    break;
+            }
+            return string.Empty;
+        }
+
+        //TODO: check if chinese and russian is also supported and add change switch to if clause and type chinese&russian words.
+        private string GetSubPeriodUnit(string value)
+        {
+            switch (value)
+            {
+                case "week":
+                    return "W";
+                case "month":
+                    return "M";
+                case "months":
+                    return "M";
+                case "year":
+                    return "Y";
                 default:
                     break;
             }
@@ -190,9 +227,21 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             public string productName;
             public string productDesc;
             public string purchaseType;
+            public DefaultProductPriceInfo defaultPriceInfo;
             public string defaultLocale;
+            public string subPeriod;
+            public string subPeriodUnit;
+            public string subGroupId;
             public List<Language> languages;
             public List<Price> prices;
+        }
+
+        [Serializable]
+        private class DefaultProductPriceInfo
+        {
+            public string country;
+            public string price;
+            public string currency;
         }
 
         [Serializable]

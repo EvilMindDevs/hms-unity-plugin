@@ -24,5 +24,13 @@ internal class HMSPMSAPITabFactory
         tab.AddDrawer(new CreateProductsEditor());
         return tab;
     }
+
+    public static TabView AllProductsTab(TabBar tabBar)
+    {
+        var tab = new TabView("All Products");
+        tabBar.AddTab(tab);
+        tab.AddDrawer(new AllIAPProductsEditor());
+        return tab;
+    }
 }
 

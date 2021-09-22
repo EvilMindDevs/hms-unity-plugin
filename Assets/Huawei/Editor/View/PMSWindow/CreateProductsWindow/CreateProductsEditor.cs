@@ -125,7 +125,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     product.subPeriod = pair["SubPeriod"].ToString().Split(' ')[0];
                     product.subPeriodUnit = GetSubPeriodUnit(pair["SubPeriod"].ToString().Split(' ')[1]);
                 }
-                
+
                 returnList.Add(product);
             }
             return returnList;
@@ -204,6 +204,8 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             public List<ProductImportErrorInfo> resultInfo;
         }
 
+        #region JSON Classes
+
         [Serializable]
         private class ProductImportErrorInfo
         {
@@ -258,5 +260,6 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             public string country;
             public string price;
         }
+        #endregion
     }
 }

@@ -15,7 +15,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
     {
         if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
         {
-            HMSEditorUtils.HandleAssemblyDefinitions(true);
+            HMSEditorUtils.HandleAssemblyDefinitions(false);
             return;
         }
 
@@ -42,7 +42,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 
         if (HMSMainEditorSettings.Instance.Settings.GetBool(PushToggleEditor.PushKitEnabled))
         {
-            string unityPlayerActivityJavaPath = path + @"\src\main\java\com\unity3d\player\UnityPlayerActivity.java";
+            string unityPlayerActivityJavaPath = path + @"/src/main/java/com/unity3d/player/UnityPlayerActivity.java";
 
             var sb = new StringBuilder();
             FileStream fs = new FileStream(unityPlayerActivityJavaPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);

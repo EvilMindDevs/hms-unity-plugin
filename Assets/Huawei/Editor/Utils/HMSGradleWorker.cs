@@ -16,7 +16,7 @@ namespace HmsPlugin
         private Dictionary<string, string[]> gradleSettings;
         public int callbackOrder => 0;
 
-        private string gradleTemplatesPath = EditorApplication.applicationContentsPath + @"\PlaybackEngines\AndroidPlayer\Tools\GradleTemplates";
+        private string gradleTemplatesPath = EditorApplication.applicationContentsPath + @"/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates";
 
         public HMSGradleWorker()
         {
@@ -198,7 +198,7 @@ namespace HmsPlugin
             if (type == LogType.Error)
             {
                 Application.logMessageReceived -= OnBuildError;
-                HMSEditorUtils.HandleAssemblyDefinitions(true);
+                HMSEditorUtils.HandleAssemblyDefinitions(false,false);
             }
         }
     }

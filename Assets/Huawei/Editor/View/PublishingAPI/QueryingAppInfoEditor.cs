@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor;
 using System;
 using UnityEngine.Networking;
-using System.Linq;
 
 namespace HmsPlugin.PublishingAPI
 {
@@ -11,21 +9,158 @@ namespace HmsPlugin.PublishingAPI
     {
         private Label.Label ReleaseState;
         private Label.Label AppName;
-        private int ParentType;
-        private int ChildType;
-        private int GrandChildType;
         private CategoryLevel categoryLevel;
         private Label.Label parentTypeString;
         private Label.Label childTypeString;
         private Label.Label grandChildTypeString;
 
-
-        //TODO: AccessToken ve ClientID aldıktan sonra App Information için query yap ve gelenleri ekrana set et.
-        // GetAccessTokenAsync func ile client id ve access token al
-
         public QueryingAppInfoEditor()
         {
+            InitializeCategoryLevels();
 
+            ReleaseState = new Label.Label();
+            AppName = new Label.Label();
+            parentTypeString = new Label.Label("Error - Not Assigned");
+            childTypeString = new Label.Label("Error - Not Assigned");
+            grandChildTypeString = new Label.Label("Error - Not Assigned");
+
+            AddDrawer(new HorizontalLine());
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("App Name:"), new Spacer(), AppName, new Space(10)));
+            AddDrawer(new Space(5));
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Release State:"), new Spacer(), ReleaseState, new Space(10)));
+            AddDrawer(new Space(5));
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Parent Type:"), new Spacer(), parentTypeString, new Space(10)));
+            AddDrawer(new Space(5));
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Child Type:"), new Spacer(), childTypeString, new Space(10)));
+            AddDrawer(new Space(5));
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Grand Child Type:"), new Spacer(), grandChildTypeString, new Space(10)));
+            AddDrawer(new HorizontalLine());
+
+            GetAccessToken();
+
+            Debug.Log("Release state: " + ReleaseState);
+
+        }
+
+
+        private async void GetAccessToken()
+        {
+            var AccessToken = await HMSWebUtils.GetAccessTokenAsync();
+            HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
+                new Dictionary<string, string>()
+                {
+                    {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
+                    {"Authorization", "Bearer " + AccessToken }
+                }, OnQueryingInfoResponse);
+
+        }
+
+        private void OnQueryingInfoResponse(UnityWebRequest response)
+        {
+            var responseJson = JsonUtility.FromJson<QueryingAppInfoResJson>(response.downloadHandler.text);
+
+            if (responseJson.ret.code == 0)
+            {
+
+                if (responseJson.languages.Count > 0)
+                {
+                    AppName.SetText(responseJson.languages[0].appName);
+                }
+
+                Debug.Log("[HMS ConnectAPI] QueryingAppInfo parsed successfully.");
+                ReleaseState.SetText(((ReleaseStates)responseJson.appInfo.releaseState).ToString().Replace("_", " "));
+
+                foreach (var category in categoryLevel.Level1)
+                {
+                    if (category.Key == responseJson.appInfo.parentType)
+                    {
+                        parentTypeString.SetText(category.Value);
+                        break;
+                    }
+                }
+
+                foreach (var category in categoryLevel.Level2)
+                {
+                    if (category.Key == responseJson.appInfo.childType)
+                    {
+                        childTypeString.SetText(category.Value);
+                        break;
+                    }
+                }
+
+                foreach (var category in categoryLevel.Level3)
+                {
+                    if (category.Key == responseJson.appInfo.grandChildType)
+                    {
+                        grandChildTypeString.SetText(category.Value);
+                        break;
+                    }
+                }
+
+            }
+            else
+            {
+                Debug.LogError($"[HMS ConnectAPI] QueryingAppInfo failed. Error Code: {responseJson.ret.code}, Error Message: {responseJson.ret.msg}.");
+            }
+        }
+        #region JsonStuff
+
+        [Serializable]
+        private class Ret
+        {
+            public int code;
+            public string msg;
+        }
+
+        [Serializable]
+        private class QueryingAppInfoResJson
+        {
+            public Ret ret;
+            public AppInfo appInfo;
+            public List<Languages> languages;
+        }
+
+        [Serializable]
+        private class AppInfo
+        {
+            public int releaseState;
+            public int parentType;
+            public int childType;
+            public int grandChildType;
+            public string contentRate;
+        }
+
+        [Serializable]
+        private class Languages
+        {
+            public string appName;
+        }
+
+        private enum ReleaseStates
+        {
+            released,
+            release_rejected,
+            removed,
+            releasing,
+            reviewing,
+            updating,
+            removal_requested,
+            draft,
+            update_rejected,
+            removal_rejected,
+            removed_by_developer,
+            release_canceled
+        }
+
+        private class CategoryLevel
+        {
+            public List<KeyValuePair<int, string>> Level1;
+            public List<KeyValuePair<int, string>> Level2;
+            public List<KeyValuePair<int, string>> Level3;
+        }
+
+        private void InitializeCategoryLevels()
+        {
             categoryLevel = new CategoryLevel();
 
             categoryLevel.Level1 = new List<KeyValuePair<int, string>>();
@@ -183,133 +318,7 @@ namespace HmsPlugin.PublishingAPI
             categoryLevel.Level3.Add(new KeyValuePair<int, string>(10092, "Early learning"));
             categoryLevel.Level3.Add(new KeyValuePair<int, string>(10093, "Nursery rhymes"));
             categoryLevel.Level3.Add(new KeyValuePair<int, string>(10094, "Mom & baby"));
-
-            ReleaseState = new Label.Label();
-            AppName = new Label.Label();
-            parentTypeString = new Label.Label("Error - Not Assigned");
-            childTypeString = new Label.Label("Error - Not Assigned");
-            grandChildTypeString = new Label.Label("Error - Not Assigned");
-
-            AddDrawer(new HorizontalLine());
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("App Name:"), new Spacer(), AppName, new Space(10)));
-            AddDrawer(new Space(5));
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Release State:"), new Spacer(), ReleaseState, new Space(10)));
-            AddDrawer(new Space(5));
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Parent Type:"), new Spacer(), parentTypeString, new Space(10)));
-            AddDrawer(new Space(5));
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Child Type:"), new Spacer(), childTypeString, new Space(10)));
-            AddDrawer(new Space(5));
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Grand Child Type:"), new Spacer(), grandChildTypeString, new Space(10)));
-            AddDrawer(new HorizontalLine());
-
-            GetAccessToken();
-
-            Debug.Log("Release state: " + ReleaseState);
-
         }
-
-        private async void GetAccessToken()
-        {
-            var AccessToken = await HMSWebUtils.GetAccessTokenAsync();
-            Debug.Log("Token for Publishing API: " + AccessToken);
-            HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
-                new Dictionary<string, string>()
-                {
-                    {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
-                    {"Authorization", "Bearer " + AccessToken }
-                }, OnQueryingInfoResponse);
-
-        }
-
-        private void OnQueryingInfoResponse(UnityWebRequest response)
-        {
-            var responseJson = JsonUtility.FromJson<QueryingAppInfoResJson>(response.downloadHandler.text);
-
-            if (responseJson.ret.code == 0)
-            {
-
-                if (responseJson.languages.Count > 0)
-                {
-                    AppName.SetText(responseJson.languages[0].appName);
-                }
-
-                Debug.Log("[HMS ConnectAPI] QueryingAppInfo parsed successfully.");
-                ReleaseState.SetText(((ReleaseStates)responseJson.appInfo.releaseState).ToString().Replace("_", " "));
-
-                foreach (var category in categoryLevel.Level1)
-                {
-                    if (category.Key == responseJson.appInfo.parentType) parentTypeString.SetText(category.Value);
-                }
-
-                foreach (var category in categoryLevel.Level2)
-                {
-                    if (category.Key == responseJson.appInfo.childType) childTypeString.SetText(category.Value);
-                }
-
-                foreach (var category in categoryLevel.Level3)
-                {
-                    if (category.Key == responseJson.appInfo.grandChildType) grandChildTypeString.SetText(category.Value);
-                }
-
-            }
-            else
-            {
-                Debug.LogError($"[HMS ConnectAPI] QueryingAppInfo failed. Error Code: {responseJson.ret.code}, Error Message: {responseJson.ret.msg}.");
-            }
-        }
-
-        [Serializable]
-        private class Ret
-        {
-            public int code;
-            public string msg;
-        }
-
-        [Serializable]
-        private class QueryingAppInfoResJson
-        {
-            public Ret ret;
-            public AppInfo appInfo;
-            public List<Languages> languages;
-        }
-
-        [Serializable]
-        private class AppInfo
-        {
-            public int releaseState;
-            public int parentType;
-            public int childType;
-            public int grandChildType;
-            public string contentRate;
-        }
-
-        [Serializable]
-        private class Languages
-        {
-            public string appName;
-        }
-
-        private enum ReleaseStates
-        {
-            released,
-            release_rejected,
-            removed,
-            releasing,
-            reviewing,
-            updating,
-            removal_requested,
-            draft,
-            update_rejected,
-            removal_rejected,
-            removed_by_developer,
-            release_canceled
-        }
-
-        private class CategoryLevel
-        {
-            public List<KeyValuePair<int, string>> Level1;
-            public List<KeyValuePair<int, string>> Level2;
-            public List<KeyValuePair<int, string>> Level3;
-        }
+#endregion
     }
 }

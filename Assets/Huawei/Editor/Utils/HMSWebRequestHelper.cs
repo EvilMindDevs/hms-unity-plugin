@@ -41,6 +41,11 @@ internal class HMSWebRequestHelper
         persistedObj.GetComponent<HMSWebRequestBehaviour>().Post(url, bodyJsonString, requestHeaders, callback);
     }
 
+    internal static void GetRequest(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    {
+        persistedObj.GetComponent<HMSWebRequestBehaviour>().Get(url, requestHeaders, callback);
+    }
+
     internal static void GetFile(string url, string path, Action<bool> result = null)
     {
         persistedObj.GetComponent<HMSWebRequestBehaviour>().GetFile(url, path, result);
@@ -52,6 +57,11 @@ public class HMSWebRequestBehaviour : MonoBehaviour
     public void Post(string url, string bodyJsonString, Action<UnityWebRequest> callback)
     {
         StartCoroutine(PostCoroutine(url, bodyJsonString, callback));
+    }
+
+    public void Get(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    {
+        StartCoroutine(GetCoroutine(url, requestHeaders, callback));
     }
 
     public void Post(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
@@ -140,6 +150,49 @@ public class HMSWebRequestBehaviour : MonoBehaviour
             callback(request);
         }
     }
+
+    private IEnumerator GetCoroutine(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    {
+        using (UnityWebRequest request = new UnityWebRequest(url, "GET"))
+        {
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            if (requestHeaders != null)
+            {
+                foreach (var item in requestHeaders)
+                {
+                    request.SetRequestHeader(item.Key, item.Value);
+                }
+            }
+            yield return request.SendWebRequest();
+
+#if UNITY_2020_1_OR_NEWER
+         var requestError =
+            request.result == UnityWebRequest.Result.ProtocolError ||
+            request.result == UnityWebRequest.Result.ConnectionError;
+#else
+            bool requestError =
+               request.isNetworkError ||
+               request.isHttpError;
+#endif
+
+            if (requestError)
+            {
+                if (request.error == null)
+                {
+                    Debug.LogError("HMSWebRequestHelper encountered an unknown error");
+                }
+                else
+                {
+                    Debug.LogError("HMSWebRequestHelper encountered an error: " + request.error);
+                }
+                yield break;
+            }
+
+            callback(request);
+        }
+    }
+
 
     private IEnumerator GetFileCoroutine(string url, string path, Action<bool> result = null)
     {

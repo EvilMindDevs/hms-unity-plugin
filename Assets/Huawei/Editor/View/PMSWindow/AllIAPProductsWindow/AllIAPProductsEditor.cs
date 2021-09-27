@@ -15,19 +15,25 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private TextField.TextField productNameTextField;
         private Dropdown.StringDropdown purchaseTypeDropdown;
         private Dropdown.EnumFlagsDropdown statusDropdown;
+        private Dropdown.StringDropdown countryDropdown;
 
+        private List<HMSEditorUtils.CountryInfo> countryInfos;
         private string[] purchaseTypes = { "Consumable", "Non_Consumable", "Auto_Subscription" };
         private int selectedPurchaseType;
+        private HMSEditorUtils.CountryInfo selectedCountry;
         private int pageNum = 1;
         private int pageSize = 20;
-        private Status productStatus;
+        private Status productStatus = Status.Active | Status.Inactive;
 
         public AllIAPProductsEditor()
         {
+            countryInfos = HMSEditorUtils.SupportedCountries();
+
             productNoTextField = new TextField.TextField("Product Id:", "");
             productNameTextField = new TextField.TextField("Product Name:", "");
             purchaseTypeDropdown = new Dropdown.StringDropdown(purchaseTypes, 0, "Purchase Type:", OnPurchaseTypeChanged);
             statusDropdown = new Dropdown.EnumFlagsDropdown(productStatus, "Status");
+            countryDropdown = new Dropdown.StringDropdown(countryInfos.Select(c => c.Country).ToArray(), 0, "Country", OnCountrySelected);
 
             AddDrawer(new HorizontalLine());
             AddDrawer(productNoTextField);
@@ -37,6 +43,8 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(purchaseTypeDropdown);
             AddDrawer(new Space(5));
             AddDrawer(statusDropdown);
+            AddDrawer(new Space(5));
+            AddDrawer(countryDropdown);
             AddDrawer(new Space(10));
             AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Query", OnQueryButtonClick).SetBGColor(Color.green).SetWidth(200), new Spacer()));
             AddDrawer(new HorizontalLine());
@@ -52,6 +60,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             req.pageSize = pageSize;
             req.requestId = new GUID().ToString();
             req.status = GetStatus();
+            req.country = selectedCountry.Region;
 
 
             var token = await HMSWebUtils.GetAccessTokenAsync();
@@ -65,12 +74,17 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private void OnQueryResponse(UnityWebRequest response)
         {
-            throw new NotImplementedException();
+            Debug.Log("annen");
         }
 
         private void OnPurchaseTypeChanged(int index)
         {
             selectedPurchaseType = index;
+        }
+
+        private void OnCountrySelected(int index)
+        {
+            selectedCountry = countryInfos[index];
         }
 
         private string GetStatus()

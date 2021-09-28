@@ -28,17 +28,17 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         string hmsMainTemplatePath = Application.dataPath + "/Plugins/Android/hmsMainTemplate.gradle";
         FileUtil.CopyFileOrDirectory(hmsMainTemplatePath, Path.GetFullPath(path) + @"/hmsMainTemplate.gradle");
         using (var writer = File.AppendText(Path.GetFullPath(path) + "/build.gradle"))
-            writer.WriteLine("apply from: 'hmsMainTemplate.gradle'");
+            writer.WriteLine("\napply from: 'hmsMainTemplate.gradle'");
 
         string launcherTemplatePath = Application.dataPath + "/Plugins/Android/hmsLauncherTemplate.gradle";
         FileUtil.CopyFileOrDirectory(launcherTemplatePath, Directory.GetParent(path).FullName + @"/launcher/hmsLauncherTemplate.gradle");
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/launcher/build.gradle"))
-            writer.WriteLine("apply from: 'hmsLauncherTemplate.gradle'");
+            writer.WriteLine("\napply from: 'hmsLauncherTemplate.gradle'");
 
         string baseProjectTemplatePath = Application.dataPath + "/Plugins/Android/hmsBaseProjectTemplate.gradle";
         FileUtil.CopyFileOrDirectory(baseProjectTemplatePath, Directory.GetParent(path).FullName + @"/hmsBaseProjectTemplate.gradle");
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/build.gradle"))
-            writer.WriteLine("apply from: 'hmsBaseProjectTemplate.gradle'");
+            writer.WriteLine("\napply from: 'hmsBaseProjectTemplate.gradle'");
 
         if (HMSMainEditorSettings.Instance.Settings.GetBool(PushToggleEditor.PushKitEnabled))
         {

@@ -24,6 +24,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private int pageNum = 1;
         private int pageSize = 20;
         private Status productStatus = Status.Active | Status.Inactive;
+        private IAPQueryListEditor queryListEditor;
 
         public AllIAPProductsEditor()
         {
@@ -74,7 +75,17 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private void OnQueryResponse(UnityWebRequest response)
         {
-            Debug.Log("annen");
+            var responseJson = JsonUtility.FromJson<SearchProductRes>(response.downloadHandler.text);
+            if (responseJson.error.errorCode == 0) // request was successful.
+            {
+                if (queryListEditor != null)
+                    RemoveDrawer(queryListEditor);
+                AddDrawer(queryListEditor = new IAPQueryListEditor(responseJson.products));
+            }
+            else
+            {
+                Debug.LogError($"[HMS PMSAPI] Querying product failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
+            }
         }
 
         private void OnPurchaseTypeChanged(int index)
@@ -89,7 +100,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private string GetStatus()
         {
-            switch (productStatus)
+            switch (statusDropdown.GetCurrentValue())
             {
                 case Status.Active:
                     return "active";
@@ -130,6 +141,41 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             Active = 1 << 0,
             Inactive = 1 << 1,
             Deleted = 1 << 2
+        }
+
+        [Serializable]
+        private class Error
+        {
+            public int errorCode;
+            public string errorMsg;
+        }
+
+        [Serializable]
+        public class Product
+        {
+            public string country;
+            public string currency;
+            public string defaultLocale;
+            public string developerId;
+            public string id;
+            public int isPromotion;
+            public string price;
+            public string purchaseType;
+            public string productDesc;
+            public string productName;
+            public string productNo;
+            public int resourceType;
+            public string status;
+            public string updateTime;
+            public string prodSource;
+        }
+
+        [Serializable]
+        private class SearchProductRes
+        {
+            public Error error;
+            public List<Product> products;
+            public int totalNumber;
         }
     }
 }

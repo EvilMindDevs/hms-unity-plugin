@@ -13,6 +13,10 @@ namespace HmsPlugin.PublishingAPI
         private Label.Label parentTypeString;
         private Label.Label childTypeString;
         private Label.Label grandChildTypeString;
+        private string accessToken;
+        private Label.Label uploadUrl;
+        private Label.Label chunkUploadUrl;
+        private Label.Label authCode;
 
         public QueryingAppInfoEditor()
         {
@@ -23,6 +27,9 @@ namespace HmsPlugin.PublishingAPI
             parentTypeString = new Label.Label("Error - Not Assigned");
             childTypeString = new Label.Label("Error - Not Assigned");
             grandChildTypeString = new Label.Label("Error - Not Assigned");
+            uploadUrl = new Label.Label("Not Fetched");
+            chunkUploadUrl= new Label.Label("Not Fetched");
+            authCode = new Label.Label("Not Fetched");
 
             AddDrawer(new HorizontalLine());
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("App Name:"), new Spacer(), AppName, new Space(10)));
@@ -34,24 +41,60 @@ namespace HmsPlugin.PublishingAPI
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Child Type:"), new Spacer(), childTypeString, new Space(10)));
             AddDrawer(new Space(5));
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Grand Child Type:"), new Spacer(), grandChildTypeString, new Space(10)));
+            AddDrawer(new Space(5));
+            AddDrawer(new HorizontalLine());
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Get Upload URL", GetUploadUrl).SetWidth(300).SetBGColor(Color.green), new Spacer()));
+            AddDrawer(new Space(5));
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Upload URL:"), new Spacer(), uploadUrl, new Space(10)));
+            AddDrawer(new Space(5));
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Chunk Upload URL:"), new Spacer(), chunkUploadUrl, new Space(10)));
+            AddDrawer(new Space(5));
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Auth Code:"), new Spacer(), authCode, new Space(10)));
             AddDrawer(new HorizontalLine());
 
-            GetAccessToken();
+            RequestAppInfo();
 
             Debug.Log("Release state: " + ReleaseState);
 
         }
-
-
-        private async void GetAccessToken()
+        
+        private void GetUploadUrl()
         {
-            var AccessToken = await HMSWebUtils.GetAccessTokenAsync();
+            string suffix = "apk";
+            HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/upload-url?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id + "&suffix=" + suffix,
+                new Dictionary<string, string>()
+                {
+                    {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
+                    {"Authorization", "Bearer " + accessToken }
+                }, onGetUploadUrl);
+        }
+
+        private async void RequestAppInfo()
+        {
+            accessToken = await HMSWebUtils.GetAccessTokenAsync();
             HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
-                    {"Authorization", "Bearer " + AccessToken }
+                    {"Authorization", "Bearer " + accessToken }
                 }, OnQueryingInfoResponse);
+
+        }
+
+        private void onGetUploadUrl(UnityWebRequest response)
+        {
+            var responseJson = JsonUtility.FromJson<UploadUrl>(response.downloadHandler.text);
+
+            if (responseJson.ret.code == 0)
+            {
+                uploadUrl.SetText(responseJson.uploadUrl);
+                chunkUploadUrl.SetText(responseJson.chunkUploadUrl);
+                authCode.SetText(responseJson.authCode);
+            }
+            else
+            {
+                Debug.LogError($"[HMS ConnectAPI] GetUploadURL failed. Error Code: {responseJson.ret.code}, Error Message: {responseJson.ret.msg}.");
+            }
 
         }
 
@@ -118,6 +161,15 @@ namespace HmsPlugin.PublishingAPI
             public Ret ret;
             public AppInfo appInfo;
             public List<Languages> languages;
+        }
+
+        [Serializable]
+        private class UploadUrl
+        {
+            public Ret ret;
+            public string uploadUrl;
+            public string chunkUploadUrl;
+            public string authCode;
         }
 
         [Serializable]

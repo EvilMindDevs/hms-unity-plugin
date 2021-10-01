@@ -7,7 +7,7 @@ public class HMSPublishingAPIWindow : HMSEditorWindow
     [MenuItem("Huawei/Publishing API/Querying App Information")]
     public static void ShowWindow()
     {
-        GetWindow(typeof(HMSPublishingAPIWindow), false, "HMS Publishing API");
+        GetWindow(typeof(HMSPublishingAPIWindow), false, "HMS Publishing API").minSize = new UnityEngine.Vector2(400,500);
     }
 
     public override IDrawer CreateDrawer()

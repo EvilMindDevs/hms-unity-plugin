@@ -16,7 +16,7 @@ namespace HmsPlugin
         private Dictionary<string, string[]> gradleSettings;
         public int callbackOrder => 0;
 
-        private string gradleTemplatesPath = EditorApplication.applicationContentsPath + @"\PlaybackEngines\AndroidPlayer\Tools\GradleTemplates";
+        private string gradleTemplatesPath = EditorApplication.applicationContentsPath + @"/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates";
 
         public HMSGradleWorker()
         {
@@ -32,6 +32,7 @@ namespace HmsPlugin
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.5.0.300" } },
                 { CloudDBToggleEditor.CloudDBEnabled, new string[] { "com.huawei.agconnect:agconnect-cloud-database:1.4.5.300" } },
                 { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.4.2.301" } },
+                { NearbyServiceToggleEditor.NearbyServiceEnabled, new string[] { "com.huawei.hms:nearby:5.3.0.300" } },
                 { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.4.2.301" } }
             };
         }
@@ -197,7 +198,7 @@ namespace HmsPlugin
             if (type == LogType.Error)
             {
                 Application.logMessageReceived -= OnBuildError;
-                HMSEditorUtils.HandleAssemblyDefinitions(true);
+                HMSEditorUtils.HandleAssemblyDefinitions(false,false);
             }
         }
     }

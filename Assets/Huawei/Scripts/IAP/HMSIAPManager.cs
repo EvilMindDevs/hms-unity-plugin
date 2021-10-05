@@ -150,7 +150,7 @@ namespace HmsPlugin
 
             if (iapAvailable != true)
             {
-                OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
+                OnRecoverPurchasesFailure?.Invoke(IAP_NOT_AVAILABLE);
                 return;
             }
 
@@ -304,7 +304,7 @@ namespace HmsPlugin
         {
             if (iapAvailable != true)
             {
-                OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
+                OnObtainOwnedPurchasesFailure?.Invoke(IAP_NOT_AVAILABLE);
                 return;
             }
 
@@ -330,7 +330,7 @@ namespace HmsPlugin
             }).AddOnFailureListener((exception) =>
             {
                 Debug.LogError("[HMSIAPManager]: ObtainOwnedPurchases failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
-                OnObtainProductInfoFailure?.Invoke(exception);
+                OnObtainOwnedPurchasesFailure?.Invoke(exception);
             });
         }
 

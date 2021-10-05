@@ -28,10 +28,8 @@ namespace HmsPlugin
         {
             Debug.Log("Nearby: OnScanResult1 Start Scan");
             ScanOption scanBuilder = new ScanOption.Builder().SetPolicy(Policy.POLICY_P2P).Build(); ;
-            Debug.Log("Nearby: OnScanResult2 Start Scan");
             // Start scanning.
             Nearby.DiscoveryEngine.StartScan(mFileServiceId, scanEndpointCallback, scanBuilder);
-            Debug.Log("Nearby: OnScanResult3 Start Scan");
         }
 
         //Stopping Broadcasting

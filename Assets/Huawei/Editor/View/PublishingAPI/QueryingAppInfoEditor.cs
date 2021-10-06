@@ -50,17 +50,18 @@ namespace HmsPlugin.PublishingAPI
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Chunk Upload URL:"), new Spacer(), chunkUploadUrl, new Space(10)));
             AddDrawer(new Space(5));
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Auth Code:"), new Spacer(), authCode, new Space(10)));
+            AddDrawer(new Space(5));
+            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("APK or AAB:"), new Spacer(), (UnityEditor.EditorUserBuildSettings.buildAppBundle) ? new Label.Label("AAB") : new Label.Label("APK"), new Space(10)));
             AddDrawer(new HorizontalLine());
 
             RequestAppInfo();
 
             Debug.Log("Release state: " + ReleaseState);
-
         }
         
         private void GetUploadUrl()
         {
-            string suffix = "apk";
+            string suffix = (UnityEditor.EditorUserBuildSettings.buildAppBundle) ? "aab" : "apk";
             HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/upload-url?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id + "&suffix=" + suffix,
                 new Dictionary<string, string>()
                 {
@@ -90,6 +91,7 @@ namespace HmsPlugin.PublishingAPI
                 uploadUrl.SetText(responseJson.uploadUrl);
                 chunkUploadUrl.SetText(responseJson.chunkUploadUrl);
                 authCode.SetText(responseJson.authCode);
+
             }
             else
             {

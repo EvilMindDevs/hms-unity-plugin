@@ -69,6 +69,17 @@ namespace HmsPlugin.PublishingAPI
                     {"Authorization", "Bearer " + accessToken }
                 }, onGetUploadUrl);
         }
+        
+        private void GetUploadUrl()
+        {
+            string suffix = "apk";
+            HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/upload-url?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id + "&suffix=" + suffix,
+                new Dictionary<string, string>()
+                {
+                    {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
+                    {"Authorization", "Bearer " + accessToken }
+                }, onGetUploadUrl);
+        }
 
         private async void RequestAppInfo()
         {
@@ -91,7 +102,6 @@ namespace HmsPlugin.PublishingAPI
                 uploadUrl.SetText(responseJson.uploadUrl);
                 chunkUploadUrl.SetText(responseJson.chunkUploadUrl);
                 authCode.SetText(responseJson.authCode);
-
             }
             else
             {

@@ -17,7 +17,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             _product = product;
             var window = GetWindow(typeof(HMSUpdateIAPProductWindow), false, "Update Product");
             window.minSize = new UnityEngine.Vector2(400, 700);
-            window.ShowModal();
+            //window.ShowModal();
         }
 
         public override IDrawer CreateDrawer()

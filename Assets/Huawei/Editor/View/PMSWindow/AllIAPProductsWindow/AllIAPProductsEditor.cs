@@ -168,6 +168,9 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             public string status;
             public string updateTime;
             public string prodSource;
+            public string groupId;
+            public string periodUnit;
+            public int numberOfUnits;
         }
 
         [Serializable]

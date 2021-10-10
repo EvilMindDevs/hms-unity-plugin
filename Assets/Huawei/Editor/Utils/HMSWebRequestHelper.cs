@@ -102,6 +102,29 @@ public class HMSWebRequestBehaviour : MonoBehaviour
         return request;
     }
 
+    public async Task<UnityWebRequest> PutAsync(string url, string bodyJsonString, Dictionary<string, string> requestHeaders)
+    {
+        UnityWebRequest request = new UnityWebRequest(url, "PUT");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
+        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        if (requestHeaders != null)
+        {
+            foreach (var item in requestHeaders)
+            {
+                request.SetRequestHeader(item.Key, item.Value);
+            }
+        }
+        var asyncOp = request.SendWebRequest();
+        while (true)
+        {
+            if (asyncOp.progress == 1)
+                break;
+        }
+        return request;
+    }
+
     private IEnumerator PostCoroutine(string url, string bodyJsonString, Action<UnityWebRequest> callback)
     {
         yield return PostCoroutine(url, bodyJsonString, null, callback);
@@ -110,6 +133,50 @@ public class HMSWebRequestBehaviour : MonoBehaviour
     private IEnumerator PostCoroutine(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
         using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
+            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            if (requestHeaders != null)
+            {
+                foreach (var item in requestHeaders)
+                {
+                    request.SetRequestHeader(item.Key, item.Value);
+                }
+            }
+            yield return request.SendWebRequest();
+
+#if UNITY_2020_1_OR_NEWER
+         var requestError =
+            request.result == UnityWebRequest.Result.ProtocolError ||
+            request.result == UnityWebRequest.Result.ConnectionError;
+#else
+            bool requestError =
+               request.isNetworkError ||
+               request.isHttpError;
+#endif
+
+            if (requestError)
+            {
+                if (request.error == null)
+                {
+                    Debug.LogError("HMSWebRequestHelper encountered an unknown error");
+                }
+                else
+                {
+                    Debug.LogError("HMSWebRequestHelper encountered an error: " + request.error);
+                }
+                yield break;
+            }
+
+            callback(request);
+        }
+    }
+
+    private IEnumerator PutCoroutine(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    {
+        using (UnityWebRequest request = new UnityWebRequest(url, "PUT"))
         {
             byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
             request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
@@ -192,7 +259,6 @@ public class HMSWebRequestBehaviour : MonoBehaviour
             callback(request);
         }
     }
-
 
     private IEnumerator GetFileCoroutine(string url, string path, Action<bool> result = null)
     {

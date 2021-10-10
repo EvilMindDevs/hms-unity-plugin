@@ -256,7 +256,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class GetSubGroupsReqJson
+        public class GetSubGroupsReqJson
         {
             public string requestId;
             public int pageNum;
@@ -265,7 +265,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class GetSubGroupResJson
+        public class GetSubGroupResJson
         {
             public ErrorResult error;
             public int totalNumber;
@@ -273,7 +273,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class SimpleGroupInfo
+        public class SimpleGroupInfo
         {
             public string appId;
             public string groupId;
@@ -296,7 +296,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class ErrorResult
+        public class ErrorResult
         {
             public int errorCode;
             public string errorMsg;

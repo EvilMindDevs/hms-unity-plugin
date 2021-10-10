@@ -115,7 +115,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 product.purchaseType = GetProductType(pair["ProductType"].ToString());
                 product.defaultPriceInfo.country = supportedCountry.Country;
                 product.defaultPriceInfo.currency = supportedCountry.Currency;
-                product.defaultPriceInfo.price = prices.Find(f => f.country == supportedCountry.Currency).price;
+                product.defaultPriceInfo.price = prices.Find(f => f.country == supportedCountry.Region).price;
                 product.defaultLocale = pair["Locale Title Description"].ToString().Split('|')[0];
                 product.languages = GetLanguagesFromExcel(pair["Locale Title Description"].ToString());
                 product.prices = prices;

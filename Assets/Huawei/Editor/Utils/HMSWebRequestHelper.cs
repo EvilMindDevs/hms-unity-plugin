@@ -46,6 +46,11 @@ internal class HMSWebRequestHelper
         persistedObj.GetComponent<HMSWebRequestBehaviour>().Get(url, requestHeaders, callback);
     }
 
+    internal static void PutRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    {
+        persistedObj.GetComponent<HMSWebRequestBehaviour>().Put(url, bodyJsonString, requestHeaders, callback);
+    }
+
     internal static void GetFile(string url, string path, Action<bool> result = null)
     {
         persistedObj.GetComponent<HMSWebRequestBehaviour>().GetFile(url, path, result);
@@ -67,6 +72,11 @@ public class HMSWebRequestBehaviour : MonoBehaviour
     public void Post(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
         StartCoroutine(PostCoroutine(url, bodyJsonString, requestHeaders, callback));
+    }
+
+    public void Put(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    {
+        StartCoroutine(PutCoroutine(url, bodyJsonString, requestHeaders, callback));
     }
 
     public void GetFile(string url, string path, Action<bool> result = null)

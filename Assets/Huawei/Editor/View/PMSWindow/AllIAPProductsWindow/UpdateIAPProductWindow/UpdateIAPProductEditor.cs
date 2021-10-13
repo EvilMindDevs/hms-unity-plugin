@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -53,8 +54,11 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             int countryIndex = countryInfos.IndexOf(currentCountry);
             countryDropdown = new Dropdown.StringDropdown(countryInfos.Select(c => c.Country).ToArray(), countryIndex, "Country", OnCountrySelected);
             defaultPriceTextField = new TextField.TextField("Price:", (int.Parse(product.price) / 100f).ToString());
-
             currencyLabel = new Label.Label(product.currency);
+
+            OnCountrySelected(countryIndex);
+            OnLanguageSelected(localeIndex);
+
 
             AddDrawer(new HorizontalLine());
             AddDrawer(new HorizontalSequenceDrawer(productNoLabel, new Space(86), new Label.Label(product.productNo)));
@@ -84,7 +88,8 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(new Space(5));
 
             AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Update Product", OnUpdateProductClick).SetBGColor(Color.green).SetWidth(300), new Spacer()));
-            _ = RequestSubGroups();
+            if (product.purchaseType == "auto_subscription")
+                _ = RequestSubGroups();
         }
 
         private void OnCountrySelected(int index)
@@ -99,9 +104,60 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             selectedLocale = selectedLanguage.Value;
         }
 
-        private void OnUpdateProductClick()
+        private async void OnUpdateProductClick()
         {
+            var productObj = new CreateProductEditor.ProductInfo();
+            productObj.productNo = _product.productNo;
+            productObj.appId = HMSEditorUtils.GetAGConnectConfig().client.app_id;
+            productObj.productName = productNameTextField.GetCurrentText();
+            productObj.purchaseType = _product.purchaseType;
+            productObj.status = statusToggle.IsChecked() ? "active" : "inactive";
+            productObj.currency = currencyLabel.GetText();
+            productObj.country = selectedCountry.Region;
+            productObj.defaultLocale = selectedLocale;
+            productObj.productDesc = descriptionTextField.GetCurrentText();
+            productObj.defaultPrice = (double.Parse(defaultPriceTextField.GetCurrentText()) * 100).ToString();
 
+            if (_product.purchaseType == "auto_subscription")
+            {
+                productObj.subGroupId = _product.groupId;
+                productObj.subPeriod = _product.numberOfUnits;
+                productObj.subPeriodUnit = _product.periodUnit;
+            }
+
+            UpdateProductReqJson req = new UpdateProductReqJson();
+            req.requestId = Guid.NewGuid().ToString();
+            req.resource = productObj;
+
+            string jsonValue = JsonUtility.ToJson(req, true);
+            jsonValue = jsonValue.Replace("\n        \"languages\": [],", "");
+            if (_product.purchaseType != "auto_subscription")
+                jsonValue = jsonValue.Replace(",\n        \"subGroupId\": \"\",\n        \"subPeriod\": 0,\n        \"subPeriodUnit\": \"\"\n    ", "\n    ");
+
+            var token = await HMSWebUtils.GetAccessTokenAsync();
+            HMSWebRequestHelper.PutRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
+                jsonValue,
+                new Dictionary<string, string>()
+                {
+                    {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
+                    {"Authorization","Bearer " + token},
+                    {"appId",productObj.appId}
+                }, OnUpdateProductResponse);
+        }
+
+        private void OnUpdateProductResponse(UnityWebRequest response)
+        {
+            var responseJson = JsonUtility.FromJson<UpdateProductResJson>(response.downloadHandler.text);
+
+            if (responseJson.error.errorCode == 0) // request was successful.
+            {
+                Debug.Log("[HMS PMSAPI] Product has been updated succesfully.");
+                EditorUtility.DisplayDialog("HMS PMS API", "Product has been updated succesfully!", "Ok");
+            }
+            else
+            {
+                Debug.LogError($"[HMS PMSAPI] Product update failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
+            }
         }
 
         private async Task RequestSubGroups()
@@ -154,6 +210,26 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     break;
             }
             return string.Empty;
+        }
+
+        [Serializable]
+        private class UpdateProductReqJson
+        {
+            public string requestId;
+            public CreateProductEditor.ProductInfo resource;
+        }
+
+        [Serializable]
+        private class UpdateProductResJson
+        {
+            public ErrorResult error;
+        }
+
+        [Serializable]
+        public class ErrorResult
+        {
+            public int errorCode;
+            public string errorMsg;
         }
     }
 }

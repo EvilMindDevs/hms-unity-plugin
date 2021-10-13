@@ -303,7 +303,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class ProductInfo
+        public class ProductInfo
         {
             public string productNo;
             public string appId;
@@ -322,7 +322,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class Language
+        public class Language
         {
             public string locale;
             public string productName;

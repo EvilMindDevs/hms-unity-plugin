@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HmsPlugin.ConnectAPI.PMSAPI
 {
-    internal class LanguagesFoldoutEditor : HorizontalSequenceDrawer
+    public class LanguagesFoldoutEditor : HorizontalSequenceDrawer
     {
         public List<ProductLanguage> languages;
         private Foldout languagesFoldout;

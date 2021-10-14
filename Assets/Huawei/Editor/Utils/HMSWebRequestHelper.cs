@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 
 internal class HMSWebRequestHelper
 {
-    private static GameObject persistedObj;
+    public static GameObject persistedObj;
 
     static HMSWebRequestHelper()
     {
@@ -23,6 +23,11 @@ internal class HMSWebRequestHelper
                 //persistedObj.hideFlags = HideFlags.HideAndDontSave;
                 persistedObj.AddComponent<HMSWebRequestBehaviour>();
             }
+        }else
+        {
+            UnityEngine.Object.DestroyImmediate(persistedObj.GetComponent<HMSWebRequestBehaviour>());
+            persistedObj.AddComponent<HMSWebRequestBehaviour>();
+
         }
     }
 
@@ -39,6 +44,11 @@ internal class HMSWebRequestHelper
     internal static void PostRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
         persistedObj.GetComponent<HMSWebRequestBehaviour>().Post(url, bodyJsonString, requestHeaders, callback);
+    }
+
+    internal static void PostFormRequest(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback)
+    {
+        persistedObj.GetComponent<HMSWebRequestBehaviour>().PostFormData(url, file, authCode, fileCount, parseType, callback);
     }
 
     internal static void GetRequest(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
@@ -67,6 +77,11 @@ public class HMSWebRequestBehaviour : MonoBehaviour
     public void Post(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
         StartCoroutine(PostCoroutine(url, bodyJsonString, requestHeaders, callback));
+    }
+
+    public void PostFormData(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback)
+    {
+        StartCoroutine(PostFormDataCoroutine(url, file, authCode, fileCount, parseType, callback));
     }
 
     public void GetFile(string url, string path, Action<bool> result = null)
@@ -105,6 +120,42 @@ public class HMSWebRequestBehaviour : MonoBehaviour
     private IEnumerator PostCoroutine(string url, string bodyJsonString, Action<UnityWebRequest> callback)
     {
         yield return PostCoroutine(url, bodyJsonString, null, callback);
+    }
+
+    private IEnumerator PostFormDataCoroutine(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback)
+    {
+        var formData = new List<IMultipartFormSection>();
+        formData.Add(new MultipartFormDataSection("authCode", authCode));
+        formData.Add(new MultipartFormDataSection("fileCount", fileCount));
+        formData.Add(new MultipartFormDataSection("parseType", parseType));
+        formData.Add(file);
+        UnityWebRequest request = UnityWebRequest.Post(url, formData);
+        yield return request.SendWebRequest();
+
+#if UNITY_2020_1_OR_NEWER
+        var requestError =
+           request.result == UnityWebRequest.Result.ProtocolError ||
+           request.result == UnityWebRequest.Result.ConnectionError;
+#else
+            bool requestError =
+               request.isNetworkError ||
+               request.isHttpError;
+#endif
+
+        if (requestError)
+        {
+            if (request.error == null)
+            {
+                Debug.LogError("HMSWebRequestHelper encountered an unknown error");
+            }
+            else
+            {
+                Debug.LogError("HMSWebRequestHelper encountered an error: " + request.error);
+            }
+            yield break;
+        }
+
+        callback(request);
     }
 
     private IEnumerator PostCoroutine(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)

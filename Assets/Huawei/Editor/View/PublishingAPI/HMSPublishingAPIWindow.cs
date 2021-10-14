@@ -4,7 +4,7 @@ using UnityEditor;
 
 public class HMSPublishingAPIWindow : HMSEditorWindow
 {
-    [MenuItem("Huawei/Publishing API/Querying App Information")]
+    [MenuItem("Huawei/Connect API/Publishing API/Querying App Information")]
     public static void ShowWindow()
     {
         GetWindow(typeof(HMSPublishingAPIWindow), false, "HMS Publishing API").minSize = new UnityEngine.Vector2(400,500);

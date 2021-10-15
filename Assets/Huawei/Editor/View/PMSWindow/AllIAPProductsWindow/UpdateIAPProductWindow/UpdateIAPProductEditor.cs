@@ -46,7 +46,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             subGroupPeriodLabel = new Label.Label("Sub Period:");
             subGroupValueLabel = new Label.Label();
             statusToggle = new Toggle.Toggle("Status(Active/Inactive):", product.status == "active" ? true : false);
-            //TODO: find selected defaultLocale and country.
+            
             var currentLanguage = supportedLanguages.FirstOrDefault(c => c.Value == product.defaultLocale);
             int localeIndex = supportedLanguages.Keys.ToList().IndexOf(currentLanguage.Key);
             defaultLocaleDropdown = new Dropdown.StringDropdown(supportedLanguages.Keys.ToArray(), localeIndex, "Default Language", OnLanguageSelected);
@@ -71,7 +71,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             if (product.purchaseType == "auto_subscription")
             {
                 AddDrawer(new Space(5));
-                AddDrawer(new HorizontalSequenceDrawer(subGroupNameLabel, new Space(86), subGroupValueLabel)); //TODO: obtain sub group name from ID
+                AddDrawer(new HorizontalSequenceDrawer(subGroupNameLabel, new Space(86), subGroupValueLabel));
                 AddDrawer(new Space(5));
                 AddDrawer(new HorizontalSequenceDrawer(subGroupPeriodLabel, new Space(86), new Label.Label(product.numberOfUnits.ToString() + " " + GetSubPeriod(product.periodUnit))));
             }
@@ -135,7 +135,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 jsonValue = jsonValue.Replace(",\n        \"subGroupId\": \"\",\n        \"subPeriod\": 0,\n        \"subPeriodUnit\": \"\"\n    ", "\n    ");
 
             var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.PutRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
+            HMSWebRequestHelper.Instance.PutRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
                 jsonValue,
                 new Dictionary<string, string>()
                 {
@@ -163,7 +163,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private async Task RequestSubGroups()
         {
             var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/group/list", JsonUtility.ToJson(new CreateProductEditor.GetSubGroupsReqJson() { requestId = Guid.NewGuid().ToString() }),
+            HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/group/list", JsonUtility.ToJson(new CreateProductEditor.GetSubGroupsReqJson() { requestId = Guid.NewGuid().ToString() }),
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },

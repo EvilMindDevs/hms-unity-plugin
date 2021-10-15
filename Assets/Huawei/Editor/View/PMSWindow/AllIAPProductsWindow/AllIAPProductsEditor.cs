@@ -65,7 +65,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
 
             var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/list", JsonUtility.ToJson(req), new Dictionary<string, string>()
+            HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/list", JsonUtility.ToJson(req), new Dictionary<string, string>()
             {
                 {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
                 {"Authorization","Bearer " + token},

@@ -62,7 +62,7 @@ namespace HmsPlugin.PublishingAPI
         private void GetUploadUrl()
         {
             string suffix = (UnityEditor.EditorUserBuildSettings.buildAppBundle) ? "aab" : "apk";
-            HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/upload-url?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id + "&suffix=" + suffix,
+            HMSWebRequestHelper.Instance.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/upload-url?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id + "&suffix=" + suffix,
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
@@ -73,7 +73,7 @@ namespace HmsPlugin.PublishingAPI
         private async void RequestAppInfo()
         {
             accessToken = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
+            HMSWebRequestHelper.Instance.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },

@@ -9,51 +9,69 @@ using UnityEngine.Networking;
 
 internal class HMSWebRequestHelper
 {
-    private static GameObject persistedObj;
-
-    static HMSWebRequestHelper()
+    private static HMSWebRequestHelper _instance;
+    public static HMSWebRequestHelper Instance
     {
-        if (persistedObj == null)
+        get
         {
-            if (GameObject.Find("[HMSWebRequestHelper]") != null)
-                persistedObj = GameObject.Find("[HMSWebRequestHelper]");
-            else
+            if (_instance == null)
             {
-                persistedObj = new GameObject("[HMSWebRequestHelper]");
-                //persistedObj.hideFlags = HideFlags.HideAndDontSave;
-                persistedObj.AddComponent<HMSWebRequestBehaviour>();
+                _instance = new HMSWebRequestHelper();
             }
+            if (persistedObj == null || behaviour == null)
+            {
+                _instance.CheckPersistentcy();
+            }
+
+            return _instance;
         }
     }
 
-    internal static void PostRequest(string url, string bodyJsonString, Action<UnityWebRequest> callback)
+    private static GameObject persistedObj;
+    private static HMSWebRequestBehaviour behaviour;
+
+    public void CheckPersistentcy()
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().Post(url, bodyJsonString, callback);
+        var objs = GameObject.FindObjectsOfType<HMSWebRequestBehaviour>();
+        if (objs != null && objs.Count() > 0)
+        {
+            foreach (var item in objs)
+            {
+                UnityEngine.Object.DestroyImmediate(item.gameObject);
+            }
+        }
+        persistedObj = new GameObject("[HMSWebRequestHelper]");
+        behaviour = persistedObj.AddComponent<HMSWebRequestBehaviour>();
     }
 
-    internal static async Task<UnityWebRequest> PostRequest(string url, string bodyJsonString)
+    internal void PostRequest(string url, string bodyJsonString, Action<UnityWebRequest> callback)
     {
-        return await persistedObj.GetComponent<HMSWebRequestBehaviour>().PostAsync(url, bodyJsonString);
+        behaviour.Post(url, bodyJsonString, callback);
     }
 
-    internal static void PostRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    internal async Task<UnityWebRequest> PostRequest(string url, string bodyJsonString)
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().Post(url, bodyJsonString, requestHeaders, callback);
+        return await behaviour.PostAsync(url, bodyJsonString);
     }
 
-    internal static void GetRequest(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    internal void PostRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().Get(url, requestHeaders, callback);
+        behaviour.Post(url, bodyJsonString, requestHeaders, callback);
     }
 
-    internal static void PutRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    internal void GetRequest(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().Put(url, bodyJsonString, requestHeaders, callback);
+        behaviour.Get(url, requestHeaders, callback);
     }
 
-    internal static void GetFile(string url, string path, Action<bool> result = null)
+    internal void PutRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().GetFile(url, path, result);
+        behaviour.Put(url, bodyJsonString, requestHeaders, callback);
+    }
+
+    internal void GetFile(string url, string path, Action<bool> result = null)
+    {
+        behaviour.GetFile(url, path, result);
     }
 }
 

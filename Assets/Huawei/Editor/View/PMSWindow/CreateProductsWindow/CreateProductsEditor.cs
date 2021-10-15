@@ -33,7 +33,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private async void OnCreateProductsClick()
         {
             var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/batchImportProducts",
+            HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/batchImportProducts",
                 jsonField.GetCurrentText(),
                 new Dictionary<string, string>()
                 {
@@ -88,7 +88,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             if (!string.IsNullOrEmpty(path))
             {
                 path += @"/ProductTemplate.zip";
-                HMSWebRequestHelper.GetFile("https://developer.huawei.com/consumer/cn/service/josp/agc/pcp/agc/app/views/operate/productmng/assets/template/Product%20Batch%20Adding%20or%20Modification%20Template.zip", path, (result) =>
+                HMSWebRequestHelper.Instance.GetFile("https://developer.huawei.com/consumer/cn/service/josp/agc/pcp/agc/app/views/operate/productmng/assets/template/Product%20Batch%20Adding%20or%20Modification%20Template.zip", path, (result) =>
                  {
                      string message = result ? $"File saved to {path}." : "File could not be saved. Please check Unity console.";
                      DisplayDialog.Create("Product Template File", message, "Ok", null);

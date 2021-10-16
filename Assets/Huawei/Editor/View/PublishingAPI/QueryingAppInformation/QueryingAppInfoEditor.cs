@@ -73,7 +73,7 @@ namespace HmsPlugin.PublishingAPI
             string contentTypeHeader = "multipart/form-data";
             MultipartFormFileSection file = new MultipartFormFileSection("file", fileByte, fileName, contentTypeHeader);
             EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to URL...", 0.5f);
-            HMSWebRequestHelper.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes);
+            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes);
         }
         
         private static void UploadAnAppPackageRes(UnityWebRequest response)
@@ -98,7 +98,7 @@ namespace HmsPlugin.PublishingAPI
         {
             string accessToken = await HMSWebUtils.GetAccessTokenAsync();
             string suffix = (UnityEditor.EditorUserBuildSettings.buildAppBundle) ? "aab" : "apk";
-            HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/upload-url?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id + "&suffix=" + suffix,
+            HMSWebRequestHelper.Instance.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/upload-url?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id + "&suffix=" + suffix,
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
@@ -112,7 +112,7 @@ namespace HmsPlugin.PublishingAPI
         private async void RequestAppInfo()
         {
             string accessToken = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
+            HMSWebRequestHelper.Instance.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },

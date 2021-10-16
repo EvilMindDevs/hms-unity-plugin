@@ -33,7 +33,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private async void OnCreateProductsClick()
         {
             var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/batchImportProducts",
+            HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/batchImportProducts",
                 jsonField.GetCurrentText(),
                 new Dictionary<string, string>()
                 {
@@ -88,7 +88,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             if (!string.IsNullOrEmpty(path))
             {
                 path += @"/ProductTemplate.zip";
-                HMSWebRequestHelper.GetFile("https://developer.huawei.com/consumer/cn/service/josp/agc/pcp/agc/app/views/operate/productmng/assets/template/Product%20Batch%20Adding%20or%20Modification%20Template.zip", path, (result) =>
+                HMSWebRequestHelper.Instance.GetFile("https://developer.huawei.com/consumer/cn/service/josp/agc/pcp/agc/app/views/operate/productmng/assets/template/Product%20Batch%20Adding%20or%20Modification%20Template.zip", path, (result) =>
                  {
                      string message = result ? $"File saved to {path}." : "File could not be saved. Please check Unity console.";
                      DisplayDialog.Create("Product Template File", message, "Ok", null);
@@ -115,7 +115,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 product.purchaseType = GetProductType(pair["ProductType"].ToString());
                 product.defaultPriceInfo.country = supportedCountry.Country;
                 product.defaultPriceInfo.currency = supportedCountry.Currency;
-                product.defaultPriceInfo.price = prices.Find(f => f.country == supportedCountry.Currency).price;
+                product.defaultPriceInfo.price = prices.Find(f => f.country == supportedCountry.Region).price;
                 product.defaultLocale = pair["Locale Title Description"].ToString().Split('|')[0];
                 product.languages = GetLanguagesFromExcel(pair["Locale Title Description"].ToString());
                 product.prices = prices;
@@ -125,7 +125,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     product.subPeriod = pair["SubPeriod"].ToString().Split(' ')[0];
                     product.subPeriodUnit = GetSubPeriodUnit(pair["SubPeriod"].ToString().Split(' ')[1]);
                 }
-                
+
                 returnList.Add(product);
             }
             return returnList;
@@ -204,6 +204,8 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             public List<ProductImportErrorInfo> resultInfo;
         }
 
+        #region JSON Classes
+
         [Serializable]
         private class ProductImportErrorInfo
         {
@@ -258,5 +260,6 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             public string country;
             public string price;
         }
+        #endregion
     }
 }

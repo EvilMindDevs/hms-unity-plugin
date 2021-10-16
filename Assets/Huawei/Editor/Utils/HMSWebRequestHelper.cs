@@ -9,56 +9,72 @@ using UnityEngine.Networking;
 
 internal class HMSWebRequestHelper
 {
-    public static GameObject persistedObj;
-
-    static HMSWebRequestHelper()
+    private static HMSWebRequestHelper _instance;
+    public static HMSWebRequestHelper Instance
     {
-        if (persistedObj == null)
+        get
         {
-            if (GameObject.Find("[HMSWebRequestHelper]") != null)
-                persistedObj = GameObject.Find("[HMSWebRequestHelper]");
-            else
+            if (_instance == null)
             {
-                persistedObj = new GameObject("[HMSWebRequestHelper]");
-                //persistedObj.hideFlags = HideFlags.HideAndDontSave;
-                persistedObj.AddComponent<HMSWebRequestBehaviour>();
+                _instance = new HMSWebRequestHelper();
             }
-        }else
-        {
-            UnityEngine.Object.DestroyImmediate(persistedObj.GetComponent<HMSWebRequestBehaviour>());
-            persistedObj.AddComponent<HMSWebRequestBehaviour>();
+            if (persistedObj == null || behaviour == null)
+            {
+                _instance.CheckPersistentcy();
+            }
 
+            return _instance;
         }
     }
 
-    internal static void PostRequest(string url, string bodyJsonString, Action<UnityWebRequest> callback)
+    private static GameObject persistedObj;
+    private static HMSWebRequestBehaviour behaviour;
+
+    public void CheckPersistentcy()
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().Post(url, bodyJsonString, callback);
+        var objs = GameObject.FindObjectsOfType<HMSWebRequestBehaviour>();
+        if (objs != null && objs.Count() > 0)
+        {
+            foreach (var item in objs)
+            {
+                UnityEngine.Object.DestroyImmediate(item.gameObject);
+            }
+        }
+        persistedObj = new GameObject("[HMSWebRequestHelper]");
+        behaviour = persistedObj.AddComponent<HMSWebRequestBehaviour>();
     }
 
-    internal static async Task<UnityWebRequest> PostRequest(string url, string bodyJsonString)
+    internal void PostRequest(string url, string bodyJsonString, Action<UnityWebRequest> callback)
     {
-        return await persistedObj.GetComponent<HMSWebRequestBehaviour>().PostAsync(url, bodyJsonString);
+        behaviour.Post(url, bodyJsonString, callback);
     }
 
-    internal static void PostRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    internal async Task<UnityWebRequest> PostRequest(string url, string bodyJsonString)
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().Post(url, bodyJsonString, requestHeaders, callback);
+        return await behaviour.PostAsync(url, bodyJsonString);
     }
 
-    internal static void PostFormRequest(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback)
+    internal void PostRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().PostFormData(url, file, authCode, fileCount, parseType, callback);
+        behaviour.Post(url, bodyJsonString, requestHeaders, callback);
     }
 
-    internal static void GetRequest(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    internal void GetRequest(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().Get(url, requestHeaders, callback);
+        behaviour.Get(url, requestHeaders, callback);
+    }
+    internal void PostFormRequest(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback)
+    {
+        behaviour.PostFormData(url, file, authCode, fileCount, parseType, callback);
+    }
+    internal void PutRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    {
+        behaviour.Put(url, bodyJsonString, requestHeaders, callback);
     }
 
-    internal static void GetFile(string url, string path, Action<bool> result = null)
+    internal void GetFile(string url, string path, Action<bool> result = null)
     {
-        persistedObj.GetComponent<HMSWebRequestBehaviour>().GetFile(url, path, result);
+        behaviour.GetFile(url, path, result);
     }
 }
 
@@ -79,6 +95,11 @@ public class HMSWebRequestBehaviour : MonoBehaviour
         StartCoroutine(PostCoroutine(url, bodyJsonString, requestHeaders, callback));
     }
 
+    public void Put(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    {
+        StartCoroutine(PutCoroutine(url, bodyJsonString, requestHeaders, callback));
+    }
+
     public void PostFormData(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback)
     {
         StartCoroutine(PostFormDataCoroutine(url, file, authCode, fileCount, parseType, callback));
@@ -97,6 +118,29 @@ public class HMSWebRequestBehaviour : MonoBehaviour
     public async Task<UnityWebRequest> PostAsync(string url, string bodyJsonString, Dictionary<string, string> requestHeaders)
     {
         UnityWebRequest request = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
+        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        if (requestHeaders != null)
+        {
+            foreach (var item in requestHeaders)
+            {
+                request.SetRequestHeader(item.Key, item.Value);
+            }
+        }
+        var asyncOp = request.SendWebRequest();
+        while (true)
+        {
+            if (asyncOp.progress == 1)
+                break;
+        }
+        return request;
+    }
+
+    public async Task<UnityWebRequest> PutAsync(string url, string bodyJsonString, Dictionary<string, string> requestHeaders)
+    {
+        UnityWebRequest request = new UnityWebRequest(url, "PUT");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
         request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
@@ -202,6 +246,50 @@ public class HMSWebRequestBehaviour : MonoBehaviour
         }
     }
 
+    private IEnumerator PutCoroutine(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
+    {
+        using (UnityWebRequest request = new UnityWebRequest(url, "PUT"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
+            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            if (requestHeaders != null)
+            {
+                foreach (var item in requestHeaders)
+                {
+                    request.SetRequestHeader(item.Key, item.Value);
+                }
+            }
+            yield return request.SendWebRequest();
+
+#if UNITY_2020_1_OR_NEWER
+         var requestError =
+            request.result == UnityWebRequest.Result.ProtocolError ||
+            request.result == UnityWebRequest.Result.ConnectionError;
+#else
+            bool requestError =
+               request.isNetworkError ||
+               request.isHttpError;
+#endif
+
+            if (requestError)
+            {
+                if (request.error == null)
+                {
+                    Debug.LogError("HMSWebRequestHelper encountered an unknown error");
+                }
+                else
+                {
+                    Debug.LogError("HMSWebRequestHelper encountered an error: " + request.error);
+                }
+                yield break;
+            }
+
+            callback(request);
+        }
+    }
+
     private IEnumerator GetCoroutine(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
         using (UnityWebRequest request = new UnityWebRequest(url, "GET"))
@@ -243,7 +331,6 @@ public class HMSWebRequestBehaviour : MonoBehaviour
             callback(request);
         }
     }
-
 
     private IEnumerator GetFileCoroutine(string url, string path, Action<bool> result = null)
     {

@@ -189,7 +189,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             }
 
             var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
+            HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
                 jsonField.GetCurrentText(),
                 new Dictionary<string, string>()
                 {
@@ -230,7 +230,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private async Task RequestSubGroups()
         {
             var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/group/list", JsonUtility.ToJson(new GetSubGroupsReqJson() { requestId = Guid.NewGuid().ToString() }),
+            HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/group/list", JsonUtility.ToJson(new GetSubGroupsReqJson() { requestId = Guid.NewGuid().ToString() }),
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
@@ -256,7 +256,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class GetSubGroupsReqJson
+        public class GetSubGroupsReqJson
         {
             public string requestId;
             public int pageNum;
@@ -265,7 +265,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class GetSubGroupResJson
+        public class GetSubGroupResJson
         {
             public ErrorResult error;
             public int totalNumber;
@@ -273,7 +273,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class SimpleGroupInfo
+        public class SimpleGroupInfo
         {
             public string appId;
             public string groupId;
@@ -296,14 +296,14 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class ErrorResult
+        public class ErrorResult
         {
             public int errorCode;
             public string errorMsg;
         }
 
         [Serializable]
-        private class ProductInfo
+        public class ProductInfo
         {
             public string productNo;
             public string appId;
@@ -322,7 +322,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         }
 
         [Serializable]
-        private class Language
+        public class Language
         {
             public string locale;
             public string productName;

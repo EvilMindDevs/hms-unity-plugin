@@ -4,10 +4,14 @@ using System;
 using UnityEngine;
 using HuaweiMobileServices.Ads;
 using HmsPlugin;
+using UnityEngine.UI;
 
 public class AdsDemoManager : MonoBehaviour
 {
+    [SerializeField]
+    private Toggle testAdStatusToggle;
 
+<<<<<<< HEAD
     private const string REWARD_AD_ID = "testx9dtjwj8hp";
     private const string INTERSTITIAL_AD_ID = "testb4znbuh3n2";
     private const string BANNER_AD_ID = "testw6vs28auh3";
@@ -29,29 +33,35 @@ public class AdsDemoManager : MonoBehaviour
         bannerAdsManager.AdId = BANNER_AD_ID;
     }
     private void InitRewardedAds()
+=======
+    private void Start()
     {
-        rewardAdManager = RewardAdManager.GetInstance();
-        rewardAdManager.AdId = REWARD_AD_ID;
-        rewardAdManager.OnRewarded = OnRewarded;
+        HMSAdsKitManager.Instance.OnRewarded = OnRewarded;
+        HMSAdsKitManager.Instance.OnInterstitialAdClosed = OnInterstitialAdClosed;
+        testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
     }
 
-    private void InitInterstitialAds()
+    public void ShowBannerAd()
+>>>>>>> EvilMindDevs-master
     {
-        interstitialAdManager = InterstitalAdManager.GetInstance();
-        interstitialAdManager.AdId = INTERSTITIAL_AD_ID;
-        interstitialAdManager.OnAdClosed = OnInterstitialAdClosed;
+        HMSAdsKitManager.Instance.ShowBannerAd();
+    }
+
+    public void HideBannerAd()
+    {
+        HMSAdsKitManager.Instance.HideBannerAd();
     }
 
     public void ShowRewardedAd()
     {
         Debug.Log("[HMS] AdsDemoManager ShowRewardedAd");
-        rewardAdManager.ShowRewardedAd();
+        HMSAdsKitManager.Instance.ShowRewardedAd();
     }
 
     public void ShowInterstitialAd()
     {
         Debug.Log("[HMS] AdsDemoManager ShowInterstitialAd");
-        interstitialAdManager.ShowInterstitialAd();
+        HMSAdsKitManager.Instance.ShowInterstitialAd();
     }
 
     public void OnRewarded(Reward reward)
@@ -62,5 +72,12 @@ public class AdsDemoManager : MonoBehaviour
     public void OnInterstitialAdClosed()
     {
         Debug.Log("[HMS] AdsDemoManager interstitial ad closed");
+    }
+
+    public void SetTestAdStatus()
+    {
+        HMSAdsKitManager.Instance.SetTestAdStatus(testAdStatusToggle.isOn);
+        HMSAdsKitManager.Instance.DestroyBannerAd();
+        HMSAdsKitManager.Instance.LoadAllAds();
     }
 }

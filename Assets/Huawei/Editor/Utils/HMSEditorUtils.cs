@@ -11,7 +11,7 @@ namespace HmsPlugin
 {
     public static class HMSEditorUtils
     {
-        public static void HandleAssemblyDefinitions(bool enable)
+        public static void HandleAssemblyDefinitions(bool enable, bool refreshAssets = true)
         {
             string huaweiMobileServicesCorePath = Application.dataPath + "/Huawei/HuaweiMobileServices.Core.asmdef";
             var huaweiMobileServicesCore = JsonUtility.FromJson<AssemblyDefinitionInfo>(File.ReadAllText(huaweiMobileServicesCorePath));
@@ -21,7 +21,8 @@ namespace HmsPlugin
                 huaweiMobileServicesCore.includePlatforms = enable ? new List<string> { "Editor", "Android" } : new List<string> { "Editor" };
                 File.WriteAllText(huaweiMobileServicesCorePath, JsonUtility.ToJson(huaweiMobileServicesCore, true));
             }
-            AssetDatabase.Refresh();
+            if (refreshAssets)
+                AssetDatabase.Refresh();
         }
 
         [Serializable]

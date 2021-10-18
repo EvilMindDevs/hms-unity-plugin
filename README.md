@@ -3,26 +3,18 @@
 The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services in your Unity game:
 
 * Huawei Account Kit
-<<<<<<< HEAD
-* In App purchases: Consumable and non consumables.
-* Ads: Interstitial,banner and rewarded videos
-=======
 * In App purchases: Consumable, non consumables and Subscriptions.
 * Ads: Interstitial, rewarded videos and banner
->>>>>>> EvilMindDevs-master
 * Push notifications
 * Game leaderboards and achievements
 * Huawei Anayltics kit
 * Crash Service
-<<<<<<< HEAD
-=======
 * Remote Config
 * Auth Service
 * Drive Kit
 * Nearby Service
 * App Messaging
 
->>>>>>> EvilMindDevs-master
 
 ## Requirements
 Android SDK min 21
@@ -32,8 +24,6 @@ Net 4.x
 This plugin supports:
 * Unity version 2019, 2020 - Developed in master Branch
 * Unity version 2018 - Developed in 2.0-2018 Branch
-
-**If analytics kit will not used, delete "agconnect-credential-1.0.0.300.aar" and "hianalytics-5.0.3.300.aar" from "...Assets\Plugins\Android"**
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
 

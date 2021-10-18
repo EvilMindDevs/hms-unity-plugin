@@ -41,6 +41,7 @@ internal class HMSWebRequestHelper
             }
         }
         persistedObj = new GameObject("[HMSWebRequestHelper]");
+        persistedObj.hideFlags = HideFlags.HideAndDontSave;
         behaviour = persistedObj.AddComponent<HMSWebRequestBehaviour>();
     }
 

@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using UnityEditor;
+using System.Text;
 using UnityEditor.Android;
 using UnityEngine;
 
@@ -83,5 +83,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         if (File.Exists(destPath))
             FileUtil.DeleteFileOrDirectory(destPath);
         FileUtil.CopyFileOrDirectory(filePath, destPath);
+
+
     }
 }

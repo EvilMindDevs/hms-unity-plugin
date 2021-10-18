@@ -13,8 +13,6 @@ public class PushDemoManager : MonoBehaviour
     [SerializeField]
     private Text remoteMessageText, tokenText;
 
-    private NotificationData notificationDataOnStart;
-
     void Start()
     {
         HMSPushKitManager.Instance.OnTokenSuccess = OnNewToken;

@@ -1,6 +1,5 @@
-﻿
+﻿#if UNITY_PURCHASING
 
-#if UNITY_PURCHASING
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using HuaweiMobileServices.IAP;
@@ -84,25 +83,25 @@ namespace HmsPlugin
         void LoadComsumableProducts()
         {
             var consumablesIDs = (from defenition in initProductDefinitions where defenition.type == ProductType.Consumable select defenition.storeSpecificId) .ToList();
-            CreateProductRequest(consumablesIDs, HuaweiConstants.IAP.IapType.CONSUMABLE, LoadNonComsumableProducts);
+            CreateProductRequest(consumablesIDs, PriceType.IN_APP_CONSUMABLE, LoadNonComsumableProducts);
         }
 
         void LoadNonComsumableProducts()
         {
             var nonConsumablesIDs = (from defenition in initProductDefinitions where defenition.type == ProductType.NonConsumable select defenition.storeSpecificId) .ToList();
-            CreateProductRequest(nonConsumablesIDs, HuaweiConstants.IAP.IapType.NON_CONSUMABLE, LoadSubscribeProducts);
+            CreateProductRequest(nonConsumablesIDs, PriceType.IN_APP_NONCONSUMABLE, LoadSubscribeProducts);
         }
 
         void LoadSubscribeProducts()
         {
             var nonConsumablesIDs = (from defenition in initProductDefinitions where defenition.type == ProductType.Subscription select defenition.storeSpecificId) .ToList();
-            CreateProductRequest(nonConsumablesIDs, HuaweiConstants.IAP.IapType.SUBSCRIPTION, LoadOwnedConsumables);
+            CreateProductRequest(nonConsumablesIDs, PriceType.IN_APP_SUBSCRIPTION, LoadOwnedConsumables);
         }
 
-        private void CreateProductRequest(List<string> consumablesIDs, HuaweiConstants.IAP.IapType type, System.Action onSuccess)
+        private void CreateProductRequest(List<string> consumablesIDs, PriceType type, System.Action onSuccess)
         {
             var productsDataRequest        = new ProductInfoReq();
-            productsDataRequest.PriceType  = (int)type;
+            productsDataRequest.PriceType  = type;
             productsDataRequest.ProductIds = consumablesIDs;
 
             var task = iapClient.ObtainProductInfo(productsDataRequest);
@@ -129,23 +128,23 @@ namespace HmsPlugin
 
         void LoadOwnedConsumables()
         {   
-            CreateOwnedPerchaseRequest(HuaweiConstants.IAP.IapType.CONSUMABLE, LoadOwnedNonConsumables);
+            CreateOwnedPerchaseRequest(PriceType.IN_APP_CONSUMABLE, LoadOwnedNonConsumables);
         }
 
         void LoadOwnedNonConsumables()
         {   
-            CreateOwnedPerchaseRequest(HuaweiConstants.IAP.IapType.NON_CONSUMABLE, LoadOwnedSubscribes);
+            CreateOwnedPerchaseRequest(PriceType.IN_APP_NONCONSUMABLE, LoadOwnedSubscribes);
         }
 
         void LoadOwnedSubscribes()
         {   
-            CreateOwnedPerchaseRequest(HuaweiConstants.IAP.IapType.SUBSCRIPTION, ProductsLoaded);
+            CreateOwnedPerchaseRequest(PriceType.IN_APP_SUBSCRIPTION, ProductsLoaded);
         }
 
-        void CreateOwnedPerchaseRequest(HuaweiConstants.IAP.IapType type, System.Action onSuccess)
+        void CreateOwnedPerchaseRequest(PriceType type, System.Action onSuccess)
         {
             var ownedPurchasesReq        = new OwnedPurchasesReq();
-            ownedPurchasesReq.PriceType  = (int)type;
+            ownedPurchasesReq.PriceType  = type;
 
             var task = iapClient.ObtainOwnedPurchases(ownedPurchasesReq);
 
@@ -221,7 +220,7 @@ namespace HmsPlugin
             var task = iapClient.CreatePurchaseIntent(purchaseIntentReq)
                 .AddOnSuccessListener((intentResult)=>
                 {
-                    PurchaseInitentCreated(intentResult, product);
+                    PurchaseIntentCreated(intentResult, product);
                 })
                 .AddOnFailureListener((exception) =>
                 {
@@ -229,7 +228,7 @@ namespace HmsPlugin
                 });
         }
 
-        void PurchaseInitentCreated(PurchaseIntentResult intentResult, ProductDefinition product)
+        void PurchaseIntentCreated(PurchaseIntentResult intentResult, ProductDefinition product)
         {
             if(intentResult == null)
             {   

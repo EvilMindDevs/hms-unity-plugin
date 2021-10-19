@@ -60,7 +60,6 @@ namespace HmsPlugin.PublishingAPI
             if (target == BuildTarget.Android && HMSConnectAPISettings.Instance.Settings.GetBool(HMSConnectAPISettings.UploadAfterBuild))
             {
                 await GetUploadUrl(pathToBuiltProject);
-
             }
         }
 
@@ -72,9 +71,11 @@ namespace HmsPlugin.PublishingAPI
             byte[] fileByte = UnityEngine.Windows.File.ReadAllBytes(Path.Combine("", filePath));
             string contentTypeHeader = "multipart/form-data";
             MultipartFormFileSection file = new MultipartFormFileSection("file", fileByte, fileName, contentTypeHeader);
+            //TODO: Progressbar UI Item is needed for future versions. Because DisplayProgressBar is not working in background tasks
             EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to URL...", 0.5f);
             HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes);
         }
+
         
         private static void UploadAnAppPackageRes(UnityWebRequest response)
         {
@@ -86,6 +87,7 @@ namespace HmsPlugin.PublishingAPI
                 string disposableUrl = responseJson.result.UploadFileRsp.fileInfoList[0].disposableURL;
                 string fileDestUrl = responseJson.result.UploadFileRsp.fileInfoList[0].fileDestUlr;
                 int size = responseJson.result.UploadFileRsp.fileInfoList[0].size;
+                EditorUtility.ClearProgressBar();
                 Debug.Log($"[HMS ConnectAPI]File Upload Successfull, size: {size}, dest: {fileDestUrl}, dispUrl: {disposableUrl}.");
             }
             else

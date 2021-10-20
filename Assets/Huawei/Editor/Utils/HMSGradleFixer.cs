@@ -22,7 +22,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         string fileName = "agconnect-services.json";
         string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
         string destPath = "";
-#if UNITY_2019_3_OR_NEWER || UNITY_2020
+#if UNITY_2019_3_OR_NEWER
         destPath = Path.Combine(Directory.GetParent(path).FullName + "//launcher", fileName);
 
         string hmsMainTemplatePath = Application.dataPath + "/Plugins/Android/hmsMainTemplate.gradle";

@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine.Networking;
+using UnityEditor.Callbacks;
+using UnityEditor;
+using System.IO;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace HmsPlugin.PublishingAPI
 {
@@ -13,10 +18,7 @@ namespace HmsPlugin.PublishingAPI
         private Label.Label parentTypeString;
         private Label.Label childTypeString;
         private Label.Label grandChildTypeString;
-        private string accessToken;
-        private Label.Label uploadUrl;
-        private Label.Label chunkUploadUrl;
-        private Label.Label authCode;
+        private Toggle.Toggle uploadPackage;
 
         public QueryingAppInfoEditor()
         {
@@ -27,9 +29,7 @@ namespace HmsPlugin.PublishingAPI
             parentTypeString = new Label.Label("Error - Not Assigned");
             childTypeString = new Label.Label("Error - Not Assigned");
             grandChildTypeString = new Label.Label("Error - Not Assigned");
-            uploadUrl = new Label.Label("Not Fetched");
-            chunkUploadUrl= new Label.Label("Not Fetched");
-            authCode = new Label.Label("Not Fetched");
+            uploadPackage = new Toggle.Toggle("Upload After Build", HMSConnectAPISettings.Instance.Settings.GetBool(HMSConnectAPISettings.UploadAfterBuild, false), onUploadAfterBuildChecked);
 
             AddDrawer(new HorizontalLine());
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("App Name:"), new Spacer(), AppName, new Space(10)));
@@ -43,36 +43,77 @@ namespace HmsPlugin.PublishingAPI
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Grand Child Type:"), new Spacer(), grandChildTypeString, new Space(10)));
             AddDrawer(new Space(5));
             AddDrawer(new HorizontalLine());
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Get Upload URL", GetUploadUrl).SetWidth(300).SetBGColor(Color.green), new Spacer()));
+            AddDrawer(new HorizontalSequenceDrawer(uploadPackage, new Spacer()));
             AddDrawer(new Space(5));
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Upload URL:"), new Spacer(), uploadUrl, new Space(10)));
-            AddDrawer(new Space(5));
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Chunk Upload URL:"), new Spacer(), chunkUploadUrl, new Space(10)));
-            AddDrawer(new Space(5));
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Auth Code:"), new Spacer(), authCode, new Space(10)));
-            AddDrawer(new Space(5));
-            AddDrawer(new HorizontalSequenceDrawer(new Label.Label("APK or AAB:"), new Spacer(), (UnityEditor.EditorUserBuildSettings.buildAppBundle) ? new Label.Label("AAB") : new Label.Label("APK"), new Space(10)));
-            AddDrawer(new HorizontalLine());
 
             RequestAppInfo();
-
-            Debug.Log("Release state: " + ReleaseState);
         }
-        
-        private void GetUploadUrl()
+
+        private void onUploadAfterBuildChecked(bool state)
         {
+            HMSConnectAPISettings.Instance.Settings.SetBool(HMSConnectAPISettings.UploadAfterBuild, state);
+        }
+
+        [PostProcessBuildAttribute(1)]
+        public async static void AfterBuildNotification(BuildTarget target, string pathToBuiltProject)
+        {
+            if (target == BuildTarget.Android && HMSConnectAPISettings.Instance.Settings.GetBool(HMSConnectAPISettings.UploadAfterBuild))
+            {
+                await GetUploadUrl(pathToBuiltProject);
+            }
+        }
+
+        private static void UploadAnAppPackage(string filePath, string uploadUrl, string authCode)
+        {
+            int fileCount = 1;
+            string fileName = Path.GetFileName(filePath);
+            int parseType = 0;
+            byte[] fileByte = UnityEngine.Windows.File.ReadAllBytes(Path.Combine("", filePath));
+            string contentTypeHeader = "multipart/form-data";
+            MultipartFormFileSection file = new MultipartFormFileSection("file", fileByte, fileName, contentTypeHeader);
+            //TODO: Progressbar UI Item is needed for future versions. Because DisplayProgressBar is not working in background tasks
+            EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to URL...", 0.5f);
+            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes);
+        }
+
+        
+        private static void UploadAnAppPackageRes(UnityWebRequest response)
+        {
+            var responseJson = JsonUtility.FromJson<UploadAppPackage>(response.downloadHandler.text);
+
+            if (int.Parse(responseJson.result.resultCode) == 0)
+            {
+                //TODO: Updating App File Information https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-file-info-0000001111685202
+                string disposableUrl = responseJson.result.UploadFileRsp.fileInfoList[0].disposableURL;
+                string fileDestUrl = responseJson.result.UploadFileRsp.fileInfoList[0].fileDestUlr;
+                int size = responseJson.result.UploadFileRsp.fileInfoList[0].size;
+                EditorUtility.ClearProgressBar();
+                Debug.Log($"[HMS ConnectAPI]File Upload Successfull, size: {size}, dest: {fileDestUrl}, dispUrl: {disposableUrl}.");
+            }
+            else
+            {
+                Debug.LogError($"[HMS ConnectAPI] GetUploadURL failed. Error Code: {responseJson.result.resultCode}.");
+            }
+        }
+
+        private static async Task GetUploadUrl(string filePath)
+        {
+            string accessToken = await HMSWebUtils.GetAccessTokenAsync();
             string suffix = (UnityEditor.EditorUserBuildSettings.buildAppBundle) ? "aab" : "apk";
             HMSWebRequestHelper.Instance.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/upload-url?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id + "&suffix=" + suffix,
                 new Dictionary<string, string>()
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
                     {"Authorization", "Bearer " + accessToken }
-                }, onGetUploadUrl);
+                }, (res) => {
+                    EditorUtility.DisplayProgressBar("Uploading The Package", "Getting Upload URL...", 0.5f);
+                    onGetUploadUrl(res, filePath);
+                });
         }
 
         private async void RequestAppInfo()
         {
-            accessToken = await HMSWebUtils.GetAccessTokenAsync();
+            string accessToken = await HMSWebUtils.GetAccessTokenAsync();
             HMSWebRequestHelper.Instance.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
                 new Dictionary<string, string>()
                 {
@@ -82,15 +123,15 @@ namespace HmsPlugin.PublishingAPI
 
         }
 
-        private void onGetUploadUrl(UnityWebRequest response)
+        private static void onGetUploadUrl(UnityWebRequest response, string filePath)
         {
             var responseJson = JsonUtility.FromJson<UploadUrl>(response.downloadHandler.text);
 
             if (responseJson.ret.code == 0)
             {
-                uploadUrl.SetText(responseJson.uploadUrl);
-                chunkUploadUrl.SetText(responseJson.chunkUploadUrl);
-                authCode.SetText(responseJson.authCode);
+                Debug.Log($"[HMS ConnectAPI] GetUploadURL Succeed. Trying to upload the package now...");
+                UploadAnAppPackage(filePath, responseJson.uploadUrl, responseJson.authCode);
+
             }
             else
             {
@@ -148,6 +189,35 @@ namespace HmsPlugin.PublishingAPI
             }
         }
         #region JsonStuff
+
+        [Serializable]
+        private class FileInfoList
+        {
+            public string disposableURL;
+            public string fileDestUlr;
+            public int size;
+        }
+
+        [Serializable]
+        private class UploadFileRsp
+        {
+            public List<FileInfoList> fileInfoList;
+            public int ifSuccess;
+        }
+
+        [Serializable]
+        private class Result
+        {
+            public UploadFileRsp UploadFileRsp;
+            public string resultCode;
+        }
+
+        [Serializable]
+        private class UploadAppPackage
+        {
+            public Result result;
+        }
+
 
         [Serializable]
         private class Ret

@@ -15,6 +15,7 @@ namespace HmsPlugin
         public const string ClientSecret = "ClientSecret";
         public const string AccessToken = "AccessToken";
         public const string ExpiresInTicks = "ExpiresInTicks";
+        public const string UploadAfterBuild = "UploadAfterBuild";
 
         private SettingsScriptableObject loadedSettings;
 

@@ -16,6 +16,7 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance.OnRewarded = OnRewarded;
         HMSAdsKitManager.Instance.OnInterstitialAdClosed = OnInterstitialAdClosed;
         testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
+        //HMSAdsKitManager.Instance.LoadSplashAd();
     }
 
     public void ShowBannerAd()
@@ -38,6 +39,16 @@ public class AdsDemoManager : MonoBehaviour
     {
         Debug.Log("[HMS] AdsDemoManager ShowInterstitialAd");
         HMSAdsKitManager.Instance.ShowInterstitialAd();
+    }
+
+    public void ShowSplashImage()
+    {
+        HMSAdsKitManager.Instance.LoadSplashAd("testq6zq98hecj");
+    }
+
+    public void ShowSplashVideo()
+    {
+        HMSAdsKitManager.Instance.LoadSplashAd("testd7c5cewoj6");
     }
 
     public void OnRewarded(Reward reward)

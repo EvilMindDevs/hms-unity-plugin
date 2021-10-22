@@ -17,23 +17,31 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     private BannerAd bannerView;
     private InterstitialAd interstitialView;
     private RewardAd rewardedView;
+    private SplashAd splashView;
 
     private HMSSettings adsKitSettings;
 
     private bool isInitialized;
 
+
+    public override void Awake()
+    {
+        base.Awake();
+        Init();
+        //LoadSplashAd();
+    }
+
     private void Start()
     {
-        Init();
+        Debug.Log("[HMS] HMSAdsKitManager Start");
+        StartCoroutine(LoadingAds());
     }
 
     private void Init()
     {
-        Debug.Log("[HMS] HMSAdsKitManager Start");
         HwAds.Init();
         isInitialized = true;
         adsKitSettings = HMSAdsKitSettings.Instance.Settings;
-        StartCoroutine(LoadingAds());
     }
 
     private IEnumerator LoadingAds()
@@ -377,6 +385,66 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     public Action<Reward> OnRewarded { get; set; }
     public Action OnRewardedAdLoaded { get; set; }
     public Action<int> OnRewardedAdFailedToLoad { get; set; }
+
+    #endregion
+
+    #endregion
+
+    #region SPLASH
+
+    #region PUBLIC METHODS
+
+    public void LoadSplashAd(string adId)
+    {
+        //if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableBannerAd)) return;
+        Debug.Log("[HMS] HMSAdsKitManager Loading Splash Ad.");
+        splashView = new SplashAd();
+        splashView.AdId = adId;
+        splashView.Orientation = 1;
+        splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(SplashAdStatusListener_OnAdShowed, SplashAdStatusListener_OnAdClicked));
+        splashView.SetSplashAdLoadListener(new SplashAdLoadListener(SplashAdStatusListener_OnAdDismissed, SplashAdStatusListener_OnAdFailedToLoad, SplashAdStatusListener_OnAdLoaded));
+        splashView.LoadAd(new AdParam.Builder().Build());
+    }
+
+    #endregion
+
+    #region LISTENERS
+
+    public event Action OnSplashAdDismissed;
+    public event Action<int> OnSplashAdFailedToLoad;
+    public event Action OnSplashAdLoaded;
+    public event Action OnSplashAdClicked;
+    public event Action OnSplashAdShowed;
+
+    private void SplashAdStatusListener_OnAdDismissed()
+    {
+        Debug.Log("[HMS] HMSAdsKitManager SplashAdDismissed.");
+        OnSplashAdDismissed?.Invoke();
+    }
+
+    private void SplashAdStatusListener_OnAdFailedToLoad(int errorCode)
+    {
+        Debug.LogError("[HMS] HMSAdsKitManager SplashAdLoadFailed. Error Code: " + errorCode);
+        OnSplashAdFailedToLoad?.Invoke(errorCode);
+    }
+
+    private void SplashAdStatusListener_OnAdLoaded()
+    {
+        Debug.Log("[HMS] HMSAdsKitManager SplashAdLoaded.");
+        OnSplashAdLoaded?.Invoke();
+    }
+
+    private void SplashAdStatusListener_OnAdClicked()
+    {
+        Debug.Log("[HMS] HMSAdsKitManager SplashAdClicked.");
+        OnSplashAdClicked?.Invoke();
+    }
+
+    private void SplashAdStatusListener_OnAdShowed()
+    {
+        Debug.Log("[HMS] HMSAdsKitManager SplashAdShowed.");
+        OnSplashAdShowed?.Invoke();
+    }
 
     #endregion
 

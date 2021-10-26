@@ -72,22 +72,60 @@ namespace HmsPlugin.PublishingAPI
             string contentTypeHeader = "multipart/form-data";
             MultipartFormFileSection file = new MultipartFormFileSection("file", fileByte, fileName, contentTypeHeader);
             //TODO: Progressbar UI Item is needed for future versions. Because DisplayProgressBar is not working in background tasks
-            EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to URL...", 0.5f);
+            EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to URL...", 0.4f);
             HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes);
         }
 
-        
-        private static void UploadAnAppPackageRes(UnityWebRequest response)
+        private static void UpdateingAppFileInfoRes(UnityWebRequest response)
+        {
+            var responseJson = JsonUtility.FromJson<UpdateFileInfoRes>(response.downloadHandler.text);
+
+            if (responseJson.ret.code == 0)
+            {
+                string versionLog = "";
+                if (responseJson.pkgVersion != null)
+                {
+                    foreach (string version in responseJson.pkgVersion)
+                    {
+                        versionLog += version + ", ";
+                    }
+                }
+                EditorUtility.ClearProgressBar();
+                Debug.Log("[HMS ConnectAPI] UpdatingAppFile Successful, retCode: " + responseJson.ret.code + ", retMessage " + responseJson.ret.msg + ", Versions: " + versionLog);
+            }
+            else
+            {
+                Debug.LogError("[HMS ConnectAPI] UpdatingAppFile Failed, retCode: " + responseJson.ret.code + ", retMessage " + responseJson.ret.msg);
+            }
+        }
+
+
+        private static async void UploadAnAppPackageRes(UnityWebRequest response)
         {
             var responseJson = JsonUtility.FromJson<UploadAppPackage>(response.downloadHandler.text);
 
             if (int.Parse(responseJson.result.resultCode) == 0)
             {
-                //TODO: Updating App File Information https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-References/agcapi-app-file-info-0000001111685202
+                int size = responseJson.result.UploadFileRsp.fileInfoList[0].size;
                 string disposableUrl = responseJson.result.UploadFileRsp.fileInfoList[0].disposableURL;
                 string fileDestUrl = responseJson.result.UploadFileRsp.fileInfoList[0].fileDestUlr;
-                int size = responseJson.result.UploadFileRsp.fileInfoList[0].size;
-                EditorUtility.ClearProgressBar();
+                Debug.Log($"[HMS ConnectAPI]File Upload Successful, size: {size}, dest: {fileDestUrl}, dispUrl: {disposableUrl}.");
+                
+                UpdateFileInfo fileInfo = new UpdateFileInfo();
+                fileInfo.files = new Files();
+                fileInfo.files.fileName = PlayerSettings.productName+".apk";
+                fileInfo.files.fileDestUrl = fileDestUrl;
+                fileInfo.fileType = 5;
+                string jsonValue = JsonUtility.ToJson(fileInfo);
+                string accessToken = await HMSWebUtils.GetAccessTokenAsync();
+
+                HMSWebRequestHelper.Instance.PutRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-file-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
+                    jsonValue, new Dictionary<string, string>()
+                    {
+                        {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID)},
+                        {"Authorization","Bearer " + accessToken}
+                    }, UpdateingAppFileInfoRes);
+                EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to AGC...", 0.3f);
                 Debug.Log($"[HMS ConnectAPI]File Upload Successfull, size: {size}, dest: {fileDestUrl}, dispUrl: {disposableUrl}.");
             }
             else
@@ -106,7 +144,7 @@ namespace HmsPlugin.PublishingAPI
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
                     {"Authorization", "Bearer " + accessToken }
                 }, (res) => {
-                    EditorUtility.DisplayProgressBar("Uploading The Package", "Getting Upload URL...", 0.5f);
+                    EditorUtility.DisplayProgressBar("Uploading The Package", "Getting Upload URL...", 0.3f);
                     onGetUploadUrl(res, filePath);
                 });
         }
@@ -189,6 +227,27 @@ namespace HmsPlugin.PublishingAPI
             }
         }
         #region JsonStuff
+
+        [Serializable]
+        private class UpdateFileInfo
+        {
+            public Files files;
+            public int fileType;
+        }
+
+        [Serializable]
+        private class UpdateFileInfoRes
+        {
+            public Ret ret;
+            public string[] pkgVersion;
+        }
+
+        [Serializable]
+        private class Files
+        {
+            public string fileName;
+            public string fileDestUrl;
+        }
 
         [Serializable]
         private class FileInfoList

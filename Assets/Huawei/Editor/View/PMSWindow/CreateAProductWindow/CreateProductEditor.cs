@@ -140,9 +140,52 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             bottomDrawer.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Product", OnCreateProductClick).SetWidth(300).SetBGColor(Color.green), new Spacer()));
         }
 
+        private Boolean CheckParameters() 
+        {
+            if (productNoTextField.GetCurrentText() == "")
+            {
+                EditorUtility.DisplayDialog("Missing Parameters!", "Product id can not be empty.", "Ok");
+                return false;
+            }
+            else if (productNameTextField.GetCurrentText() == "")
+            {
+                EditorUtility.DisplayDialog("Missing Parameters!", "Product name can not be empty.", "Ok");
+                return false;
+            }
+            else if (descriptionTextField.GetCurrentText() == "")
+            {
+                EditorUtility.DisplayDialog("Missing Parameters!", "Product description can not be empty.", "Ok");
+                return false;
+            }
+            else if (defaultPriceTextField.GetCurrentText() == "" || !double.TryParse(defaultPriceTextField.GetCurrentText(), out _))
+            {
+                EditorUtility.DisplayDialog("Wrong Parameter!", "Please check your price parameter.", "Ok");
+                return false;
+            }
+            else if (selectedPurchaseType == 2
+                && subGroupList == null)
+            {
+                EditorUtility.DisplayDialog("Missing Parameter!", "Please select your subgroup.", "Ok");
+                return false;
+            }
+            else if (languagesFoldout.GetLanguages().Count > 0)
+            {
+                foreach (var item in languagesFoldout.GetLanguages())
+                {
+                    if (item.Desc == "" || item.Name == "") 
+                    {
+                        EditorUtility.DisplayDialog("Missing Parameter!", "Please check your language parameters.", "Ok");
+                        return false;
+                    } 
+                }
+            }
+            return true;
+        }
+
         private void OnGenerateJsonClick()
         {
-            GenerateJsonClass();
+            if(CheckParameters())    
+                GenerateJsonClass();
         }
 
         private void GenerateJsonClass()
@@ -183,20 +226,29 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private async void OnCreateProductClick()
         {
-            if (jsonClass != null)
+            if (jsonClass == null)
             {
-                GenerateJsonClass();
-            }
-
-            var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
-                jsonField.GetCurrentText(),
-                new Dictionary<string, string>()
+                if (CheckParameters()) 
                 {
+                    GenerateJsonClass();
+                }
+                else 
+                {
+                    return;
+                }
+            }
+            if(EditorUtility.DisplayDialog("Are you sure?", "Please make sure your parameters are correct. You can not change your purchase type.", "Yes", "No")) 
+            {
+                var token = await HMSWebUtils.GetAccessTokenAsync();
+                HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
+                    jsonField.GetCurrentText(),
+                    new Dictionary<string, string>()
+                    {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
                     {"Authorization","Bearer " + token},
                     {"appId",jsonClass.product.appId}
-                }, OnCreateProductResponse);
+                    }, OnCreateProductResponse);
+            }
         }
 
         private void OnCreateProductResponse(UnityWebRequest response)

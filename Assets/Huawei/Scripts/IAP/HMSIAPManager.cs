@@ -11,7 +11,7 @@ namespace HmsPlugin
 {
     public class HMSIAPManager : HMSSingleton<HMSIAPManager>
     {
-        private static readonly HMSException IAP_NOT_AVAILABLE = new HMSException("[HMSIAPManager] IAP not available");
+        private readonly HMSException IAP_NOT_AVAILABLE = new HMSException("[HMSIAPManager] IAP not available", "IAP not available", "IAP not available") { };
 
         public Action OnCheckIapAvailabilitySuccess { get; set; }
         public Action<HMSException> OnCheckIapAvailabilityFailure { get; set; }

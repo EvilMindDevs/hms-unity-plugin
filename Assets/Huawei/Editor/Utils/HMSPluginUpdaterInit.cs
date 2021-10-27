@@ -6,8 +6,13 @@ public class HMSPluginUpdaterInit : AssetPostprocessor
 {
     static HMSPluginUpdaterInit()
     {
-        HMSPluginUpdater.Request();
+        EditorApplication.delayCall += () =>
+        {
+            EditorApplication.delayCall += () =>
+            {
+                HMSPluginUpdater.Request();
+            };
+        };
     }
 }
-
 #endif

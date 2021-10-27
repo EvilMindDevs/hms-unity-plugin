@@ -85,7 +85,7 @@ namespace HuaweiConstants
         public const string BANNER_SIZE_360_57 = "BANNER_SIZE_360_57";
 
         public const string BANNER_SIZE_360_144 = "BANNER_SIZE_360_144";
-         
+
 
     }
     public static class HMSResponses
@@ -128,6 +128,26 @@ namespace HuaweiConstants
             PRODUCT_SOME_NOT_EXIST = 40004
 
         }
-    }
 
+        public enum IapStatusCodes : int
+        {
+            ORDER_STATE_SUCCESS = 0,
+            ORDER_STATE_FAILED = -1,
+            ORDER_STATE_DEFAULT_CODE = 1,
+            ORDER_STATE_CANCEL = 60000,
+            ORDER_STATE_PARAM_ERROR = 60001,
+            ORDER_STATE_IAP_NOT_ACTIVATED = 60002,
+            ORDER_STATE_PRODUCT_INVALID = 60003,
+            ORDER_STATE_CALLS_FREQUENT = 60004,
+            ORDER_STATE_NET_ERROR = 60005,
+            ORDER_STATE_PMS_TYPE_NOT_MATCH = 60006,
+            ORDER_STATE_PRODUCT_COUNTRY_NOT_SUPPORTED = 60007,
+            ORDER_HWID_NOT_LOGIN = 60050,
+            ORDER_PRODUCT_OWNED = 60051,
+            ORDER_PRODUCT_NOT_OWNED = 60052,
+            ORDER_PRODUCT_CONSUMED = 60053,
+            ORDER_ACCOUNT_AREA_NOT_SUPPORTED = 60054,
+            ORDER_HIGH_RISK_OPERATIONS = 60056
+        }
+    }
 }

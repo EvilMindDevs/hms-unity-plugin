@@ -6,6 +6,7 @@ using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using HuaweiConstants;
 
 namespace HmsPlugin
 {
@@ -69,11 +70,23 @@ namespace HmsPlugin
                 (
                     (intent) =>
                     {
-                        Debug.Log("[HMSIAPManager]: Success on iapEx Resolution");
-                        OnCheckIapAvailabilitySuccess?.Invoke();
-                        ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Consumable),
-                            HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.NonConsumable),
-                            HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Subscription));
+                        var returnEnum = (HMSResponses.IapStatusCodes)intent.GetIntExtra("returnCode");
+                        if (returnEnum == HMSResponses.IapStatusCodes.ORDER_STATE_SUCCESS)
+                        {
+                            Debug.Log("[HMSIAPManager]: Success on iapEx Resolution");
+                            iapAvailable = true;
+                            OnCheckIapAvailabilitySuccess?.Invoke();
+                            ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Consumable),
+                                HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.NonConsumable),
+                                HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Subscription));
+                        }
+                        else
+                        {
+                            iapAvailable = false;
+                            iapClient = null;
+                            Debug.LogError("[HMSIAPManager]: ERROR on StartResolutionForResult. Return Code: " + (int)returnEnum + ". Reason: " + returnEnum);
+                            OnCheckIapAvailabilityFailure?.Invoke(IAP_NOT_AVAILABLE);
+                        }
                     },
                     (ex) =>
                     {

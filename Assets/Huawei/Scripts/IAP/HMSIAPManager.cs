@@ -6,12 +6,13 @@ using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using HuaweiConstants;
 
 namespace HmsPlugin
 {
     public class HMSIAPManager : HMSSingleton<HMSIAPManager>
     {
-        private static readonly HMSException IAP_NOT_AVAILABLE = new HMSException("[HMSIAPManager] IAP not available");
+        private readonly HMSException IAP_NOT_AVAILABLE = new HMSException("[HMSIAPManager] IAP not available", "IAP not available", "IAP not available") { };
 
         public Action OnCheckIapAvailabilitySuccess { get; set; }
         public Action<HMSException> OnCheckIapAvailabilityFailure { get; set; }
@@ -69,11 +70,23 @@ namespace HmsPlugin
                 (
                     (intent) =>
                     {
-                        Debug.Log("[HMSIAPManager]: Success on iapEx Resolution");
-                        OnCheckIapAvailabilitySuccess?.Invoke();
-                        ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Consumable),
-                            HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.NonConsumable),
-                            HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Subscription));
+                        var returnEnum = (HMSResponses.IapStatusCodes)intent.GetIntExtra("returnCode");
+                        if (returnEnum == HMSResponses.IapStatusCodes.ORDER_STATE_SUCCESS)
+                        {
+                            Debug.Log("[HMSIAPManager]: Success on iapEx Resolution");
+                            iapAvailable = true;
+                            OnCheckIapAvailabilitySuccess?.Invoke();
+                            ObtainProductInfo(HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Consumable),
+                                HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.NonConsumable),
+                                HMSIAPProductListSettings.Instance.GetProductIdentifiersByType(HMSIAPProductType.Subscription));
+                        }
+                        else
+                        {
+                            iapAvailable = false;
+                            iapClient = null;
+                            Debug.LogError("[HMSIAPManager]: ERROR on StartResolutionForResult. Return Code: " + (int)returnEnum + ". Reason: " + returnEnum);
+                            OnCheckIapAvailabilityFailure?.Invoke(IAP_NOT_AVAILABLE);
+                        }
                     },
                     (ex) =>
                     {
@@ -110,7 +123,7 @@ namespace HmsPlugin
             }
         }
 
-        private void ObtainProductInfo(IList<string> productIdNonConsumablesList, PriceType priceType)
+        private void ObtainProductInfo(IList<string> productIdList, PriceType priceType)
         {
 
             if (iapAvailable != true)
@@ -122,7 +135,7 @@ namespace HmsPlugin
             ProductInfoReq productInfoReq = new ProductInfoReq
             {
                 PriceType = priceType,
-                ProductIds = productIdNonConsumablesList
+                ProductIds = productIdList
             };
 
             iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type) =>
@@ -300,7 +313,19 @@ namespace HmsPlugin
             });
         }
 
-        public void ObtainOwnedPurchases()
+        public void ObtainOwnedPurchases(PriceType priceType)
+        {
+            if (iapAvailable != true)
+            {
+                OnObtainOwnedPurchasesFailure?.Invoke(IAP_NOT_AVAILABLE);
+                return;
+            }
+
+            Debug.Log("[HMSIAPManager] ObtainOwnedPurchaseRequest");
+            ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = priceType });
+        }
+
+        public void ObtainAllOwnedPurchases()
         {
             if (iapAvailable != true)
             {
@@ -309,7 +334,7 @@ namespace HmsPlugin
             }
 
 
-            Debug.Log("[HMSIAPManager] ObtainOwnedPurchaseRequest");
+            Debug.Log("[HMSIAPManager] ObtainAllOwnedPurchaseRequest");
             ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_CONSUMABLE });
             ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_NONCONSUMABLE });
             ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_SUBSCRIPTION });
@@ -334,7 +359,19 @@ namespace HmsPlugin
             });
         }
 
-        public void ObtainOwnedPurchaseRecord()
+        public void ObtainOwnedPurchaseRecord(PriceType priceType)
+        {
+            if (iapAvailable != true)
+            {
+                OnObtainOwnedPurchaseRecordFailure?.Invoke(IAP_NOT_AVAILABLE);
+                return;
+            }
+
+            Debug.Log("HMSP: ObtainOwnedPurchaseRecord");
+            ObtainOwnedPurchaseRecord(new OwnedPurchasesReq() { PriceType = priceType });
+        }
+
+        public void ObtainAllOwnedPurchaseRecord()
         {
             if (iapAvailable != true)
             {
@@ -383,7 +420,7 @@ namespace HmsPlugin
                 Debug.LogError("[HMSIAPManager]: RestorePurchasesError failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
             };
 
-            ObtainOwnedPurchases();
+            ObtainAllOwnedPurchases();
         }
 
         public ProductInfo GetProductInfo(string productID)

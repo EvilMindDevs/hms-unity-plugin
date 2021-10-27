@@ -76,7 +76,7 @@ namespace HmsPlugin.PublishingAPI
             HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes);
         }
 
-        private static void UpdateingAppFileInfoRes(UnityWebRequest response)
+        private static void UpdatingAppFileInfoRes(UnityWebRequest response)
         {
             var responseJson = JsonUtility.FromJson<UpdateFileInfoRes>(response.downloadHandler.text);
 
@@ -124,7 +124,7 @@ namespace HmsPlugin.PublishingAPI
                     {
                         {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID)},
                         {"Authorization","Bearer " + accessToken}
-                    }, UpdateingAppFileInfoRes);
+                    }, UpdatingAppFileInfoRes);
                 EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to AGC...", 0.3f);
                 Debug.Log($"[HMS ConnectAPI]File Upload Successfull, size: {size}, dest: {fileDestUrl}, dispUrl: {disposableUrl}.");
             }

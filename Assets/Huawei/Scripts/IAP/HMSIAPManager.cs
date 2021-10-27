@@ -110,7 +110,7 @@ namespace HmsPlugin
             }
         }
 
-        private void ObtainProductInfo(IList<string> productIdNonConsumablesList, PriceType priceType)
+        private void ObtainProductInfo(IList<string> productIdList, PriceType priceType)
         {
 
             if (iapAvailable != true)
@@ -122,7 +122,7 @@ namespace HmsPlugin
             ProductInfoReq productInfoReq = new ProductInfoReq
             {
                 PriceType = priceType,
-                ProductIds = productIdNonConsumablesList
+                ProductIds = productIdList
             };
 
             iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type) =>
@@ -300,7 +300,19 @@ namespace HmsPlugin
             });
         }
 
-        public void ObtainOwnedPurchases()
+        public void ObtainOwnedPurchases(PriceType priceType)
+        {
+            if (iapAvailable != true)
+            {
+                OnObtainOwnedPurchasesFailure?.Invoke(IAP_NOT_AVAILABLE);
+                return;
+            }
+
+            Debug.Log("[HMSIAPManager] ObtainOwnedPurchaseRequest");
+            ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = priceType });
+        }
+
+        public void ObtainAllOwnedPurchases()
         {
             if (iapAvailable != true)
             {
@@ -309,7 +321,7 @@ namespace HmsPlugin
             }
 
 
-            Debug.Log("[HMSIAPManager] ObtainOwnedPurchaseRequest");
+            Debug.Log("[HMSIAPManager] ObtainAllOwnedPurchaseRequest");
             ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_CONSUMABLE });
             ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_NONCONSUMABLE });
             ObtainOwnedPurchases(new OwnedPurchasesReq() { PriceType = PriceType.IN_APP_SUBSCRIPTION });
@@ -334,7 +346,19 @@ namespace HmsPlugin
             });
         }
 
-        public void ObtainOwnedPurchaseRecord()
+        public void ObtainOwnedPurchaseRecord(PriceType priceType)
+        {
+            if (iapAvailable != true)
+            {
+                OnObtainOwnedPurchaseRecordFailure?.Invoke(IAP_NOT_AVAILABLE);
+                return;
+            }
+
+            Debug.Log("HMSP: ObtainOwnedPurchaseRecord");
+            ObtainOwnedPurchaseRecord(new OwnedPurchasesReq() { PriceType = priceType });
+        }
+
+        public void ObtainAllOwnedPurchaseRecord()
         {
             if (iapAvailable != true)
             {
@@ -383,7 +407,7 @@ namespace HmsPlugin
                 Debug.LogError("[HMSIAPManager]: RestorePurchasesError failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
             };
 
-            ObtainOwnedPurchases();
+            ObtainAllOwnedPurchases();
         }
 
         public ProductInfo GetProductInfo(string productID)

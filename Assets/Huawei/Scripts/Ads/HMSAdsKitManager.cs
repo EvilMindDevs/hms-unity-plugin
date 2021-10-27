@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static HuaweiConstants.UnityBannerAdPositionCode;
+using static HuaweiMobileServices.Ads.SplashAd;
 
 public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 {
@@ -23,6 +24,15 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 
     private bool isInitialized;
 
+    public void TestListener()
+    {
+        Debug.LogError("TestListener got called.");
+
+        GameObject.Find("AdsDemoManager");
+
+        Debug.LogError("GameObject.Find got called.");
+
+    }
 
     public override void Awake()
     {
@@ -394,13 +404,11 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 
     #region PUBLIC METHODS
 
-    public void LoadSplashAd(string adId)
+    public void LoadSplashAd(string adId, SplashAdOrientation orientation)
     {
-        //if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableBannerAd)) return;
-        Debug.Log("[HMS] HMSAdsKitManager Loading Splash Ad.");
         splashView = new SplashAd();
         splashView.AdId = adId;
-        splashView.Orientation = 1;
+        splashView.Orientation = orientation;
         splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(SplashAdStatusListener_OnAdShowed, SplashAdStatusListener_OnAdClicked));
         splashView.SetSplashAdLoadListener(new SplashAdLoadListener(SplashAdStatusListener_OnAdDismissed, SplashAdStatusListener_OnAdFailedToLoad, SplashAdStatusListener_OnAdLoaded));
         splashView.LoadAd(new AdParam.Builder().Build());

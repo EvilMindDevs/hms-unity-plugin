@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static HuaweiConstants.UnityBannerAdPositionCode;
 using static HuaweiMobileServices.Ads.SplashAd;
 
@@ -14,6 +15,8 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     private const string TestBannerAdId = "testw6vs28auh3";
     private const string TestInterstitialAdId = "testb4znbuh3n2";
     private const string TestRewardedAdId = "testx9dtjwj8hp";
+    private const string TestSplashImageAdId = "testq6zq98hecj";
+    private const string TestSplashVideoAdId = "testd7c5cewoj6";
 
     private BannerAd bannerView;
     private InterstitialAd interstitialView;
@@ -24,21 +27,12 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 
     private bool isInitialized;
 
-    public void TestListener()
-    {
-        Debug.LogError("TestListener got called.");
-
-        GameObject.Find("AdsDemoManager");
-
-        Debug.LogError("GameObject.Find got called.");
-
-    }
-
     public override void Awake()
     {
         base.Awake();
         Init();
-        //LoadSplashAd();
+        if (adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd))
+            LoadSplashAd();
     }
 
     private void Start()
@@ -404,11 +398,41 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 
     #region PUBLIC METHODS
 
+    public void LoadSplashAd()
+    {
+        if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd)) return;
+        Debug.Log("[HMS] HMSAdsKitManager Loading Splash Ad.");
+        splashView = new SplashAd();
+        splashView.AdId = adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestSplashImageAdId : adsKitSettings.Get(HMSAdsKitSettings.SplashAdID);
+        splashView.Orientation = (SplashAdOrientation)Enum.Parse(typeof(SplashAdOrientation), adsKitSettings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT"));
+        splashView.Title = adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
+        splashView.SubText = adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
+        if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)))
+        {
+            Texture2D texture = new Texture2D(28, 28);
+            texture.LoadImage(Convert.FromBase64String(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)));
+            splashView.Image = texture;
+        }
+        splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(SplashAdStatusListener_OnAdShowed, SplashAdStatusListener_OnAdClicked));
+        splashView.SetSplashAdLoadListener(new SplashAdLoadListener(SplashAdStatusListener_OnAdDismissed, SplashAdStatusListener_OnAdFailedToLoad, SplashAdStatusListener_OnAdLoaded));
+        splashView.LoadAd(new AdParam.Builder().Build());
+    }
+
     public void LoadSplashAd(string adId, SplashAdOrientation orientation)
     {
+        if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd)) return;
+        Debug.Log("[HMS] HMSAdsKitManager Loading Splash Ad.");
         splashView = new SplashAd();
         splashView.AdId = adId;
         splashView.Orientation = orientation;
+        splashView.Title = adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
+        splashView.SubText = adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
+        if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)))
+        {
+            Texture2D texture = new Texture2D(28, 28);
+            texture.LoadImage(Convert.FromBase64String(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)));
+            splashView.Image = texture;
+        }
         splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(SplashAdStatusListener_OnAdShowed, SplashAdStatusListener_OnAdClicked));
         splashView.SetSplashAdLoadListener(new SplashAdLoadListener(SplashAdStatusListener_OnAdDismissed, SplashAdStatusListener_OnAdFailedToLoad, SplashAdStatusListener_OnAdLoaded));
         splashView.LoadAd(new AdParam.Builder().Build());

@@ -37,11 +37,12 @@ namespace HmsPlugin
         private TextField.TextFieldWithAccept _splashAdsSubTextField;
         private SpriteImage _splashSpriteImage;
         private DisabledDrawer _splashAdsDisabledDrawer;
+        private Button.ButtonBase _previewButton;
 
         private Toggle.Toggle _testAdstoggle;
+        private HMSSplashAdPreview _splashAdPreviewObj;
 
         private HMSSettings _settings;
-
 
         public HMSAdsSettingsDrawer()
         {
@@ -66,12 +67,47 @@ namespace HmsPlugin
             _splashAdsTitleTextField = new TextFieldWithAccept("Splash Title", _settings.Get(HMSAdsKitSettings.SplashTitle), "Save", OnSplashTitleSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashAdsSubTextField = new TextFieldWithAccept("Splash Sub Text", _settings.Get(HMSAdsKitSettings.SplashSubText), "Save", OnSplashSubTextSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashSpriteImage = new SpriteImage(AssetDatabase.LoadAssetAtPath<Sprite>(_settings.Get(HMSAdsKitSettings.SplashImagePath, "")), "Image", OnSpriteImageChanged);
-            _splashAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_splashAdsIdTextField, _splashAdOrientation, _splashAdsTitleTextField, _splashAdsSubTextField, _splashSpriteImage)).SetEnabled(!_enableSplashAdsToggle.IsChecked());
+            _previewButton = new Button.Button("Preview", OnPreviewClick).SetWidth(150).SetBGColor(Color.green);
+            _splashAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_splashAdsIdTextField, _splashAdOrientation, _splashAdsTitleTextField, _splashAdsSubTextField, _splashSpriteImage, new Space(10), new HorizontalSequenceDrawer(new Spacer(), _previewButton, new Spacer()))).SetEnabled(!_enableSplashAdsToggle.IsChecked());
 
             _splashAdOrientation.OnChangedSelection += _splashAdOrientation_OnChangedSelection;
             _testAdstoggle = new Toggle.Toggle("Use Test Ads*", _settings.GetBool(HMSAdsKitSettings.UseTestAds), OnTestAdsToggleChanged);
             _testAdstoggle.SetTooltip("This will overwrite all ads with test ads.");
             SetupSequence();
+            _splashAdPreviewObj = GameObject.FindObjectOfType<HMSSplashAdPreview>();
+            SetupPreviewButtonText(_splashAdPreviewObj == null);
+        }
+
+        private void OnPreviewClick()
+        {
+            if (_splashAdPreviewObj != null)
+            {
+                DestroySplashPreviews();
+            }
+            else
+            {
+                var prefab = AssetDatabase.LoadAssetAtPath("Assets/Huawei/Prefabs/SplashAdPreview.prefab", typeof(HMSSplashAdPreview));
+                _splashAdPreviewObj = GameObject.Instantiate(prefab) as HMSSplashAdPreview;
+                SetupPreviewButtonText(false);
+            }
+        }
+
+        private void DestroySplashPreviews()
+        {
+            var objs = GameObject.FindObjectsOfType<HMSSplashAdPreview>();
+            for (int i = 0; i < objs.Length; i++)
+            {
+                GameObject.DestroyImmediate(objs[i].gameObject);
+            }
+            SetupPreviewButtonText(true);
+        }
+
+        private void SetupPreviewButtonText(bool value)
+        {
+            if (value)
+                _previewButton.SetText("Preview").SetBGColor(Color.green);
+            else
+                _previewButton.SetText("Close Preview").SetBGColor(Color.red);
         }
 
         private void _splashAdOrientation_OnChangedSelection()
@@ -82,11 +118,19 @@ namespace HmsPlugin
         private void OnSplashSubTextSaveButtonClick()
         {
             _settings.Set(HMSAdsKitSettings.SplashSubText, _splashAdsSubTextField.GetCurrentText());
+            if (_splashAdPreviewObj != null)
+            {
+                _splashAdPreviewObj.RefreshContent();
+            }
         }
 
         private void OnSplashTitleSaveButtonClick()
         {
             _settings.Set(HMSAdsKitSettings.SplashTitle, _splashAdsTitleTextField.GetCurrentText());
+            if (_splashAdPreviewObj != null)
+            {
+                _splashAdPreviewObj.RefreshContent();
+            }
         }
 
         private void OnSplashAdIDSaveButtonClick()
@@ -146,12 +190,46 @@ namespace HmsPlugin
         {
             _splashAdsDisabledDrawer.SetEnabled(!value);
             _settings.SetBool(HMSAdsKitSettings.EnableSplashAd, value);
+            if (!value)
+            {
+                DestroySplashPreviews();
+            }
         }
 
         private void OnSpriteImageChanged(Sprite image)
         {
-            _settings.Set(HMSAdsKitSettings.SplashImagePath, image != null ? AssetDatabase.GetAssetPath(image.GetInstanceID()) : "");
-            _settings.Set(HMSAdsKitSettings.SplashImageBytes, image != null ? Convert.ToBase64String(image.texture.EncodeToPNG(), 0, image.texture.EncodeToPNG().Length) : "");
+            try
+            {
+                string imageAsString = "";
+
+                if (image != null)
+                {
+                    if (!image.texture.isReadable)
+                    {
+                        EditorUtility.DisplayDialog("HMSAdsKit Splash Image Error", "Please enable Read/Write checkbox in Advanced section of the Texture/Sprite", "Ok");
+                        return;
+                    }
+
+                    var textureImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(image.GetInstanceID())) as TextureImporter;
+                    if (textureImporter.textureCompression != TextureImporterCompression.Uncompressed)
+                    {
+                        EditorUtility.DisplayDialog("HMSAdsKit Splash Image Error", "Please change your Texture/Sprite Compression to None.", "Ok");
+                        return;
+                    }
+                    imageAsString = Convert.ToBase64String(image.texture.EncodeToPNG(), 0, image.texture.EncodeToPNG().Length);
+                }
+                _settings.Set(HMSAdsKitSettings.SplashImagePath, image != null ? AssetDatabase.GetAssetPath(image.GetInstanceID()) : "");
+                _settings.Set(HMSAdsKitSettings.SplashImageBytes, image != null ? imageAsString : "");
+                if (_splashAdPreviewObj != null)
+                {
+                    _splashAdPreviewObj.RefreshContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                EditorUtility.DisplayDialog("HMSAdsKit Splash Image Error", ex.Message, "Ok");
+                throw ex;
+            }
         }
 
         private void SetupSequence()

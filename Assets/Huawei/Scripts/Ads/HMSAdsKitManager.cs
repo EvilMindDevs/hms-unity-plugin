@@ -405,8 +405,8 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         splashView = new SplashAd();
         splashView.AdId = adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestSplashImageAdId : adsKitSettings.Get(HMSAdsKitSettings.SplashAdID);
         splashView.Orientation = (SplashAdOrientation)Enum.Parse(typeof(SplashAdOrientation), adsKitSettings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT"));
-        splashView.Title = adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
-        splashView.SubText = adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
+        splashView.Title = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashTitle)) ? "Splash Title" : adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
+        splashView.SubText = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)) ? "Splash SubText" : adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
         if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)))
         {
             Texture2D texture = new Texture2D(28, 28);
@@ -425,8 +425,8 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         splashView = new SplashAd();
         splashView.AdId = adId;
         splashView.Orientation = orientation;
-        splashView.Title = adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
-        splashView.SubText = adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
+        splashView.Title = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashTitle)) ? "Splash Title" : adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
+        splashView.SubText = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)) ? "Splash SubText" : adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
         if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)))
         {
             Texture2D texture = new Texture2D(28, 28);

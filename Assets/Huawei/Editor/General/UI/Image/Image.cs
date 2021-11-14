@@ -22,6 +22,12 @@ namespace HmsPlugin.Image
             OnValueChanged += onValueChanged;
         }
 
+        public SpriteImage SetTooltip(string tooltip)
+        {
+            _tooltip = tooltip;
+            return this;
+        }
+
         public void Draw()
         {
             Rect rect = EditorGUILayout.GetControlRect();

@@ -66,7 +66,7 @@ namespace HmsPlugin
             _splashAdOrientation = new EnumDropdown((SplashAdOrientation)Enum.Parse(typeof(SplashAdOrientation), _settings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT")), "Orientation");
             _splashAdsTitleTextField = new TextFieldWithAccept("Splash Title", _settings.Get(HMSAdsKitSettings.SplashTitle), "Save", OnSplashTitleSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashAdsSubTextField = new TextFieldWithAccept("Splash Sub Text", _settings.Get(HMSAdsKitSettings.SplashSubText), "Save", OnSplashSubTextSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
-            _splashSpriteImage = new SpriteImage(AssetDatabase.LoadAssetAtPath<Sprite>(_settings.Get(HMSAdsKitSettings.SplashImagePath, "")), "Image", OnSpriteImageChanged);
+            _splashSpriteImage = new SpriteImage(AssetDatabase.LoadAssetAtPath<Sprite>(_settings.Get(HMSAdsKitSettings.SplashImagePath, "")), "Icon*", OnSpriteImageChanged).SetTooltip("Image will be shown as 28x28 pixels");
             _previewButton = new Button.Button("Preview", OnPreviewClick).SetWidth(150).SetBGColor(Color.green);
             _splashAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_splashAdsIdTextField, _splashAdOrientation, _splashAdsTitleTextField, _splashAdsSubTextField, _splashSpriteImage, new Space(10), new HorizontalSequenceDrawer(new Spacer(), _previewButton, new Spacer()))).SetEnabled(!_enableSplashAdsToggle.IsChecked());
 
@@ -211,12 +211,27 @@ namespace HmsPlugin
                     }
 
                     var textureImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(image.GetInstanceID())) as TextureImporter;
-                    if (textureImporter.textureCompression != TextureImporterCompression.Uncompressed)
+
+                    var androidSettings = textureImporter.GetPlatformTextureSettings("Android");
+                    if (androidSettings.overridden)
                     {
-                        EditorUtility.DisplayDialog("HMSAdsKit Splash Image Error", "Please change your Texture/Sprite Compression to None.", "Ok");
-                        return;
+                        if (!CheckTextureFormat(androidSettings))
+                        {
+                            EditorUtility.DisplayDialog("HMSAdsKit Splash Image Error", "Please change your Texture format to a Non-compressed format for Android Platform.(such as RGBA 32 Bit)", "Ok");
+                            return;
+                        }
                     }
-                    imageAsString = Convert.ToBase64String(image.texture.EncodeToPNG(), 0, image.texture.EncodeToPNG().Length);
+                    else
+                    {
+                        if (textureImporter.textureCompression != TextureImporterCompression.Uncompressed)
+                        {
+                            EditorUtility.DisplayDialog("HMSAdsKit Splash Image Error", "Please change your Texture/Sprite Compression to None.", "Ok");
+                            return;
+                        }
+                    }
+
+                    var imageBytes = image.texture.EncodeToPNG();
+                    imageAsString = Convert.ToBase64String(imageBytes, 0, imageBytes.Length);
                 }
                 _settings.Set(HMSAdsKitSettings.SplashImagePath, image != null ? AssetDatabase.GetAssetPath(image.GetInstanceID()) : "");
                 _settings.Set(HMSAdsKitSettings.SplashImageBytes, image != null ? imageAsString : "");
@@ -266,6 +281,50 @@ namespace HmsPlugin
             AddDrawer(new Space(3));
             AddDrawer(_testAdstoggle);
             AddDrawer(new HorizontalLine());
+        }
+
+        private bool CheckTextureFormat(TextureImporterPlatformSettings settings)
+        {
+            switch (settings.format)
+            {
+                case TextureImporterFormat.RGB16:
+                    return true;
+                case TextureImporterFormat.RGB24:
+                    return true;
+                case TextureImporterFormat.Alpha8:
+                    return true;
+                case TextureImporterFormat.R16:
+                    return true;
+                case TextureImporterFormat.R8:
+                    return true;
+                case TextureImporterFormat.RG16:
+                    return true;
+                case TextureImporterFormat.ARGB16:
+                    return true;
+                case TextureImporterFormat.RGBA32:
+                    return true;
+                case TextureImporterFormat.ARGB32:
+                    return true;
+                case TextureImporterFormat.RGBA16:
+                    return true;
+                case TextureImporterFormat.RHalf:
+                    return true;
+                case TextureImporterFormat.RGHalf:
+                    return true;
+                case TextureImporterFormat.RGBAHalf:
+                    return true;
+                case TextureImporterFormat.RFloat:
+                    return true;
+                case TextureImporterFormat.RGFloat:
+                    return true;
+                case TextureImporterFormat.RGBAFloat:
+                    return true;
+                case TextureImporterFormat.RGB9E5:
+                    return true;
+                default:
+                    break;
+            }
+            return false;
         }
     }
 }

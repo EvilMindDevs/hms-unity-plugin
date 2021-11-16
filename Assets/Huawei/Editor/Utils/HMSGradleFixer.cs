@@ -1,4 +1,5 @@
 ﻿using HmsPlugin;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -23,19 +24,19 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
         string destPath = "";
 #if UNITY_2019_3_OR_NEWER
-        destPath = Path.Combine(Directory.GetParent(path).FullName + "//launcher", fileName);
+        destPath = Path.Combine(Directory.GetParent(path).FullName + Path.DirectorySeparatorChar + "launcher", fileName);
 
-        string hmsMainTemplatePath = Application.dataPath + "/Plugins/Android/hmsMainTemplate.gradle";
+        string hmsMainTemplatePath = Application.dataPath + "/Huawei/Plugins/Android/hmsMainTemplate.gradle";
         FileUtil.CopyFileOrDirectory(hmsMainTemplatePath, Path.GetFullPath(path) + @"/hmsMainTemplate.gradle");
         using (var writer = File.AppendText(Path.GetFullPath(path) + "/build.gradle"))
             writer.WriteLine("\napply from: 'hmsMainTemplate.gradle'");
 
-        string launcherTemplatePath = Application.dataPath + "/Plugins/Android/hmsLauncherTemplate.gradle";
+        string launcherTemplatePath = Application.dataPath + "/Huawei/Plugins/Android/hmsLauncherTemplate.gradle";
         FileUtil.CopyFileOrDirectory(launcherTemplatePath, Directory.GetParent(path).FullName + @"/launcher/hmsLauncherTemplate.gradle");
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/launcher/build.gradle"))
             writer.WriteLine("\napply from: 'hmsLauncherTemplate.gradle'");
 
-        string baseProjectTemplatePath = Application.dataPath + "/Plugins/Android/hmsBaseProjectTemplate.gradle";
+        string baseProjectTemplatePath = Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle";
         FileUtil.CopyFileOrDirectory(baseProjectTemplatePath, Directory.GetParent(path).FullName + @"/hmsBaseProjectTemplate.gradle");
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/build.gradle"))
             writer.WriteLine("\napply from: 'hmsBaseProjectTemplate.gradle'");
@@ -74,7 +75,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         }
 
 #elif UNITY_2018_1_OR_NEWER
-        string hmsMainTemplatePath = Application.dataPath + @"/Plugins/Android/hmsMainTemplate.gradle";
+        string hmsMainTemplatePath = Application.dataPath + @"/Huawei/Plugins/Android/hmsMainTemplate.gradle";
         var lines = File.ReadAllLines(hmsMainTemplatePath);
 
         File.AppendAllLines(path + "/build.gradle", lines);
@@ -82,6 +83,6 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 #endif
         if (File.Exists(destPath))
             FileUtil.DeleteFileOrDirectory(destPath);
-        FileUtil.CopyFileOrDirectory(filePath, destPath);
+        File.Copy(filePath, destPath);
     }
 }

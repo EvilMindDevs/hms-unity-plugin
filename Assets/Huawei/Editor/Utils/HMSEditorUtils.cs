@@ -25,6 +25,37 @@ namespace HmsPlugin
                 AssetDatabase.Refresh();
         }
 
+        public static void SetHMSPlugin(bool status, bool createManagers, bool refreshAssets = true)
+        {
+            HMSPluginSettings.Instance.Settings.SetBool(PluginToggleEditor.PluginEnabled, status);
+            var enabledEditors = HMSMainKitsTabFactory.GetEnabledEditors();
+            if (status)
+            {
+                if (createManagers)
+                {
+                    if (enabledEditors != null && enabledEditors.Count > 0)
+                    {
+                        enabledEditors.ForEach(f => f.CreateManagers());
+                    }
+                }
+                else
+                {
+                    if (enabledEditors != null && enabledEditors.Count > 0)
+                        enabledEditors.ForEach(f => f.DisableManagers(false));
+                }
+            }
+            else
+            {
+                if (enabledEditors != null && enabledEditors.Count > 0)
+                {
+                    enabledEditors.ForEach(f => f.DisableManagers(true));
+                }
+            }
+            HMSMainKitsTabFactory.RefreshPluginStatus();
+            if (refreshAssets)
+                AssetDatabase.Refresh();
+        }
+
         [Serializable]
         private class AssemblyDefinitionInfo
         {

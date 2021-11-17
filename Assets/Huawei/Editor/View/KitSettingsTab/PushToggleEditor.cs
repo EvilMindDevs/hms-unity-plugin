@@ -8,14 +8,13 @@ namespace HmsPlugin
 {
     public class PushToggleEditor : ToggleEditor, IDrawer
     {
-        private Toggle.Toggle _toggle;
-
         public const string PushKitEnabled = "PushKit";
 
         public PushToggleEditor()
         {
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(PushKitEnabled);
             _toggle = new Toggle.Toggle("Push", enabled, OnStateChanged, true);
+            Enabled = enabled;
         }
 
         private void OnStateChanged(bool value)
@@ -38,7 +37,8 @@ namespace HmsPlugin
 
         public override void CreateManagers()
         {
-            base.CreateManagers();
+            if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
+                return;
             if (GameObject.FindObjectOfType<HMSPushKitManager>() == null)
             {
                 GameObject obj = new GameObject("HMSPushKitManager");
@@ -61,7 +61,7 @@ namespace HmsPlugin
             Enabled = false;
         }
 
-        public override void DisableManagers()
+        public override void DisableManagers(bool removeTabs)
         {
             var pushManagers = GameObject.FindObjectsOfType<HMSPushKitManager>();
             if (pushManagers.Length > 0)
@@ -70,6 +70,14 @@ namespace HmsPlugin
                 {
                     GameObject.DestroyImmediate(pushManagers[i].gameObject);
                 }
+            }
+        }
+
+        public override void RefreshToggles()
+        {
+            if (_toggle != null)
+            {
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(PushKitEnabled));
             }
         }
     }

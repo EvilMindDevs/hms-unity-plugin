@@ -8,7 +8,6 @@ namespace HmsPlugin
 {
     public class AdsToggleEditor : ToggleEditor, IDrawer
     {
-        private Toggle.Toggle _toggle;
         private TabBar _tabBar;
         private TabView _tabView;
 
@@ -20,18 +19,17 @@ namespace HmsPlugin
             _tabView = HMSAdsTabFactory.CreateTab("Ads");
             _tabBar = tabBar;
             _toggle = new Toggle.Toggle("Ads", enabled, OnStateChanged, true);
+            Enabled = enabled;
         }
 
         private void OnStateChanged(bool value)
         {
             if (value)
             {
-                _tabBar.AddTab(_tabView);
                 CreateManagers();
             }
             else
             {
-                _tabBar.RemoveTab(_tabView);
                 DestroyManagers();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AdsKitEnabled, value);
@@ -44,7 +42,12 @@ namespace HmsPlugin
 
         public override void CreateManagers()
         {
-            base.CreateManagers();
+            if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
+                return;
+
+            if (_tabBar != null && _tabView != null)
+                _tabBar.AddTab(_tabView);
+
             if (GameObject.FindObjectOfType<HMSAdsKitManager>() == null)
             {
                 GameObject obj = new GameObject("HMSAdsKitManager");
@@ -56,6 +59,9 @@ namespace HmsPlugin
 
         public override void DestroyManagers()
         {
+            if (_tabBar != null && _tabView != null)
+                _tabBar.RemoveTab(_tabView);
+
             var adsKitManagers = GameObject.FindObjectsOfType<HMSAdsKitManager>();
             if (adsKitManagers.Length > 0)
             {
@@ -67,7 +73,7 @@ namespace HmsPlugin
             Enabled = false;
         }
 
-        public override void DisableManagers()
+        public override void DisableManagers(bool removeTabs)
         {
             var adsKitManagers = GameObject.FindObjectsOfType<HMSAdsKitManager>();
             if (adsKitManagers.Length > 0)
@@ -76,6 +82,24 @@ namespace HmsPlugin
                 {
                     GameObject.DestroyImmediate(adsKitManagers[i].gameObject);
                 }
+            }
+            if (removeTabs)
+            {
+                if (_tabBar != null && _tabView != null)
+                    _tabBar.RemoveTab(_tabView);
+            }
+            else
+            {
+                if (_tabBar != null && _tabView != null)
+                    _tabBar.AddTab(_tabView);
+            }
+        }
+
+        public override void RefreshToggles()
+        {
+            if (_toggle != null)
+            {
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(AdsKitEnabled));
             }
         }
     }

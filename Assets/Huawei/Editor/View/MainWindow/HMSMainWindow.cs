@@ -17,6 +17,24 @@ public class HMSMainWindow : HMSEditorWindow
         HMSPluginUpdater.Request(true);
     }
 
+    [MenuItem("Huawei/Utils/Enable Plugin")]
+    public static void EnablePlugin()
+    {
+        HMSEditorUtils.SetHMSPlugin(true, true);
+    }
+
+    [MenuItem("Huawei/Utils/Enable Plugin Without Managers")]
+    public static void EnableWithoutManagers()
+    {
+        HMSEditorUtils.SetHMSPlugin(true, false);
+    }
+
+    [MenuItem("Huawei/Utils/Disable Plugin")]
+    public static void DisablePlugin()
+    {
+        HMSEditorUtils.SetHMSPlugin(false, false);
+    }
+
     public override IDrawer CreateDrawer()
     {
         var tabBar = new TabBar();

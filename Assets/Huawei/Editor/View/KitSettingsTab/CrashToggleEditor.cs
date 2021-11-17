@@ -10,16 +10,15 @@ namespace HmsPlugin
 {
     public class CrashToggleEditor : ToggleEditor, IDrawer
     {
-        private Toggle.Toggle _toggle;
         private IDependentToggle _dependentToggle;
 
         public const string CrashKitEnabled = "CrashKit";
-
         public CrashToggleEditor(IDependentToggle analyticsToggle)
         {
             _dependentToggle = analyticsToggle;
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(CrashKitEnabled);
             _toggle = new Toggle.Toggle("Crash*", enabled, OnStateChanged, true).SetTooltip("Crash Kit is dependent on Analytics Kit.");
+            Enabled = enabled;
         }
 
         private void OnStateChanged(bool value)
@@ -27,7 +26,6 @@ namespace HmsPlugin
             if (value)
             {
                 CreateManagers();
-                _dependentToggle.SetToggle();
             }
             else
             {
@@ -43,6 +41,11 @@ namespace HmsPlugin
 
         public override void CreateManagers()
         {
+            if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
+                return;
+
+            if (_dependentToggle != null)
+                _dependentToggle.SetToggle();
             if (GameObject.FindObjectOfType<HMSCrashManager>() == null)
             {
                 GameObject obj = new GameObject("HMSCrashManager");
@@ -54,7 +57,8 @@ namespace HmsPlugin
 
         public override void DestroyManagers()
         {
-            base.CreateManagers();
+            if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
+                return;
             var crashManagers = GameObject.FindObjectsOfType<HMSCrashManager>();
             if (crashManagers.Length > 0)
             {
@@ -66,7 +70,7 @@ namespace HmsPlugin
             Enabled = false;
         }
 
-        public override void DisableManagers()
+        public override void DisableManagers(bool removeTabs)
         {
             var crashManagers = GameObject.FindObjectsOfType<HMSCrashManager>();
             if (crashManagers.Length > 0)
@@ -75,6 +79,15 @@ namespace HmsPlugin
                 {
                     GameObject.DestroyImmediate(crashManagers[i].gameObject);
                 }
+            }
+        }
+
+
+        public override void RefreshToggles()
+        {
+            if (_toggle != null)
+            {
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(CrashKitEnabled));
             }
         }
     }

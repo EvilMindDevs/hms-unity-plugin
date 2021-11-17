@@ -11,6 +11,9 @@ namespace HmsPlugin
 
         public void AddTab(TabView tab)
         {
+            if (_tabs != null && _tabs.Find(c => c.Title == tab.Title) != null)
+                return;
+            
             _tabs.Add(tab);
             RefreshTabNames();
         }

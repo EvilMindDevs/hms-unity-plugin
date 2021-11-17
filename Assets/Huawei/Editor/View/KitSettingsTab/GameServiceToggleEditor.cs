@@ -10,7 +10,6 @@ namespace HmsPlugin
 {
     public class GameServiceToggleEditor : ToggleEditor, IDrawer
     {
-        private Toggle.Toggle _toggle;
         private TabBar _tabBar;
         private TabView _tabView;
         private IDependentToggle _dependentToggle;
@@ -24,20 +23,18 @@ namespace HmsPlugin
             _tabView = HMSGameServiceTabFactory.CreateTab("Game Service");
             _tabBar = tabBar;
             _toggle = new Toggle.Toggle("Game Service*", enabled, OnStateChanged, true).SetTooltip("Game Service is dependent on AccountKit.");
+            Enabled = enabled;
         }
 
         private void OnStateChanged(bool value)
         {
             if (value)
             {
-                _tabBar.AddTab(_tabView);
                 CreateManagers();
-                _dependentToggle.SetToggle();
             }
             else
             {
                 DestroyManagers();
-                _tabBar.RemoveTab(_tabView);
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(GameServiceEnabled, value);
         }
@@ -49,7 +46,15 @@ namespace HmsPlugin
 
         public override void CreateManagers()
         {
-            base.CreateManagers();
+            if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
+                return;
+
+            if (_tabBar != null && _tabView != null)
+                _tabBar.AddTab(_tabView);
+
+            if (_dependentToggle != null)
+                _dependentToggle.SetToggle();
+
             if (GameObject.FindObjectOfType<HMSGameManager>() == null)
             {
                 GameObject obj = new GameObject("HMSGameManager");
@@ -72,10 +77,12 @@ namespace HmsPlugin
                     GameObject.DestroyImmediate(gameKitManagers[i].gameObject);
                 }
             }
+            if (_tabBar != null && _tabView != null)
+                _tabBar.RemoveTab(_tabView);
             Enabled = false;
         }
 
-        public override void DisableManagers()
+        public override void DisableManagers(bool removeTabs)
         {
             var gameKitManagers = GameObject.FindObjectsOfType<HMSGameManager>();
             if (gameKitManagers.Length > 0)
@@ -84,6 +91,24 @@ namespace HmsPlugin
                 {
                     GameObject.DestroyImmediate(gameKitManagers[i].gameObject);
                 }
+            }
+            if (removeTabs)
+            {
+                if (_tabBar != null && _tabView != null)
+                    _tabBar.RemoveTab(_tabView);
+            }
+            else
+            {
+                if (_tabBar != null && _tabView != null)
+                    _tabBar.AddTab(_tabView);
+            }
+        }
+
+        public override void RefreshToggles()
+        {
+            if (_toggle != null)
+            {
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(GameServiceEnabled));
             }
         }
     }

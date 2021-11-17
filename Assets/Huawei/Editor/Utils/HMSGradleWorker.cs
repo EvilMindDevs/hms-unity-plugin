@@ -39,14 +39,6 @@ namespace HmsPlugin
 
         private void CreateGradleFiles(string[] gradleConfigs)
         {
-            if (!AssetDatabase.IsValidFolder("Assets/Plugins"))
-            {
-                AssetDatabase.CreateFolder("Assets", "Plugins");
-            }
-            if (!AssetDatabase.IsValidFolder("Assets/Plugins/Android"))
-            {
-                AssetDatabase.CreateFolder("Assets/Plugins", "Android");
-            }
 #if UNITY_2019_3_OR_NEWER
             CreateMainGradleFile(gradleConfigs);
             CreateLauncherGradleFile(gradleConfigs);
@@ -176,6 +168,7 @@ namespace HmsPlugin
             var appDebugAar = AssetImporter.GetAtPath("Assets/Huawei/Plugins/Android/app-debug.aar") as PluginImporter;
             var bookInfo = AssetImporter.GetAtPath("Assets/Huawei/Plugins//Android/BookInfo.java") as PluginImporter;
             var objectTypeInfoHelper = AssetImporter.GetAtPath("Assets/Huawei/Plugins/Android/ObjectTypeInfoHelper.java") as PluginImporter;
+            var pushKitPlugin = AssetImporter.GetAtPath("Assets/Huawei/Plugins/Android/HMSUnityPushKit.plugin") as PluginImporter;
 
             if (pluginEnabled)
                 PrepareGradleFile();
@@ -186,7 +179,8 @@ namespace HmsPlugin
                 objectTypeInfoHelper.SetCompatibleWithPlatform(BuildTarget.Android, HMSMainEditorSettings.Instance.Settings.GetBool(CloudDBToggleEditor.CloudDBEnabled) && pluginEnabled);
             if (huaweiMobileServicesDLL != null)
                 huaweiMobileServicesDLL.SetCompatibleWithPlatform(BuildTarget.Android, pluginEnabled);
-            
+            if (pushKitPlugin != null)
+                pushKitPlugin.SetCompatibleWithPlatform(BuildTarget.Android, HMSMainEditorSettings.Instance.Settings.GetBool(PushToggleEditor.PushKitEnabled) && pluginEnabled);
             if (appDebugAar != null)
                 appDebugAar.SetCompatibleWithPlatform(BuildTarget.Android, pluginEnabled);
 
@@ -198,7 +192,7 @@ namespace HmsPlugin
             if (type == LogType.Error)
             {
                 Application.logMessageReceived -= OnBuildError;
-                HMSEditorUtils.HandleAssemblyDefinitions(false,false);
+                HMSEditorUtils.HandleAssemblyDefinitions(false, false);
             }
         }
     }

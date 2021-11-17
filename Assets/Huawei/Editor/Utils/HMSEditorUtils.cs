@@ -40,5 +40,46 @@ namespace HmsPlugin
             public List<string> versionDefines;
             public bool noEngineReferences;
         }
+
+        [UnityEditor.Callbacks.DidReloadScripts]
+        public static void CheckOldFiles()
+        {
+            EditorApplication.delayCall += CheckOldFilesNow;
+        }
+
+        private static void CheckOldFilesNow()
+        {
+            string[] fileNames = { "/Plugins/Android/app-debug.aar", "/Plugins/Android/BookInfo.java", "/Plugins/Android/ObjectTypeInfoHelper.java", "/Resources/coins100.png", "/Resources/coins1000.png", "/Resources/no_ads.png", "/Resources/premium.png", "/Resources/xml/remoteConfig.xml", "/Plugins/Android/hmsMainTemplate.gradle", "/Plugins/Android/hmsLauncherTemplate.gradle", "/Plugins/Android/hmsBaseProjectTemplate.gradle" };
+
+            List<string> foundFiles = new List<string>();
+
+            for (int i = 0; i < fileNames.Length; i++)
+            {
+                string path = fileNames[i];
+                if (File.Exists(Application.dataPath + path))
+                {
+                    foundFiles.Add(path);
+                }
+            }
+            if (foundFiles.Count > 0)
+            {
+                string allPaths = "";
+                foundFiles.ForEach(c => allPaths += c + "\n");
+                if (EditorUtility.DisplayDialog("HMS Unity Plugin", "We've found some files that needs to be moved. Do you want to move these files?\n" + allPaths, "Move", "Cancel"))
+                {
+                    foreach (var path in foundFiles)
+                    {
+                        if (File.Exists(Application.dataPath + path))
+                        {
+                            string destPath = Application.dataPath + "/Huawei" + path;
+                            if (!File.Exists(destPath))
+                                new FileInfo(destPath).Directory.Create();
+                            File.Move(Application.dataPath + path, destPath);
+                        }
+                    }
+                    AssetDatabase.Refresh();
+                }
+            }
+        }
     }
 }

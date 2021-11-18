@@ -296,16 +296,8 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableRewardedAd)) return;
         Debug.Log("[HMS] HMSAdsKitManager LoadRewardedAd");
         rewardedView = new RewardAd(adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestRewardedAdId : adsKitSettings.Get(HMSAdsKitSettings.RewardedAdID));
-        rewardedView.LoadAd(new AdParam.Builder().Build(), () =>
-        {
-            Debug.Log("[HMS] HMSAdsKitManager Rewarded ad loaded!");
-            OnRewardedAdLoaded?.Invoke();
-        },
-        (errorCode) =>
-        {
-            Debug.Log($"[HMS] HMSAdsKitManager Rewarded ad loading failed with error ${errorCode}");
-            OnRewardedAdFailedToLoad?.Invoke(errorCode);
-        });
+        rewardedView.RewardAdListener = new RewardAdListener(this);
+        rewardedView.LoadAd(new AdParam.Builder().Build());
     }
 
     public void ShowRewardedAd()
@@ -314,7 +306,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         if (rewardedView?.Loaded == true)
         {
             Debug.Log("[HMS] HMSAdsKitManager Showing Rewarded Ad");
-            rewardedView.Show(new RewardAdListener(this));
+            rewardedView.Show();
         }
         else
         {
@@ -336,7 +328,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 
     #region LISTENERS
 
-    private class RewardAdListener : IRewardAdStatusListener
+    private class RewardAdListener : IRewardAdListener
     {
         private readonly HMSAdsKitManager mAdsManager;
 
@@ -344,7 +336,6 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         {
             mAdsManager = adsManager;
         }
-
         public void OnRewardAdClosed()
         {
             Debug.Log("[HMS] HMSAdsKitManager OnRewardAdClosed");
@@ -352,16 +343,40 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
             mAdsManager.LoadRewardedAd();
         }
 
-        public void OnRewardAdFailedToShow(int errorCode)
+        public void OnRewardAdCompleted()
         {
-            Debug.Log("[HMS] HMSAdsKitManager OnRewardAdFailedToShow " + errorCode);
-            mAdsManager.OnRewardAdFailedToShow?.Invoke(errorCode);
+            Debug.Log("[HMS] HMSAdsKitManager OnRewardAdCompleted!");
+            mAdsManager.OnRewardAdCompleted?.Invoke();
+        }
+
+        public void OnRewardAdFailedToLoad(int errorCode)
+        {
+            Debug.Log($"[HMS] HMSAdsKitManager Rewarded ad loading failed with error ${errorCode}");
+            mAdsManager.OnRewardedAdFailedToLoad?.Invoke(errorCode);
+        }
+
+        public void OnRewardAdLeftApp()
+        {
+            Debug.Log("[HMS] HMSAdsKitManager OnRewardAdLeftApp!");
+            mAdsManager.OnRewardAdLeftApp?.Invoke();
+        }
+
+        public void OnRewardAdLoaded()
+        {
+            Debug.Log("[HMS] HMSAdsKitManager Rewarded ad loaded!");
+            mAdsManager.OnRewardedAdLoaded?.Invoke();
         }
 
         public void OnRewardAdOpened()
         {
             Debug.Log("[HMS] HMSAdsKitManager OnRewardAdOpened");
             mAdsManager.OnRewardAdOpened?.Invoke();
+        }
+
+        public void OnRewardAdStarted()
+        {
+            Debug.Log("[HMS] HMSAdsKitManager OnRewardAdStarted!");
+            mAdsManager.OnRewardAdStarted?.Invoke();
         }
 
         public void OnRewarded(Reward reward)
@@ -372,8 +387,10 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     }
 
     public Action OnRewardAdClosed { get; set; }
-    public Action<int> OnRewardAdFailedToShow { get; set; }
+    public Action OnRewardAdLeftApp { get; set; }
+    public Action OnRewardAdStarted { get; set; }
     public Action OnRewardAdOpened { get; set; }
+    public Action OnRewardAdCompleted { get; set; }
     public Action<Reward> OnRewarded { get; set; }
     public Action OnRewardedAdLoaded { get; set; }
     public Action<int> OnRewardedAdFailedToLoad { get; set; }

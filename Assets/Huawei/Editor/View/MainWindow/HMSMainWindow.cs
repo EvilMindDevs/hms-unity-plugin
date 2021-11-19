@@ -5,13 +5,13 @@ using UnityEditor;
 
 public class HMSMainWindow : HMSEditorWindow
 {
-    [MenuItem("Huawei/Kit Settings")]
+    [MenuItem("Huawei/Kit Settings", priority = 1)]
     public static void ShowWindow()
     {
         GetWindow(typeof(HMSMainWindow), false, "HMS Settings");
     }
 
-    [MenuItem("Huawei/Check for Updates")]
+    [MenuItem("Huawei/Check for Updates", priority = 2)]
     public static void CheckForUpdates()
     {
         HMSPluginUpdater.Request(true);

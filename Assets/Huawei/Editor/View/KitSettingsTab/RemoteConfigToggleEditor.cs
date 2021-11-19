@@ -10,13 +10,11 @@ namespace HmsPlugin
 {
     public class RemoteConfigToggleEditor : ToggleEditor, IDrawer
     {
-        private Toggle.Toggle _toggle;
         private TabBar _tabBar;
         private TabView _tabView;
         private IDependentToggle _dependentToggle;
 
         public const string RemoteConfigEnabled = "RemoteConfig";
-
         public RemoteConfigToggleEditor(TabBar tabBar, IDependentToggle analyticsToggle)
         {
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(RemoteConfigEnabled);
@@ -24,6 +22,7 @@ namespace HmsPlugin
             _tabView = HMSRemoteConfigTabFactory.CreateTab("Remote Config");
             _tabBar = tabBar;
             _toggle = new Toggle.Toggle("Remote Config*", enabled, OnStateChanged, true).SetTooltip("Remote Config is dependent on Analytics Kit.");
+            Enabled = enabled;
         }
 
         private void OnStateChanged(bool value)
@@ -32,13 +31,10 @@ namespace HmsPlugin
             if (value)
             {
                 CreateManagers();
-                _dependentToggle.SetToggle();
-                _tabBar.AddTab(_tabView);
             }
             else
             {
                 DestroyManagers();
-                _tabBar.RemoveTab(_tabView);
             }
         }
 
@@ -49,7 +45,15 @@ namespace HmsPlugin
 
         public override void CreateManagers()
         {
-            base.CreateManagers();
+            if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
+                return;
+
+            if (_dependentToggle != null)
+                _dependentToggle.SetToggle();
+
+            if (_tabBar != null && _tabView != null)
+                _tabBar.AddTab(_tabView);
+
             if (GameObject.FindObjectOfType<HMSRemoteConfigManager>() == null)
             {
                 GameObject obj = new GameObject("HMSRemoteConfigManager");
@@ -69,10 +73,12 @@ namespace HmsPlugin
                     GameObject.DestroyImmediate(remoteConfigManagers[i].gameObject);
                 }
             }
+            if (_tabBar != null && _tabView != null)
+                _tabBar.RemoveTab(_tabView);
             Enabled = false;
         }
 
-        public override void DisableManagers()
+        public override void DisableManagers(bool removeTabs)
         {
             var remoteConfigManagers = GameObject.FindObjectsOfType<HMSRemoteConfigManager>();
             if (remoteConfigManagers.Length > 0)
@@ -81,6 +87,24 @@ namespace HmsPlugin
                 {
                     GameObject.DestroyImmediate(remoteConfigManagers[i].gameObject);
                 }
+            }
+            if (removeTabs)
+            {
+                if (_tabBar != null && _tabView != null)
+                    _tabBar.RemoveTab(_tabView);
+            }
+            else
+            {
+                if (_tabBar != null && _tabView != null)
+                    _tabBar.AddTab(_tabView);
+            }
+        }
+
+        public override void RefreshToggles()
+        {
+            if (_toggle != null)
+            {
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(RemoteConfigEnabled));
             }
         }
     }

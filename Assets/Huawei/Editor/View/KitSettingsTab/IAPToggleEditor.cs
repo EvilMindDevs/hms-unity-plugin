@@ -10,7 +10,6 @@ namespace HmsPlugin
 {
     public class IAPToggleEditor : ToggleEditor, IDrawer
     {
-        private Toggle.Toggle _toggle;
         private TabBar _tabBar;
         private TabView _tabView;
 
@@ -22,19 +21,18 @@ namespace HmsPlugin
             _tabView = HMSIAPTabFactory.CreateTab("IAP");
             _tabBar = tabBar;
             _toggle = new Toggle.Toggle("IAP", enabled, OnStateChanged, true);
+            Enabled = enabled;
         }
 
         private void OnStateChanged(bool value)
         {
             if (value)
             {
-                _tabBar.AddTab(_tabView);
                 CreateManagers();
             }
             else
             {
                 DestroyManagers();
-                _tabBar.RemoveTab(_tabView);
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(IAPKitEnabled, value);
         }
@@ -46,7 +44,12 @@ namespace HmsPlugin
 
         public override void CreateManagers()
         {
-            base.CreateManagers();
+            if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
+                return;
+
+            if (_tabBar != null && _tabView != null)
+                _tabBar.AddTab(_tabView);
+
             if (GameObject.FindObjectOfType<HMSIAPManager>() == null)
             {
                 GameObject obj = new GameObject("HMSIAPManager");
@@ -66,10 +69,12 @@ namespace HmsPlugin
                     GameObject.DestroyImmediate(iapManagers[i].gameObject);
                 }
             }
+            if (_tabBar != null && _tabView != null)
+                _tabBar.RemoveTab(_tabView);
             Enabled = false;
         }
 
-        public override void DisableManagers()
+        public override void DisableManagers(bool removeTabs)
         {
             var iapManagers = GameObject.FindObjectsOfType<HMSIAPManager>();
             if (iapManagers.Length > 0)
@@ -78,6 +83,25 @@ namespace HmsPlugin
                 {
                     GameObject.DestroyImmediate(iapManagers[i].gameObject);
                 }
+            }
+            if (removeTabs)
+            {
+                if (_tabBar != null && _tabView != null)
+                    _tabBar.RemoveTab(_tabView);
+            }
+            else
+            {
+                if (_tabBar != null && _tabView != null)
+                    _tabBar.AddTab(_tabView);
+            }
+        }
+
+
+        public override void RefreshToggles()
+        {
+            if (_toggle != null)
+            {
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(IAPKitEnabled));
             }
         }
     }

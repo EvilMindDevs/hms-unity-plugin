@@ -18,8 +18,8 @@ namespace HmsPlugin
                 "Assets/Huawei/Scripts",
                 "Assets/Huawei/VERSION",
                 "Assets/Huawei/HuaweiMobileServices.Core.asmdef",
-                "Assets/Plugins",
-                "Assets/Resources",
+                "Assets/Huawei/Plugins",
+                "Assets/Huawei/Resources",
                 "Assets/StreamingAssets"
             };
             AssetDatabase.ExportPackage(hmsFileNames, Application.dataPath + "/HMSUnityPackageV2.unitypackage", ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);

@@ -23,6 +23,7 @@ namespace HmsPlugin
         private void OnStateChanged(bool value)
         {
             var enabledEditors = HMSMainKitsTabFactory.GetEnabledEditors();
+            HMSPluginSettings.Instance.Settings.SetBool(PluginEnabled, value);
             if (value)
             {
                 if (enabledEditors != null && enabledEditors.Count > 0)
@@ -31,18 +32,23 @@ namespace HmsPlugin
             else
             {
                 if (enabledEditors != null && enabledEditors.Count > 0)
-                    enabledEditors.ForEach(c => c.DisableManagers());
+                    enabledEditors.ForEach(c => c.DisableManagers(true));
             }
             RefreshDrawer(value);
-            HMSPluginSettings.Instance.Settings.SetBool(PluginEnabled, value);
         }
 
-        private void RefreshDrawer(bool value)
+        public void RefreshDrawer(bool value)
         {
             if (HMSMainKitsTabFactory._disabledDrawer != null)
             {
                 HMSMainKitsTabFactory._disabledDrawer.SetEnabled(!value);
             }
+        }
+
+        public void RefreshToggle()
+        {
+            if (_toggle != null)
+                _toggle.SetChecked(HMSPluginSettings.Instance.Settings.GetBool(PluginEnabled));
         }
 
         public void Draw()

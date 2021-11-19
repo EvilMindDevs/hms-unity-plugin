@@ -5,7 +5,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static HuaweiConstants.UnityBannerAdPositionCode;
+using static HuaweiMobileServices.Ads.SplashAd;
 
 public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 {
@@ -13,27 +15,37 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     private const string TestBannerAdId = "testw6vs28auh3";
     private const string TestInterstitialAdId = "testb4znbuh3n2";
     private const string TestRewardedAdId = "testx9dtjwj8hp";
+    private const string TestSplashImageAdId = "testq6zq98hecj";
+    private const string TestSplashVideoAdId = "testd7c5cewoj6";
 
     private BannerAd bannerView;
     private InterstitialAd interstitialView;
     private RewardAd rewardedView;
+    private SplashAd splashView;
 
     private HMSSettings adsKitSettings;
 
     private bool isInitialized;
 
+    public override void Awake()
+    {
+        base.Awake();
+        Init();
+        if (adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd))
+            LoadSplashAd();
+    }
+
     private void Start()
     {
-        Init();
+        Debug.Log("[HMS] HMSAdsKitManager Start");
+        StartCoroutine(LoadingAds());
     }
 
     private void Init()
     {
-        Debug.Log("[HMS] HMSAdsKitManager Start");
         HwAds.Init();
         isInitialized = true;
         adsKitSettings = HMSAdsKitSettings.Instance.Settings;
-        StartCoroutine(LoadingAds());
     }
 
     private IEnumerator LoadingAds()
@@ -296,16 +308,8 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableRewardedAd)) return;
         Debug.Log("[HMS] HMSAdsKitManager LoadRewardedAd");
         rewardedView = new RewardAd(adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestRewardedAdId : adsKitSettings.Get(HMSAdsKitSettings.RewardedAdID));
-        rewardedView.LoadAd(new AdParam.Builder().Build(), () =>
-        {
-            Debug.Log("[HMS] HMSAdsKitManager Rewarded ad loaded!");
-            OnRewardedAdLoaded?.Invoke();
-        },
-        (errorCode) =>
-        {
-            Debug.Log($"[HMS] HMSAdsKitManager Rewarded ad loading failed with error ${errorCode}");
-            OnRewardedAdFailedToLoad?.Invoke(errorCode);
-        });
+        rewardedView.RewardAdListener = new RewardAdListener(this);
+        rewardedView.LoadAd(new AdParam.Builder().Build());
     }
 
     public void ShowRewardedAd()
@@ -314,7 +318,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         if (rewardedView?.Loaded == true)
         {
             Debug.Log("[HMS] HMSAdsKitManager Showing Rewarded Ad");
-            rewardedView.Show(new RewardAdListener(this));
+            rewardedView.Show();
         }
         else
         {
@@ -336,7 +340,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 
     #region LISTENERS
 
-    private class RewardAdListener : IRewardAdStatusListener
+    private class RewardAdListener : IRewardAdListener
     {
         private readonly HMSAdsKitManager mAdsManager;
 
@@ -344,7 +348,6 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         {
             mAdsManager = adsManager;
         }
-
         public void OnRewardAdClosed()
         {
             Debug.Log("[HMS] HMSAdsKitManager OnRewardAdClosed");
@@ -352,16 +355,40 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
             mAdsManager.LoadRewardedAd();
         }
 
-        public void OnRewardAdFailedToShow(int errorCode)
+        public void OnRewardAdCompleted()
         {
-            Debug.Log("[HMS] HMSAdsKitManager OnRewardAdFailedToShow " + errorCode);
-            mAdsManager.OnRewardAdFailedToShow?.Invoke(errorCode);
+            Debug.Log("[HMS] HMSAdsKitManager OnRewardAdCompleted!");
+            mAdsManager.OnRewardAdCompleted?.Invoke();
+        }
+
+        public void OnRewardAdFailedToLoad(int errorCode)
+        {
+            Debug.Log($"[HMS] HMSAdsKitManager Rewarded ad loading failed with error ${errorCode}");
+            mAdsManager.OnRewardedAdFailedToLoad?.Invoke(errorCode);
+        }
+
+        public void OnRewardAdLeftApp()
+        {
+            Debug.Log("[HMS] HMSAdsKitManager OnRewardAdLeftApp!");
+            mAdsManager.OnRewardAdLeftApp?.Invoke();
+        }
+
+        public void OnRewardAdLoaded()
+        {
+            Debug.Log("[HMS] HMSAdsKitManager Rewarded ad loaded!");
+            mAdsManager.OnRewardedAdLoaded?.Invoke();
         }
 
         public void OnRewardAdOpened()
         {
             Debug.Log("[HMS] HMSAdsKitManager OnRewardAdOpened");
             mAdsManager.OnRewardAdOpened?.Invoke();
+        }
+
+        public void OnRewardAdStarted()
+        {
+            Debug.Log("[HMS] HMSAdsKitManager OnRewardAdStarted!");
+            mAdsManager.OnRewardAdStarted?.Invoke();
         }
 
         public void OnRewarded(Reward reward)
@@ -372,11 +399,101 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     }
 
     public Action OnRewardAdClosed { get; set; }
-    public Action<int> OnRewardAdFailedToShow { get; set; }
+    public Action OnRewardAdLeftApp { get; set; }
+    public Action OnRewardAdStarted { get; set; }
     public Action OnRewardAdOpened { get; set; }
+    public Action OnRewardAdCompleted { get; set; }
     public Action<Reward> OnRewarded { get; set; }
     public Action OnRewardedAdLoaded { get; set; }
     public Action<int> OnRewardedAdFailedToLoad { get; set; }
+
+    #endregion
+
+    #endregion
+
+    #region SPLASH
+
+    #region PUBLIC METHODS
+
+    public void LoadSplashAd()
+    {
+        if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd)) return;
+        Debug.Log("[HMS] HMSAdsKitManager Loading Splash Ad.");
+        splashView = new SplashAd();
+        splashView.AdId = adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestSplashImageAdId : adsKitSettings.Get(HMSAdsKitSettings.SplashAdID);
+        splashView.Orientation = (SplashAdOrientation)Enum.Parse(typeof(SplashAdOrientation), adsKitSettings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT"));
+        splashView.Title = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashTitle)) ? "Splash Title" : adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
+        splashView.SubText = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)) ? "Splash SubText" : adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
+        if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)))
+        {
+            Texture2D texture = new Texture2D(28, 28);
+            texture.LoadImage(Convert.FromBase64String(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)));
+            splashView.Icon = texture;
+        }
+        splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(SplashAdStatusListener_OnAdShowed, SplashAdStatusListener_OnAdClicked));
+        splashView.SetSplashAdLoadListener(new SplashAdLoadListener(SplashAdStatusListener_OnAdDismissed, SplashAdStatusListener_OnAdFailedToLoad, SplashAdStatusListener_OnAdLoaded));
+        splashView.LoadAd(new AdParam.Builder().Build());
+    }
+
+    public void LoadSplashAd(string adId, SplashAdOrientation orientation)
+    {
+        if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd)) return;
+        Debug.Log("[HMS] HMSAdsKitManager Loading Splash Ad.");
+        splashView = new SplashAd();
+        splashView.AdId = adId;
+        splashView.Orientation = orientation;
+        splashView.Title = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashTitle)) ? "Splash Title" : adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
+        splashView.SubText = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)) ? "Splash SubText" : adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
+        if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)))
+        {
+            Texture2D texture = new Texture2D(28, 28);
+            texture.LoadImage(Convert.FromBase64String(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)));
+            splashView.Icon = texture;
+        }
+        splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(SplashAdStatusListener_OnAdShowed, SplashAdStatusListener_OnAdClicked));
+        splashView.SetSplashAdLoadListener(new SplashAdLoadListener(SplashAdStatusListener_OnAdDismissed, SplashAdStatusListener_OnAdFailedToLoad, SplashAdStatusListener_OnAdLoaded));
+        splashView.LoadAd(new AdParam.Builder().Build());
+    }
+
+    #endregion
+
+    #region LISTENERS
+
+    public event Action OnSplashAdDismissed;
+    public event Action<int> OnSplashAdFailedToLoad;
+    public event Action OnSplashAdLoaded;
+    public event Action OnSplashAdClicked;
+    public event Action OnSplashAdShowed;
+
+    private void SplashAdStatusListener_OnAdDismissed()
+    {
+        Debug.Log("[HMS] HMSAdsKitManager SplashAdDismissed.");
+        OnSplashAdDismissed?.Invoke();
+    }
+
+    private void SplashAdStatusListener_OnAdFailedToLoad(int errorCode)
+    {
+        Debug.LogError("[HMS] HMSAdsKitManager SplashAdLoadFailed. Error Code: " + errorCode);
+        OnSplashAdFailedToLoad?.Invoke(errorCode);
+    }
+
+    private void SplashAdStatusListener_OnAdLoaded()
+    {
+        Debug.Log("[HMS] HMSAdsKitManager SplashAdLoaded.");
+        OnSplashAdLoaded?.Invoke();
+    }
+
+    private void SplashAdStatusListener_OnAdClicked()
+    {
+        Debug.Log("[HMS] HMSAdsKitManager SplashAdClicked.");
+        OnSplashAdClicked?.Invoke();
+    }
+
+    private void SplashAdStatusListener_OnAdShowed()
+    {
+        Debug.Log("[HMS] HMSAdsKitManager SplashAdShowed.");
+        OnSplashAdShowed?.Invoke();
+    }
 
     #endregion
 

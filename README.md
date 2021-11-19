@@ -22,7 +22,7 @@ Net 4.x
 
 ## Important
 This plugin supports:
-* Unity version 2019, 2020 - Developed in master Branch
+* Unity version 2019, 2020, 2021 - Developed in master Branch
 * Unity version 2018 - Developed in 2.0-2018 Branch
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
@@ -111,7 +111,7 @@ ____
 ### 4 - Connect your game with any HMS Kit
 
 In order for the plugin to work, you need to select the needed kits Huawei > Kit Settings.
-![image](https://user-images.githubusercontent.com/6827857/113670088-57259c00-96bd-11eb-86d2-d53e4567fba1.png)
+![image](https://user-images.githubusercontent.com/6827857/142605459-04ca144e-6b34-4018-8f81-44a5ed67cbf3.png)
 
 It will automaticly create the GameObject for you and it has DontDestroyOnLoad implemented so you don't need to worry about reference being lost.
 
@@ -190,11 +190,13 @@ HMSIAPManager.Instance.BuyProduct(HMSIAPConstants.testProduct);
 
 ## Ads kit
 There is a custom editor in Huawei > Kit Settings > Ads tab.
-![image](https://user-images.githubusercontent.com/6827857/113583224-0ae14a00-9632-11eb-83c3-a45ab2699e4f.png)
+![image](https://user-images.githubusercontent.com/6827857/142604639-57b5856d-f001-492f-9014-eb670eb50e8f.png)
 
 You can enable/disable ads that you want in your project.
 Insert your Ad Id into these textboxes in the editor.
-If you want to use test ads, you can check UseTestAds checkbox that'll overwrite all ad ids with test ads. 
+If you want to use test ads, you can check UseTestAds checkbox that'll overwrite all ad ids with test ads.
+
+If you want to know more details about Splash Ad and its configuration, please check this article written by @sametguzeldev [here](https://medium.com/huawei-developers-tr/extend-your-advertisement-with-hms-ads-kit-splash-ad-in-unity-3e13f38f3abe).
 
 Then you can call certain functions such as
 ```csharp
@@ -302,11 +304,6 @@ Official Documentation on Nearby Service: [ Documentation](https://developer.hua
 
 Official Documentation on App Messaging: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-appmessage-introduction-0000001071884501)
 ______
-
-
-# Merge from 1.2 to 2.0
-TODO
-
 
 ## License
 

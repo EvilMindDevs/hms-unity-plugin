@@ -14,6 +14,13 @@ namespace HmsPlugin
         public const string EnableRewardedAd = "EnableRewardedAd";
         public const string RewardedAdID = "RewardedAdID";
         public const string UseTestAds = "UseTestAds";
+        public const string EnableSplashAd = "EnableSplashAd";
+        public const string SplashAdID = "SplashAdID";
+        public const string SplashTitle = "SplashTitle";
+        public const string SplashSubText = "SplashSubText";
+        public const string SplashOrientation = "SplashOrientation";
+        public const string SplashImagePath = "SplashImagePath";
+        public const string SplashImageBytes = "SplashImageBytes";
 
         private SettingsScriptableObject loadedSettings;
 

@@ -40,6 +40,16 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance.ShowInterstitialAd();
     }
 
+    public void ShowSplashImage()
+    {
+        HMSAdsKitManager.Instance.LoadSplashAd("testq6zq98hecj", SplashAd.SplashAdOrientation.PORTRAIT);
+    }
+
+    public void ShowSplashVideo()
+    {
+        HMSAdsKitManager.Instance.LoadSplashAd("testd7c5cewoj6", SplashAd.SplashAdOrientation.PORTRAIT);
+    }
+
     public void OnRewarded(Reward reward)
     {
         Debug.Log("[HMS] AdsDemoManager rewarded!");

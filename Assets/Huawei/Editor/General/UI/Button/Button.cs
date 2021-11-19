@@ -34,6 +34,12 @@ namespace HmsPlugin.Button
             return this;
         }
 
+        public ButtonBase SetText(string text)
+        {
+            _text = text;
+            return this;
+        }
+
         public ButtonBase SetStyle(GUIStyle style)
         {
             _style = style;

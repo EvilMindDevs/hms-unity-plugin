@@ -29,6 +29,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         public AllIAPProductsEditor()
         {
             countryInfos = HMSEditorUtils.SupportedCountries();
+            selectedCountry = countryInfos[0];
 
             productNoTextField = new TextField.TextField("Product Id:", "");
             productNameTextField = new TextField.TextField("Product Name:", "");

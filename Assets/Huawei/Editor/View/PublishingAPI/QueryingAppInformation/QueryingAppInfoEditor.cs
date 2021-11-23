@@ -59,8 +59,19 @@ namespace HmsPlugin.PublishingAPI
         {
             if (target == BuildTarget.Android && HMSConnectAPISettings.Instance.Settings.GetBool(HMSConnectAPISettings.UploadAfterBuild))
             {
+                if (!AskBeforeUploadProcess(pathToBuiltProject))
+                {
+                    return;
+                }
                 await GetUploadUrl(pathToBuiltProject);
             }
+        }
+
+        private static bool AskBeforeUploadProcess(string filePath)
+        {
+            float bytesToMegabytes= 1024f * 1024f;
+            return EditorUtility.DisplayDialog("Upload After Build?", "Are you sure uploading package to AGC after build?\nFile Size: " +
+                (new FileInfo(filePath).Length) / bytesToMegabytes + " mb", "OK", "CANCEL");
         }
 
         private static void UploadAnAppPackage(string filePath, string uploadUrl, string authCode)

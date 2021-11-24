@@ -70,6 +70,26 @@ namespace HmsPlugin.PublishingAPI
         private static bool AskBeforeUploadProcess(string filePath)
         {
             float bytesToMegabytes= 1024f * 1024f;
+            float megabytesToGigabytes = bytesToMegabytes * 1024;
+            float fileSize = (new FileInfo(filePath).Length) / bytesToMegabytes;
+            bool isPackageAAB = UnityEditor.EditorUserBuildSettings.buildAppBundle;
+
+            if (!isPackageAAB && fileSize < 4 * megabytesToGigabytes ||
+                isPackageAAB && fileSize < 150 * bytesToMegabytes)
+            {
+                if (isPackageAAB)
+                {
+                    EditorUtility.DisplayDialog("Cannot upload AAB", "Your AAB file exceeds file size limit.\nLimit: 150MB for AAB and 4GB for APK", "Okay");
+                    return false;
+
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Cannot upload APK", "Your APK file exceeds file size limit.\nLimit: 150MB for AAB and 4GB for APK", "Okay");
+                    return false;
+                }
+            }
+
             return EditorUtility.DisplayDialog("Upload After Build?", "Are you sure uploading package to AGC after build?\nFile Size: " +
                 (new FileInfo(filePath).Length) / bytesToMegabytes + " mb", "OK", "CANCEL");
         }
@@ -107,6 +127,7 @@ namespace HmsPlugin.PublishingAPI
             else
             {
                 Debug.LogError("[HMS ConnectAPI] UpdatingAppFile Failed, retCode: " + responseJson.ret.code + ", retMessage " + responseJson.ret.msg);
+                EditorUtility.ClearProgressBar();
             }
         }
 
@@ -124,7 +145,7 @@ namespace HmsPlugin.PublishingAPI
                 
                 UpdateFileInfo fileInfo = new UpdateFileInfo();
                 fileInfo.files = new Files();
-                fileInfo.files.fileName = PlayerSettings.productName+".apk";
+                fileInfo.files.fileName = PlayerSettings.productName + ((UnityEditor.EditorUserBuildSettings.buildAppBundle) ? ".aab" : ".apk");
                 fileInfo.files.fileDestUrl = fileDestUrl;
                 fileInfo.fileType = 5;
                 string jsonValue = JsonUtility.ToJson(fileInfo);

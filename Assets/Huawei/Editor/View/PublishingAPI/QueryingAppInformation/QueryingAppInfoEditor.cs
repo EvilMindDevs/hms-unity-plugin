@@ -74,8 +74,8 @@ namespace HmsPlugin.PublishingAPI
             float fileSize = (new FileInfo(filePath).Length) / bytesToMegabytes;
             bool isPackageAAB = UnityEditor.EditorUserBuildSettings.buildAppBundle;
 
-            if (!isPackageAAB && fileSize < 4 * megabytesToGigabytes ||
-                isPackageAAB && fileSize < 150 * bytesToMegabytes)
+            if (!isPackageAAB && fileSize > 4 * megabytesToGigabytes ||
+                isPackageAAB && fileSize > 150 * bytesToMegabytes)
             {
                 if (isPackageAAB)
                 {

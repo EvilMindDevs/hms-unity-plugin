@@ -23,7 +23,7 @@ namespace HmsPlugin
         public Action OnRecoverPurchasesSuccess { get; set; }
         public Action<HMSException> OnRecoverPurchasesFailure { get; set; }
 
-        public Action OnConsumePurchaseSuccess { get; set; }
+        public Action<ConsumeOwnedPurchaseResult> OnConsumePurchaseSuccess { get; set; }
         public Action<HMSException> OnConsumePurchaseFailure { get; set; }
 
         public Action<PurchaseResultInfo> OnBuyProductSuccess { get; set; }
@@ -218,8 +218,8 @@ namespace HmsPlugin
 
             task.AddOnSuccessListener((result) =>
             {
-                Debug.Log("[HMSIAPManager] consumePurchase");
-                OnConsumePurchaseSuccess?.Invoke();
+                Debug.Log("[HMSIAPManager] ConsumePurchaseWithToken. Product Id: " + result.ConsumePurchaseData.ProductId);
+                OnConsumePurchaseSuccess?.Invoke(result);
 
             }).AddOnFailureListener((exception) =>
             {
@@ -271,8 +271,8 @@ namespace HmsPlugin
 
                         if (purchaseResultInfo.ReturnCode == OrderStatusCode.ORDER_STATE_SUCCESS)
                         {
-                            Debug.Log("[HMSIAPManager] HMSInAppPurchaseData" + purchaseResultInfo.InAppPurchaseData);
-                            Debug.Log("[HMSIAPManager] HMSInAppDataSignature" + purchaseResultInfo.InAppDataSignature);
+                            Debug.Log("[HMSIAPManager] HMSInAppPurchaseData ProductId: " + purchaseResultInfo.InAppPurchaseData.ProductId);
+                            Debug.Log("[HMSIAPManager] HMSInAppDataSignature: " + purchaseResultInfo.InAppDataSignature);
                             OnBuyProductSuccess.Invoke(purchaseResultInfo);
                             if (consumeAfter)
                                 ConsumePurchase(purchaseResultInfo);

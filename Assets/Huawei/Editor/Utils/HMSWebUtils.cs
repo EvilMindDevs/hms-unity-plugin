@@ -30,23 +30,28 @@ public static class HMSWebUtils
         }
         else
         {
+            bool getNewToken = false;
             if (!string.IsNullOrEmpty(clientId) && HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) != clientId)
+            {
+                getNewToken = true;
                 HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.ClientID, clientId);
+            }
 
             if (!string.IsNullOrEmpty(clientSecret) && HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientSecret) != clientSecret)
+            {
+                getNewToken = true;
                 HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.ClientSecret, clientSecret);
+            }
 
             if (!string.IsNullOrEmpty(HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken)))
             {
                 var endDate = new DateTime(HMSConnectAPISettings.Instance.Settings.GetLong(HMSConnectAPISettings.ExpiresInTicks));
-                if (endDate > DateTime.Now)
+                if (endDate > DateTime.Now && !getNewToken)
                 {
                     return HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken);
                 }
             }
-
             return await GetToken();
-
         }
 
         return string.Empty;
@@ -69,6 +74,8 @@ public static class HMSWebUtils
         else
         {
             Debug.LogError($"[HMSWebUtils] GetToken Error on response. ErrorCode: {response.ret.code}, ErrorMessage: {response.ret.msg}.");
+            HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.AccessToken, string.Empty);
+            HMSConnectAPISettings.Instance.Settings.SetLong(HMSConnectAPISettings.ExpiresInTicks, 0);
         }
 
         request.Dispose();

@@ -70,12 +70,12 @@ namespace HmsPlugin.PublishingAPI
         private static bool AskBeforeUploadProcess(string filePath)
         {
             float bytesToMegabytes= 1024f * 1024f;
-            float megabytesToGigabytes = bytesToMegabytes * 1024;
+            float megabytesToGigabytes = 1024f;
             float fileSize = (new FileInfo(filePath).Length) / bytesToMegabytes;
             bool isPackageAAB = UnityEditor.EditorUserBuildSettings.buildAppBundle;
 
-            if (!isPackageAAB && fileSize > 4 * megabytesToGigabytes ||
-                isPackageAAB && fileSize > 150 * bytesToMegabytes)
+            if (!isPackageAAB && fileSize >= 4 * megabytesToGigabytes ||
+                isPackageAAB && fileSize >= 150 )
             {
                 if (isPackageAAB)
                 {
@@ -90,8 +90,8 @@ namespace HmsPlugin.PublishingAPI
                 }
             }
 
-            return EditorUtility.DisplayDialog("Upload After Build?", "Are you sure uploading package to AGC after build?\nFile Size: " +
-                (new FileInfo(filePath).Length) / bytesToMegabytes + " mb", "OK", "CANCEL");
+            return EditorUtility.DisplayDialog("Upload After Build?","Are you sure uploading package to AGC after build?\nFile Size: " +
+               fileSize + " MB", "OK", "CANCEL");
         }
 
         private static void UploadAnAppPackage(string filePath, string uploadUrl, string authCode)
@@ -102,9 +102,7 @@ namespace HmsPlugin.PublishingAPI
             byte[] fileByte = UnityEngine.Windows.File.ReadAllBytes(Path.Combine("", filePath));
             string contentTypeHeader = "multipart/form-data";
             MultipartFormFileSection file = new MultipartFormFileSection("file", fileByte, fileName, contentTypeHeader);
-            //TODO: Progressbar UI Item is needed for future versions. Because DisplayProgressBar is not working in background tasks
-            EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to URL...", 0.4f);
-            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes);
+            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes, "Uploading The Package", "Uploading Package to URL...");
         }
 
         private static void UpdatingAppFileInfoRes(UnityWebRequest response)
@@ -141,7 +139,6 @@ namespace HmsPlugin.PublishingAPI
                 int size = responseJson.result.UploadFileRsp.fileInfoList[0].size;
                 string disposableUrl = responseJson.result.UploadFileRsp.fileInfoList[0].disposableURL;
                 string fileDestUrl = responseJson.result.UploadFileRsp.fileInfoList[0].fileDestUlr;
-                Debug.Log($"[HMS ConnectAPI]File Upload Successful, size: {size}, dest: {fileDestUrl}, dispUrl: {disposableUrl}.");
                 
                 UpdateFileInfo fileInfo = new UpdateFileInfo();
                 fileInfo.files = new Files();
@@ -201,13 +198,13 @@ namespace HmsPlugin.PublishingAPI
             {
                 Debug.Log($"[HMS ConnectAPI] GetUploadURL Succeed. Trying to upload the package now...");
                 UploadAnAppPackage(filePath, responseJson.uploadUrl, responseJson.authCode);
-
+                EditorUtility.ClearProgressBar();
             }
             else
             {
                 Debug.LogError($"[HMS ConnectAPI] GetUploadURL failed. Error Code: {responseJson.ret.code}, Error Message: {responseJson.ret.msg}.");
+                EditorUtility.ClearProgressBar();
             }
-
         }
 
         private void OnQueryingInfoResponse(UnityWebRequest response)

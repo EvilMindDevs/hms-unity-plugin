@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -64,9 +65,9 @@ internal class HMSWebRequestHelper
     {
         behaviour.Get(url, requestHeaders, callback);
     }
-    internal void PostFormRequest(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback)
+    internal void PostFormRequest(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback, string progressBarTitle = null, string progressBarDesc = null)
     {
-        behaviour.PostFormData(url, file, authCode, fileCount, parseType, callback);
+        behaviour.PostFormData(url, file, authCode, fileCount, parseType, callback, progressBarTitle, progressBarDesc);
     }
     internal void PutRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
@@ -101,9 +102,9 @@ public class HMSWebRequestBehaviour : MonoBehaviour
         StartCoroutine(PutCoroutine(url, bodyJsonString, requestHeaders, callback));
     }
 
-    public void PostFormData(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback)
+    public void PostFormData(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback, string progressBarTitle = null, string progressBarDesc = null)
     {
-        StartCoroutine(PostFormDataCoroutine(url, file, authCode, fileCount, parseType, callback));
+        StartCoroutine(PostFormDataCoroutine(url, file, authCode, fileCount, parseType, callback, progressBarTitle, progressBarDesc));
     }
 
     public void GetFile(string url, string path, Action<bool> result = null)
@@ -167,7 +168,7 @@ public class HMSWebRequestBehaviour : MonoBehaviour
         yield return PostCoroutine(url, bodyJsonString, null, callback);
     }
 
-    private IEnumerator PostFormDataCoroutine(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback)
+    private IEnumerator PostFormDataCoroutine(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback, string progressBarTitle = null, string progressBarDesc = null)
     {
         var formData = new List<IMultipartFormSection>();
         formData.Add(new MultipartFormDataSection("authCode", authCode));
@@ -175,16 +176,28 @@ public class HMSWebRequestBehaviour : MonoBehaviour
         formData.Add(new MultipartFormDataSection("parseType", parseType));
         formData.Add(file);
         UnityWebRequest request = UnityWebRequest.Post(url, formData);
-        yield return request.SendWebRequest();
-
+        var asyncOp = request.SendWebRequest();
+        if (progressBarTitle != null && progressBarDesc != null)
+        {
+            while (!asyncOp.isDone)
+            {
+                EditorUtility.DisplayProgressBar(progressBarTitle, progressBarDesc, asyncOp.progress);
+                yield return null;
+            }
+        }
+        else
+        {
+            yield return asyncOp;
+        }
+        
 #if UNITY_2020_1_OR_NEWER
         var requestError =
            request.result == UnityWebRequest.Result.ProtocolError ||
            request.result == UnityWebRequest.Result.ConnectionError;
 #else
-            bool requestError =
-               request.isNetworkError ||
-               request.isHttpError;
+        bool requestError =
+           request.isNetworkError ||
+           request.isHttpError;
 #endif
 
         if (requestError)

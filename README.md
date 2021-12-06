@@ -235,6 +235,21 @@ You can call native calls to list achievements or leaderboards.
   HMSLeaderboardManager.Instance.ShowLeaderboards();
 ```
 
+# App Update in Game Service
+
+There is a method in Game Service called CheckAppUpdate that will trigger the update mechanism of HMS to detect if there is newer version in AppGallery.
+It triggers OnAppUpdateInfo inside HMSGameManager that is returning status,rtnCode,rtnMessage,isExit,buttonStatus. This callback gets called after CheckAppUpdate is done.
+If you want to receive this callback, please subscribe into it before calling CheckAppUpdate.
+
+It requires two booleans;
+showAppUpdate: Making this true will prompt a native UI that will show the user there is a newer version if there is an update.
+forceAppUpdate: Making this true will remove the cancel button from the UI and forcing user to update.
+```csharp
+    HMSGameManager.Instance.OnAppUpdateInfo = OnAppUpdateInfo;
+    HMSGameManager.Instance.CheckAppUpdate(showAppUpdate,forceAppUpdate);
+```
+
+
 ## Kits Specification
 Find below the specific information on the included functionalities in this plugin
 

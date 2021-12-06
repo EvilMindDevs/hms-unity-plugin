@@ -4,10 +4,11 @@ using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
 using System;
 using UnityEngine;
+using static HuaweiConstants.HMSResponses;
 
 namespace HmsPlugin
 {
-    public class HMSGameManager : HMSSingleton<HMSGameManager>
+    public class HMSGameManager : HMSSingleton<HMSGameManager>, ICheckUpdateCallback
     {
         public Action<HuaweiMobileServices.Game.Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }
@@ -17,11 +18,16 @@ namespace HmsPlugin
         public Action<HMSException> OnGetPlayerExtraInfoFailure { get; set; }
         public Action<AuthAccount> SignInSuccess { get; set; }
         public Action<HMSException> SignInFailure { get; set; }
+        public Action<OnAppUpdateInfoRes> OnAppUpdateInfo { get; set; }
 
         private AccountAuthService authService;
         private IBuoyClient buoyClient;
         private IPlayersClient playersClient;
         private IArchivesClient archivesClient;
+        private IAppUpdateClient appUpdateClient;
+
+        private bool forceUpdate;
+        private bool showUpdateDialog;
 
         public void Start()
         {
@@ -69,6 +75,22 @@ namespace HmsPlugin
             playersClient = Games.GetPlayersClient();
             archivesClient = Games.GetArchiveClient();
             buoyClient = Games.GetBuoyClient();
+            appUpdateClient = JosApps.GetAppUpdateClient();
+            CheckAppUpdate(true, false);
+        }
+
+        public void CheckAppUpdate(bool showAppUpdate, bool forceAppUpdate)
+        {
+            if (appUpdateClient != null)
+            {
+                showUpdateDialog = showAppUpdate;
+                forceUpdate = forceAppUpdate;
+                appUpdateClient.CheckAppUpdate(this);
+            }
+            else
+            {
+                Debug.LogError("[HMSGameManager] CheckAppUpdate AppUpdateClient is null.");
+            }
         }
 
         public void ShowFloatWindow()
@@ -137,6 +159,61 @@ namespace HmsPlugin
                     OnGetPlayerExtraInfoFailure?.Invoke(exception);
                 });
             }
+        }
+
+        public void OnUpdateInfo(AndroidIntent intent)
+        {
+            int status = intent.GetIntExtra("status");
+            int rtnCode = intent.GetIntExtra("failcause");
+            string rtnMessage = intent.GetStringExtra("failreason");
+            bool isExit = intent.GetBoolExtra("compulsoryUpdateCancel", false);
+            int buttonStatus = intent.GetIntExtra("buttonstatus");
+
+            var apkUpgradeInfo = intent.Intent.Call<AndroidJavaObject>("getSerializableExtra", "updatesdk_update_info");
+            if (apkUpgradeInfo != null && showUpdateDialog)
+            {
+                appUpdateClient.ShowUpdateDialog(apkUpgradeInfo, forceUpdate);
+            }
+            OnAppUpdateInfo?.Invoke(new OnAppUpdateInfoRes(status, rtnCode, rtnMessage, isExit, buttonStatus));
+
+            AppUpdateStatusCode _statusCode = (AppUpdateStatusCode)Enum.Parse(typeof(AppUpdateStatusCode), status.ToString());
+            AppUpdateRtnCode _rtnCode = (AppUpdateRtnCode)Enum.Parse(typeof(AppUpdateRtnCode), rtnCode.ToString());
+            AppUpdateButtonStatus _buttonStatus = (AppUpdateButtonStatus)Enum.Parse(typeof(AppUpdateButtonStatus), buttonStatus.ToString());
+
+            Debug.Log("[HMSGameManager] OnUpdateInfo, status: " + _statusCode + ", rtnCode: " + _rtnCode + ", rtnMessage: " + rtnMessage + ", buttonStatus: " + _buttonStatus + ", isExit: " + isExit);
+        }
+
+        public void OnMarketInstallInfo(AndroidIntent intent)
+        {
+            Debug.Log("[HMSGameManager] OnMarketInstallInfo Called");
+        }
+
+        public void OnMarketStoreError(int responseCode)
+        {
+            Debug.LogError($"[HMSGameManager] OnMarketStoreError. Response Code:{responseCode}");
+        }
+
+        public void OnUpdateStoreError(int responseCode)
+        {
+            Debug.LogError($"[HMSGameManager] OnUpdateStoreError. Response Code:{responseCode}");
+        }
+
+        public class OnAppUpdateInfoRes
+        {
+            public OnAppUpdateInfoRes(int status, int rtnCode, string rtnMessage, bool isExit, int buttonStatus)
+            {
+                Status = status;
+                RtnCode = rtnCode;
+                RtnMessage = rtnMessage;
+                IsExit = isExit;
+                ButtonStatus = buttonStatus;
+            }
+
+            public int Status { get; set; }
+            public int RtnCode { get; set; }
+            public string RtnMessage { get; set; }
+            public bool IsExit { get; set; }
+            public int ButtonStatus { get; set; }
         }
     }
 }

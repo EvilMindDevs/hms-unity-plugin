@@ -32,7 +32,7 @@ internal class HMSMainKitsTabFactory
         var tab = new TabView("Kits");
         tabBar.AddTab(tab);
 
-        pluginToggleEditor = new PluginToggleEditor();
+        pluginToggleEditor = new PluginToggleEditor(tabBar);
         var adsToggleEditor = new AdsToggleEditor(tabBar);
         var accountEditor = new AccountToggleEditor();
         var gameServiceToggleEditor = new GameServiceToggleEditor(tabBar, accountEditor);

@@ -33,7 +33,8 @@ namespace HmsPlugin
                 { CloudDBToggleEditor.CloudDBEnabled, new string[] { "com.huawei.agconnect:agconnect-cloud-database:1.4.5.300" } },
                 { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.4.2.301" } },
                 { NearbyServiceToggleEditor.NearbyServiceEnabled, new string[] { "com.huawei.hms:nearby:5.3.0.300" } },
-                { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.4.2.301" } }
+                { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.4.2.301" } },
+                { HMSLibrariesDrawer.AppCompatEnabled,new string[]{ "com.android.support:appcompat-v7:28.0.0" } }
             };
         }
 
@@ -144,13 +145,13 @@ namespace HmsPlugin
                 {
                     gradle.AddRange(gradleSettings[settings.Keys.ElementAt(i)]);
                 }
-            }
+            } 
             CreateGradleFiles(gradle.ToArray());
         }
 
         private string[] CoreGradles()
         {
-            return new string[] { "com.huawei.hms:base:5.2.0.300", "com.android.support:appcompat-v7:28.0.0", "com.huawei.agconnect:agconnect-core:1.4.1.300" };
+            return new string[] { "com.huawei.hms:base:5.2.0.300", "com.huawei.agconnect:agconnect-core:1.4.1.300" };
         }
 
         public void OnPreprocessBuild(BuildReport report)

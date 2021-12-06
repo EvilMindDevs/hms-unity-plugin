@@ -56,6 +56,11 @@ namespace HmsPlugin
             }
         }
 
+        public virtual bool HasKey(TKey key)
+        {
+            return GetKeyIndex(key) == -1 ? false : true;
+        }
+
         public void Remove(TKey key)
         {
             var keyIndex = GetKeyIndex(key);

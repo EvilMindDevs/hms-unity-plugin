@@ -149,5 +149,36 @@ namespace HuaweiConstants
             ORDER_ACCOUNT_AREA_NOT_SUPPORTED = 60054,
             ORDER_HIGH_RISK_OPERATIONS = 60056
         }
+
+        public enum AppUpdateStatusCode : int
+        {
+            PARAMETER_ERROR = 1,
+            CONNECT_ERROR = 2,
+            NO_UPGRADE_INFO = 3,
+            CANCEL = 4,
+            INSTALL_FAILED = 5,
+            CHECK_FAILED = 6,
+            HAS_UPGRADE_INFO = 7,
+            MARKET_FORBID = 8,
+            IN_MARKET_UPDATING = 9
+        }
+
+        public enum AppUpdateRtnCode : int
+        {
+            NORMAL = 0,
+            NO_NETWORK_AVAILABLE = 1,
+            JSON_EXCEPTION = 2,
+            PARAMETER_EXCEPTION = 3,
+            IO_EXCEPTION = 4,
+            NETWORK_EXCEPTION = 5,
+            UNKNOWN_ERROR = 6,
+            OBSFUCATION_NOT_EXCLUDED = 7
+        }
+
+        public enum AppUpdateButtonStatus : int
+        {
+            USER_CHOOSES_UPDATE_LATER = 100,
+            USER_CHOOSES_UPDATE_NOW = 101
+        }
     }
 }

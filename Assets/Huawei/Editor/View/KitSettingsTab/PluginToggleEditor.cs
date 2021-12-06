@@ -10,11 +10,15 @@ namespace HmsPlugin
     public class PluginToggleEditor : IDrawer
     {
         private Toggle.Toggle _toggle;
+        private TabBar _tabBar;
+        private HMSLibrariesDrawer _librariesDrawer;
 
         public const string PluginEnabled = "PluginEnabled";
 
-        public PluginToggleEditor()
+        public PluginToggleEditor(TabBar tabBar)
         {
+            _tabBar = tabBar;
+            _librariesDrawer = new HMSLibrariesDrawer(_tabBar);
             bool enabled = HMSPluginSettings.Instance.Settings.GetBool(PluginEnabled, true);
             _toggle = new Toggle.Toggle("Enable Plugin", enabled, OnStateChanged, true);
             RefreshDrawer(!enabled);
@@ -28,11 +32,13 @@ namespace HmsPlugin
             {
                 if (enabledEditors != null && enabledEditors.Count > 0)
                     enabledEditors.ForEach(f => f.CreateManagers());
+                _librariesDrawer.CreateDrawer();
             }
             else
             {
                 if (enabledEditors != null && enabledEditors.Count > 0)
                     enabledEditors.ForEach(c => c.DisableManagers(true));
+                _librariesDrawer.DestroyDrawer();
             }
             RefreshDrawer(value);
         }

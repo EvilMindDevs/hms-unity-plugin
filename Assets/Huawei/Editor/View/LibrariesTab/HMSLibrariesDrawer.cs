@@ -19,7 +19,7 @@ namespace HmsPlugin
             _tabBar = tabBar;
             if (!HMSMainEditorSettings.Instance.Settings.HasKey(AppCompatEnabled)) 
                 HMSMainEditorSettings.Instance.Settings.SetBool(AppCompatEnabled, true);
-            _appSupportToggle = new Toggle.Toggle("App Compat (com.android.support:appcompat-v7:28.0.0)", HMSMainEditorSettings.Instance.Settings.GetBool(AppCompatEnabled, true), OnAppSupportToggleChanged, false).SetLabelWidth(350);
+            _appSupportToggle = new Toggle.Toggle("App Compat (com.android.support:appcompat-v7:21.0.0)", HMSMainEditorSettings.Instance.Settings.GetBool(AppCompatEnabled, true), OnAppSupportToggleChanged, false).SetLabelWidth(350);
         }
 
         private void OnAppSupportToggleChanged(bool value)

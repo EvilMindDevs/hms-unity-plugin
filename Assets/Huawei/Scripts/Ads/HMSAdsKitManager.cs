@@ -105,6 +105,34 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
             bannerView.HideBanner();
     }
 
+    public void LoadBannerAd(string adId, UnityBannerAdPositionCodeType position, string bannerSize = UnityBannerAdSize.BANNER_SIZE_320_50)
+    {
+        if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableBannerAd)) return;
+
+        Debug.Log("[HMS] HMSAdsKitManager Loading Banner Ad.");
+        var bannerAdStatusListener = new AdStatusListener();
+        bannerAdStatusListener.mOnAdLoaded += BannerAdStatusListener_mOnAdLoaded;
+        bannerAdStatusListener.mOnAdClosed += BannerAdStatusListener_mOnAdClosed;
+        bannerAdStatusListener.mOnAdImpression += BannerAdStatusListener_mOnAdImpression;
+        bannerAdStatusListener.mOnAdClicked += BannerAdStatusListener_mOnAdClicked;
+        bannerAdStatusListener.mOnAdOpened += BannerAdStatusListener_mOnAdOpened;
+        bannerAdStatusListener.mOnAdFailed += BannerAdStatusListener_mOnAdFailed;
+
+        bannerView = new BannerAd(bannerAdStatusListener);
+        bannerView.AdId = adId;
+        bannerView.PositionType = (int)position;
+        bannerView.SizeType = bannerSize;
+        bannerView.AdStatusListener = bannerAdStatusListener;
+        if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.BannerRefreshInterval)))
+            bannerView.BannerRefresh = long.Parse(adsKitSettings.Get(HMSAdsKitSettings.BannerRefreshInterval));
+        _isBannerAdLoaded = false;
+        bannerView.LoadBanner(new AdParam.Builder().Build());
+        if (adsKitSettings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad))
+            bannerView.ShowBanner();
+        else
+            bannerView.HideBanner();
+    }
+
     public void ShowBannerAd()
     {
         if (bannerView == null)
@@ -210,6 +238,18 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         interstitialView.LoadAd(new AdParam.Builder().Build());
     }
 
+    public void LoadInterstitialAd(string adId)
+    {
+        if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableInterstitialAd)) return;
+        Debug.Log("[HMS] HMSAdsKitManager Loading Interstitial Ad.");
+        interstitialView = new InterstitialAd
+        {
+            AdId = adId,
+            AdListener = new InterstitialAdListener(this)
+        };
+        interstitialView.LoadAd(new AdParam.Builder().Build());
+    }
+
     public void ShowInterstitialAd()
     {
         Debug.Log("[HMS] HMSAdsKitManager ShowInterstitialAd called");
@@ -308,6 +348,15 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
         if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableRewardedAd)) return;
         Debug.Log("[HMS] HMSAdsKitManager LoadRewardedAd");
         rewardedView = new RewardAd(adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestRewardedAdId : adsKitSettings.Get(HMSAdsKitSettings.RewardedAdID));
+        rewardedView.RewardAdListener = new RewardAdListener(this);
+        rewardedView.LoadAd(new AdParam.Builder().Build());
+    }
+
+    public void LoadRewardedAd(string adId)
+    {
+        if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableRewardedAd)) return;
+        Debug.Log("[HMS] HMSAdsKitManager LoadRewardedAd");
+        rewardedView = new RewardAd(adId);
         rewardedView.RewardAdListener = new RewardAdListener(this);
         rewardedView.LoadAd(new AdParam.Builder().Build());
     }

@@ -219,7 +219,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             if (languagesFoldout.GetLanguages().Count <= 0)
                 jsonValue = jsonValue.Replace("\n        \"languages\": [],", "");
             if (selectedPurchaseType != 2)
-                jsonValue = jsonValue.Replace(",\n        \"subGroupId\": \"\",\n        \"subPeriod\": 0,\n        \"subGroupUnit\": \"\"\n    ", "\n    ");
+                jsonValue = jsonValue.Replace(",\n        \"subGroupId\": \"\",\n        \"subPeriod\": 0,\n        \"subPeriodUnit\": \"\"\n    ", "\n    ");
 
             jsonField.SetCurrentText(jsonValue);
         }

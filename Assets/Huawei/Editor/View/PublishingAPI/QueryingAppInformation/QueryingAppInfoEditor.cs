@@ -155,7 +155,6 @@ namespace HmsPlugin.PublishingAPI
                         {"Authorization","Bearer " + accessToken}
                     }, UpdatingAppFileInfoRes);
                 EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to AGC...", 0.3f);
-                Debug.Log($"[HMS ConnectAPI]File Upload Successfull, size: {size}, dest: {fileDestUrl}, dispUrl: {disposableUrl}.");
             }
             else
             {

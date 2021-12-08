@@ -11,7 +11,7 @@ namespace HmsPlugin
 
         public HelpBoxEnablingApp()
         {
-            _helpBox = new HelpBox.HelpBox("Please Check the App Signing Enabled in the Huawei App Gallery", UnityEditor.MessageType.Error);
+            _helpBox = new HelpBox.HelpBox("Please Check the App Signing Feature Enabled on AppGallery Connect For Uploading AAB Packages", UnityEditor.MessageType.Error);
             isAABSelected = UnityEditor.EditorUserBuildSettings.buildAppBundle;
         }
 

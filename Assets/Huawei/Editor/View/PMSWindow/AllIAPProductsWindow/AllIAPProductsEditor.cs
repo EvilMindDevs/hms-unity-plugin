@@ -115,12 +115,9 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     return "active,delete";
                 case Status.Deleted | Status.Inactive:
                     return "inactive,delete";
-                case Status.Active | Status.Deleted | Status.Inactive:
-                    return "active,inactive,delete";
                 default:
-                    break;
+                    return "active,inactive,delete";
             }
-            return string.Empty;
         }
 
         [Serializable]

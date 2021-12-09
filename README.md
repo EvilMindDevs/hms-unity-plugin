@@ -234,6 +234,20 @@ You can call native calls to list achievements or leaderboards.
   HMSLeaderboardManager.Instance.ShowLeaderboards();
 ```
 
+## Publishing API
+This API here to help you to publish your apk or aab after a successfull build. You can access this API by going 
+>Huawei>Connect API>Publishing API>Querying App Information
+
+From Querying App Information, you can check you app name, app category and your release state.
+But most fun part starts after those information. Cause those informations there just for letting you know "I can communicate with AppGallery".
+
+After informations there are a checkbox called "Upload After Build". If you select this checkbox, than Plugin will ask you everytime you do a successfull build "Should I send this apk/aab to AppGallery Connect?". If you select yes, than sending work will be started and you can check it from console or from progress bar. After uploading, you can check your apk/abb from the App Gallery Connect.
+
+***Note: If you are using AAB, you should consider reading the warning after enabling the checkbox. 
+"Please Check the App Signing Feature Enabled on AppGallery Connect For Uploading AAB Packages"***
+
+![readmePhotoCensored](https://user-images.githubusercontent.com/16370078/145428901-ba2150ca-995d-443d-9498-24c4e64e6760.png)
+
 ## Kits Specification
 Find below the specific information on the included functionalities in this plugin
 

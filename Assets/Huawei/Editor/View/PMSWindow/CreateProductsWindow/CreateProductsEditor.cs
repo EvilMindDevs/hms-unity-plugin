@@ -32,15 +32,18 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private async void OnCreateProductsClick()
         {
-            var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/batchImportProducts",
-                jsonField.GetCurrentText(),
-                new Dictionary<string, string>()
-                {
+            if (EditorUtility.DisplayDialog("Are you sure?", "Please make sure all of the parameters are correct.\n\nDo you want to submit?", "Submit", "Cancel"))
+            {
+                var token = await HMSWebUtils.GetAccessTokenAsync();
+                HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/batchImportProducts",
+                    jsonField.GetCurrentText(),
+                    new Dictionary<string, string>()
+                    {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
                     {"Authorization","Bearer " + token},
                     {"appId",HMSEditorUtils.GetAGConnectConfig().client.app_id}
-                }, OnCreateProductResponse);
+                    }, OnCreateProductResponse);
+            }
         }
 
         private void OnCreateProductResponse(UnityWebRequest response)

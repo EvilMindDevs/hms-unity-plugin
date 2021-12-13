@@ -176,7 +176,12 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     {
                         EditorUtility.DisplayDialog("Missing Parameter!", "Please check your language parameters.", "Ok");
                         return false;
-                    } 
+                    }
+                    else if ( (item.Language == selectedLocale) && (item.Desc != descriptionTextField.GetCurrentText() || item.Name != productNameTextField.GetCurrentText()) ) // Extra language can same with default locale language if it has same name and description 
+                    {
+                        EditorUtility.DisplayDialog("Wrong Parameter!", "Default LanguageInfo is not the same in languages.", "Ok");
+                        return false;
+                    }
                 }
             }
             return true;
@@ -237,7 +242,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     return;
                 }
             }
-            if(EditorUtility.DisplayDialog("Are you sure?", "Please make sure your parameters are correct. You can not change your purchase type.", "Yes", "No")) 
+            if(EditorUtility.DisplayDialog("Are you sure?", "Please make sure all of the parameters are correct.\n\nDo you want to submit?", "Submit", "Cancel")) 
             {
                 var token = await HMSWebUtils.GetAccessTokenAsync();
                 HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",

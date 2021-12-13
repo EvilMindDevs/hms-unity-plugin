@@ -45,6 +45,8 @@ namespace HmsPlugin.PublishingAPI
             AddDrawer(new HorizontalLine());
             AddDrawer(new HorizontalSequenceDrawer(uploadPackage, new Spacer()));
             AddDrawer(new Space(5));
+            AddDrawer(new HelpBoxEnablingApp());
+            AddDrawer(new Space(5));
 
             RequestAppInfo();
         }

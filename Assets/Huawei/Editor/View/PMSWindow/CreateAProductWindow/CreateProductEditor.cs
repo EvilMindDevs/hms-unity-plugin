@@ -242,7 +242,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     return;
                 }
             }
-            if(EditorUtility.DisplayDialog("Are you sure?", "Please make sure your parameters are correct. You can not change your purchase type.", "Yes", "No")) 
+            if(EditorUtility.DisplayDialog("Are you sure?", "Please make sure all of the parameters are correct.\n\nDo you want to submit?", "Submit", "Cancel")) 
             {
                 var token = await HMSWebUtils.GetAccessTokenAsync();
                 HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",

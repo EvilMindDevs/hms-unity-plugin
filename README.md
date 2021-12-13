@@ -259,7 +259,7 @@ You can create a product with ***Create a Product*** or import your products wit
 ***Note: You can not edit your deleted products.
 Note: You can not change your products' purchase type which you created.***
 
-![querryProductMix](https://user-images.githubusercontent.com/39373386/145814014-22fa1886-deb1-4806-bd93-773bf26f0916.png)
+![readmePhotoCensored](https://user-images.githubusercontent.com/39373386/145815616-c2abf3d2-e303-41df-b000-bb4fe953a86f.png)
 
 ## Kits Specification
 Find below the specific information on the included functionalities in this plugin

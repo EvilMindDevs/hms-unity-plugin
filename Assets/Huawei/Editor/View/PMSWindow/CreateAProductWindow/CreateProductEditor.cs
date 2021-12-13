@@ -176,7 +176,12 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                     {
                         EditorUtility.DisplayDialog("Missing Parameter!", "Please check your language parameters.", "Ok");
                         return false;
-                    } 
+                    }
+                    else if ( (item.Language == selectedLocale) && (item.Desc != descriptionTextField.GetCurrentText() || item.Name != productNameTextField.GetCurrentText()) ) // Extra language can same with default locale language if it has same name and description 
+                    {
+                        EditorUtility.DisplayDialog("Wrong Parameter!", "Default LanguageInfo is not the same in languages.", "Ok");
+                        return false;
+                    }
                 }
             }
             return true;

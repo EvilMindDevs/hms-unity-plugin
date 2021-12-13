@@ -248,6 +248,19 @@ After informations there are a checkbox called "Upload After Build". If you sele
 
 ![readmePhotoCensored](https://user-images.githubusercontent.com/16370078/145428901-ba2150ca-995d-443d-9498-24c4e64e6760.png)
 
+## PMS API
+This API here to help you to manage your products. You can access this API by going 
+>Huawei>Connect API>PMS API
+
+***Query IAP Products***, You can view all of your products with or without filtering by Product ID and Product name.
+
+You can create a product with ***Create a Product*** or import your products with ***Create Products***.
+
+***Note: You can not edit your deleted products.
+Note: You can not change your products' purchase type which you created.***
+
+![querryProduct](https://user-images.githubusercontent.com/39373386/145811194-386371ce-a958-4df1-8012-1eda1d203879.png) ![createProduct](https://user-images.githubusercontent.com/39373386/145811236-fbf4a804-69f8-4977-8b3e-0670a87d5d49.png)
+
 ## Kits Specification
 Find below the specific information on the included functionalities in this plugin
 

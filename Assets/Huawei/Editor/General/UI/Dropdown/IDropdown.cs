@@ -2,8 +2,8 @@
 
 namespace HmsPlugin.Dropdown
 {
-    public interface IDropdown
+    public interface IDropdown<T>
     {
-        event Action OnChangedSelection;
+        event Action<T> OnChangedSelection;
     }
 }

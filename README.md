@@ -22,7 +22,7 @@ Net 4.x
 
 ## Important
 This plugin supports:
-* Unity version 2019, 2020 - Developed in 2.0 Branch
+* Unity version 2019, 2020 - Developed in 2.1 Branch
 * Unity version 2018 - Developed in 2.0-2018 Branch
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
@@ -234,6 +234,22 @@ You can call native calls to list achievements or leaderboards.
   HMSLeaderboardManager.Instance.ShowLeaderboards();
 ```
 
+# Connect API
+2.1.0 version comes with Connect API features!
+Right now we've implemented Publishing API and PMS API. To be able to use these APIs, you need to create an API Client through AppGallery Connect.
+
+After selecting your project on AGC, please go to Users and Permissions section.
+Find API key section on the left side and click Connect API.
+On the right side, you will see a button called "Create". Click on it to create an API Client for Connect API.
+![image](https://user-images.githubusercontent.com/6827857/146188264-f423b51c-c5eb-4de1-a230-3afd6f2f39ad.png)
+
+After creating your key, please copy Client ID and Key section.
+![image](https://user-images.githubusercontent.com/6827857/146189847-6d49f155-472b-4259-b3e2-760599662ae4.png)
+
+Paste your Client ID to Client ID section, Key to Client Secret section in Token Obtainer Editor.
+![image](https://user-images.githubusercontent.com/6827857/146190339-db5f98b9-7419-46aa-b660-1deb35f7183e.png)
+
+
 ## Publishing API
 This API here to help you to publish your apk or aab after a successfull build. You can access this API by going 
 >Huawei>Connect API>Publishing API>Querying App Information
@@ -330,11 +346,6 @@ Official Documentation on Nearby Service: [ Documentation](https://developer.hua
 
 Official Documentation on App Messaging: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-appmessage-introduction-0000001071884501)
 ______
-
-
-# Merge from 1.2 to 2.0
-TODO
-
 
 ## License
 

@@ -1,4 +1,5 @@
 ﻿using HmsPlugin.Window;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,11 +73,11 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private void OnSelectClicked()
         {
-            string path = EditorUtility.OpenFilePanel("Choose an Excel CSV File", "", "csv");
+            string path = EditorUtility.OpenFilePanel("Choose an Excel File", "", "xlsx");
             if (!string.IsNullOrEmpty(path))
             {
-                var data = HMSCSVReader.Read(path);
-                string json = JsonUtility.ToJson(new CreateProductsReq() { requestId = Guid.NewGuid().ToString(), products = ParseExcelToJson(data) }, true);
+                var data = ParseExcelToJson(HMSExcelHelper.ReadExcel(path));
+                string json = JsonUtility.ToJson(new CreateProductsReq() { requestId = Guid.NewGuid().ToString(), products = data }, true);
 
                 json = json.Replace(",\n            \"subPeriod\": \"\",\n            \"subPeriodUnit\": \"\",\n            \"subGroupId\": \"\",\n            ", ",\n            ");
                 json = json.Replace(",\n            \"languages\": [],", ",");
@@ -97,6 +98,48 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                      DisplayDialog.Create("Product Template File", message, "Ok", null);
                  });
             }
+        }
+
+        // 0 : ProductId
+        // 1 : ProductType
+        // 2 : Locale Title Description
+        // 3 : Price
+        // 4 : SubPeriod
+        // 5 : SubgroupId
+        // 6 : Status
+
+        private List<ProductImportInfo> ParseExcelToJson(string[,] array)
+        {
+            var returnList = new List<ProductImportInfo>();
+            for (int i = 2; i < array.GetLength(0); i++)
+            {
+                var product = new ProductImportInfo();
+                product.defaultPriceInfo = new DefaultProductPriceInfo();
+
+                var supportedCountry = HMSEditorUtils.SupportedCountries().FirstOrDefault(c => c.Locale == array[i, 2].Split('|')[0]);
+                var prices = GetPricesFromExcel(array[i, 3].ToString());
+
+                product.productNo = array[i, 0].ToString();
+                product.status = array[i, 6].ToString() == "3" ? "inactive" : "active";
+                product.productName = array[i, 2].ToString().Split('|')[1];
+                product.productDesc = array[i, 2].ToString().Split('|')[2];
+                product.purchaseType = GetProductType(array[i, 1]);
+                product.defaultPriceInfo.country = supportedCountry.Country;
+                product.defaultPriceInfo.currency = supportedCountry.Currency;
+                product.defaultPriceInfo.price = prices.Find(f => f.country == supportedCountry.Region).price;
+                product.defaultLocale = array[i, 2].ToString().Split('|')[0];
+                product.languages = GetLanguagesFromExcel(array[i, 2]);
+                product.prices = prices;
+                if (!string.IsNullOrEmpty(array[i, 4]))
+                {
+                    product.subGroupId = array[i, 5];
+                    product.subPeriod = array[i, 4].Split(' ')[0];
+                    product.subPeriodUnit = GetSubPeriodUnit(array[i, 4].Split(' ')[1]);
+                }
+
+                returnList.Add(product);
+            }
+            return returnList;
         }
 
         private List<ProductImportInfo> ParseExcelToJson(List<Dictionary<string, object>> dict)

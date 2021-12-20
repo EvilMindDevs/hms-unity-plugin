@@ -110,7 +110,7 @@ namespace HmsPlugin
                 _previewButton.SetText("Close Preview").SetBGColor(Color.red);
         }
 
-        private void _splashAdOrientation_OnChangedSelection()
+        private void _splashAdOrientation_OnChangedSelection(Enum returnedEnum)
         {
             _settings.Set(HMSAdsKitSettings.SplashOrientation, ((SplashAdOrientation)_splashAdOrientation.GetCurrentValue()).ToString());
         }

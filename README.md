@@ -249,6 +249,48 @@ forceAppUpdate: Making this true will remove the cancel button from the UI and f
     HMSGameManager.Instance.CheckAppUpdate(showAppUpdate,forceAppUpdate);
 ```
 
+# Connect API
+2.1.0 version comes with Connect API features!
+Right now we've implemented Publishing API and PMS API. To be able to use these APIs, you need to create an API Client through AppGallery Connect.
+
+After selecting your project on AGC, please go to Users and Permissions section.
+Find API key section on the left side and click Connect API.
+On the right side, you will see a button called "Create". Click on it to create an API Client for Connect API.
+![image](https://user-images.githubusercontent.com/6827857/146188264-f423b51c-c5eb-4de1-a230-3afd6f2f39ad.png)
+
+After creating your key, please copy Client ID and Key section.
+![image](https://user-images.githubusercontent.com/6827857/146189847-6d49f155-472b-4259-b3e2-760599662ae4.png)
+
+Paste your Client ID to Client ID section, Key to Client Secret section in Token Obtainer Editor.
+![image](https://user-images.githubusercontent.com/6827857/146190339-db5f98b9-7419-46aa-b660-1deb35f7183e.png)
+
+
+## Publishing API
+This API here to help you to publish your apk or aab after a successfull build. You can access this API by going 
+>Huawei>Connect API>Publishing API>Querying App Information
+
+From Querying App Information, you can check you app name, app category and your release state.
+But most fun part starts after those information. Cause those informations there just for letting you know "I can communicate with AppGallery".
+
+After informations there are a checkbox called "Upload After Build". If you select this checkbox, than Plugin will ask you everytime you do a successfull build "Should I send this apk/aab to AppGallery Connect?". If you select yes, than sending work will be started and you can check it from console or from progress bar. After uploading, you can check your apk/abb from the App Gallery Connect.
+
+***Note: If you are using AAB, you should consider reading the warning after enabling the checkbox. 
+"Please Check the App Signing Feature Enabled on AppGallery Connect For Uploading AAB Packages"***
+
+![readmePhotoCensored](https://user-images.githubusercontent.com/16370078/145428901-ba2150ca-995d-443d-9498-24c4e64e6760.png)
+
+## PMS API
+This API here to help you to manage your products. You can access this API by going 
+>Huawei>Connect API>PMS API
+
+***Query IAP Products***, You can view all of your products with or without filtering by Product ID and Product name.
+
+You can create a product with ***Create a Product*** or import your products with ***Create Products***.
+
+***Note: You can not edit your deleted products.
+Note: You can not change your products' purchase type which you created.***
+
+![readmePhotoCensored](https://user-images.githubusercontent.com/39373386/145815616-c2abf3d2-e303-41df-b000-bb4fe953a86f.png)
 
 ## Kits Specification
 Find below the specific information on the included functionalities in this plugin

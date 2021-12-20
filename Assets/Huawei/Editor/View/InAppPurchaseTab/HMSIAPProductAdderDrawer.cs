@@ -11,7 +11,7 @@ namespace HmsPlugin
     {
         private readonly IIAPProductManipulator _productManipulator;
 
-        private TextField.TextField _identifierTextField;
+        private TextField.TextFieldBase _identifierTextField;
         private EnumDropdown _typeDropdown;
 
         public HMSIAPProductAdderDrawer(IIAPProductManipulator productManipulator)

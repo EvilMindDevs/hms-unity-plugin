@@ -10,8 +10,8 @@ namespace HmsPlugin
     {
         private readonly IAchievementsManipulator _achievementsManipulator;
 
-        private TextField.TextField _achievementNameTextField;
-        private TextField.TextField _achievementIdTextField;
+        private TextField.TextFieldBase _achievementNameTextField;
+        private TextField.TextFieldBase _achievementIdTextField;
 
         public HMSAchievementsAdderDrawer(IAchievementsManipulator achievementsManipulator)
         {

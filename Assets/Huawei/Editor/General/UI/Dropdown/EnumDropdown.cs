@@ -4,11 +4,11 @@ using UnityEditor;
 
 namespace HmsPlugin.Dropdown
 {
-    public class EnumDropdown : IDropdown, IDrawer
+    public class EnumDropdown : IDropdown<Enum>, IDrawer
     {
         private Enum _value;
         private readonly string _text;
-        public event Action OnChangedSelection;
+        public event Action<Enum> OnChangedSelection;
 
         public EnumDropdown(Enum initialValue, string text = "")
         {
@@ -29,7 +29,7 @@ namespace HmsPlugin.Dropdown
 
             if (!Equals(prevValue, _value))
             {
-                OnChangedSelection.InvokeSafe();
+                OnChangedSelection.InvokeSafe(_value);
             }
         }
     }

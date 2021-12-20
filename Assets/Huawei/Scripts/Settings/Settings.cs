@@ -38,6 +38,25 @@ namespace HmsPlugin
             Set(key, value.ToString());
         }
 
+        public void SetLong(string key, long value)
+        {
+            Set(key, value.ToString());
+        }
+
+        public long GetLong(string key, long defaultValue = 0)
+        {
+            var stringValue = Get(key, null);
+            if (stringValue != null)
+            {
+                long outNumber;
+                if (long.TryParse(stringValue, out outNumber))
+                {
+                    return outNumber;
+                }
+            }
+            return defaultValue;
+        }
+
         public bool GetBool(string key, bool defaultValue = false)
         {
             var stringValue = Get(key, null);

@@ -10,8 +10,8 @@ namespace HmsPlugin
     {
         private readonly ILeaderboardManipulator _leaderboardManipulator;
 
-        private TextField.TextField _leaderboardNameTextField;
-        private TextField.TextField _leaderboardIdTextField;
+        private TextField.TextFieldBase _leaderboardNameTextField;
+        private TextField.TextFieldBase _leaderboardIdTextField;
 
         public HMSLeaderboardAdderDrawer(ILeaderboardManipulator leaderboardManipulator)
         {

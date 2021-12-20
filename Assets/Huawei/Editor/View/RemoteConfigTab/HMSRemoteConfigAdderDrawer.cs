@@ -11,8 +11,8 @@ namespace HmsPlugin
     public class HMSRemoteConfigAdderDrawer : VerticalSequenceDrawer
     {
         private readonly IDefaultValueManipulator _defaultValueManipulator;
-        private TextField.TextField _keyNameTextField;
-        private TextField.TextField _keyValueTextField;
+        private TextField.TextFieldBase _keyNameTextField;
+        private TextField.TextFieldBase _keyValueTextField;
 
         public HMSRemoteConfigAdderDrawer(IDefaultValueManipulator defaultValueManipulator)
         {

@@ -12,22 +12,24 @@ namespace HmsPlugin.TextField
         void SetCurrentText(string text);
     }
 
-    public class TextField : IDrawer, ITextField
+    public class TextFieldBase : IDrawer, ITextField
     {
         private string _label = null;
         private string _text;
         private string _tooltip;
         private int? labelWidth;
+        private int? fieldWidth;
+        private int? fieldHeight;
 
-        public event Action<string> OnValueChanged;
+        protected Delegate OnValueChanged;
 
-        public TextField(string initialValue, Action<string> onValueChanged = null)
+        public TextFieldBase(string initialValue, Delegate onValueChanged = null)
         {
             _text = initialValue;
-            OnValueChanged += onValueChanged;
+            OnValueChanged = onValueChanged;
         }
 
-        public TextField(string label, string initialValue, Action<string> onValueChanged = null) : this(initialValue, onValueChanged)
+        public TextFieldBase(string label, string initialValue, Delegate onValueChanged = null) : this(initialValue, onValueChanged)
         {
             _label = label;
         }
@@ -50,12 +52,24 @@ namespace HmsPlugin.TextField
         public void ClearInput()
         {
             _text = "";
-            OnValueChanged.InvokeSafe(_text);
+            OnValueChanged.DynamicInvoke(_text);
         }
 
-        public TextField SetLabelWidth(int width)
+        public TextFieldBase SetLabelWidth(int width)
         {
             labelWidth = width;
+            return this;
+        }
+
+        public TextFieldBase SetFieldWidth(int width)
+        {
+            fieldWidth = width;
+            return this;
+        }
+
+        public TextFieldBase SetFieldHeight(int height)
+        {
+            fieldHeight = height;
             return this;
         }
 
@@ -66,9 +80,20 @@ namespace HmsPlugin.TextField
             var tmpText = _text;
 
             var labelWidthTmp = EditorGUIUtility.labelWidth;
+
             if (labelWidth.HasValue)
             {
                 EditorGUIUtility.labelWidth = labelWidth.Value;
+            }
+
+            if (fieldWidth.HasValue)
+            {
+                rect.width = fieldWidth.Value;
+            }
+
+            if (fieldHeight.HasValue)
+            {
+                rect.height = fieldHeight.Value;
             }
 
             if (_label != null)
@@ -84,8 +109,47 @@ namespace HmsPlugin.TextField
 
             if (_text != tmpText)
             {
-                OnValueChanged.InvokeSafe(_text);
+                InvokeCallback(_text);
             }
+        }
+
+        protected virtual void InvokeCallback(string text)
+        {
+            OnValueChanged?.DynamicInvoke(text);
+        }
+
+    }
+
+    public class TextField : TextFieldBase
+    {
+        public TextField(string label, string initialValue, Action<string> onValueChanged = null) : base(label, initialValue, onValueChanged)
+        {
+
+        }
+
+        public TextField(string initialValue, Action<string> onValueChanged = null) : base(initialValue, onValueChanged)
+        {
+
+        }
+    }
+
+    public class TextFieldWithData<T> : TextFieldBase
+    {
+        private T _data;
+
+        public TextFieldWithData(string label, string initialValue, Action<T, string> onValueChanged, T data) : base(label, initialValue, onValueChanged)
+        {
+            _data = data;
+        }
+
+        public TextFieldWithData(string initialValue, Action<T, string> onValueChanged, T data) : base(initialValue, onValueChanged)
+        {
+            _data = data;
+        }
+
+        protected override void InvokeCallback(string text)
+        {
+            OnValueChanged.DynamicInvoke(_data, text);
         }
     }
 }

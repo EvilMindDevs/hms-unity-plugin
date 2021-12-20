@@ -50,7 +50,7 @@ namespace HmsPlugin
             }).AddOnFailureListener((exception) =>
             {
                 Debug.Log("HMS GAMES: The app has not been authorized");
-                authService.StartSignIn((auth) => { InitJosApps(auth); SignInSuccess?.Invoke(auth); }, SignInFailure);
+                authService.StartSignIn((auth) => { InitJosApps(auth); SignInSuccess?.Invoke(auth); }, (exc) => SignInFailure?.Invoke(exc));
                 InitGameManagers();
             });
         }

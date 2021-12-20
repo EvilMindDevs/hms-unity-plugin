@@ -1,7 +1,9 @@
 ﻿using HmsPlugin;
 using HmsPlugin.Button;
+using HmsPlugin.ConnectAPI;
 using HmsPlugin.HelpBox;
 using HmsPlugin.Label;
+using HmsPlugin.TextField;
 using HmsPlugin.Toggle;
 using System;
 using System.Collections.Generic;
@@ -26,7 +28,7 @@ internal class HMSMainKitsTabFactory
         toggleEditors = new List<ToggleEditor>();
     }
 
-    public static TabView CreateTab(TabBar tabBar)
+    public static TabView CreateKitsTab(TabBar tabBar)
     {
         toggleEditors.Clear();
         var tab = new TabView("Kits");

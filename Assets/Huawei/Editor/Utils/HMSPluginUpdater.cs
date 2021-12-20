@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using HmsPlugin;
 using System.IO;
 using System.Threading.Tasks;
+using Version = System.Version;
 
 internal class HMSPluginUpdater
 {
@@ -79,9 +80,7 @@ public class HMSPluginUpdateRequest : MonoBehaviour
         string latestVersionString = json.tags[0].name.RemoveAfter('-').Replace("v", "");
         string currentVersionString = File.ReadAllText(Application.dataPath + "/Huawei/VERSION");
 
-        int latestVersion = int.Parse(latestVersionString.Replace(".", ""));
-        int localVersion = int.Parse(currentVersionString.Replace(".", ""));
-        if (latestVersion > localVersion)
+        if (Version.Parse(latestVersionString) > Version.Parse(currentVersionString))
         {
             string updateMessage = "A new version of the HMS Unity Plugin (" + latestVersionString + ") is available. You are currently using " + currentVersionString;
 

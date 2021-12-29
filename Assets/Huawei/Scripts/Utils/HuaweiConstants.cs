@@ -61,6 +61,7 @@ namespace HuaweiConstants
         }
 
     }
+
     public static class UnityBannerAdSize
     {
 
@@ -88,8 +89,10 @@ namespace HuaweiConstants
 
 
     }
+
     public static class HMSResponses
     {
+        public static List<int> UnresolvableStatusCodes = new List<int> { 6003 };
 
         public enum GameStatusCodes
         {

@@ -22,7 +22,7 @@ namespace HmsPlugin
         {
             gradleSettings = new Dictionary<string, string[]>()
             {
-                { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:5.3.0.302" } },
+                { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:6.3.0.301" } },
                 { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.39.302", "com.huawei.hms:ads-consent:3.4.39.302", "com.huawei.hms:ads-identifier:3.4.39.302" } },
                 { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:5.3.1.300" } },
                 { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.4.2.301" } },
@@ -145,7 +145,7 @@ namespace HmsPlugin
                 {
                     gradle.AddRange(gradleSettings[settings.Keys.ElementAt(i)]);
                 }
-            } 
+            }
             CreateGradleFiles(gradle.ToArray());
         }
 

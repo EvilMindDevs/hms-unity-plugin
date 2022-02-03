@@ -22,18 +22,18 @@ namespace HmsPlugin
         {
             gradleSettings = new Dictionary<string, string[]>()
             {
-                { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:5.3.0.302" } },
-                { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.39.302", "com.huawei.hms:ads-consent:3.4.39.302", "com.huawei.hms:ads-identifier:3.4.39.302" } },
-                { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:5.3.1.300" } },
-                { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.4.2.301" } },
+                { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:6.3.0.301" } },
+                { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.51.300", "com.huawei.hms:ads-consent:3.4.51.300", "com.huawei.hms:ads-identifier:3.4.39.302" } },
+                { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:6.3.2.300" } },
+                { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.6.3.300" } },
                 { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:5.0.4.303" } },
-                { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:5.3.0.300" } },
-                { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:5.3.0.301" } },
-                { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.5.0.300" } },
-                { CloudDBToggleEditor.CloudDBEnabled, new string[] { "com.huawei.agconnect:agconnect-cloud-database:1.4.5.300" } },
-                { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.4.2.301" } },
-                { NearbyServiceToggleEditor.NearbyServiceEnabled, new string[] { "com.huawei.hms:nearby:5.3.0.300" } },
-                { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.4.2.301" } },
+                { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:6.3.0.300" } },
+                { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:6.3.0.302" } },
+                { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },
+                { CloudDBToggleEditor.CloudDBEnabled, new string[] { "com.huawei.agconnect:agconnect-cloud-database:1.5.0.300" } },
+                { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.6.3.300" } },
+                { NearbyServiceToggleEditor.NearbyServiceEnabled, new string[] { "com.huawei.hms:nearby:6.2.0.300" } },
+                { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },
                 { HMSLibrariesDrawer.AppCompatEnabled,new string[]{ "com.android.support:appcompat-v7:21.0.0" } }
             };
         }
@@ -118,7 +118,7 @@ namespace HmsPlugin
                 file.Write("repositories {\n\t\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t\t}\n\n\t\t");
                 file.Write("dependencies {\n\t\t\t");
-                file.Write(AddClasspath("com.huawei.agconnect:agcp:1.4.2.300"));
+                file.Write(AddClasspath("com.huawei.agconnect:agcp:1.6.3.300"));
                 file.Write("\n\t\t}\n\t}\n\n\t");
                 file.Write("repositories {\n\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n}\n\n");
@@ -145,13 +145,13 @@ namespace HmsPlugin
                 {
                     gradle.AddRange(gradleSettings[settings.Keys.ElementAt(i)]);
                 }
-            } 
+            }
             CreateGradleFiles(gradle.ToArray());
         }
 
         private string[] CoreGradles()
         {
-            return new string[] { "com.huawei.hms:base:5.2.0.300", "com.huawei.agconnect:agconnect-core:1.4.1.300" };
+            return new string[] { "com.huawei.hms:base:5.2.0.300", "com.huawei.agconnect:agconnect-core:1.5.0.300" };
         }
 
         public void OnPreprocessBuild(BuildReport report)

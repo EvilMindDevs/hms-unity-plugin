@@ -66,11 +66,13 @@ namespace HmsPlugin
             {
                 Debug.LogError("[HMSIAPManager]: Error on EnvReady: " + exception.WrappedCauseMessage + " " + exception.WrappedExceptionMessage);
                 IapApiException iapEx = exception.AsIapApiException();
-                if (iapEx.Status != null && HMSResponses.UnresolvableStatusCodes.Contains(iapEx.Status.StatusCode))
+                if (iapEx.Status != null || HMSResponses.UnresolvableStatusCodes.Contains(iapEx.Status.StatusCode))
                 {
                     Debug.LogError("[HMSIAPManager]: Cannot Start Resolution for Status Code: " + iapEx.Status.StatusCode);
+                    OnCheckIapAvailabilityFailure?.Invoke(exception);
                     return;
                 }
+
                 iapEx.Status.StartResolutionForResult
                 (
                     (intent) =>

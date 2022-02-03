@@ -24,7 +24,7 @@ namespace HmsPlugin
             {
                 { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:5.3.0.302" } },
                 { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.39.302", "com.huawei.hms:ads-consent:3.4.39.302", "com.huawei.hms:ads-identifier:3.4.39.302" } },
-                { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:5.3.1.300" } },
+                { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:6.3.2.300" } },
                 { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.4.2.301" } },
                 { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:5.0.4.303" } },
                 { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:5.3.0.300" } },

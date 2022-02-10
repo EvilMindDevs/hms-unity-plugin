@@ -24,7 +24,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         Match gradleVersionMatch = Regex.Match(gradleRowMatch.Value, gradleVersionPattern);
         Version gradleVersion = Version.Parse(gradleVersionMatch.Value);
         // if users gradle version is lesser than our minimum version.
-        if (gradleVersion.CompareTo(gradleMinVersion) > 0)
+        if (gradleVersion.CompareTo(gradleMinVersion) < 0)
         {
             gradleFileAsString = gradleFileAsString.Replace(gradleVersion.ToString(), gradleMinVersion.ToString());
             File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", gradleFileAsString);
@@ -58,7 +58,15 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         string baseProjectTemplatePath = Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle";
         FileUtil.CopyFileOrDirectory(baseProjectTemplatePath, Directory.GetParent(path).FullName + @"/hmsBaseProjectTemplate.gradle");
 
-        GradleVersionFixer(File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle"), path);
+        // Get enabled Kits and check if they are AdsKit or PushKit because only them needs to be updated to the latest version.
+        foreach (var toggle in HMSMainKitsTabFactory.GetEnabledEditors())
+        {
+            if (toggle.GetType() == typeof(AdsToggleEditor) 
+                || toggle.GetType() == typeof(PushToggleEditor))
+            {
+                GradleVersionFixer(File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle"), path);
+            }
+        }
 
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/build.gradle"))
             writer.WriteLine("\napply from: 'hmsBaseProjectTemplate.gradle'");

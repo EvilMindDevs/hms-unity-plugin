@@ -58,11 +58,14 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         string baseProjectTemplatePath = Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle";
         FileUtil.CopyFileOrDirectory(baseProjectTemplatePath, Directory.GetParent(path).FullName + @"/hmsBaseProjectTemplate.gradle");
 
-        // Get enabled Kits and check if they are AdsKit or PushKit because only them needs to be updated to the latest version.
+        // Get enabled Kits and check if they are one of the below, because only them needs to be updated to the latest version.
         foreach (var toggle in HMSMainKitsTabFactory.GetEnabledEditors())
         {
-            if (toggle.GetType() == typeof(AdsToggleEditor) 
-                || toggle.GetType() == typeof(PushToggleEditor))
+            if (toggle.GetType() == typeof(AccountToggleEditor) 
+                || toggle.GetType() == typeof(PushToggleEditor)
+                || toggle.GetType() == typeof(IAPToggleEditor)
+                || toggle.GetType() == typeof(NearbyServiceToggleEditor)
+                || toggle.GetType() == typeof(AnalyticsToggleEditor))
             {
                 GradleVersionFixer(File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle"), path);
             }

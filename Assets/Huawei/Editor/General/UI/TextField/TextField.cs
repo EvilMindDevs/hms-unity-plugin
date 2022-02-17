@@ -15,7 +15,7 @@ namespace HmsPlugin.TextField
     public class TextFieldBase : IDrawer, ITextField
     {
         private string _label = null;
-        private string _text;
+        private string _text = "";
         private string _tooltip;
         private int? labelWidth;
         private int? fieldWidth;
@@ -52,7 +52,9 @@ namespace HmsPlugin.TextField
         public void ClearInput()
         {
             _text = "";
-            OnValueChanged.DynamicInvoke(_text);
+            
+            if(OnValueChanged != null)
+                OnValueChanged.DynamicInvoke(_text);
         }
 
         public TextFieldBase SetLabelWidth(int width)

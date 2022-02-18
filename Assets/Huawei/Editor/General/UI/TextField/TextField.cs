@@ -15,7 +15,7 @@ namespace HmsPlugin.TextField
     public class TextFieldBase : IDrawer, ITextField
     {
         private string _label = null;
-        private string _text = "";
+        private string _text;
         private string _tooltip;
         private int? labelWidth;
         private int? fieldWidth;

@@ -52,7 +52,9 @@ namespace HmsPlugin.TextField
         public void ClearInput()
         {
             _text = "";
-            OnValueChanged.DynamicInvoke(_text);
+            
+            if(OnValueChanged != null)
+                OnValueChanged.DynamicInvoke(_text);
         }
 
         public TextFieldBase SetLabelWidth(int width)

@@ -27,7 +27,11 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         if (gradleVersion.CompareTo(gradleMinVersion) < 0)
         {
             gradleFileAsString = gradleFileAsString.Replace(gradleVersion.ToString(), gradleMinVersion.ToString());
-            File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", gradleFileAsString);
+            #if UNITY_2019_3_OR_NEWER
+                File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", gradleFileAsString);
+            #elif UNITY_2018_1_OR_NEWER
+                File.WriteAllText(path + "/build.gradle", gradleFileAsString);
+            #endif
         }
     }
 
@@ -110,8 +114,23 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 #elif UNITY_2018_1_OR_NEWER
         string hmsMainTemplatePath = Application.dataPath + @"/Huawei/Plugins/Android/hmsMainTemplate.gradle";
         var lines = File.ReadAllLines(hmsMainTemplatePath);
-
+        
         File.AppendAllLines(path + "/build.gradle", lines);
+
+        // Get enabled Kits and check if they are one of the below, because only them needs to be updated to the latest version.
+        Debug.LogWarning("foreach den önce");
+        foreach (var toggle in HMSMainKitsTabFactory.GetEnabledEditors())
+        {
+            Debug.LogWarning("foreach den sonra toggle"+toggle.GetType());
+            if (toggle.GetType() == typeof(AccountToggleEditor)
+                || toggle.GetType() == typeof(PushToggleEditor)
+                || toggle.GetType() == typeof(IAPToggleEditor)
+                || toggle.GetType() == typeof(NearbyServiceToggleEditor)
+                || toggle.GetType() == typeof(AnalyticsToggleEditor))
+            {
+                GradleVersionFixer(File.ReadAllText(path + "/build.gradle"), path);
+            }
+        }
         destPath = Path.Combine(path, fileName);
 #endif
         if (File.Exists(destPath))

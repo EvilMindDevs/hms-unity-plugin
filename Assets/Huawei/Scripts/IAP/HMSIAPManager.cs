@@ -113,31 +113,39 @@ namespace HmsPlugin
             if (iapAvailable != true)
             {
                 OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
+                Debug.Log("[HMSIAPManager]: ObtainProductInfo IAP not available");
                 return;
             }
 
             if (!IsNullOrEmpty(productIdConsumablesList))
             {
+                Debug.Log("[HMSIAPManager]: ObtainProductInfo obtaining IN_APP_CONSUMABLES");
                 ObtainProductInfo(new List<string>(productIdConsumablesList), PriceType.IN_APP_CONSUMABLE);
             }
             if (!IsNullOrEmpty(productIdNonConsumablesList))
             {
+                Debug.Log("[HMSIAPManager]: ObtainProductInfo obtaining IN_APP_NONCONSUMABLES");
                 ObtainProductInfo(new List<string>(productIdNonConsumablesList), PriceType.IN_APP_NONCONSUMABLE);
             }
             if (!IsNullOrEmpty(productIdSubscriptionList))
             {
+                Debug.Log("[HMSIAPManager]: ObtainProductInfo obtaining IN_APP_SUBSCRIPTIONS");
                 ObtainProductInfo(new List<string>(productIdSubscriptionList), PriceType.IN_APP_SUBSCRIPTION);
             }
         }
 
         private void ObtainProductInfo(IList<string> productIdList, PriceType priceType)
         {
-
+            
             if (iapAvailable != true)
             {
+                Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Product Type:{priceType.Value} IAP not available");
                 OnObtainProductInfoFailure?.Invoke(IAP_NOT_AVAILABLE);
                 return;
             }
+
+            Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value}" + "  {0=Consumable}  {1=Non-Consumable}  {2=Subscription}");
+            Debug.Log($"[HMSIAPManager]: ObtainProductInfo started obtaining for Product Type:{priceType.Value} for {productIdList.Count} amount of product in productIdList");
 
             ProductInfoReq productInfoReq = new ProductInfoReq
             {
@@ -147,20 +155,21 @@ namespace HmsPlugin
 
             iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type) =>
             {
-                Debug.Log("[HMSIAPManager]:" + type.ErrMsg + type.ReturnCode.ToString());
-                Debug.Log("[HMSIAPManager]: {0=Consumable}  {1=Non-Consumable}  {2=Subscription}");
-                Debug.Log("[HMSIAPManager]: Found " + type.ProductInfoList.Count + " type of " + priceType.Value + " products");
+                Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value}" + type.ErrMsg + type.ReturnCode.ToString());
+                Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} Obtained product count:"  + type.ProductInfoList.Count);
                 foreach (var productInfo in type.ProductInfoList)
                 {
-                    if (!productInfoList.Exists(c => c.ProductId == productInfo.ProductId))
+                    if (!productInfoList.Exists(c => c.ProductId == productInfo.ProductId)) 
+                    {
                         productInfoList.Add(productInfo);
-                    Debug.Log("[HMSIAPManager]: ProductId: " + productInfo.ProductId + ", ProductName: " + productInfo.ProductName + ", Price: " + productInfo.Price);
+                        Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} ProductId:" + productInfo.ProductId + " , ProductName:" + productInfo.ProductName + ", Price:" + productInfo.Price);
+                    }
                 }
 
                 OnObtainProductInfoSuccess?.Invoke(new List<ProductInfoResult> { type });
             }).AddOnFailureListener((exception) =>
             {
-                Debug.LogError("[HMSIAPManager]: ObtainProductInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                Debug.LogError($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                 OnObtainProductInfoFailure?.Invoke(exception);
             });
         }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Android;
 using UnityEngine;
@@ -11,6 +12,28 @@ using UnityEngine;
 public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 {
     public int callbackOrder => 1;
+    private const string MINGRADLEVERSION = "3.5.4";
+
+    private void GradleVersionFixer(string gradleFileAsString, string path)
+    {
+        string gradleRowPattern = @".*gradle:(\d\.?)+";
+        string gradleVersionPattern = @"(\d\.?)+";
+        Version gradleMinVersion = Version.Parse(MINGRADLEVERSION);
+
+        Match gradleRowMatch = Regex.Match(gradleFileAsString, gradleRowPattern);
+        Match gradleVersionMatch = Regex.Match(gradleRowMatch.Value, gradleVersionPattern);
+        Version gradleVersion = Version.Parse(gradleVersionMatch.Value);
+        // if users gradle version is lesser than our minimum version.
+        if (gradleVersion.CompareTo(gradleMinVersion) < 0)
+        {
+            gradleFileAsString = gradleFileAsString.Replace(gradleVersion.ToString(), gradleMinVersion.ToString());
+            #if UNITY_2019_3_OR_NEWER
+                File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", gradleFileAsString);
+            #elif UNITY_2018_1_OR_NEWER
+                File.WriteAllText(path + "/build.gradle", gradleFileAsString);
+            #endif
+        }
+    }
 
     public void OnPostGenerateGradleAndroidProject(string path)
     {
@@ -38,6 +61,20 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 
         string baseProjectTemplatePath = Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle";
         FileUtil.CopyFileOrDirectory(baseProjectTemplatePath, Directory.GetParent(path).FullName + @"/hmsBaseProjectTemplate.gradle");
+
+        // Get enabled Kits and check if they are one of the below, because only them needs to be updated to the latest version.
+        foreach (var toggle in HMSMainKitsTabFactory.GetEnabledEditors())
+        {
+            if (toggle.GetType() == typeof(AccountToggleEditor) 
+                || toggle.GetType() == typeof(PushToggleEditor)
+                || toggle.GetType() == typeof(IAPToggleEditor)
+                || toggle.GetType() == typeof(NearbyServiceToggleEditor)
+                || toggle.GetType() == typeof(AnalyticsToggleEditor))
+            {
+                GradleVersionFixer(File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle"), path);
+            }
+        }
+
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/build.gradle"))
             writer.WriteLine("\napply from: 'hmsBaseProjectTemplate.gradle'");
 
@@ -77,8 +114,23 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 #elif UNITY_2018_1_OR_NEWER
         string hmsMainTemplatePath = Application.dataPath + @"/Huawei/Plugins/Android/hmsMainTemplate.gradle";
         var lines = File.ReadAllLines(hmsMainTemplatePath);
-
+        
         File.AppendAllLines(path + "/build.gradle", lines);
+
+        // Get enabled Kits and check if they are one of the below, because only them needs to be updated to the latest version.
+        Debug.LogWarning("foreach den önce");
+        foreach (var toggle in HMSMainKitsTabFactory.GetEnabledEditors())
+        {
+            Debug.LogWarning("foreach den sonra toggle"+toggle.GetType());
+            if (toggle.GetType() == typeof(AccountToggleEditor)
+                || toggle.GetType() == typeof(PushToggleEditor)
+                || toggle.GetType() == typeof(IAPToggleEditor)
+                || toggle.GetType() == typeof(NearbyServiceToggleEditor)
+                || toggle.GetType() == typeof(AnalyticsToggleEditor))
+            {
+                GradleVersionFixer(File.ReadAllText(path + "/build.gradle"), path);
+            }
+        }
         destPath = Path.Combine(path, fileName);
 #endif
         if (File.Exists(destPath))

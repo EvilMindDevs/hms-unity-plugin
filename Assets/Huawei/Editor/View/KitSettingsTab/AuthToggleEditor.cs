@@ -24,7 +24,7 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagers();
+                EnableToggle();
             }
             else
             {
@@ -34,7 +34,7 @@ namespace HmsPlugin
                     _toggle.SetChecked(true);
                     return;
                 }
-                DestroyManagers();
+                DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AuthEnabled, value);
         }
@@ -48,47 +48,24 @@ namespace HmsPlugin
         {
             _toggle.SetChecked(true);
             HMSMainEditorSettings.Instance.Settings.SetBool(AuthEnabled, true);
-            CreateManagers();
+            EnableToggle();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
-            if (GameObject.FindObjectOfType<HMSAuthServiceManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSAuthServiceManager");
-                obj.AddComponent<HMSAuthServiceManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
             Enabled = true;
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
-            var authManagers = GameObject.FindObjectsOfType<HMSAuthServiceManager>();
-            if (authManagers.Length > 0)
-            {
-                for (int i = 0; i < authManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(authManagers[i].gameObject);
-                }
-            }
-            Enabled = false;
+           Enabled = false;
         }
-
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
-            var authManagers = GameObject.FindObjectsOfType<HMSAuthServiceManager>();
-            if (authManagers.Length > 0)
-            {
-                for (int i = 0; i < authManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(authManagers[i].gameObject);
-                }
-            }
+            //throw new NotImplementedException();
         }
-
 
         public override void RefreshToggles()
         {

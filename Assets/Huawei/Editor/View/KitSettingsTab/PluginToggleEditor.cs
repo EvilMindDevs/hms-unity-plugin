@@ -31,13 +31,13 @@ namespace HmsPlugin
             if (value)
             {
                 if (enabledEditors != null && enabledEditors.Count > 0)
-                    enabledEditors.ForEach(f => f.CreateManagers());
+                    enabledEditors.ForEach(f => f.EnableToggle());
                 _librariesDrawer.CreateDrawer();
             }
             else
             {
                 if (enabledEditors != null && enabledEditors.Count > 0)
-                    enabledEditors.ForEach(c => c.DisableManagers(true));
+                    enabledEditors.ForEach(c => c.RemoveToggleTabView(true));
                 _librariesDrawer.DestroyDrawer();
             }
             RefreshDrawer(value);

@@ -25,30 +25,30 @@ namespace HmsPlugin
                 AssetDatabase.Refresh();
         }
 
-        public static void SetHMSPlugin(bool status, bool createManagers, bool refreshAssets = true)
+        public static void SetHMSPlugin(bool status, bool enableToggle, bool refreshAssets = true)
         {
             HMSPluginSettings.Instance.Settings.SetBool(PluginToggleEditor.PluginEnabled, status);
             var enabledEditors = HMSMainKitsTabFactory.GetEnabledEditors();
             if (status)
             {
-                if (createManagers)
+                if (enableToggle)
                 {
                     if (enabledEditors != null && enabledEditors.Count > 0)
                     {
-                        enabledEditors.ForEach(f => f.CreateManagers());
+                        enabledEditors.ForEach(f => f.EnableToggle());
                     }
                 }
                 else
                 {
                     if (enabledEditors != null && enabledEditors.Count > 0)
-                        enabledEditors.ForEach(f => f.DisableManagers(false));
+                        enabledEditors.ForEach(f => f.RemoveToggleTabView(false));
                 }
             }
             else
             {
                 if (enabledEditors != null && enabledEditors.Count > 0)
                 {
-                    enabledEditors.ForEach(f => f.DisableManagers(true));
+                    enabledEditors.ForEach(f => f.RemoveToggleTabView(true));
                 }
             }
             HMSMainKitsTabFactory.RefreshPluginStatus();

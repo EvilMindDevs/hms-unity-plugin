@@ -1,6 +1,7 @@
 ﻿using HmsPlugin;
 using HuaweiConstants;
 using HuaweiMobileServices.Ads;
+using HuaweiMobileServices.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using UnityEngine.UI;
 using static HuaweiConstants.UnityBannerAdPositionCode;
 using static HuaweiMobileServices.Ads.SplashAd;
 
-public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
+public class HMSAdsKitManager : HMSEditorSingleton<HMSAdsKitManager>
 {
 
     private const string TestBannerAdId = "testw6vs28auh3";
@@ -27,9 +28,15 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
 
     private bool isInitialized;
 
-    public override void Awake()
+    public HMSAdsKitManager()
     {
-        base.Awake();
+        if (!HMSDispatcher.InstanceExists)
+            HMSDispatcher.CreateDispatcher();
+        HMSDispatcher.InvokeAsync(onAwake);
+    }
+
+    public void onAwake()
+    {
         Init();
         if (adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd))
             LoadSplashAd();
@@ -38,7 +45,7 @@ public class HMSAdsKitManager : HMSSingleton<HMSAdsKitManager>
     private void Start()
     {
         Debug.Log("[HMS] HMSAdsKitManager Start");
-        StartCoroutine(LoadingAds());
+        //TODO StartCoroutine(LoadingAds());
     }
 
     private void Init()

@@ -249,6 +249,10 @@ namespace HmsPlugin
 
         private void SetupSequence()
         {
+            AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Testing").SetBold(true), new HorizontalLine()));
+            AddDrawer(new Space(3));
+            AddDrawer(_testAdstoggle);
+
             AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Banner").SetBold(true), new HorizontalLine()));
             AddDrawer(new Space(3));
             AddDrawer(_enableBannerAdsToggle);
@@ -276,11 +280,6 @@ namespace HmsPlugin
             AddDrawer(_splashAdsDisabledDrawer);
             AddDrawer(new HorizontalLine());
             AddDrawer(new Space(25));
-
-            AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Testing").SetBold(true), new HorizontalLine()));
-            AddDrawer(new Space(3));
-            AddDrawer(_testAdstoggle);
-            AddDrawer(new HorizontalLine());
         }
 
         private bool CheckTextureFormat(TextureImporterPlatformSettings settings)

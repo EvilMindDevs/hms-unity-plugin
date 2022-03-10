@@ -21,11 +21,11 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagers();
+                EnableToggle();
             }
             else
             {
-                DestroyManagers();
+                DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(PushKitEnabled, value);
         }
@@ -35,42 +35,20 @@ namespace HmsPlugin
             _toggle.Draw();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
-            if (GameObject.FindObjectOfType<HMSPushKitManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSPushKitManager");
-                obj.AddComponent<HMSPushKitManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
             Enabled = true;
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
-            var pushManagers = GameObject.FindObjectsOfType<HMSPushKitManager>();
-            if (pushManagers.Length > 0)
-            {
-                for (int i = 0; i < pushManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(pushManagers[i].gameObject);
-                }
-            }
             Enabled = false;
         }
-
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
-            var pushManagers = GameObject.FindObjectsOfType<HMSPushKitManager>();
-            if (pushManagers.Length > 0)
-            {
-                for (int i = 0; i < pushManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(pushManagers[i].gameObject);
-                }
-            }
+            //throw new NotImplementedException();
         }
 
         public override void RefreshToggles()

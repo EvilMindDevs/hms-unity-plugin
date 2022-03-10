@@ -21,7 +21,7 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagers();
+                EnableToggle();
             }
             else
             {
@@ -32,7 +32,7 @@ namespace HmsPlugin
                     return;
                 }
 
-                DestroyManagers();
+                DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AccountKitEnabled, value);
         }
@@ -46,46 +46,23 @@ namespace HmsPlugin
         {
             _toggle.SetChecked(true);
             HMSMainEditorSettings.Instance.Settings.SetBool(AccountKitEnabled, true);
-            CreateManagers();
+            EnableToggle();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
-
-            if (GameObject.FindObjectOfType<HMSAccountManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSAccountManager");
-                obj.AddComponent<HMSAccountManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
             Enabled = true;
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
-            var accountManagers = GameObject.FindObjectsOfType<HMSAccountManager>();
-            if (accountManagers.Length > 0)
-            {
-                for (int i = 0; i < accountManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(accountManagers[i].gameObject);
-                }
-            }
             Enabled = false;
         }
-
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
-            var accountManagers = GameObject.FindObjectsOfType<HMSAccountManager>();
-            if (accountManagers.Length > 0)
-            {
-                for (int i = 0; i < accountManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(accountManagers[i].gameObject);
-                }
-            }
+            //throw new NotImplementedException();
         }
 
         public override void RefreshToggles()

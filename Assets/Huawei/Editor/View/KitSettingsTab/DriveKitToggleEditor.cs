@@ -48,22 +48,20 @@ namespace HmsPlugin
             _toggle.Draw();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             //base.CreateManagers();
             //throw new NotImplementedException();
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
             //throw new NotImplementedException();
         }
-
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
             //throw new NotImplementedException();
         }
-
 
         public override void RefreshToggles()
         {

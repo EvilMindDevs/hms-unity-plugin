@@ -21,7 +21,7 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagers();
+                EnableToggle();
             }
             else
             {
@@ -39,7 +39,7 @@ namespace HmsPlugin
                     return;
                 }
 
-                DestroyManagers();
+                DisableToggle();
 
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, value);
@@ -54,45 +54,24 @@ namespace HmsPlugin
         {
             _toggle.SetChecked(true);
             HMSMainEditorSettings.Instance.Settings.SetBool(AnalyticsKitEnabled, true);
-            CreateManagers();
+            EnableToggle();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
-            if (GameObject.FindObjectOfType<HMSAnalyticsManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSAnalyticsManager");
-                obj.AddComponent<HMSAnalyticsManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
             Enabled = true;
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
-            var analyticManagers = GameObject.FindObjectsOfType<HMSAnalyticsManager>();
-            if (analyticManagers.Length > 0)
-            {
-                for (int i = 0; i < analyticManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(analyticManagers[i].gameObject);
-                }
-            }
             Enabled = false;
         }
 
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
-            var analyticManagers = GameObject.FindObjectsOfType<HMSAnalyticsManager>();
-            if (analyticManagers.Length > 0)
-            {
-                for (int i = 0; i < analyticManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(analyticManagers[i].gameObject);
-                }
-            }
+            //throw new NotImplementedException();
         }
 
         public override void RefreshToggles()

@@ -30,11 +30,11 @@ namespace HmsPlugin
             HMSMainEditorSettings.Instance.Settings.SetBool(RemoteConfigEnabled, value);
             if (value)
             {
-                CreateManagers();
+                EnableToggle();
             }
             else
             {
-                DestroyManagers();
+                DisableToggle();
             }
         }
 
@@ -43,7 +43,7 @@ namespace HmsPlugin
             _toggle.Draw();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
@@ -53,41 +53,18 @@ namespace HmsPlugin
 
             if (_tabBar != null && _tabView != null)
                 _tabBar.AddTab(_tabView);
-
-            if (GameObject.FindObjectOfType<HMSRemoteConfigManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSRemoteConfigManager");
-                obj.AddComponent<HMSRemoteConfigManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
             Enabled = true;
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
-            var remoteConfigManagers = GameObject.FindObjectsOfType<HMSRemoteConfigManager>();
-            if (remoteConfigManagers.Length > 0)
-            {
-                for (int i = 0; i < remoteConfigManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(remoteConfigManagers[i].gameObject);
-                }
-            }
             if (_tabBar != null && _tabView != null)
                 _tabBar.RemoveTab(_tabView);
             Enabled = false;
         }
 
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
-            var remoteConfigManagers = GameObject.FindObjectsOfType<HMSRemoteConfigManager>();
-            if (remoteConfigManagers.Length > 0)
-            {
-                for (int i = 0; i < remoteConfigManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(remoteConfigManagers[i].gameObject);
-                }
-            }
             if (removeTabs)
             {
                 if (_tabBar != null && _tabView != null)

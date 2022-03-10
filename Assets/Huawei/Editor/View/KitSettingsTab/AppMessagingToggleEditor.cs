@@ -23,11 +23,11 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagers();
+                EnableToggle();
             }
             else
             {
-                DestroyManagers();
+                DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(AppMessagingEnabled, value);
         }
@@ -37,42 +37,21 @@ namespace HmsPlugin
             _toggle.Draw();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
-            if (GameObject.FindObjectOfType<HMSAppMessagingManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSAppMessagingManager");
-                obj.AddComponent<HMSAppMessagingManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
             Enabled = true;
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
-            var appMessagingManagers = GameObject.FindObjectsOfType<HMSAppMessagingManager>();
-            if (appMessagingManagers.Length > 0)
-            {
-                for (int i = 0; i < appMessagingManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(appMessagingManagers[i].gameObject);
-                }
-            }
             Enabled = false;
         }
 
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
-            var appMessagingManagers = GameObject.FindObjectsOfType<HMSAppMessagingManager>();
-            if (appMessagingManagers.Length > 0)
-            {
-                for (int i = 0; i < appMessagingManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(appMessagingManagers[i].gameObject);
-                }
-            }
+            //throw new NotImplementedException();
         }
 
         public override void RefreshToggles()

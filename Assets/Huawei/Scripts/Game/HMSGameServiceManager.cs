@@ -8,13 +8,13 @@ using static HuaweiConstants.HMSResponses;
 
 namespace HmsPlugin
 {
-    public class HMSGameManager : HMSSingleton<HMSGameManager>, ICheckUpdateCallback
+    public class HMSGameServiceManager : HMSEditorSingleton<HMSGameServiceManager>, ICheckUpdateCallback
     {
-        public Action<HuaweiMobileServices.Game.Player> OnGetPlayerInfoSuccess { get; set; }
+        public Action<Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }
         public Action<string> OnSubmitPlayerEventSuccess { get; set; }
         public Action<HMSException> OnSubmitPlayerEventFailure { get; set; }
-        public Action<HuaweiMobileServices.Game.PlayerExtraInfo> OnGetPlayerExtraInfoSuccess { get; set; }
+        public Action<PlayerExtraInfo> OnGetPlayerExtraInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerExtraInfoFailure { get; set; }
         public Action<AuthAccount> SignInSuccess { get; set; }
         public Action<HMSException> SignInFailure { get; set; }
@@ -29,17 +29,22 @@ namespace HmsPlugin
         private bool forceUpdate;
         private bool showUpdateDialog;
 
-        public void Start()
+        public void OnAwake()
         {
             HuaweiMobileServicesUtil.SetApplication();
             if (HMSGameServiceSettings.Instance.Settings.GetBool(HMSGameServiceSettings.InitializeOnStart))
                 Init();
         }
 
+        public void Start()
+        {
+            Debug.Log("[HMS] HMSGameManager Start");
+        }
+
         public void Init()
         {
             Debug.Log("HMS GAMES init");
-            authService = HMSAccountManager.Instance.GetGameAuthService();
+            authService = HMSAccountKitManager.Instance.GetGameAuthService();
 
             ITask<AuthAccount> taskAuthHuaweiId = authService.SilentSignIn();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>
@@ -57,7 +62,7 @@ namespace HmsPlugin
 
         private void InitJosApps(AuthAccount result)
         {
-            HMSAccountManager.Instance.HuaweiId = result;
+            HMSAccountKitManager.Instance.HuaweiId = result;
             Debug.Log("HMS GAMES: Setted app");
             IJosAppsClient josAppsClient = JosApps.GetJosAppsClient();
             Debug.Log("HMS GAMES: jossClient");
@@ -111,7 +116,7 @@ namespace HmsPlugin
 
         public void GetPlayerInfo()
         {
-            if (HMSAccountManager.Instance.HuaweiId != null)
+            if (HMSAccountKitManager.Instance.HuaweiId != null)
             {
                 ITask<HuaweiMobileServices.Game.Player> task = playersClient.CurrentPlayer;
                 task.AddOnSuccessListener((result) =>
@@ -129,7 +134,7 @@ namespace HmsPlugin
 
         public void SubmitPlayerEvent(string playerId, string eventId, string eventType)
         {
-            if (HMSAccountManager.Instance.HuaweiId != null)
+            if (HMSAccountKitManager.Instance.HuaweiId != null)
             {
                 var task = playersClient.SubmitPlayerEvent(playerId, eventId, eventType);
                 task.AddOnSuccessListener((result) =>
@@ -146,7 +151,7 @@ namespace HmsPlugin
 
         public void GetPlayerExtraInfo(string transactionId)
         {
-            if (HMSAccountManager.Instance.HuaweiId != null)
+            if (HMSAccountKitManager.Instance.HuaweiId != null)
             {
                 var task = playersClient.GetPlayerExtraInfo(transactionId);
                 task.AddOnSuccessListener((result) =>

@@ -17,23 +17,23 @@ public class AccountDemoManager : MonoBehaviour
     {
         loggedInUser.text = NOT_LOGGED_IN;
 
-        HMSAccountManager.Instance.OnSignInSuccess = OnLoginSuccess;
-        HMSAccountManager.Instance.OnSignInFailed = OnLoginFailure;
+        HMSAccountKitManager.Instance.OnSignInSuccess = OnLoginSuccess;
+        HMSAccountKitManager.Instance.OnSignInFailed = OnLoginFailure;
     }
 
     public void LogIn()
     {
-        HMSAccountManager.Instance.SignIn();
+        HMSAccountKitManager.Instance.SignIn();
     }
 
     public void SilentSignIn()
     {
-        HMSAccountManager.Instance.SilentSignIn();
+        HMSAccountKitManager.Instance.SilentSignIn();
     }
 
     public void LogOut()
     {
-        HMSAccountManager.Instance.SignOut();
+        HMSAccountKitManager.Instance.SignOut();
         loggedInUser.text = NOT_LOGGED_IN;
     }
 

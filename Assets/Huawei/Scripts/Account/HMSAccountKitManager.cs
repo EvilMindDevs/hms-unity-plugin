@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class HMSAccountManager : HMSEditorSingleton<HMSAccountManager>
+    public class HMSAccountKitManager : HMSEditorSingleton<HMSAccountKitManager>
     {
         private static AccountAuthService DefaultAuthService
         {
@@ -62,16 +62,16 @@ namespace HmsPlugin
 
         private AccountAuthService authService, authServiceDrive;
 
-        public HMSAccountManager()
+        public HMSAccountKitManager()
         {
             if (!HMSDispatcher.InstanceExists)
                 HMSDispatcher.CreateDispatcher();
-            HMSDispatcher.InvokeAsync(onAwake);
+            HMSDispatcher.InvokeAsync(OnAwake);
         }       
 
-        public void onAwake()
+        public void OnAwake()
         {
-            Debug.Log("[HMSAccountManager]: AWAKE AUTHSERVICE");
+            Debug.Log("[HMSAccountManager]: AuthService OnAwake");
             authService = DefaultAuthService;
             //authServiceDrive = DefaultDriveAuthService;
         }

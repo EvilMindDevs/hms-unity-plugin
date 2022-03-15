@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace HmsPlugin
 {
-    public class HMSPushKitManager : HMSSingleton<HMSPushKitManager>, IPushListener
+    public class HMSPushKitManager : HMSEditorSingleton<HMSPushKitManager>, IPushListener
     {
         public Action<string> OnTokenSuccess { get; set; }
         public Action<Exception> OnTokenFailure { get; set; }
@@ -23,7 +23,7 @@ namespace HmsPlugin
 
         public NotificationData notificationDataOnStart;
 
-        void Start()
+        public void OnAwake()
         {
             PushManager.Listener = this;
             notificationDataOnStart = PushManager.NotificationDataOnStart;
@@ -42,6 +42,7 @@ namespace HmsPlugin
             {
                 OnTokenSuccess?.Invoke(token);
             }
+
         }
 
         public void OnNewToken(string token)

@@ -1,12 +1,14 @@
-﻿using HuaweiMobileServices.Base;
+﻿using HuaweiMobileServices.AuthService;
+using HuaweiMobileServices.Base;
 using HuaweiMobileServices.CloudDB;
+using HuaweiMobileServices.Common;
 using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 namespace HmsPlugin
 {
-    public class HMSCloudDBManager : HMSSingleton<HMSCloudDBManager>
+    public class HMSCloudDBManager : HMSEditorSingleton<HMSCloudDBManager>
     {
         string TAG = "HMSCloudDBManager";
         AGConnectCloudDB mCloudDB = null;
@@ -53,10 +55,10 @@ namespace HmsPlugin
             Debug.Log($"[{TAG}]: Initialize()");
         }
 
-        public void GetInstance()
+        public void GetInstance(AGConnectInstance instance, AGConnectAuth auth)
         {
             if (mCloudDB == null)
-                mCloudDB = AGConnectCloudDB.GetInstance();
+                mCloudDB = AGConnectCloudDB.GetInstance(instance, auth);
             Debug.Log($"[{TAG}]: GetInstance() ");
         }
 
@@ -134,7 +136,7 @@ namespace HmsPlugin
 
         public void SetUserKey(string userKey, string userReKey)
         {
-            mCloudDB.SetUserKey(userKey, userReKey).AddOnSuccessListener(result => { }).AddOnFailureListener(error => { });
+            mCloudDB.SetUserKey(userKey, userReKey, false).AddOnSuccessListener(result => { }).AddOnFailureListener(error => { });
         }
 
         public void UpdateDataEncryptionKey()

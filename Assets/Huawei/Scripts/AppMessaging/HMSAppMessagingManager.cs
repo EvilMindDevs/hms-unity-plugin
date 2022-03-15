@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class HMSAppMessagingManager : HMSSingleton<HMSAppMessagingManager>
+public class HMSAppMessagingManager : HMSEditorSingleton<HMSAppMessagingManager>
 {
     public Action<AppMessage> OnMessageClicked { get; set; }
     public Action<AppMessage> OnMessageDisplay { get; set; }
@@ -16,10 +16,8 @@ public class HMSAppMessagingManager : HMSSingleton<HMSAppMessagingManager>
     public Action<AppMessage, DismissType> OnMessageDissmiss { get; set; }
     public Action<AAIDResult> AAIDResultAction { get; set; }
 
-    void Start()
+    public void OnAwake()
     {
-        Debug.Log("AppMessaging: Start");
-
         HmsInstanceId inst = HmsInstanceId.GetInstance();
         ITask<AAIDResult> idResult = inst.AAID;
         idResult.AddOnSuccessListener((result) =>
@@ -39,6 +37,12 @@ public class HMSAppMessagingManager : HMSSingleton<HMSAppMessagingManager>
         appMessaging.AddOnDisplayListener(OnMessageDisplay);
         appMessaging.AddOnDismissListener(OnMessageDissmiss);
         appMessaging.SetForceFetch();
+    }
+
+    void Start()
+    {
+        Debug.Log("AppMessaging: Start");
+
     }
 
     private void OnMessageClickFunction(AppMessage obj)

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class HMSNearbyServiceManager : HMSSingleton<HMSNearbyServiceManager>
+    public class HMSNearbyServiceManager : HMSEditorSingleton<HMSNearbyServiceManager>
     {
         public string scanInfo, remoteEndpointId, transmittingMessage, myNameStr, mEndpointName, mFileServiceId;
 

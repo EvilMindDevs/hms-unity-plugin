@@ -5,7 +5,7 @@ using HuaweiMobileServices.Analystics;
 using HuaweiMobileServices.Utils;
 using System;
 
-public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
+public class HMSAnalyticsKitManager : HMSEditorSingleton<HMSAnalyticsKitManager>
 {
     private HiAnalyticsInstance hiAnalyticsInstance;
 
@@ -63,8 +63,16 @@ public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
+    public void OnAwake()
+    {
+        Debug.Log($"[HMS] : Analytics Kit OnAwake");
+        InitilizeAnalyticsInstane();
+
+    }
+
     void Start()
     {
-        InitilizeAnalyticsInstane();
+        Debug.Log($"[HMS] : Analytics Kit Started");
+
     }
 }

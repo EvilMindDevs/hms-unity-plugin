@@ -29,16 +29,19 @@ namespace HmsPlugin
         private bool forceUpdate;
         private bool showUpdateDialog;
 
+        public HMSGameServiceManager()
+        {
+            Debug.Log($"[HMS] : HMSGameServiceManager Constructor");
+            if (!HMSDispatcher.InstanceExists)
+                HMSDispatcher.CreateDispatcher();
+            HMSDispatcher.InvokeAsync(OnAwake);
+        }
+
         public void OnAwake()
         {
             HuaweiMobileServicesUtil.SetApplication();
             if (HMSGameServiceSettings.Instance.Settings.GetBool(HMSGameServiceSettings.InitializeOnStart))
                 Init();
-        }
-
-        public void Start()
-        {
-            Debug.Log("[HMS] HMSGameManager Start");
         }
 
         public void Init()

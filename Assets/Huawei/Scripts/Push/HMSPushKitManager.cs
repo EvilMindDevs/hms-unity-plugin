@@ -3,6 +3,7 @@ using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Push;
 using HuaweiMobileServices.Utils;
 using System;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,15 +24,24 @@ namespace HmsPlugin
 
         public NotificationData notificationDataOnStart;
 
+        public HMSPushKitManager()
+        {
+            Debug.Log($"[HMS] : HMSPushKitManager Constructor");
+            if (!HMSDispatcher.InstanceExists)
+                HMSDispatcher.CreateDispatcher();
+            HMSDispatcher.InvokeAsync(OnAwake);
+        }
+
         public void OnAwake()
         {
+            Debug.Log($"[HMS] : HMSPushKitManager OnAwake");
             PushManager.Listener = this;
             notificationDataOnStart = PushManager.NotificationDataOnStart;
             if (notificationDataOnStart.NotifyId != -1)
             {
                 NotificationMessageOnStart?.Invoke(notificationDataOnStart);
             }
-            PushManager.RegisterOnNotificationMessage((data) =>
+             PushManager.RegisterOnNotificationMessage((data) =>
             {
                 OnNotificationMessage?.Invoke(data);
             });
@@ -42,7 +52,6 @@ namespace HmsPlugin
             {
                 OnTokenSuccess?.Invoke(token);
             }
-
         }
 
         public void OnNewToken(string token)

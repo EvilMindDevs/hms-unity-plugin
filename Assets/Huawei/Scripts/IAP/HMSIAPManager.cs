@@ -42,8 +42,12 @@ namespace HmsPlugin
         private bool? iapAvailable = null;
         private List<ProductInfo> productInfoList = new List<ProductInfo>();
 
-        private void Start()
+        public HMSIAPManager()
         {
+            Debug.Log($"[HMS] : HMSIAPManager Constructor");
+            if (!HMSDispatcher.InstanceExists)
+                HMSDispatcher.CreateDispatcher();
+            HMSDispatcher.InvokeAsync(OnAwake);
         }
 
         public void OnAwake()

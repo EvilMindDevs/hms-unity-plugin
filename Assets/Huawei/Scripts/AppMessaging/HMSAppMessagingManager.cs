@@ -1,6 +1,7 @@
 ﻿using HuaweiMobileServices.AppMessaging;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;
+using HuaweiMobileServices.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,8 +17,17 @@ public class HMSAppMessagingManager : HMSEditorSingleton<HMSAppMessagingManager>
     public Action<AppMessage, DismissType> OnMessageDissmiss { get; set; }
     public Action<AAIDResult> AAIDResultAction { get; set; }
 
+    public HMSAppMessagingManager()
+    {
+        Debug.Log($"[HMS] : HMSAppMessagingManager Constructor");
+        if (!HMSDispatcher.InstanceExists)
+            HMSDispatcher.CreateDispatcher();
+        HMSDispatcher.InvokeAsync(OnAwake);
+    }
+
     public void OnAwake()
     {
+        Debug.Log("AppMessaging: OnAwake");
         HmsInstanceId inst = HmsInstanceId.GetInstance();
         ITask<AAIDResult> idResult = inst.AAID;
         idResult.AddOnSuccessListener((result) =>
@@ -38,13 +48,6 @@ public class HMSAppMessagingManager : HMSEditorSingleton<HMSAppMessagingManager>
         appMessaging.AddOnDismissListener(OnMessageDissmiss);
         appMessaging.SetForceFetch();
     }
-
-    void Start()
-    {
-        Debug.Log("AppMessaging: Start");
-
-    }
-
     private void OnMessageClickFunction(AppMessage obj)
     {
         Debug.Log("AppMessaging  OnMessageClickFunction");

@@ -5,6 +5,7 @@ using HuaweiMobileServices.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using static HuaweiConstants.UnityBannerAdPositionCode;
@@ -33,9 +34,12 @@ namespace HmsPlugin
 
         public HMSAdsKitManager()
         {
+            Debug.Log("[HMS] HMSAdsKitManager Constructor");
+            adsKitSettings = HMSAdsKitSettings.Instance.Settings;
             if (!HMSDispatcher.InstanceExists)
                 HMSDispatcher.CreateDispatcher();
             HMSDispatcher.InvokeAsync(OnAwake);
+            HMSDispatcher.InvokeAsync(OnStart);
         }
 
         public void OnAwake()
@@ -46,23 +50,24 @@ namespace HmsPlugin
                 LoadSplashAd();
         }
 
-        private void Start()
+        private void OnStart()
         {
-            Debug.Log("[HMS] HMSAdsKitManager Start");
-            //TODO StartCoroutine(LoadingAds());
+            Debug.Log("[HMS] HMSAdsKitManager OnStart");
+            LoadingAds();
         }
 
         private void Init()
         {
+            Debug.Log("[HMS] HMSAdsKitManager Init");
             HwAds.Init();
             isInitialized = true;
             adsKitSettings = HMSAdsKitSettings.Instance.Settings;
         }
 
-        private IEnumerator LoadingAds()
+        private async void LoadingAds()
         {
             while (Application.internetReachability == NetworkReachability.NotReachable)
-                yield return null;
+                await Task.Delay(500);
 
             Debug.Log("[HMS] HMSAdsKitManager Loading Ads");
             LoadAllAds();

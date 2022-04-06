@@ -31,7 +31,7 @@ namespace HmsPlugin
 
         public void OnAwake()
         {
-            Debug.LogError("[HMSAuthServiceManager]: AuthService OnAwake");
+            Debug.Log("[HMSAuthServiceManager]: AuthService OnAwake");
             _AGConnectAuth = AGConnectAuth.GetInstance();
         }
 

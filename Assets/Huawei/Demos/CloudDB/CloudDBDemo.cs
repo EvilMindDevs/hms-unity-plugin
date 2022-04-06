@@ -2,6 +2,7 @@
 using HuaweiMobileServices.AuthService;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.CloudDB;
+using HuaweiMobileServices.Common;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
 using System;
@@ -50,7 +51,7 @@ public class CloudDBDemo : MonoBehaviour
 
         cloudDBManager = HMSCloudDBManager.Instance;
         cloudDBManager.Initialize();
-        cloudDBManager.GetInstance();
+        cloudDBManager.GetInstance(AGConnectInstance.GetInstance(), AGConnectAuth.GetInstance());
         cloudDBManager.OnExecuteQuerySuccess = OnExecuteQuerySuccess;
         cloudDBManager.OnExecuteQueryFailed = OnExecuteQueryFailed;
     }
@@ -63,9 +64,9 @@ public class CloudDBDemo : MonoBehaviour
 
     public void SignInWithHuaweiAccount()
     {
-        HMSAccountManager.Instance.OnSignInSuccess = OnAccountKitLoginSuccess;
-        HMSAccountManager.Instance.OnSignInFailed = OnAuthSericeSignInFailed;
-        HMSAccountManager.Instance.SignIn();
+        HMSAccountKitManager.Instance.OnSignInSuccess = OnAccountKitLoginSuccess;
+        HMSAccountKitManager.Instance.OnSignInFailed = OnAuthSericeSignInFailed;
+        HMSAccountKitManager.Instance.SignIn();
     }
 
     private void OnAuthSericeSignInFailed(HMSException error)

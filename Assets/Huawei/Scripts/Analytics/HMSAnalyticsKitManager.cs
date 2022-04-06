@@ -4,10 +4,26 @@ using UnityEngine;
 using HuaweiMobileServices.Analystics;
 using HuaweiMobileServices.Utils;
 using System;
+using System.Threading.Tasks;
+using System.Threading;
 
-public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
+public class HMSAnalyticsKitManager : HMSEditorSingleton<HMSAnalyticsKitManager>
 {
     private HiAnalyticsInstance hiAnalyticsInstance;
+
+    public HMSAnalyticsKitManager()
+    {
+        Debug.Log($"[HMS] : HMSAnalyticsKitManager Constructor");
+        if (!HMSDispatcher.InstanceExists)
+            HMSDispatcher.CreateDispatcher();
+        HMSDispatcher.InvokeAsync(OnAwake);
+    }
+
+    void OnAwake() 
+    {
+        Debug.Log("HMSAnalyticsKitManager: OnAwake");
+        InitilizeAnalyticsInstane();
+    }
 
     void InitilizeAnalyticsInstane()
     {
@@ -22,11 +38,14 @@ public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
         }));
     }
 
-    public void SendEventWithBundle(String eventID, String key, String value)
+    public async void SendEventWithBundle(String eventID, String key, String value)
     {
         Bundle bundleUnity = new Bundle();
         bundleUnity.PutString(key, value);
         Debug.Log($"[HMS] : Analytics Kits Event Id:{eventID} Key:{key} Value:{value}");
+
+        while (hiAnalyticsInstance == null)
+            await Task.Delay(500);
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
@@ -63,8 +82,4 @@ public class HMSAnalyticsManager : HMSSingleton<HMSAnalyticsManager>
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
-    void Start()
-    {
-        InitilizeAnalyticsInstane();
-    }
 }

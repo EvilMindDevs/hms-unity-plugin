@@ -88,9 +88,9 @@ public class AuthServiceDemo : MonoBehaviour
 
     public void SignInWithHuaweiAccount()
     {
-        HMSAccountManager.Instance.OnSignInSuccess = OnAccountKitLoginSuccess;
-        HMSAccountManager.Instance.OnSignInFailed = OnAuthSericeSignInFailed;
-        HMSAccountManager.Instance.SignIn();
+        HMSAccountKitManager.Instance.OnSignInSuccess = OnAccountKitLoginSuccess;
+        HMSAccountKitManager.Instance.OnSignInFailed = OnAuthSericeSignInFailed;
+        HMSAccountKitManager.Instance.SignIn();
     }
 
     public void SignInAnonymously() => authServiceManager.SignInAnonymously();
@@ -102,7 +102,7 @@ public class AuthServiceDemo : MonoBehaviour
             .Locale(Locale.GetDefault())
             .SendInterval(30).Build();
 
-        PhoneAuthProvider.RequestVerifyCode(PhoneCountryCode.text, PhoneNumber.text, verifyCodeSettings)
+        AGConnectAuth.GetInstance().RequestVerifyCode(PhoneCountryCode.text, PhoneNumber.text, verifyCodeSettings)
             .AddOnSuccessListener(verifyCodeResult =>
             {
                 verifyCodePhone.SetActive(true);
@@ -130,7 +130,7 @@ public class AuthServiceDemo : MonoBehaviour
             .Locale(Locale.GetDefault())
             .SendInterval(30).Build();
 
-        EmailAuthProvider.RequestVerifyCode(EmailAddress.text, verifyCodeSettings)
+        AGConnectAuth.GetInstance().RequestVerifyCode(EmailAddress.text, verifyCodeSettings)
             .AddOnSuccessListener(result =>
             {
                 verifyCodeEmail.SetActive(true);

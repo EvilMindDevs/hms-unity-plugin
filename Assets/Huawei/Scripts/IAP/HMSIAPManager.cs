@@ -10,7 +10,7 @@ using HuaweiConstants;
 
 namespace HmsPlugin
 {
-    public class HMSIAPManager : HMSSingleton<HMSIAPManager>
+    public class HMSIAPManager : HMSEditorSingleton<HMSIAPManager>
     {
         private readonly HMSException IAP_NOT_AVAILABLE = new HMSException("[HMSIAPManager] IAP not available", "IAP not available", "IAP not available") { };
 
@@ -42,7 +42,15 @@ namespace HmsPlugin
         private bool? iapAvailable = null;
         private List<ProductInfo> productInfoList = new List<ProductInfo>();
 
-        private void Start()
+        public HMSIAPManager()
+        {
+            Debug.Log($"[HMS] : HMSIAPManager Constructor");
+            if (!HMSDispatcher.InstanceExists)
+                HMSDispatcher.CreateDispatcher();
+            HMSDispatcher.InvokeAsync(OnAwake);
+        }
+
+        public void OnAwake()
         {
             if (HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart))
                 CheckIapAvailability();

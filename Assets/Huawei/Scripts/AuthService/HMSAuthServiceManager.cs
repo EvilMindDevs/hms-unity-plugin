@@ -26,11 +26,12 @@ namespace HmsPlugin
         {
             if (!HMSDispatcher.InstanceExists)
                 HMSDispatcher.CreateDispatcher();
-            HMSDispatcher.InvokeAsync(onAwake);
+            HMSDispatcher.InvokeAsync(OnAwake);
         }
 
-        public void onAwake()
+        public void OnAwake()
         {
+            Debug.Log("[HMSAuthServiceManager]: AuthService OnAwake");
             _AGConnectAuth = AGConnectAuth.GetInstance();
         }
 

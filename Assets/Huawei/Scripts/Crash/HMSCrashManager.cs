@@ -1,13 +1,24 @@
 ﻿using HuaweiMobileServices.Crash;
+using HuaweiMobileServices.Utils;
 using UnityEngine;
+using UnityEngine.Diagnostics;
 
-public class HMSCrashManager : HMSSingleton<HMSCrashManager>
+public class HMSCrashManager : HMSEditorSingleton<HMSCrashManager>
 {
     IAGConnectCrash agConnectCrash;
-    void Start()
+
+    public void OnAwake()
     {
-        Debug.Log("[HMS]: Crash Initialized");
+        Debug.Log("[HMS]: Crash OnAwake - Initialized");
         agConnectCrash = AGConnectCrash.GetInstance();
+    }
+
+    public HMSCrashManager()
+    {
+        Debug.Log($"[HMS] : HMSCrashManager Constructor");
+        if (!HMSDispatcher.InstanceExists)
+            HMSDispatcher.CreateDispatcher();
+        HMSDispatcher.InvokeAsync(OnAwake);
     }
 
     //Crash Collection enable/disable method used on AnalyticsDemo scene with enable/disable radio button configuration 
@@ -20,7 +31,7 @@ public class HMSCrashManager : HMSSingleton<HMSCrashManager>
     public void TestCrash()
     {
         Debug.Log("[HMS]: Crash testIt");
-        Application.ForceCrash(0);
+        Utils.ForceCrash(0);
     }
 
     enum Log

@@ -50,7 +50,7 @@ namespace HmsPlugin
             HMSDispatcher.InvokeAsync(OnAwake);
         }
 
-        public void OnAwake()
+        private void OnAwake()
         {
             if (HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart))
                 CheckIapAvailability();

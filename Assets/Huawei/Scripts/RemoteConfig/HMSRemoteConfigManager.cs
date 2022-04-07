@@ -25,7 +25,7 @@ public class HMSRemoteConfigManager : HMSEditorSingleton<HMSRemoteConfigManager>
         HMSDispatcher.InvokeAsync(OnAwake);
     }
 
-    public void OnAwake()
+    private void OnAwake()
     {
         GetInstance();
         if (HMSRemoteConfigSettings.Instance != null)

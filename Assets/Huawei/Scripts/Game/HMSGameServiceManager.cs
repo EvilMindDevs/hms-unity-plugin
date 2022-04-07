@@ -37,7 +37,7 @@ namespace HmsPlugin
             HMSDispatcher.InvokeAsync(OnAwake);
         }
 
-        public void OnAwake()
+        private void OnAwake()
         {
             HuaweiMobileServicesUtil.SetApplication();
             if (HMSGameServiceSettings.Instance.Settings.GetBool(HMSGameServiceSettings.InitializeOnStart))

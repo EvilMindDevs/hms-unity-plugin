@@ -42,7 +42,7 @@ namespace HmsPlugin
             HMSDispatcher.InvokeAsync(OnStart);
         }
 
-        public void OnAwake()
+        private void OnAwake()
         {
             Debug.Log("[HMS] HMSAdsKitManager OnAwake");
             Init();

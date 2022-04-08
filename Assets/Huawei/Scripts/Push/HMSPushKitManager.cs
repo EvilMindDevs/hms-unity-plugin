@@ -32,7 +32,7 @@ namespace HmsPlugin
             HMSDispatcher.InvokeAsync(OnAwake);
         }
 
-        public void OnAwake()
+        private void OnAwake()
         {
             Debug.Log($"[HMS] : HMSPushKitManager OnAwake");
             PushManager.Listener = this;

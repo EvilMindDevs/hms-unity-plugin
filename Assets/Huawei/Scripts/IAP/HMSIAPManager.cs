@@ -50,7 +50,7 @@ namespace HmsPlugin
             HMSDispatcher.InvokeAsync(OnAwake);
         }
 
-        public void OnAwake()
+        private void OnAwake()
         {
             if (HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart))
                 CheckIapAvailability();
@@ -163,14 +163,14 @@ namespace HmsPlugin
 
             iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type) =>
             {
-                Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value}" + type.ErrMsg + type.ReturnCode.ToString());
+                Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} ReturnMessage: {type.ErrMsg}  ReturnCode: {type.ReturnCode}");
                 Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} Obtained product count:"  + type.ProductInfoList.Count);
                 foreach (var productInfo in type.ProductInfoList)
                 {
                     if (!productInfoList.Exists(c => c.ProductId == productInfo.ProductId)) 
                     {
                         productInfoList.Add(productInfo);
-                        Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} ProductId:" + productInfo.ProductId + " , ProductName:" + productInfo.ProductName + ", Price:" + productInfo.Price);
+                        Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} ProductId:" + productInfo.ProductId + ", ProductName:" + productInfo.ProductName + ", Price:" + productInfo.Price);
                     }
                 }
 

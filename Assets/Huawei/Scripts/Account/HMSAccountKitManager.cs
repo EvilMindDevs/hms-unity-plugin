@@ -69,7 +69,7 @@ namespace HmsPlugin
             HMSDispatcher.InvokeAsync(OnAwake);
         }       
 
-        public void OnAwake()
+        private void OnAwake()
         {
             Debug.Log("[HMSAccountManager]: AuthService OnAwake");
             authService = DefaultAuthService;

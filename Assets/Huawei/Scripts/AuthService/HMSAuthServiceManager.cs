@@ -29,7 +29,7 @@ namespace HmsPlugin
             HMSDispatcher.InvokeAsync(OnAwake);
         }
 
-        public void OnAwake()
+        private void OnAwake()
         {
             Debug.Log("[HMSAuthServiceManager]: AuthService OnAwake");
             _AGConnectAuth = AGConnectAuth.GetInstance();

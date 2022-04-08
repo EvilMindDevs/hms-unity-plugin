@@ -25,7 +25,7 @@ public class HMSAppMessagingManager : HMSEditorSingleton<HMSAppMessagingManager>
         HMSDispatcher.InvokeAsync(OnAwake);
     }
 
-    public void OnAwake()
+    private void OnAwake()
     {
         Debug.Log("AppMessaging: OnAwake");
         HmsInstanceId inst = HmsInstanceId.GetInstance();

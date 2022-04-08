@@ -27,7 +27,12 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         if (gradleVersion.CompareTo(gradleMinVersion) < 0)
         {
             gradleFileAsString = gradleFileAsString.Replace(gradleVersion.ToString(), gradleMinVersion.ToString());
+
+#if UNITY_2019_3_OR_NEWER
             File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", gradleFileAsString);
+#elif UNITY_2018_1_OR_NEWER
+                File.WriteAllText(path + "/build.gradle", gradleFileAsString);
+#endif
         }
     }
 
@@ -114,6 +119,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         var lines = File.ReadAllLines(hmsMainTemplatePath);
 
         File.AppendAllLines(path + "/build.gradle", lines);
+        GradleVersionFixer(File.ReadAllText(path + "/build.gradle"), path);
         destPath = Path.Combine(path, fileName);
 #endif
         if (File.Exists(destPath))

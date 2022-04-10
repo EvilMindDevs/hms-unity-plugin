@@ -7,18 +7,18 @@ public class HMSCrashManager : HMSEditorSingleton<HMSCrashManager>
 {
     IAGConnectCrash agConnectCrash;
 
-    public void OnAwake()
-    {
-        Debug.Log("[HMS]: Crash OnAwake - Initialized");
-        agConnectCrash = AGConnectCrash.GetInstance();
-    }
-
     public HMSCrashManager()
     {
         Debug.Log($"[HMS] : HMSCrashManager Constructor");
         if (!HMSDispatcher.InstanceExists)
             HMSDispatcher.CreateDispatcher();
         HMSDispatcher.InvokeAsync(OnAwake);
+    }
+
+    private void OnAwake()
+    {
+        Debug.Log("[HMS]: Crash OnAwake - Initialized");
+        agConnectCrash = AGConnectCrash.GetInstance();
     }
 
     //Crash Collection enable/disable method used on AnalyticsDemo scene with enable/disable radio button configuration 

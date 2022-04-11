@@ -21,8 +21,8 @@ namespace HmsPlugin
                 var enabledEditors = HMSMainKitsTabFactory.GetEnabledEditors();
                 if (enabledEditors != null && enabledEditors.Count > 0)
                 {
-                    enabledEditors.ForEach(c => c.DestroyManagers());
-                    enabledEditors.ForEach(f => f.CreateManagers());
+                    enabledEditors.ForEach(c => c.DisableToggle());
+                    enabledEditors.ForEach(f => f.EnableToggle());
                 }
             }
         }

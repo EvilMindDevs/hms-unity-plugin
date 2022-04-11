@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using HuaweiMobileServices.Ads;
 using HmsPlugin;
 using UnityEngine.UI;
+using HuaweiMobileServices.Ads;
 
 public class AdsDemoManager : MonoBehaviour
 {
@@ -16,6 +14,24 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance.OnRewarded = OnRewarded;
         HMSAdsKitManager.Instance.OnInterstitialAdClosed = OnInterstitialAdClosed;
         testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
+
+        HMSAdsKitManager.Instance.ConsentOnFail = OnConsentFail;
+        HMSAdsKitManager.Instance.ConsentOnSuccess = OnConsentSuccess;
+        HMSAdsKitManager.Instance.RequestConsentUpdate();
+    }
+
+    private void OnConsentSuccess(ConsentStatus consentStatus, bool isNeedConsent, IList<AdProvider> adProviders)
+    {
+        Debug.Log($"[HMS] AdsDemoManager OnConsentSuccess consentStatus:{consentStatus} isNeedConsent:{isNeedConsent}");
+        foreach (var AdProvider in adProviders)
+        {
+            Debug.Log($"[HMS] AdsDemoManager OnConsentSuccess adproviders: Id:{AdProvider.Id} Name:{AdProvider.Name} PrivacyPolicyUrl:{AdProvider.PrivacyPolicyUrl} ServiceArea:{AdProvider.ServiceArea}");
+        }
+    }
+
+    private void OnConsentFail(string desc)
+    {
+        Debug.Log($"[HMS] AdsDemoManager OnConsentFail:{desc}");
     }
 
     public void ShowBannerAd()

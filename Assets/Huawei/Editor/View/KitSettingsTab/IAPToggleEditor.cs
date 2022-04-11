@@ -28,11 +28,11 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagers();
+                EnableToggle();
             }
             else
             {
-                DestroyManagers();
+                DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(IAPKitEnabled, value);
         }
@@ -42,48 +42,25 @@ namespace HmsPlugin
             _toggle.Draw();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
 
             if (_tabBar != null && _tabView != null)
                 _tabBar.AddTab(_tabView);
-
-            if (GameObject.FindObjectOfType<HMSIAPManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSIAPManager");
-                obj.AddComponent<HMSIAPManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
             Enabled = true;
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
-            var iapManagers = GameObject.FindObjectsOfType<HMSIAPManager>();
-            if (iapManagers.Length > 0)
-            {
-                for (int i = 0; i < iapManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(iapManagers[i].gameObject);
-                }
-            }
             if (_tabBar != null && _tabView != null)
                 _tabBar.RemoveTab(_tabView);
             Enabled = false;
         }
 
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
-            var iapManagers = GameObject.FindObjectsOfType<HMSIAPManager>();
-            if (iapManagers.Length > 0)
-            {
-                for (int i = 0; i < iapManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(iapManagers[i].gameObject);
-                }
-            }
             if (removeTabs)
             {
                 if (_tabBar != null && _tabView != null)
@@ -95,7 +72,6 @@ namespace HmsPlugin
                     _tabBar.AddTab(_tabView);
             }
         }
-
 
         public override void RefreshToggles()
         {

@@ -30,11 +30,11 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagers();
+                EnableToggle();
             }
             else
             {
-                DestroyManagers();
+                DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(GameServiceEnabled, value);
         }
@@ -44,7 +44,7 @@ namespace HmsPlugin
             _toggle.Draw();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
@@ -54,44 +54,18 @@ namespace HmsPlugin
 
             if (_dependentToggle != null)
                 _dependentToggle.SetToggle();
-
-            if (GameObject.FindObjectOfType<HMSGameManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSGameManager");
-                obj.AddComponent<HMSGameManager>();
-                obj.AddComponent<HMSAchievementsManager>();
-                obj.AddComponent<HMSLeaderboardManager>();
-                obj.AddComponent<HMSSaveGameManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
             Enabled = true;
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
-            var gameKitManagers = GameObject.FindObjectsOfType<HMSGameManager>();
-            if (gameKitManagers.Length > 0)
-            {
-                for (int i = 0; i < gameKitManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(gameKitManagers[i].gameObject);
-                }
-            }
             if (_tabBar != null && _tabView != null)
                 _tabBar.RemoveTab(_tabView);
             Enabled = false;
         }
 
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
-            var gameKitManagers = GameObject.FindObjectsOfType<HMSGameManager>();
-            if (gameKitManagers.Length > 0)
-            {
-                for (int i = 0; i < gameKitManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(gameKitManagers[i].gameObject);
-                }
-            }
             if (removeTabs)
             {
                 if (_tabBar != null && _tabView != null)

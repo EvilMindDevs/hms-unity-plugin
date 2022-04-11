@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class HMSLeaderboardManager : HMSSingleton<HMSLeaderboardManager>
+    public class HMSLeaderboardManager : HMSEditorSingleton<HMSLeaderboardManager>
     {
 
         public IRankingsClient rankingsClient;

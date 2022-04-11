@@ -19,10 +19,11 @@ namespace HmsPlugin
         public HMSIAPKitSettings()
         {
             loadedSettings = ScriptableHelper.Load<SettingsScriptableObject>(SettingsFilename, "Assets/Huawei/Settings/Resources");
-
-            Debug.Assert(loadedSettings != null, "Failed to load the " + SettingsFilename);
+            if (loadedSettings == null)
+            {
+                throw new NullReferenceException("Failed to load the " + SettingsFilename +". Please restart Unity Editor");
+            }
             _settings = loadedSettings.settings;
-
             _settings.OnDictionaryChanged += _settings_OnDictionaryChanged;
         }
 

@@ -1,13 +1,9 @@
-﻿using HmsPlugin;
-using HuaweiConstants;
+﻿using HuaweiConstants;
 using HuaweiMobileServices.Ads;
 using HuaweiMobileServices.Utils;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 using static HuaweiConstants.UnityBannerAdPositionCode;
 using static HuaweiMobileServices.Ads.SplashAd;
 

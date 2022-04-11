@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class HMSAchievementsManager : HMSEditorSingleton<HMSAchievementsManager>
+    public class HMSAchievementsManager : HMSManagerSingleton<HMSAchievementsManager>
     {
 
         public IAchievementsClient achievementsClient;

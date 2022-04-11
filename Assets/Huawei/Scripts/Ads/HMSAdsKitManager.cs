@@ -11,7 +11,7 @@ using static HuaweiMobileServices.Ads.SplashAd;
 namespace HmsPlugin
 {
 
-    public class HMSAdsKitManager : HMSEditorSingleton<HMSAdsKitManager>
+    public class HMSAdsKitManager : HMSManagerSingleton<HMSAdsKitManager>
     {
 
         private const string TestBannerAdId = "testw6vs28auh3";

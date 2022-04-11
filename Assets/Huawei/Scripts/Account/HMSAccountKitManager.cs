@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class HMSAccountKitManager : HMSEditorSingleton<HMSAccountKitManager>
+    public class HMSAccountKitManager : HMSManagerSingleton<HMSAccountKitManager>
     {
         private static AccountAuthService DefaultAuthService
         {

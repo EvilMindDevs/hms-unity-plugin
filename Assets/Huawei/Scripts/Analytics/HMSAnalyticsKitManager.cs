@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 using System.Threading;
 
-public class HMSAnalyticsKitManager : HMSEditorSingleton<HMSAnalyticsKitManager>
+public class HMSAnalyticsKitManager : HMSManagerSingleton<HMSAnalyticsKitManager>
 {
     private HiAnalyticsInstance hiAnalyticsInstance;
 

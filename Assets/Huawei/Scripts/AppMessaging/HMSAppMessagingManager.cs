@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class HMSAppMessagingManager : HMSEditorSingleton<HMSAppMessagingManager>
+public class HMSAppMessagingManager : HMSManagerSingleton<HMSAppMessagingManager>
 {
     public Action<AppMessage> OnMessageClicked { get; set; }
     public Action<AppMessage> OnMessageDisplay { get; set; }

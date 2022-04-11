@@ -8,7 +8,7 @@ using static HuaweiConstants.HMSResponses;
 
 namespace HmsPlugin
 {
-    public class HMSGameServiceManager : HMSEditorSingleton<HMSGameServiceManager>, ICheckUpdateCallback
+    public class HMSGameServiceManager : HMSManagerSingleton<HMSGameServiceManager>, ICheckUpdateCallback
     {
         public Action<Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }

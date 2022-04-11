@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace HmsPlugin
 {
-    public class HMSPushKitManager : HMSEditorSingleton<HMSPushKitManager>, IPushListener
+    public class HMSPushKitManager : HMSManagerSingleton<HMSPushKitManager>, IPushListener
     {
         public Action<string> OnTokenSuccess { get; set; }
         public Action<Exception> OnTokenFailure { get; set; }

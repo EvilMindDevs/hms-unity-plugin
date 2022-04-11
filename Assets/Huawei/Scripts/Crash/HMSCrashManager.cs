@@ -3,7 +3,7 @@ using HuaweiMobileServices.Utils;
 using UnityEngine;
 using UnityEngine.Diagnostics;
 
-public class HMSCrashManager : HMSEditorSingleton<HMSCrashManager>
+public class HMSCrashManager : HMSManagerSingleton<HMSCrashManager>
 {
     IAGConnectCrash agConnectCrash;
 

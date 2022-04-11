@@ -2,6 +2,7 @@
 using HuaweiMobileServices.Ads;
 using HuaweiMobileServices.Utils;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using static HuaweiConstants.UnityBannerAdPositionCode;
@@ -10,7 +11,7 @@ using static HuaweiMobileServices.Ads.SplashAd;
 namespace HmsPlugin
 {
 
-    public class HMSAdsKitManager : HMSEditorSingleton<HMSAdsKitManager>
+    public class HMSAdsKitManager : HMSManagerSingleton<HMSAdsKitManager>
     {
 
         private const string TestBannerAdId = "testw6vs28auh3";
@@ -559,6 +560,78 @@ namespace HmsPlugin
         #endregion
 
         #endregion
+
+        #region CONSENT
+
+        #region PUBLIC METHODS
+
+        public void AddTestDeviceId(String testDeviceId)
+        {
+            Consent consent = Consent.GetInstance();
+            consent.AddTestDeviceId(testDeviceId);
+        }
+
+        public String GetTestDeviceId()
+        {
+            Consent consent = Consent.GetInstance();
+            return consent.TestDeviceId;
+        }
+
+        public void RequestConsentUpdate()
+        {
+            Consent consent = Consent.GetInstance();
+            consent.RequestConsentUpdate(new ConsentUpdateListener(this));
+        }
+
+        public void SetConsentStatus(ConsentStatus consentStatus)
+        {
+            Consent consent = Consent.GetInstance();
+            consent.SetConsentStatus(ConsentStatusWrapper.ForValue((int)consentStatus));
+        }
+
+        public void SetDebugNeedConsent(DebugNeedConsent debugNeedConsent)
+        {
+            Consent consent = Consent.GetInstance();
+            consent.SetDebugNeedConsent(DebugNeedConsentWrapper.ForValue((int)debugNeedConsent));
+        }
+
+        public void SetUnderAgeOfPromise(bool underAgeOfPromise)
+        {
+            Consent consent = Consent.GetInstance();
+            consent.SetUnderAgeOfPromise(underAgeOfPromise);
+        }
+
+        #endregion
+
+        #region LISTENERS
+
+        private class ConsentUpdateListener : IConsentUpdateListener
+        {
+            private readonly HMSAdsKitManager mAdsManager;
+
+            public ConsentUpdateListener(HMSAdsKitManager adsManager)
+            {
+                mAdsManager = adsManager;
+            }
+            void IConsentUpdateListener.OnFail(string desc)
+            {
+                Debug.Log("[HMS] HMSAdsKitManager CONSENT OnFail " + desc);
+                mAdsManager.ConsentOnFail?.Invoke(desc);
+            }
+
+            void IConsentUpdateListener.OnSuccess(ConsentStatus consentStatus, bool isNeedConsent, IList<AdProvider> adProviders)
+            {
+                Debug.Log($"[HMS] HMSAdsKitManager CONSENT OnSuccess consentStatus:{consentStatus} isNeedConsent:{isNeedConsent} adProviders listSize:{adProviders.Count}");
+                mAdsManager.ConsentOnSuccess?.Invoke(consentStatus, isNeedConsent, adProviders);
+            }
+        }
+        public Action<string> ConsentOnFail { get; set; }
+        public Action<ConsentStatus, bool, IList<AdProvider>> ConsentOnSuccess { get; set; }
+
+        #endregion
+
+        #endregion
+
     }
 
 }

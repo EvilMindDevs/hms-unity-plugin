@@ -10,7 +10,7 @@ using HuaweiConstants;
 
 namespace HmsPlugin
 {
-    public class HMSIAPManager : HMSEditorSingleton<HMSIAPManager>
+    public class HMSIAPManager : HMSManagerSingleton<HMSIAPManager>
     {
         private readonly HMSException IAP_NOT_AVAILABLE = new HMSException("[HMSIAPManager] IAP not available", "IAP not available", "IAP not available") { };
 

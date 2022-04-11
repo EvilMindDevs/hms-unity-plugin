@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using System.Xml;
 using HmsPlugin;
 
-public class HMSRemoteConfigManager : HMSSingleton<HMSRemoteConfigManager>
+public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager>
 {
     string TAG = "HMSRemoteConfig Manager";
 
@@ -18,9 +18,15 @@ public class HMSRemoteConfigManager : HMSSingleton<HMSRemoteConfigManager>
 
     IAGConnectConfig agc = null;
 
-    public override void Awake()
+    public HMSRemoteConfigManager()
     {
-        base.Awake();
+        if (!HMSDispatcher.InstanceExists)
+            HMSDispatcher.CreateDispatcher();
+        HMSDispatcher.InvokeAsync(OnAwake);
+    }
+
+    private void OnAwake()
+    {
         GetInstance();
         if (HMSRemoteConfigSettings.Instance != null)
         {

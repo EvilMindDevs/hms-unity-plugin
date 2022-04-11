@@ -1,6 +1,7 @@
 ﻿using HuaweiMobileServices.AppMessaging;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;
+using HuaweiMobileServices.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class HMSAppMessagingManager : HMSSingleton<HMSAppMessagingManager>
+public class HMSAppMessagingManager : HMSManagerSingleton<HMSAppMessagingManager>
 {
     public Action<AppMessage> OnMessageClicked { get; set; }
     public Action<AppMessage> OnMessageDisplay { get; set; }
@@ -16,10 +17,17 @@ public class HMSAppMessagingManager : HMSSingleton<HMSAppMessagingManager>
     public Action<AppMessage, DismissType> OnMessageDissmiss { get; set; }
     public Action<AAIDResult> AAIDResultAction { get; set; }
 
-    void Start()
+    public HMSAppMessagingManager()
     {
-        Debug.Log("AppMessaging: Start");
+        Debug.Log($"[HMS] : HMSAppMessagingManager Constructor");
+        if (!HMSDispatcher.InstanceExists)
+            HMSDispatcher.CreateDispatcher();
+        HMSDispatcher.InvokeAsync(OnAwake);
+    }
 
+    private void OnAwake()
+    {
+        Debug.Log("AppMessaging: OnAwake");
         HmsInstanceId inst = HmsInstanceId.GetInstance();
         ITask<AAIDResult> idResult = inst.AAID;
         idResult.AddOnSuccessListener((result) =>
@@ -40,7 +48,6 @@ public class HMSAppMessagingManager : HMSSingleton<HMSAppMessagingManager>
         appMessaging.AddOnDismissListener(OnMessageDissmiss);
         appMessaging.SetForceFetch();
     }
-
     private void OnMessageClickFunction(AppMessage obj)
     {
         Debug.Log("AppMessaging  OnMessageClickFunction");

@@ -25,11 +25,11 @@ namespace HmsPlugin
         {
             if (value)
             {
-                CreateManagers();
+                EnableToggle();
             }
             else
             {
-                DestroyManagers();
+                DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(CrashKitEnabled, value);
         }
@@ -39,49 +39,26 @@ namespace HmsPlugin
             _toggle.Draw();
         }
 
-        public override void CreateManagers()
+        public override void EnableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
 
             if (_dependentToggle != null)
                 _dependentToggle.SetToggle();
-            if (GameObject.FindObjectOfType<HMSCrashManager>() == null)
-            {
-                GameObject obj = new GameObject("HMSCrashManager");
-                obj.AddComponent<HMSCrashManager>();
-                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            }
             Enabled = true;
         }
 
-        public override void DestroyManagers()
+        public override void DisableToggle()
         {
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
-            var crashManagers = GameObject.FindObjectsOfType<HMSCrashManager>();
-            if (crashManagers.Length > 0)
-            {
-                for (int i = 0; i < crashManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(crashManagers[i].gameObject);
-                }
-            }
             Enabled = false;
         }
-
-        public override void DisableManagers(bool removeTabs)
+        public override void RemoveToggleTabView(bool removeTabs)
         {
-            var crashManagers = GameObject.FindObjectsOfType<HMSCrashManager>();
-            if (crashManagers.Length > 0)
-            {
-                for (int i = 0; i < crashManagers.Length; i++)
-                {
-                    GameObject.DestroyImmediate(crashManagers[i].gameObject);
-                }
-            }
+            //throw new NotImplementedException();
         }
-
 
         public override void RefreshToggles()
         {

@@ -10,9 +10,9 @@ namespace HmsPlugin
     {
         protected Toggle.Toggle _toggle;
         public bool Enabled { get; set; }
-        public abstract void CreateManagers();
-        public abstract void DestroyManagers();
-        public abstract void DisableManagers(bool removeTabs);
+        public abstract void EnableToggle();
+        public abstract void DisableToggle();
+        public abstract void RemoveToggleTabView(bool removeTabs);
         public abstract void RefreshToggles();
     }
 }

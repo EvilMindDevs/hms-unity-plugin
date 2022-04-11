@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class HMSAuthServiceManager : HMSSingleton<HMSAuthServiceManager>
+    public class HMSAuthServiceManager : HMSManagerSingleton<HMSAuthServiceManager>
     {
         public Action<SignInResult> OnSignInSuccess { get; set; }
         public Action<HMSException> OnSignInFailed { get; set; }
@@ -22,9 +22,16 @@ namespace HmsPlugin
 
         AGConnectAuth _AGConnectAuth = null;
 
-        public override void Awake()
+        public HMSAuthServiceManager()
         {
-            base.Awake();
+            if (!HMSDispatcher.InstanceExists)
+                HMSDispatcher.CreateDispatcher();
+            HMSDispatcher.InvokeAsync(OnAwake);
+        }
+
+        private void OnAwake()
+        {
+            Debug.Log("[HMSAuthServiceManager]: AuthService OnAwake");
             _AGConnectAuth = AGConnectAuth.GetInstance();
         }
 

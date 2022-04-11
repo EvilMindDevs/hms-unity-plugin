@@ -1,12 +1,23 @@
 ﻿using HuaweiMobileServices.Crash;
+using HuaweiMobileServices.Utils;
 using UnityEngine;
+using UnityEngine.Diagnostics;
 
-public class HMSCrashManager : HMSSingleton<HMSCrashManager>
+public class HMSCrashManager : HMSManagerSingleton<HMSCrashManager>
 {
     IAGConnectCrash agConnectCrash;
-    void Start()
+
+    public HMSCrashManager()
     {
-        Debug.Log("[HMS]: Crash Initialized");
+        Debug.Log($"[HMS] : HMSCrashManager Constructor");
+        if (!HMSDispatcher.InstanceExists)
+            HMSDispatcher.CreateDispatcher();
+        HMSDispatcher.InvokeAsync(OnAwake);
+    }
+
+    private void OnAwake()
+    {
+        Debug.Log("[HMS]: Crash OnAwake - Initialized");
         agConnectCrash = AGConnectCrash.GetInstance();
     }
 
@@ -20,7 +31,7 @@ public class HMSCrashManager : HMSSingleton<HMSCrashManager>
     public void TestCrash()
     {
         Debug.Log("[HMS]: Crash testIt");
-        Application.ForceCrash(0);
+        Utils.ForceCrash(0);
     }
 
     enum Log

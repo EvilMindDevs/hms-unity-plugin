@@ -10,7 +10,7 @@ using HuaweiConstants;
 
 namespace HmsPlugin
 {
-    public class HMSIAPManager : HMSSingleton<HMSIAPManager>
+    public class HMSIAPManager : HMSManagerSingleton<HMSIAPManager>
     {
         private readonly HMSException IAP_NOT_AVAILABLE = new HMSException("[HMSIAPManager] IAP not available", "IAP not available", "IAP not available") { };
 
@@ -42,7 +42,15 @@ namespace HmsPlugin
         private bool? iapAvailable = null;
         private List<ProductInfo> productInfoList = new List<ProductInfo>();
 
-        private void Start()
+        public HMSIAPManager()
+        {
+            Debug.Log($"[HMS] : HMSIAPManager Constructor");
+            if (!HMSDispatcher.InstanceExists)
+                HMSDispatcher.CreateDispatcher();
+            HMSDispatcher.InvokeAsync(OnAwake);
+        }
+
+        private void OnAwake()
         {
             if (HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart))
                 CheckIapAvailability();
@@ -155,14 +163,14 @@ namespace HmsPlugin
 
             iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type) =>
             {
-                Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value}" + type.ErrMsg + type.ReturnCode.ToString());
+                Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} ReturnMessage: {type.ErrMsg}  ReturnCode: {type.ReturnCode}");
                 Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} Obtained product count:"  + type.ProductInfoList.Count);
                 foreach (var productInfo in type.ProductInfoList)
                 {
                     if (!productInfoList.Exists(c => c.ProductId == productInfo.ProductId)) 
                     {
                         productInfoList.Add(productInfo);
-                        Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} ProductId:" + productInfo.ProductId + " , ProductName:" + productInfo.ProductName + ", Price:" + productInfo.Price);
+                        Debug.Log($"[HMSIAPManager]: ObtainProductInfo for Price Type:{priceType.Value} ProductId:" + productInfo.ProductId + ", ProductName:" + productInfo.ProductName + ", Price:" + productInfo.Price);
                     }
                 }
 

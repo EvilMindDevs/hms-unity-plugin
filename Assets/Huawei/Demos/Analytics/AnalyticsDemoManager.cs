@@ -27,7 +27,7 @@ namespace HmsPlugin
             }
             else
             {
-                HMSAnalyticsManager.Instance.SendEventWithBundle(eventIdField.text, keyField.text, valueField.text);
+                HMSAnalyticsKitManager.Instance.SendEventWithBundle(eventIdField.text, keyField.text, valueField.text);
             }
         }
     }

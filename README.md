@@ -212,6 +212,7 @@ Then you can call certain functions such as
        
     }
 ```
+**For Using the Consent SDK, please refer to [Consent](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/publisher-service-consent-settings-0000001075342977).**
 
 ## Game kit
 There is a custom editor in Huawei > Kit Settings > Game Service tab.

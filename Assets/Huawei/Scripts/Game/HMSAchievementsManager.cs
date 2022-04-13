@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class HMSAchievementsManager : HMSSingleton<HMSAchievementsManager>
+    public class HMSAchievementsManager : HMSManagerSingleton<HMSAchievementsManager>
     {
 
         public IAchievementsClient achievementsClient;
@@ -31,7 +31,7 @@ namespace HmsPlugin
 
         public void ShowAchievements()
         {
-            if (HMSAccountManager.Instance.HuaweiId != null)
+            if (HMSAccountKitManager.Instance.HuaweiId != null)
             {
                 IAchievementsClient achievementsClient = Games.GetAchievementsClient();
                 achievementsClient.ShowAchievementList(() =>

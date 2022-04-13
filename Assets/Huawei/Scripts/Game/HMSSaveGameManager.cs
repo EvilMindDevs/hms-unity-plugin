@@ -13,7 +13,7 @@ using UnityEngine.UI;
 
 namespace HmsPlugin
 {
-    public class HMSSaveGameManager : HMSSingleton<HMSSaveGameManager>
+    public class HMSSaveGameManager : HMSManagerSingleton<HMSSaveGameManager>
     {
         public IArchivesClient playersClient { get; set; }
         public Action<ArchiveSummary> SelectedAction { get; set; }

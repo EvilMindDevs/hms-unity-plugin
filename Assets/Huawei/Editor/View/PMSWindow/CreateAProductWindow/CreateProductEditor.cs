@@ -45,6 +45,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         {
             supportedLanguages = HMSEditorUtils.SupportedLanguages();
             countryInfos = HMSEditorUtils.SupportedCountries();
+            countryInfos.Sort((x, y) => x.Country.CompareTo(y.Country));
             subPeriods = SetupSubPeriods();
 
 

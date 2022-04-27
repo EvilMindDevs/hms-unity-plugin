@@ -49,9 +49,9 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             subPeriods = SetupSubPeriods();
 
 
-            productNoTextField = new TextField.TextField("Product Id:", "");
-            productNameTextField = new TextField.TextField("Product Name:", "");
-            descriptionTextField = new TextField.TextField("Description:", "");
+            productNoTextField = new TextField.TextField("Product Id:", "").SetHeight(20);
+            productNameTextField = new TextField.TextField("Product Name:", "").SetHeight(20);
+            descriptionTextField = new TextField.TextField("Description:", "").SetHeight(20);
             purchaseTypeDropdown = new Dropdown.StringDropdown(purchaseTypes, 0, "Purchase Type:", OnPurchaseTypeChanged);
             subPeriodDropdown = new Dropdown.StringDropdown(subPeriods.Select(c => c.Content).ToArray(), 0, "Sub Period:", OnSubPeriodChanged);
             subGroupDropdown = new Dropdown.StringDropdown(new string[] { }, 0, "Sub Group:", OnSubGroupChanged);

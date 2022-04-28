@@ -24,6 +24,9 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private TextField.TextField descriptionTextField;
         private TextArea.TextArea jsonField;
 
+        private readonly int InitialLanguageIndex = 15;
+        private readonly int InitialCountryIndex = 0;
+
         private LanguagesFoldoutEditor languagesFoldout;
         private string[] purchaseTypes = { "Consumable", "Non_Consumable", "Auto_Subscription" };
         private List<SubPeriod> subPeriods;
@@ -43,7 +46,8 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         //TODO: Add check for inputs and warn user if fields are not filled.
         public CreateProductEditor()
         {
-            supportedLanguages = HMSEditorUtils.SupportedLanguages();
+            var supportedLanguagesUnsorted = HMSEditorUtils.SupportedLanguages();
+            supportedLanguages = supportedLanguagesUnsorted.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             countryInfos = HMSEditorUtils.SupportedCountries();
             countryInfos.Sort((x, y) => x.Country.CompareTo(y.Country));
             subPeriods = SetupSubPeriods();
@@ -57,14 +61,14 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             subGroupDropdown = new Dropdown.StringDropdown(new string[] { }, 0, "Sub Group:", OnSubGroupChanged);
             statusToggle = new Toggle.Toggle("Status(Active/Inactive):");
             currencyLabel = new Label.Label();
-            countryDropdown = new Dropdown.StringDropdown(countryInfos.Select(c => c.Country).ToArray(), 0, "Country", OnCountrySelected);
-            defaultLocaleDropdown = new Dropdown.StringDropdown(supportedLanguages.Keys.ToArray(), 14, "Default Language", OnLanguageSelected);
+            countryDropdown = new Dropdown.StringDropdown(countryInfos.Select(c => c.Country).ToArray(), InitialCountryIndex, "Country", OnCountrySelected);
+            defaultLocaleDropdown = new Dropdown.StringDropdown(supportedLanguages.Keys.ToArray(), InitialLanguageIndex, "Default Language", OnLanguageSelected);
             defaultPriceTextField = new TextField.TextField("Price:", "");
             bottomDrawer = new VerticalSequenceDrawer();
             jsonField = new TextArea.TextArea("").SetFieldHeight(500);
 
-            OnCountrySelected(0);
-            OnLanguageSelected(14);
+            OnCountrySelected(InitialCountryIndex);
+            OnLanguageSelected(InitialLanguageIndex);
             languagesFoldout = new LanguagesFoldoutEditor();
 
             AddDrawer(new HorizontalLine());

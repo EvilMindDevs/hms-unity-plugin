@@ -29,6 +29,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         public AllIAPProductsEditor()
         {
             countryInfos = HMSEditorUtils.SupportedCountries();
+            countryInfos.Sort((x, y) => x.Country.CompareTo(y.Country));
             selectedCountry = countryInfos[0];
 
             productNoTextField = new TextField.TextField("Product Id:", "");

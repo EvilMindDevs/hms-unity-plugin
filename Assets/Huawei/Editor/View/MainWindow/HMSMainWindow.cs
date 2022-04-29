@@ -8,7 +8,7 @@ public class HMSMainWindow : HMSEditorWindow
     [MenuItem("Huawei/Kit Settings", priority = 1)]
     public static void ShowWindow()
     {
-        GetWindow(typeof(HMSMainWindow), false, "HMS Settings");
+        GetWindow(typeof(HMSMainWindow), false, "HMS Kit Settings");
     }
 
     [MenuItem("Huawei/Check for Updates", priority = 2)]

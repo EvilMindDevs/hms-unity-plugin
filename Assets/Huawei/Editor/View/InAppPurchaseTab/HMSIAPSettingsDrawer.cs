@@ -121,7 +121,15 @@ namespace HmsPlugin
                     file.WriteLine("public class HMSIAPConstants\n{");
                     for (int i = 0; i < _productListSettings.Keys.Count(); i++)
                     {
-                        file.WriteLine($"\tpublic const string {Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "") } = \"{_productListSettings.Keys.ElementAt(i).Replace("\"", "")}\";");
+                        if (char.IsDigit(Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "")[0])) 
+                        {
+                            //Given identifier starts with numeric 
+                            file.WriteLine($"\tpublic const string _{Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "") } = \"{_productListSettings.Keys.ElementAt(i).Replace("\"", "")}\";");
+                        }
+                        else 
+                        {
+                            file.WriteLine($"\tpublic const string {Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "") } = \"{_productListSettings.Keys.ElementAt(i).Replace("\"", "")}\";");
+                        }
                     }
                     file.WriteLine("}");
                 }

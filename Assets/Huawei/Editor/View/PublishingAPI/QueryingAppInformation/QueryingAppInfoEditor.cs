@@ -93,7 +93,7 @@ namespace HmsPlugin.PublishingAPI
             }
 
             return EditorUtility.DisplayDialog("Upload After Build?","Are you sure uploading package to AGC after build?\nFile Size: " +
-               fileSize + " MB", "OK", "CANCEL");
+               fileSize + " MB", "Ok", "Cancel");
         }
 
         private static void UploadAnAppPackage(string filePath, string uploadUrl, string authCode)

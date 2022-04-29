@@ -35,8 +35,10 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         public UpdateIAPProductEditor(AllIAPProductsEditor.Product product)
         {
             _product = product;
-            supportedLanguages = HMSEditorUtils.SupportedLanguages();
+            var supportedLanguagesUnsorted = HMSEditorUtils.SupportedLanguages();
+            supportedLanguages = supportedLanguagesUnsorted.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             countryInfos = HMSEditorUtils.SupportedCountries();
+            countryInfos.Sort((x, y) => x.Country.CompareTo(y.Country));
 
             productNoLabel = new Label.Label("Product Id:");
             productNameTextField = new TextField.TextField("Product Name:", product.productName);

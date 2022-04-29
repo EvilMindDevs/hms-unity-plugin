@@ -44,12 +44,16 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private IDrawer CreateList(ProductLanguage item)
         {
-            item.Language = HMSEditorUtils.SupportedLanguages().ElementAt(0).Value;
+            var supportedLanguagesUnsorted = HMSEditorUtils.SupportedLanguages();
+            var supportedLanguages = supportedLanguagesUnsorted.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+
+            item.Language = supportedLanguages.ElementAt(0).Value;
             item.Index = 0;
             var sequence = new VerticalSequenceDrawer();
-            sequence.AddDrawer(new Dropdown.StringDropdown(HMSEditorUtils.SupportedLanguages().Keys.ToArray(), item.Index, "Languages", (index) =>
+            
+            sequence.AddDrawer(new Dropdown.StringDropdown(supportedLanguages.Keys.ToArray(), item.Index, "Languages", (index) =>
             {
-                item.Language = HMSEditorUtils.SupportedLanguages().ElementAt(index).Value;
+                item.Language = supportedLanguages.ElementAt(index).Value;
                 item.Index = index;
             }));
             sequence.AddDrawer(new Space(3));

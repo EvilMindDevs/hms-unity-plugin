@@ -133,6 +133,19 @@ namespace HmsPlugin.TextField
         {
 
         }
+
+        public TextField SetdWidth(int width)
+        {
+            SetFieldWidth(width);
+            return this;
+        }
+
+        public TextField SetHeight(int height)
+        {
+            SetFieldHeight(height);
+            return this;
+        }
+
     }
 
     public class TextFieldWithData<T> : TextFieldBase

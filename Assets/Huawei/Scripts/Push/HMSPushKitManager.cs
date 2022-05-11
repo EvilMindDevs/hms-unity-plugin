@@ -37,11 +37,15 @@ namespace HmsPlugin
             Debug.Log($"[HMS] : HMSPushKitManager OnAwake");
             PushManager.Listener = this;
             notificationDataOnStart = PushManager.NotificationDataOnStart;
+        }
+
+        public void Init() 
+        {
             if (notificationDataOnStart.NotifyId != -1)
             {
                 NotificationMessageOnStart?.Invoke(notificationDataOnStart);
             }
-             PushManager.RegisterOnNotificationMessage((data) =>
+            PushManager.RegisterOnNotificationMessage((data) =>
             {
                 OnNotificationMessage?.Invoke(data);
             });

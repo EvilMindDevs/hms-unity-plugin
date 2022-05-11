@@ -4,6 +4,7 @@ using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Push;
 using HuaweiMobileServices.Utils;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,10 +14,20 @@ public class PushDemoManager : MonoBehaviour
     [SerializeField]
     private Text remoteMessageText, tokenText;
 
-    private NotificationData notificationDataOnStart;
+   //private NotificationData notificationDataOnStart;
 
     void Start()
     {
+        /*
+         * When using multiple kits, we recommend initializing the push kit with the coroutine.
+         */
+        Debug.Log("[HMS] Push Start");
+        StartCoroutine(LateStart(0f));
+    }
+
+    IEnumerator LateStart(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
         HMSPushKitManager.Instance.OnTokenSuccess = OnNewToken;
         HMSPushKitManager.Instance.OnTokenFailure = OnTokenError;
         HMSPushKitManager.Instance.OnTokenBundleSuccess = OnNewToken;
@@ -27,9 +38,7 @@ public class PushDemoManager : MonoBehaviour
         HMSPushKitManager.Instance.OnMessageReceivedSuccess = OnMessageReceived;
         HMSPushKitManager.Instance.OnNotificationMessage = OnNotificationMessage;
         HMSPushKitManager.Instance.NotificationMessageOnStart = NotificationMessageOnStart;
-
-        Debug.Log($"[HMS] Push token from GetToken is {pushToken}");
-        tokenText.text = "Push Token: " + pushToken;
+        HMSPushKitManager.Instance.Init();
     }
 
     private void OnNotificationMessage(NotificationData data)
@@ -46,14 +55,18 @@ public class PushDemoManager : MonoBehaviour
         Debug.Log("[HMSPushDemo] MsgId: " + data.MsgId);
         Debug.Log("[HMSPushDemo] NotifyId: " + data.NotifyId);
         Debug.Log("[HMSPushDemo] KeyValueJSON: " + data.KeyValueJSON);
+        /* TODO: Make your own logic here
+         * notificationDataOnStart = data;
+         */
     }
 
     public void OnNewToken(string token)
     {
-        Debug.Log($"[HMS] Push token from OnNewToken is {pushToken}");
-        if (pushToken == null)
+        Debug.Log($"[HMS] Push token from OnNewToken is {token}");
+        if (token != "")
         {
             pushToken = token;
+            tokenText.text = "Push Token: " + pushToken;
         }
     }
 
@@ -74,10 +87,11 @@ public class PushDemoManager : MonoBehaviour
 
     public void OnNewToken(string token, Bundle bundle)
     {
-        Debug.Log($"[HMS] Push token from OnNewToken is {pushToken}");
-        if (pushToken == null)
+        Debug.Log($"[HMS] Push token from OnNewToken is {token}");
+        if (token != "")
         {
             pushToken = token;
+            tokenText.text = "Push Token: " + pushToken;
         }
     }
 

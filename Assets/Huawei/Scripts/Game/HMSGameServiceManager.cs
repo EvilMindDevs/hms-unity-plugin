@@ -21,6 +21,7 @@ namespace HmsPlugin
         public Action<OnAppUpdateInfoRes> OnAppUpdateInfo { get; set; }
 
         private AccountAuthService authService;
+        private AccountAuthParams authParams;
         private IBuoyClient buoyClient;
         private IPlayersClient playersClient;
         private IArchivesClient archivesClient;
@@ -48,6 +49,7 @@ namespace HmsPlugin
         {
             Debug.Log("HMS GAMES init");
             authService = HMSAccountKitManager.Instance.GetGameAuthService();
+            authParams = new AccountAuthParamsHelper().CreateParams();
 
             ITask<AuthAccount> taskAuthHuaweiId = authService.SilentSignIn();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>
@@ -65,11 +67,13 @@ namespace HmsPlugin
 
         private void InitJosApps(AuthAccount result)
         {
+            var appParams = new AppParams(authParams);
             HMSAccountKitManager.Instance.HuaweiId = result;
             Debug.Log("HMS GAMES: Setted app");
             IJosAppsClient josAppsClient = JosApps.GetJosAppsClient();
             Debug.Log("HMS GAMES: jossClient");
-            josAppsClient.Init();
+            josAppsClient.Init(appParams);
+
             Debug.Log("HMS GAMES: jossClient init");
             InitGameManagers();
         }

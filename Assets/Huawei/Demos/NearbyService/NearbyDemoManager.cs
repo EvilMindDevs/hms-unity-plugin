@@ -20,14 +20,14 @@ public class NearbyDemoManager : MonoBehaviour
     public Action<string, ScanEndpointInfo> OnFound { get; set; }
     public Action<string> OnLost { get; set; }
 
-    private void Start()
+    void Start()
     {
         nearbyManager = HMSNearbyServiceManager.Instance;
         ApplyForFineLocationPermission();
         InitilizeValues();
     }
 
-     private void InitilizeValues()
+    void InitilizeValues()
     {
         nearbyManager.scanInfo = scanInfo;
         nearbyManager.remoteEndpointId = remoteEndpointId;
@@ -37,7 +37,7 @@ public class NearbyDemoManager : MonoBehaviour
         nearbyManager.mFileServiceId = mFileServiceId;
     }
 
-    private void ApplyForFineLocationPermission()
+    void ApplyForFineLocationPermission()
     {
         if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
         {

@@ -94,6 +94,16 @@ namespace HmsPlugin
             {
                 HuaweiId = null;
                 Debug.LogError("[HMSAccountManager]: Sign in failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+
+                //Invoke the GMS Login when the HMS Core APK not installed Example
+                        if (error.ErrorCode == AvailableCode.USER_ALREADY_KNOWS_SERVICE_UNAVAILABLE || 
+                            error.ErrorCode == AvailableCode.CURRENT_SHOWING_SERVICE_UNAVAILABLE ||
+                            error.ErrorCode == CommonCode.ErrorCode.CLIENT_API_INVALID) 
+                        {
+                             Debug.LogError("[HMSAccountManager]: Sign in failed. HMS Core APK not installed");
+                             //GMS.signIn ... call GMS interface
+                        }
+
                 OnSignInFailed?.Invoke(error);
             });
         }

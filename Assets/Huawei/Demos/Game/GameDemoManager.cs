@@ -20,6 +20,8 @@ public class GameDemoManager : MonoBehaviour
     private InputField InputFieldDesc, InputFieldPlayedTime, InputFieldProgress;
     void Start()
     {
+        HMSGameServiceManager.Instance.OnGetPlayerInfoSuccess = OnGetPlayerInfoSuccess;
+        HMSGameServiceManager.Instance.OnGetPlayerInfoFailure = OnGetPlayerInfoFailure;
         HMSAchievementsManager.Instance.OnShowAchievementsSuccess = OnShowAchievementsSuccess;
         HMSAchievementsManager.Instance.OnShowAchievementsFailure = OnShowAchievementsFailure;
         HMSAchievementsManager.Instance.OnRevealAchievementSuccess = OnRevealAchievementSuccess;
@@ -78,6 +80,17 @@ public class GameDemoManager : MonoBehaviour
         else
             Debug.Log("[HMSP:] Fill box");
     }
+
+    private void OnGetPlayerInfoSuccess(Player player)
+    {
+        Debug.Log("HMS Games: GetPlayerInfo SUCCESS");
+    }
+
+    private void OnGetPlayerInfoFailure(HMSException exception)
+    {
+        Debug.Log("HMS Games: GetPlayerInfo ERROR:"+ exception.Message);
+    }
+
     public void ShowArchive()
     {
         HMSSaveGameManager.Instance.ShowArchive();

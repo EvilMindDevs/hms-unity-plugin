@@ -49,7 +49,7 @@ namespace HmsPlugin
         {
             Debug.Log("HMS GAMES init");
             authService = HMSAccountKitManager.Instance.GetGameAuthService();
-            authParams = new AccountAuthParamsHelper().CreateParams();
+            authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).CreateParams();
 
             ITask<AuthAccount> taskAuthHuaweiId = authService.SilentSignIn();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>

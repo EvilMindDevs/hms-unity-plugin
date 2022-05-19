@@ -37,7 +37,7 @@ public class GameDemoManager : MonoBehaviour
         InputFieldPlayedTime = GameObject.Find("PlayedTime").GetComponent<InputField>();
         InputFieldProgress = GameObject.Find("Progress").GetComponent<InputField>();
 
-        HMSAccountKitManager.Instance.SignIn();
+        //HMSAccountKitManager.Instance.SignIn();
     }
 
     public void GetMaxImageSize()

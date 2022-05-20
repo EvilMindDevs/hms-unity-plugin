@@ -28,7 +28,7 @@ namespace HmsPlugin
                 { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.6.5.300" } },
                 { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:6.2.0.301" } },
                 { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:6.4.0.301" } },
-                { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:6.3.0.302" } },
+                { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:6.3.0.304" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },
                 { CloudDBToggleEditor.CloudDBEnabled, new string[] { "com.huawei.agconnect:agconnect-cloud-database:1.5.0.300" } },
                 { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.6.3.300" } },
@@ -73,7 +73,7 @@ namespace HmsPlugin
                 file.Write("jcenter()\n\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n\n\t");
                 file.Write("dependencies {\n\t\t");
-                file.Write(AddClasspath("com.huawei.agconnect:agcp:1.4.2.300"));
+                file.Write(AddClasspath("com.huawei.agconnect:agcp:1.6.5.300"));
                 file.Write("\t}\n}\n\n");
                 file.Write("allprojects {\n\t");
                 file.Write("repositories {\n\t\t");
@@ -118,7 +118,7 @@ namespace HmsPlugin
                 file.Write("repositories {\n\t\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t\t}\n\n\t\t");
                 file.Write("dependencies {\n\t\t\t");
-                file.Write(AddClasspath("com.huawei.agconnect:agcp:1.6.3.300"));
+                file.Write(AddClasspath("com.huawei.agconnect:agcp:1.6.5.300"));
                 file.Write("\n\t\t}\n\t}\n\n\t");
                 file.Write("repositories {\n\t\t");
                 file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n}\n\n");
@@ -151,7 +151,7 @@ namespace HmsPlugin
 
         private string[] CoreGradles()
         {
-            return new string[] { "com.huawei.hms:base:5.2.0.300", "com.huawei.agconnect:agconnect-core:1.5.0.300" };
+            return new string[] { "com.huawei.hms:base:6.4.0.303", "com.huawei.agconnect:agconnect-core:1.6.5.300" };
         }
 
         public void OnPreprocessBuild(BuildReport report)

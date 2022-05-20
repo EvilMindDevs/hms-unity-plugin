@@ -162,6 +162,8 @@ public class GameDemoManager : MonoBehaviour
 
     public void SetStepAchievement(string achievementId, int stepsNum)
     {
+        HMSAchievementsManager.Instance.OnSetStepAchievementSuccess = OnSetStepAchievementSuccess;
+        HMSAchievementsManager.Instance.OnSetStepAchievementFailure = OnSetStepAchievemenFailure;
         HMSAchievementsManager.Instance.SetStepAchievement(achievementId, stepsNum);
     }
 
@@ -231,11 +233,12 @@ public class GameDemoManager : MonoBehaviour
 
     public void SubmitScore(string leaderboardId, long score, string scoreTips)
     {
+        HMSLeaderboardManager.Instance.OnSubmitScoreSuccess = OnSubmitScoreSuccess;
+        HMSLeaderboardManager.Instance.OnSubmitScoreFailure = OnSubmitScoreFailure;
+
         if (customUnit)
         {
             HMSLeaderboardManager.Instance.SubmitScore(leaderboardId, score, scoreTips);
-            HMSLeaderboardManager.Instance.OnSubmitScoreSuccess = OnSubmitScoreSuccess;
-            HMSLeaderboardManager.Instance.OnSubmitScoreFailure = OnSubmitScoreFailure;
         }
         else
         {

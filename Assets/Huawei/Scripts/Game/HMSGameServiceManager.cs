@@ -21,6 +21,7 @@ namespace HmsPlugin
         public Action<OnAppUpdateInfoRes> OnAppUpdateInfo { get; set; }
 
         private AccountAuthService authService;
+        private AccountAuthParams authParams;
         private IBuoyClient buoyClient;
         private IPlayersClient playersClient;
         private IArchivesClient archivesClient;
@@ -48,6 +49,7 @@ namespace HmsPlugin
         {
             Debug.Log("HMS GAMES init");
             authService = HMSAccountKitManager.Instance.GetGameAuthService();
+            authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).CreateParams();
 
             ITask<AuthAccount> taskAuthHuaweiId = authService.SilentSignIn();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>
@@ -65,11 +67,13 @@ namespace HmsPlugin
 
         private void InitJosApps(AuthAccount result)
         {
+            var appParams = new AppParams(authParams);
             HMSAccountKitManager.Instance.HuaweiId = result;
             Debug.Log("HMS GAMES: Setted app");
             IJosAppsClient josAppsClient = JosApps.GetJosAppsClient();
             Debug.Log("HMS GAMES: jossClient");
-            josAppsClient.Init();
+            josAppsClient.Init(appParams);
+
             Debug.Log("HMS GAMES: jossClient init");
             InitGameManagers();
         }
@@ -121,7 +125,7 @@ namespace HmsPlugin
         {
             if (HMSAccountKitManager.Instance.HuaweiId != null)
             {
-                ITask<HuaweiMobileServices.Game.Player> task = playersClient.CurrentPlayer;
+                ITask<Player> task = playersClient.CurrentPlayer;
                 task.AddOnSuccessListener((result) =>
                 {
                     Debug.Log("[HMSGameManager] GetPlayerInfo Success");
@@ -132,6 +136,11 @@ namespace HmsPlugin
                     Debug.LogError("[HMSGameManager]: GetPlayerInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                     OnGetPlayerInfoFailure?.Invoke(exception);
                 });
+            }
+            else 
+            {
+                Debug.LogError("[HMSGameManager]: GetPlayerInfo failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                OnGetPlayerInfoFailure?.Invoke(new HMSException("GetPlayerInfo failed. HMSAccountKitManager.Instance.HuaweiId is null"));
             }
         }
 
@@ -150,6 +159,11 @@ namespace HmsPlugin
                     OnSubmitPlayerEventFailure?.Invoke(exception);
                 });
             }
+            else
+            {
+                Debug.LogError("[HMSGameManager]: SubmitPlayerEvent failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                OnGetPlayerInfoFailure?.Invoke(new HMSException("SubmitPlayerEvent failed. HMSAccountKitManager.Instance.HuaweiId is null"));
+            }
         }
 
         public void GetPlayerExtraInfo(string transactionId)
@@ -166,6 +180,11 @@ namespace HmsPlugin
                     Debug.LogError("[HMSGameManager]: GetPlayerExtraInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                     OnGetPlayerExtraInfoFailure?.Invoke(exception);
                 });
+            }
+            else
+            {
+                Debug.LogError("[HMSGameManager]: GetPlayerExtraInfo failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                OnGetPlayerInfoFailure?.Invoke(new HMSException("GetPlayerExtraInfo failed. HMSAccountKitManager.Instance.HuaweiId is null"));
             }
         }
 

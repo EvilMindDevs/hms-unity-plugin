@@ -28,6 +28,10 @@ namespace HmsPlugin
         {
             PushManager.Listener = this;
             notificationDataOnStart = PushManager.NotificationDataOnStart;
+        }
+
+        public void Init() 
+        {
             if (notificationDataOnStart.NotifyId != -1)
             {
                 NotificationMessageOnStart?.Invoke(notificationDataOnStart);

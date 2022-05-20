@@ -356,7 +356,7 @@ Official Documentation on Drive Kit: [ Documentation](https://developer.huawei.c
 
 ### Nearby Service
 
-Official Documentation on Nearby Service: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/contactshield--0000001057494465)
+Official Documentation on Nearby Service: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/system-Guides/introduction-nearby-0000001060363166)
 
 In order for Nearby Service demo to work we have to declare specific permissions in the AndroidManifest.xml file.
 

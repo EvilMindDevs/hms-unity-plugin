@@ -20,6 +20,8 @@ public class GameDemoManager : MonoBehaviour
     private InputField InputFieldDesc, InputFieldPlayedTime, InputFieldProgress;
     void Start()
     {
+        HMSGameServiceManager.Instance.OnGetPlayerInfoSuccess = OnGetPlayerInfoSuccess;
+        HMSGameServiceManager.Instance.OnGetPlayerInfoFailure = OnGetPlayerInfoFailure;
         HMSAchievementsManager.Instance.OnShowAchievementsSuccess = OnShowAchievementsSuccess;
         HMSAchievementsManager.Instance.OnShowAchievementsFailure = OnShowAchievementsFailure;
         HMSAchievementsManager.Instance.OnRevealAchievementSuccess = OnRevealAchievementSuccess;
@@ -35,7 +37,7 @@ public class GameDemoManager : MonoBehaviour
         InputFieldPlayedTime = GameObject.Find("PlayedTime").GetComponent<InputField>();
         InputFieldProgress = GameObject.Find("Progress").GetComponent<InputField>();
 
-        HMSAccountKitManager.Instance.SignIn();
+        //HMSAccountKitManager.Instance.SignIn();
     }
 
     public void GetMaxImageSize()
@@ -78,6 +80,17 @@ public class GameDemoManager : MonoBehaviour
         else
             Debug.Log("[HMSP:] Fill box");
     }
+
+    private void OnGetPlayerInfoSuccess(Player player)
+    {
+        Debug.Log("HMS Games: GetPlayerInfo SUCCESS");
+    }
+
+    private void OnGetPlayerInfoFailure(HMSException exception)
+    {
+        Debug.Log("HMS Games: GetPlayerInfo ERROR:"+ exception.Message);
+    }
+
     public void ShowArchive()
     {
         HMSSaveGameManager.Instance.ShowArchive();
@@ -149,6 +162,8 @@ public class GameDemoManager : MonoBehaviour
 
     public void SetStepAchievement(string achievementId, int stepsNum)
     {
+        HMSAchievementsManager.Instance.OnSetStepAchievementSuccess = OnSetStepAchievementSuccess;
+        HMSAchievementsManager.Instance.OnSetStepAchievementFailure = OnSetStepAchievemenFailure;
         HMSAchievementsManager.Instance.SetStepAchievement(achievementId, stepsNum);
     }
 
@@ -218,11 +233,12 @@ public class GameDemoManager : MonoBehaviour
 
     public void SubmitScore(string leaderboardId, long score, string scoreTips)
     {
+        HMSLeaderboardManager.Instance.OnSubmitScoreSuccess = OnSubmitScoreSuccess;
+        HMSLeaderboardManager.Instance.OnSubmitScoreFailure = OnSubmitScoreFailure;
+
         if (customUnit)
         {
             HMSLeaderboardManager.Instance.SubmitScore(leaderboardId, score, scoreTips);
-            HMSLeaderboardManager.Instance.OnSubmitScoreSuccess = OnSubmitScoreSuccess;
-            HMSLeaderboardManager.Instance.OnSubmitScoreFailure = OnSubmitScoreFailure;
         }
         else
         {

@@ -4,13 +4,16 @@ using HuaweiMobileServices.Nearby.Discovery;
 using HuaweiMobileServices.Nearby.Transfer;
 using System;
 using UnityEngine;
+using UnityEngine.Android;
 
 public class NearbyDemoManager : MonoBehaviour
 {
     private HMSNearbyServiceManager nearbyManager;
     private NearbyManagerListener nearbyManagerListener;
-    readonly private static String scanInfo = "testInfo", remoteEndpointId = "RemoteEndpointId", transmittingMessage = "Receive Success",
+
+    private static readonly String scanInfo = "testInfo", remoteEndpointId = "RemoteEndpointId", transmittingMessage = "Receive Success",
           myNameStr = "MyNameTest", mEndpointName = "testName", mFileServiceId = "testID";
+
     public Action<string> OnDisconnected { get; set; }
     public Action<string, ConnectInfo> OnEstablish { get; set; }
     public Action<string, ConnectResult> OnResult { get; set; }
@@ -20,10 +23,11 @@ public class NearbyDemoManager : MonoBehaviour
     void Start()
     {
         nearbyManager = HMSNearbyServiceManager.Instance;
-        initilizeValues();
+        ApplyForFineLocationPermission();
+        InitilizeValues();
     }
 
-    private void initilizeValues()
+    void InitilizeValues()
     {
         nearbyManager.scanInfo = scanInfo;
         nearbyManager.remoteEndpointId = remoteEndpointId;
@@ -33,46 +37,63 @@ public class NearbyDemoManager : MonoBehaviour
         nearbyManager.mFileServiceId = mFileServiceId;
     }
 
+    void ApplyForFineLocationPermission()
+    {
+        if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
+        {
+            Permission.RequestUserPermission(Permission.FineLocation);
+        }
+    }
+
     public void SendFilesInner()
     {
         NearbyManagerListener connectCallback = new NearbyManagerListener(this);
         nearbyManager.SendFilesInner(nearbyManagerListener);
     }
+
     public void OnScanResult()
     {
         NearbyManagerListener scanCallback = new NearbyManagerListener(this);
         nearbyManager.OnScanResult(nearbyManagerListener);
     }
+
     public void StopBroadCasting()
     {
         nearbyManager.StopBroadCasting();
     }
+
     public void StopScanning()
     {
         nearbyManager.StopScanning();
     }
+
     public void DisconnectAllConnection()
     {
         nearbyManager.DisconnectAllConnection();
     }
+
     public void AcceptConnectionRequest(string endpointId, ConnectInfo connectInfo)
     {
         NearbyManagerListener callBack = new NearbyManagerListener(this);
         nearbyManager.AcceptConnectionRequest(endpointId, connectInfo, callBack);
     }
+
     public void InitiateConnection(string endpointId, ScanEndpointInfo scanEndpointInfo)
     {
         NearbyManagerListener callBack = new NearbyManagerListener(this);
         nearbyManager.InitiateConnection(endpointId, scanEndpointInfo, callBack);
     }
+
     public class NearbyManagerListener : IConnectCallBack, IScanEndpointCallback, IDataCallback
     {
         private readonly NearbyDemoManager nearbyManagerObject;
         private static string receivedMessage = "Receive Success";
+
         public NearbyManagerListener(NearbyDemoManager nearbyManager)
         {
             nearbyManagerObject = nearbyManager;
         }
+
         //ConnectCallBack
         public void onDisconnected(string p0)
         {
@@ -99,6 +120,7 @@ public class NearbyDemoManager : MonoBehaviour
             }
             nearbyManagerObject.OnResult?.Invoke(p0, resultObject);
         }
+
         //ScanEndpointCallback
         public void onFound(string endpointId, ScanEndpointInfo discoveryEndpointInfo)
         {
@@ -125,10 +147,10 @@ public class NearbyDemoManager : MonoBehaviour
                 }
             }
         }
+
         public void onTransferUpdate(string endpointId, TransferStateUpdate update)
         {
             Debug.Log("[HMS] NearbyManager onTransferUpdate");
         }
     }
 }
-

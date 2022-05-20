@@ -358,6 +358,32 @@ Official Documentation on Drive Kit: [ Documentation](https://developer.huawei.c
 
 Official Documentation on Nearby Service: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/contactshield--0000001057494465)
 
+In order for Nearby Service demo to work we have to declare specific permissions in the AndroidManifest.xml file.
+
+Adding Permissions for Nearby Service Documentation: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/system-Guides/nearbyservice-add-access-0000001142548835)
+
+```groovy
+<!-- Permission to check Wi-Fi status -->
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<!-- Permission to change Wi-Fi status -->
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+<!-- Permission to obtain a coarse device location -->
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<!-- Permission to obtain the accurate device location -->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<!--Permission to read external storage -->
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+<!-- Permission to write data to external storage -->
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<!-- Bluetooth permissions -->
+<uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />    
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>    
+<uses-permission android:name="android.permission.BLUETOOTH_SCAN" />    
+<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />    
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+```
+**Note:** The **ACCESS_FINE_LOCATION** , **WRITE_EXTERNAL_STORAGE**, and **READ_EXTERNAL_STORAGE** permissions are dangerous system permissions, so you need to dynamically apply for these permissions. If your app does not have these permissions, Nearby Service cannot enable broadcast or scanning for your app.
+
 ### App Messaging
 
 Official Documentation on App Messaging: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-appmessage-introduction-0000001071884501)

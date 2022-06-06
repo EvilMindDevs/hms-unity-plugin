@@ -1,5 +1,4 @@
 using HuaweiMobileServices.AppLinking;
-using HuaweiMobileServices.InAppComment;
 using UnityEngine;
 using UnityEngine.UI;
 using static HuaweiMobileServices.AppLinking.AGConnectAppLinking;
@@ -11,21 +10,22 @@ public class AppLinkingDemo : MonoBehaviour
     private static string longLink;
 
     [Header("Builder")]
-    [SerializeField] private string DeepLink = "https://developer.huawei.com/consumer/cn";
-    [SerializeField] private string UriPrefix = "https://hmsunityplugin.dre.agconnect.link";
+    [SerializeField] private string deepLink = "https://developer.huawei.com/consumer/cn";
+    [SerializeField] private string uriPrefix = "https://hmsunityplugin.dre.agconnect.link";
 
     [Header("SocialCardInfo")]
-    [SerializeField] private string Title = "Title";
-    [SerializeField] private string Description = "Description";
-    [SerializeField] private string ImageUrl = "https://appimg.dbankcdn.com/application/icon144/65/5ed8340ee28c4735915c1aa08e209fe5.png";
+    [SerializeField] private string title = "Title";
+    [SerializeField] private string description = "Description";
+    [SerializeField] private string imageUrl = "https://appimg.dbankcdn.com/application/icon144/65/5ed8340ee28c4735915c1aa08e209fe5.png";
 
     [Header("CampaignInfo")]
-    [SerializeField] private string Name = "Name";
+    [SerializeField] private string name = "Name";
     [SerializeField] private string AGC = "AGC";
-    [SerializeField] private string App = "App";
+    [SerializeField] private string app = "App";
 
-    [SerializeField] private Text ShortLinkText;
-    [SerializeField] private Text LongLinkText;
+    [SerializeField] private Text shortLinkText;
+    [SerializeField] private Text longLinkText;
+    [SerializeField] private Text deepLinkText;
 
     void Start()
     {
@@ -34,22 +34,21 @@ public class AppLinkingDemo : MonoBehaviour
 
     public void CreateAppLinking()
     {
-        InAppComment.ShowInAppComment();
         AppLinking.Builder builder = new AppLinking.Builder();
 
-        builder.SetUriPrefix(UriPrefix).SetDeepLink(DeepLink)
+        builder.SetUriPrefix(uriPrefix).SetDeepLink(deepLink)
        .SetAndroidLinkInfo(AndroidLinkInfo.NewBuilder()
-       .SetAndroidDeepLink(DeepLink).SetOpenType(AndroidLinkInfo.AndroidOpenType.AppGallery)
+       .SetAndroidDeepLink(deepLink).SetOpenType(AndroidLinkInfo.AndroidOpenType.AppGallery)
        .Build())
        .SetSocialCardInfo(SocialCardInfo.NewBuilder()
-       .SetTitle(Title)
-       .SetImageUrl(ImageUrl)
-       .SetDescription(Description)
+       .SetTitle(title)
+       .SetImageUrl(imageUrl)
+       .SetDescription(description)
        .Build())
        .SetCampaignInfo(CampaignInfo.NewBuilder()
-       .SetName(Name)
+       .SetName(name)
        .SetSource(AGC)
-       .SetMedium(App)
+       .SetMedium(app)
        .Build())
        .SetPreviewType(AppLinking.LinkingPreviewType.AppInfo);
 
@@ -61,7 +60,7 @@ public class AppLinkingDemo : MonoBehaviour
     public void BuildLongAppLink(AppLinking.Builder builder)
     {
         longLink = builder.BuildAppLinking().GetUri();
-        LongLinkText.text = longLink;
+        longLinkText.text = longLink;
         Debug.Log("Long Link = " + longLink);
     }
 
@@ -73,7 +72,7 @@ public class AppLinkingDemo : MonoBehaviour
             shortLink = it.GetShortUrl();
             Debug.Log("Short Link = " + shortLink);
 
-            ShortLinkText.text = shortLink;
+            shortLinkText.text = shortLink;
 
         }).AddOnFailureListener(exception =>
         {
@@ -91,13 +90,13 @@ public class AppLinkingDemo : MonoBehaviour
         AGConnectAppLinking.ShareLink(longLink);
     }
 
-    private void GetLink()
+    public void GetLink()
     {
         AGConnectAppLinking.GetInstance().GetAppLinking().AddOnSuccessListener(verifyCodeResult =>
-        {
-            Debug.Log("GetAppLinking Success" + verifyCodeResult);
-        })
-          .AddOnFailureListener(exception =>
+                {
+                    deepLinkText.text = verifyCodeResult.GetDeepLink();
+                })
+            .AddOnFailureListener(exception =>
           {
               Debug.LogError(TAG + " Failure on GetAppLinking error " + exception.WrappedExceptionMessage + " cause : " + exception.WrappedCauseMessage);
           });

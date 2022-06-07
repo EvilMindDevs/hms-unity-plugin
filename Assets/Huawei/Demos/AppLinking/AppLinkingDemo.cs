@@ -5,7 +5,7 @@ using static HuaweiMobileServices.AppLinking.AGConnectAppLinking;
 
 public class AppLinkingDemo : MonoBehaviour
 {
-    private string TAG = "AppLinking Manager";
+    private string TAG = "HMS AppLinking Demo";
     private static string shortLink;
     private static string longLink;
 
@@ -61,7 +61,7 @@ public class AppLinkingDemo : MonoBehaviour
     {
         longLink = builder.BuildAppLinking().GetUri();
         longLinkText.text = longLink;
-        Debug.Log("Long Link = " + longLink);
+        Debug.Log($"[{TAG}]:Long Link = {longLink}");
     }
 
     public void BuildShortAppLink(AppLinking.Builder builder)
@@ -70,13 +70,13 @@ public class AppLinkingDemo : MonoBehaviour
         task.AddOnSuccessListener(it =>
         {
             shortLink = it.GetShortUrl();
-            Debug.Log("Short Link = " + shortLink);
+            Debug.Log($"[{TAG}]:Short Link = {shortLink}");
 
             shortLinkText.text = shortLink;
 
         }).AddOnFailureListener(exception =>
         {
-            Debug.LogError(TAG + " Failure on BuildShortAppLinking error " + exception.WrappedExceptionMessage + " cause : " + exception.WrappedCauseMessage);
+            Debug.LogError($"[{TAG}]: Failure on BuildShortAppLinking error { exception.WrappedExceptionMessage} cause : {exception.WrappedCauseMessage}");
         });
     }
 
@@ -98,13 +98,13 @@ public class AppLinkingDemo : MonoBehaviour
                 })
             .AddOnFailureListener(exception =>
           {
-              Debug.LogError(TAG + " Failure on GetAppLinking error " + exception.WrappedExceptionMessage + " cause : " + exception.WrappedCauseMessage);
+              Debug.LogError($"[{TAG}]: Failure on GetAppLinking error " + exception.WrappedExceptionMessage + " cause : " + exception.WrappedCauseMessage);
           });
     }
 
     public void GetInstance()
     {
-        Debug.Log("Get instance called for app linking");
+        Debug.Log($"[{TAG}]:Get instance called for app linking");
         if (agc == null) agc = AGConnectAppLinking.GetInstance();
         Debug.Log($"[{TAG}]: GetInstance() {agc}");
     }

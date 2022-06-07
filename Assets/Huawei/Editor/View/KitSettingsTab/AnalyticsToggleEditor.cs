@@ -1,8 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-using HmsPlugin;
-using System;
-using UnityEditor.SceneManagement;
+﻿using UnityEditor;
 
 namespace HmsPlugin
 {
@@ -35,6 +31,12 @@ namespace HmsPlugin
                 else if (HMSMainEditorSettings.Instance.Settings.GetBool(RemoteConfigToggleEditor.RemoteConfigEnabled))
                 {
                     EditorUtility.DisplayDialog("Error", "Remote Config is dependent on AnalyticsKit. Please disable Remote Config first.", "OK");
+                    _toggle.SetChecked(true);
+                    return;
+                }
+                else if (HMSMainEditorSettings.Instance.Settings.GetBool(AppLinkingToogleEditor.AppLinkingEnabled))
+                {
+                    EditorUtility.DisplayDialog("Error", "App Linking is dependent on AnalyticsKit. Please disable App Linking first.", "OK");
                     _toggle.SetChecked(true);
                     return;
                 }

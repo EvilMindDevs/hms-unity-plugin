@@ -18,8 +18,36 @@ MonoBehaviour:
     - RemoteConfigEnabled
     - IAPKitEnabled
     - GameServiceEnabled
+    - AppCompat
+    - AdsKit
+    - AccountKit
+    - GameService
+    - PushKit
+    - AnalyticsKit
+    - Auth
+    - IAPKit
+    - RemoteConfig
+    - CrashKit
+    - CloudDB
+    - NearbyService
+    - AppMessaging
+    - AppLinking
     _values:
     - False
     - False
     - False
     - False
+    - True
+    - False
+    - False
+    - False
+    - False
+    - True
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - False
+    - True

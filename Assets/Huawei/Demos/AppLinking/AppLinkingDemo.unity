@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 50ebf145f1f182c40aeecdc331aeb358, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,6 +118,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -173,6 +175,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -209,6 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 87891838}
   - component: {fileID: 87891839}
+  - component: {fileID: 87891840}
   m_Layer: 5
   m_Name: SafeArea
   m_TagString: Untagged
@@ -251,6 +255,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 092a6f187080732499e3c707064c740a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &87891840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87891837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 10
+    m_Right: 10
+    m_Top: 20
+    m_Bottom: 20
+  m_ChildAlignment: 4
+  m_Spacing: 100
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &289974386
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,6 +333,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -381,6 +412,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -442,10 +474,10 @@ RectTransform:
   m_Father: {fileID: 87891838}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5.9, y: -522}
-  m_SizeDelta: {x: 674.6115, y: 276.0419}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1033.6566, y: 215.1621}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &400418898
 MonoBehaviour:
@@ -461,6 +493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -490,7 +523,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1590310700}
+        m_TargetAssemblyTypeName: AppLinkingDemo, HuaweiMobileServices.Core
         m_MethodName: GetLink
         m_Mode: 1
         m_Arguments:
@@ -516,6 +550,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -573,10 +608,10 @@ RectTransform:
   m_Father: {fileID: 87891838}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5.9, y: -172.00006}
-  m_SizeDelta: {x: 674.6115, y: 276.0419}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1033.6566, y: 215.1621}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &681128358
 MonoBehaviour:
@@ -592,6 +627,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -621,7 +657,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1590310700}
+        m_TargetAssemblyTypeName: AppLinkingDemo, HuaweiMobileServices.Core
         m_MethodName: ShareShortLink
         m_Mode: 1
         m_Arguments:
@@ -647,6 +684,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -703,10 +741,10 @@ RectTransform:
   m_Father: {fileID: 87891838}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5.9, y: 527.99994}
-  m_SizeDelta: {x: 674.6115, y: 276.0419}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1033.6566, y: 215.1621}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &897662670
 MonoBehaviour:
@@ -722,6 +760,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -751,7 +790,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1590310700}
+        m_TargetAssemblyTypeName: AppLinkingDemo, HuaweiMobileServices.Core
         m_MethodName: CreateAppLinking
         m_Mode: 1
         m_Arguments:
@@ -777,6 +817,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -834,10 +875,10 @@ RectTransform:
   m_Father: {fileID: 87891838}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5.9, y: 177.99994}
-  m_SizeDelta: {x: 674.6115, y: 276.0419}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1033.6566, y: 215.1621}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1040985823
 MonoBehaviour:
@@ -853,6 +894,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -882,7 +924,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1590310700}
+        m_TargetAssemblyTypeName: AppLinkingDemo, HuaweiMobileServices.Core
         m_MethodName: ShareLongLink
         m_Mode: 1
         m_Arguments:
@@ -908,6 +951,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -964,7 +1008,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.0256958, y: -48.15393}
+  m_AnchoredPosition: {x: 1.0256958, y: -178}
   m_SizeDelta: {x: 86.1549, y: 24.6157}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1281979404
@@ -982,6 +1026,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1120,6 +1165,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92eae1a5ea6b70f4b96a1b12ea360a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deepLink: https://developer.huawei.com/consumer/cn
+  uriPrefix: https://hmsunityplugin.dre.agconnect.link
+  title: Title
+  description: Description
+  imageUrl: https://appimg.dbankcdn.com/application/icon144/65/5ed8340ee28c4735915c1aa08e209fe5.png
+  name: Name
+  AGC: AGC
+  app: App
+  shortLinkText: {fileID: 1628373335}
+  longLinkText: {fileID: 1877579488}
+  deepLinkText: {fileID: 1281979404}
 --- !u!4 &1590310701
 Transform:
   m_ObjectHideFlags: 0
@@ -1210,6 +1266,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &1614963063
@@ -1260,8 +1317,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.2961, y: -42}
-  m_SizeDelta: {x: 168.9873, y: 59.9004}
+  m_AnchoredPosition: {x: 5.0344, y: -167}
+  m_SizeDelta: {x: 763.8738, y: 59.9004}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1628373335
 MonoBehaviour:
@@ -1278,15 +1335,16 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 20
     m_FontStyle: 0
-    m_BestFit: 1
+    m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 50
     m_Alignment: 4
@@ -1362,6 +1420,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1865368260
 Canvas:
   m_ObjectHideFlags: 0
@@ -1437,8 +1496,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.4156, y: -67}
-  m_SizeDelta: {x: 162.83, y: 61.9888}
+  m_AnchoredPosition: {x: -22.7306, y: -180}
+  m_SizeDelta: {x: 864.5585, y: 144.84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1877579488
 MonoBehaviour:
@@ -1455,16 +1514,17 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 10
+    m_FontSize: 20
     m_FontStyle: 0
-    m_BestFit: 1
-    m_MinSize: 1
+    m_BestFit: 0
+    m_MinSize: 0
     m_MaxSize: 50
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -1533,6 +1593,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

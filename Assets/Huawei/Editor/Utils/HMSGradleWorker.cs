@@ -34,7 +34,8 @@ namespace HmsPlugin
                 { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.6.3.300" } },
                 { NearbyServiceToggleEditor.NearbyServiceEnabled, new string[] { "com.huawei.hms:nearby:6.2.0.301" } },
                 { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },
-                { HMSLibrariesDrawer.AppCompatEnabled,new string[]{ "com.android.support:appcompat-v7:21.0.0" } }
+                { HMSLibrariesDrawer.AppCompatEnabled,new string[]{ "com.android.support:appcompat-v7:21.0.0" } },
+                { DriveKitToggleEditor.DriveKitEnabled, new string[]{ "com.huawei.hms:drive:5.0.0.307" } }
             };
         }
 

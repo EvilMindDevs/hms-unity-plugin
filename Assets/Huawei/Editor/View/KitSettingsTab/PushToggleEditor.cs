@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 
 namespace HmsPlugin
 {
-    public class PushToggleEditor : ToggleEditor, IDrawer
+    public class PushToggleEditor : ToggleEditor, IDrawer, IDependentToggle
     {
         public const string PushKitEnabled = "PushKit";
 
@@ -57,6 +57,13 @@ namespace HmsPlugin
             {
                 _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(PushKitEnabled));
             }
+        }
+
+        public void SetToggle()
+        {
+            _toggle.SetChecked(true);
+            HMSMainEditorSettings.Instance.Settings.SetBool(PushKitEnabled, true);
+            EnableToggle();
         }
     }
 }

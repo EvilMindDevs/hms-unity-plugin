@@ -3,11 +3,14 @@ using UnityEngine;
 using HmsPlugin;
 using UnityEngine.UI;
 using HuaweiMobileServices.Ads;
+using static HuaweiConstants.UnityBannerAdPositionCode;
+using HuaweiConstants;
 
 public class AdsDemoManager : MonoBehaviour
 {
     [SerializeField]
     private Toggle testAdStatusToggle;
+    int counter =  0;
 
     private void Start()
     {
@@ -36,6 +39,46 @@ public class AdsDemoManager : MonoBehaviour
 
     public void ShowBannerAd()
     {
+        var bannerPosition = UnityBannerAdPositionCodeType.POSITION_BOTTOM;
+        
+
+        switch (counter) 
+        {
+            case 0:
+                bannerPosition = UnityBannerAdPositionCodeType.POSITION_BOTTOM;
+                    break;
+            case 1:
+                bannerPosition = UnityBannerAdPositionCodeType.POSITION_BOTTOM_LEFT;
+                break;
+            case 2:
+                bannerPosition = UnityBannerAdPositionCodeType.POSITION_BOTTOM_RIGHT;
+                break;
+            case 3:
+                bannerPosition = UnityBannerAdPositionCodeType.POSITION_CENTER;
+                break;
+            case 4:
+                bannerPosition = UnityBannerAdPositionCodeType.POSITION_CUSTOM;
+                break;
+            case 5:
+                bannerPosition = UnityBannerAdPositionCodeType.POSITION_TOP;
+                break;
+            case 6:
+                bannerPosition = UnityBannerAdPositionCodeType.POSITION_TOP_LEFT;
+                break;
+            case 7:
+                bannerPosition = UnityBannerAdPositionCodeType.POSITION_TOP_RIGHT;
+                break;
+            case 8:
+                bannerPosition = UnityBannerAdPositionCodeType.POSITION_BOTTOM;
+                counter = 0;
+                break;
+        }
+        Debug.Log("<!!> COUNTER:" + counter++);
+
+        if(HMSAdsKitManager.Instance.IsBannerAdLoaded) 
+            HMSAdsKitManager.Instance.DestroyBannerAd(); 
+
+        HMSAdsKitManager.Instance.LoadBannerAd(bannerPosition, UnityBannerAdSize.BANNER_SIZE_320_50);
         HMSAdsKitManager.Instance.ShowBannerAd();
     }
 

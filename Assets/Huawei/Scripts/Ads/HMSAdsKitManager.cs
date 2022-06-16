@@ -74,7 +74,7 @@ namespace HmsPlugin
         {
             if (!hasPurchasedNoAds)
             {
-                //LoadBannerAd(UnityBannerAdPositionCodeType.POSITION_BOTTOM, UnityBannerAdSize.BANNER_SIZE_360_57);
+                LoadBannerAd(UnityBannerAdPositionCodeType.POSITION_BOTTOM, UnityBannerAdSize.BANNER_SIZE_360_57);
                 LoadInterstitialAd();
             }
             LoadRewardedAd();

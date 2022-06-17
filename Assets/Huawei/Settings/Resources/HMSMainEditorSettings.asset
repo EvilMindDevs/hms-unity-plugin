@@ -42,7 +42,6 @@ MonoBehaviour:
     - False
     - False
     - False
-    - True
     - False
     - False
     - False
@@ -50,4 +49,5 @@ MonoBehaviour:
     - False
     - False
     - False
-    - True
+    - False
+    - False

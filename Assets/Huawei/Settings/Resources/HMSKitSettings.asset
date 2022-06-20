@@ -28,6 +28,7 @@ MonoBehaviour:
     - DriveKit
     - NearbyService
     - AppMessaging
+    - AppLinking
     _values:
     - True
     - False

@@ -14,6 +14,7 @@ The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services
 * Drive Kit
 * Nearby Service
 * App Messaging
+* App Linking
 
 
 ## Requirements
@@ -321,6 +322,50 @@ Note: You can not change your products' purchase type which you created.***
 
 ![readmePhotoCensored](https://user-images.githubusercontent.com/39373386/145815616-c2abf3d2-e303-41df-b000-bb4fe953a86f.png)
 
+## App Linking
+
+App Linking allows you to create cross-platform links that can work as defined regardless of whether your app has been installed by a user.
+
+(Optional) Configure clipboard reading rules.
+When an app that has integrated the App Linking SDK is launched for the first time, the SDK reads content on the clipboard to obtain link information, which can reach the specific in-app content. 
+
+```groovy
+<meta-data
+    android:name="com.huawei.agconnect.applinking.READ_CLIPBOARD_PERMISSION"
+    android:value="xxxx"/> 
+```
+If value is set to Available, the App Linking SDK will read content on the clipboard each time the app is launched.
+If value is set to Unavailable, the App Linking SDK will not read content on the clipboard.
+
+Before You Start
+
+Add an intent filter to the manifest file of your Android project, to specify how to process a link of App Linking.
+
+```groovy
+<intent-filter>
+    <action android:name="android.intent.action.VIEW"/>
+    <category android:name="android.intent.category.DEFAULT"/>
+    <category android:name="android.intent.category.BROWSABLE"/>
+    <!-- Set android:host to the prefix of your App Linking deep link or Android deep link. Set android:scheme to a custom scheme. -->
+    <data android:host="xxx.com" android:scheme="xxx"/>
+</intent-filter>
+```
+
+To receive app links (a special type of deep link, available in Android 6.0 and later), add the following configuration to the activity for processing links:
+
+```groovy
+<intent-filter android:autoVerify="true">
+    <action android:name="android.intent.action.VIEW"/>
+    <category android:name="android.intent.category.DEFAULT"/>
+    <category android:name="android.intent.category.BROWSABLE"/>
+    <!-- Set android:host to the prefix of your link to be processed. -->
+    <data android:host="xxx" android:scheme="http"/>
+    <!-- Set android:host to the prefix of your link to be processed. -->
+    <data android:host="xxx" android:scheme="https"/>
+</intent-filter>
+```
+
+
 ## Kits Specification
 Find below the specific information on the included functionalities in this plugin
 
@@ -337,6 +382,7 @@ Find below the specific information on the included functionalities in this plug
 11. Drive Kit
 12. Nearby Service
 13. App Messaging
+14. App Linking
 
 ### Account
 
@@ -389,6 +435,10 @@ Official Documentation on Nearby Service: [ Documentation](https://developer.hua
 ### App Messaging
 
 Official Documentation on App Messaging: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-appmessage-introduction-0000001071884501)
+
+### App Linking
+
+Official Documentation on App Linking: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-applinking-introduction-0000001054143215)
 ______
 
 ## License

@@ -36,19 +36,19 @@ public class HMSCrashManager : HMSManagerSingleton<HMSCrashManager>
 
     enum Log
     {
-        DEBUG=3,
-        INFO=4,
-        WARN=5,
-        ERROR=6,
+        DEBUG = 3,
+        INFO = 4,
+        WARN = 5,
+        ERROR = 6,
     }
 
     public void customReport()
     {
         agConnectCrash.SetUserId("testuser");
-        agConnectCrash.Log((int) Log.DEBUG, "set debug log.");
-        agConnectCrash.Log((int) Log.INFO, "set info log.");
-        agConnectCrash.Log((int) Log.WARN, "set warning log.");
-        agConnectCrash.Log((int) Log.ERROR, "set error log.");
+        agConnectCrash.Log((int)Log.DEBUG, "set debug log.");
+        agConnectCrash.Log((int)Log.INFO, "set info log.");
+        agConnectCrash.Log((int)Log.WARN, "set warning log.");
+        agConnectCrash.Log((int)Log.ERROR, "set error log.");
         agConnectCrash.SetCustomKey("stringKey", "Hello world");
         agConnectCrash.SetCustomKey("booleanKey", false);
         agConnectCrash.SetCustomKey("doubleKey", 1.1);

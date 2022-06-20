@@ -74,7 +74,7 @@ namespace HmsPlugin
         {
             if (!hasPurchasedNoAds)
             {
-                LoadBannerAd(UnityBannerAdPositionCodeType.POSITION_BOTTOM);
+                LoadBannerAd(UnityBannerAdPositionCodeType.POSITION_BOTTOM, UnityBannerAdSize.BANNER_SIZE_360_57);
                 LoadInterstitialAd();
             }
             LoadRewardedAd();
@@ -174,6 +174,7 @@ namespace HmsPlugin
                 return;
             }
             bannerView.DestroyBanner();
+            _isBannerAdLoaded = false;
         }
 
         public void SetBannerRefresh(long seconds)

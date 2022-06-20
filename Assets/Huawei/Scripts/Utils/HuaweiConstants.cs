@@ -87,6 +87,11 @@ namespace HuaweiConstants
 
         public const string BANNER_SIZE_360_144 = "BANNER_SIZE_360_144";
 
+        public static string CustomBannerSize(int widht, int height) 
+        {
+            return ($"BANNER_SIZE_{widht}_{height}");
+        }
+
 
     }
 

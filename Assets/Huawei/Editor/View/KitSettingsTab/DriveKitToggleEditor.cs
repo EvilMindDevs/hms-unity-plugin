@@ -31,14 +31,6 @@ namespace HmsPlugin
             }
             else
             {
-                if (HMSMainEditorSettings.Instance.Settings.GetBool(AccountToggleEditor.AccountKitEnabled)
-                    || HMSMainEditorSettings.Instance.Settings.GetBool(PushToggleEditor.PushKitEnabled))
-                {
-                    EditorUtility.DisplayDialog("Error", "DriveKit is dependent on AccountKit and PushKit. Please disable AccountKit and PushKit first.", "OK");
-                    _toggle.SetChecked(true);
-                    return;
-                }
-
                 DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(DriveKitEnabled, value);

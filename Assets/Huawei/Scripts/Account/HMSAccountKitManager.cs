@@ -1,4 +1,5 @@
 ﻿using HuaweiMobileServices.Base;
+using HuaweiMobileServices.Drive;
 using HuaweiMobileServices.Game;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
@@ -37,21 +38,19 @@ namespace HmsPlugin
             }
         }
 
-        //private static AccountAuthService DefaultDriveAuthService
-        //{
-        //    get
-        //    {
-
-        //        List<Scope> scopeList = new List<Scope>();
-        //        scopeList.Add(new Scope(DriveScopes.SCOPE_DRIVE_FILE)); // Permissions to upload and store app data. 
-        //        var authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetAccessToken().SetIdToken().SetScopeList(scopeList).CreateParams();
-        //        Debug.Log("[HMS]: AUTHPARAMS DRIVE" + authParams);
-        //        var result = AccountAuthManager.GetService(authParams);
-        //        Debug.Log("[HMS]: RESULT DRIVE" + result);
-        //        return result;
-
-        //    }
-        //}
+        private static AccountAuthService DefaultDriveAuthService
+        {
+            get
+            {
+                List<Scope> scopeList = new List<Scope>();
+                scopeList.Add(new Scope(Drive.DriveScopes.SCOPE_DRIVE_FILE)); // Permissions to upload and store app data. 
+                var authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM).SetAccessToken().SetIdToken().SetScopeList(scopeList).CreateParams();
+                Debug.Log("[HMS]: AUTHPARAMS DRIVE" + authParams);
+                var result = AccountAuthManager.GetService(authParams);
+                Debug.Log("[HMS]: RESULT DRIVE" + result);
+                return result;
+            }
+        }
 
         public AuthAccount HuaweiId { get; set; }
         public Action<AuthAccount> OnSignInSuccess { get; set; }
@@ -73,7 +72,7 @@ namespace HmsPlugin
         {
             Debug.Log("[HMSAccountManager]: AuthService OnAwake");
             authService = DefaultAuthService;
-            //authServiceDrive = DefaultDriveAuthService;
+            authServiceDrive = DefaultDriveAuthService;
         }
 
         //Game Service authentication
@@ -104,6 +103,21 @@ namespace HmsPlugin
                              //GMS.signIn ... call GMS interface
                         }
 
+                OnSignInFailed?.Invoke(error);
+            });
+        }
+
+        public void SignInDrive(AccountAuthService authServiceDrivee)
+        {
+            Debug.Log("[HMS]: Sign in Drive " + authServiceDrivee);
+            authServiceDrivee.StartSignIn((authId) =>
+            {
+                HuaweiId = authId;
+                OnSignInSuccess?.Invoke(authId);
+            }, (error) =>
+            {
+                HuaweiId = null;
+                Debug.LogError("[HMSAccountManager]: Sign in Drive failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                 OnSignInFailed?.Invoke(error);
             });
         }

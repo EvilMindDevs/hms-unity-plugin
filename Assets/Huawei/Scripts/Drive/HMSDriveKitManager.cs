@@ -170,6 +170,47 @@ namespace HmsPlugin
             }
         }
 
+        public File GetFile(string fileId = "")
+        {
+            File file = null;
+            if (fileId == "")
+            {
+                if (recentlyCreatedFile != null)
+                {
+                    fileId = recentlyCreatedFile.GetId(); // Use recently created file's ID
+                }
+                else
+                {
+                    return file;
+                }
+            }
+
+            try
+            {
+                string fileName = "testFileDowloaded.txt";
+                string filePath = System.IO.Path.Combine(Application.persistentDataPath, fileName);
+                HuaweiMobileServices.Utils.java.io.File f = new HuaweiMobileServices.Utils.java.io.File(filePath + fileName);
+
+                // Obtain file metadata.
+                Drive.Files.Get request = drive.files().get(fileId);
+                request.SetFields("*");
+                file = request.Execute();
+
+                // Download the entity file.
+                Drive.Files.Get get = drive.files().get(fileId);
+                get.SetForm("content");
+                MediaHttpDownloader downloader = get.GetMediaHttpDownloader();
+                downloader.SetContentRange(0, file.GetSize() - 1).SetDirectDownloadEnabled(true);
+                get.ExecuteContentAndDownloadTo(new HuaweiMobileServices.Utils.java.io.FileOutputStream(f));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(TAG + "GetFile error: " + e.Message);
+            }
+
+            return file;
+        }
+
         public File CreateDirectory(string dirName = "")
         {
             File directory = null;

@@ -44,21 +44,18 @@ public class DriveDemoManager : MonoBehaviour
 
     public void GetAboutOnClick()
     {
-        description.text = string.Empty;
         About about = HMSDriveKitManager.Instance.GetAbout();
         description.text = (about == null) ? "GetAbout Failed" : "GetAbout Success";
     }
 
     public void CreateDirectoryOnClick()
     {
-        description.text = string.Empty;
         File file = HMSDriveKitManager.Instance.CreateDirectory();
         description.text = (file == null) ? "CreateDirectory Failed" : "CreateDirectory Success file.ID:" + file.GetId();
     }
 
     public void CreateFileOnClick()
     {
-        description.text = string.Empty;
         string fileName = "testFile.txt";
         string filePath = System.IO.Path.Combine(Application.persistentDataPath, fileName);
         File file = HMSDriveKitManager.Instance.CreateFiles(MimeType.MimeTypeFromSuffix(".txt"), filePath);
@@ -67,14 +64,12 @@ public class DriveDemoManager : MonoBehaviour
 
     public void ListCommentsOnClick()
     {
-        description.text = string.Empty;
         List<Comment> commentList = HMSDriveKitManager.Instance.ListComments();
         description.text = (commentList.Count == 0) ? "ListComments Failed or there is no comment" : "ListComments Success commentList.Count:" + commentList.Count;
     }
 
     public void CreateCommentsOnClick()
     {
-        description.text = string.Empty;
         Comment comment = HMSDriveKitManager.Instance.CreateComments();
         description.text = (comment == null) ? "CreateComments Failed" : "CreateComments Success comment.ID:" + comment.GetId();
     }

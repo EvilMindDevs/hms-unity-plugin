@@ -16,4 +16,4 @@ MonoBehaviour:
     _keys:
     - InitializeOnStart
     _values:
-    - False
+    - True

@@ -59,7 +59,7 @@ namespace HmsPlugin
         public Action<HMSException> OnIndependentSignInFailed { get; set; }
         public bool IsSignedIn { get { return HuaweiId != null; } }
 
-        private AccountAuthService authService, authServiceDrive;
+        private AccountAuthService authService;
 
         public HMSAccountKitManager()
         {
@@ -72,7 +72,6 @@ namespace HmsPlugin
         {
             Debug.Log("[HMSAccountManager]: AuthService OnAwake");
             authService = DefaultAuthService;
-            authServiceDrive = DefaultDriveAuthService;
         }
 
         //Game Service authentication
@@ -122,7 +121,7 @@ namespace HmsPlugin
             });
         }
 
-        public void SignInDrive()
+        /*public void SignInDrive()
         {
             Debug.Log("[HMS]: Sign in Drive " + authServiceDrive);
             authServiceDrive.StartSignIn((authId) =>
@@ -135,7 +134,7 @@ namespace HmsPlugin
                 Debug.LogError("[HMSAccountManager]: Sign in Drive failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                 OnSignInFailed?.Invoke(error);
             });
-        }
+        }*/
 
         public void SilentSignIn()
         {

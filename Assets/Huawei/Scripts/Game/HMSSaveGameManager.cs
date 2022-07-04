@@ -82,7 +82,7 @@ namespace HmsPlugin
                 }
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMS:] AddArchive fail: " + exception.ErrorCode + " :: " + exception.WrappedExceptionMessage + " ::  " + exception.WrappedCauseMessage);
+                Debug.LogError("[HMS:] AddArchive fail: " + exception.ErrorCode + " :: " + exception.WrappedExceptionMessage + " ::  " + exception.WrappedCauseMessage);
             });
             return;
         }
@@ -102,7 +102,7 @@ namespace HmsPlugin
                     Debug.Log("[HMS:]Archive Summary List size " + result.Count);
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMS:]Archive Summary Failure " + exception.WrappedExceptionMessage);
+                Debug.LogError("[HMS:]Archive Summary Failure " + exception.WrappedExceptionMessage);
             });
 
             // 1- Displaying the Saved Game List Page of HUAWEI AppAssistant
@@ -154,7 +154,7 @@ namespace HmsPlugin
                     }
                 }).AddOnFailureListener((exception) =>
                 {
-                    Debug.Log("[HMS:] OperationResult" + exception.ErrorCode);
+                    Debug.LogError("[HMS:] OperationResult" + exception.ErrorCode);
                 });
 
             }
@@ -170,7 +170,7 @@ namespace HmsPlugin
                 Debug.Log("isDifference:" + ((archiveDataOrConflict == null) ? "" : archiveDataOrConflict.Difference.ToString()));
             }).AddOnFailureListener((exception) =>
             {
-
+                Debug.LogError("[HMS:] taskUpdateArchive failed" + exception.ErrorCode);
             });
         }
         //
@@ -189,11 +189,11 @@ namespace HmsPlugin
             }
             taskLoadSavedGame.AddOnSuccessListener((archiveDataOrConflict) =>
             {
-                Debug.Log("[HMS:] taskUpdateArchive" + archiveDataOrConflict.Difference);
+                Debug.Log("[HMS:] taskLoadSavedGame" + archiveDataOrConflict.Difference);
                 Debug.Log("isDifference:" + ((archiveDataOrConflict == null) ? "" : archiveDataOrConflict.Difference.ToString()));
             }).AddOnFailureListener((exception) =>
             {
-
+                Debug.LogError("[HMS:] taskLoadSavedGame failed" + exception.ErrorCode);
             });
         }
         //Delete  Saved Games
@@ -208,7 +208,7 @@ namespace HmsPlugin
 
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMS:] removeArchiveTask" + exception.ErrorCode);
+                Debug.LogError("[HMS:] removeArchiveTask" + exception.ErrorCode);
             });
         }
         private int getConflictPolicy()
@@ -230,7 +230,7 @@ namespace HmsPlugin
 
                 }).AddOnFailureListener((exception) =>
                 {
-
+                    Debug.LogError("[HMS:] AndroidBitmap put it UI failed exception"+ exception.Message);
                 });
             }
         }

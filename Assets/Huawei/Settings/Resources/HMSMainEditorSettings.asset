@@ -32,6 +32,7 @@ MonoBehaviour:
     - NearbyService
     - AppMessaging
     - AppLinking
+    - Location
     _values:
     - False
     - False
@@ -51,3 +52,4 @@ MonoBehaviour:
     - False
     - False
     - False
+    - True

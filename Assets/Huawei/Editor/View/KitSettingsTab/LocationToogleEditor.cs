@@ -2,16 +2,15 @@
 
 namespace HmsPlugin
 {
-    public class AppLinkingToogleEditor : ToggleEditor, IDrawer
+    public class LocationToggleEditor : ToggleEditor, IDrawer
     {
         private IDependentToggle _dependentToggle;
 
-        public const string AppLinkingEnabled = "AppLinking";
-        public AppLinkingToogleEditor(IDependentToggle analyticsToggle)
+        public const string LocationEnabled = "Location";
+        public LocationToggleEditor()
         {
-            _dependentToggle = analyticsToggle;
-            bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(AppLinkingEnabled);
-            _toggle = new Toggle.Toggle("App Linking*", enabled, OnStateChanged, true).SetTooltip("AppLinking is dependent on Analytics Kit.");
+            bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(LocationEnabled);
+            _toggle = new Toggle.Toggle("Location", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
 
@@ -25,7 +24,7 @@ namespace HmsPlugin
             {
                 DisableToggle();
             }
-            HMSMainEditorSettings.Instance.Settings.SetBool(AppLinkingEnabled, value);
+            HMSMainEditorSettings.Instance.Settings.SetBool(LocationEnabled, value);
 
         }
 
@@ -60,7 +59,7 @@ namespace HmsPlugin
         {
             if (_toggle != null)
             {
-                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(AppLinkingEnabled));
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(LocationEnabled));
             }
         }
     }

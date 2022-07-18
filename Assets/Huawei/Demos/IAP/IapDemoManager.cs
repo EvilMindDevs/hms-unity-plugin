@@ -1,26 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using HuaweiConstants;
-using HuaweiMobileServices.Base;
 using HuaweiMobileServices.IAP;
-using System;
-using UnityEngine.Events;
-using HuaweiMobileServices.Id;
 using HmsPlugin;
 using HuaweiMobileServices.Utils;
 using UnityEngine.UI;
 
 public class IapDemoManager : MonoBehaviour
 {
-    [SerializeField]
-    private Text statusText;
+    [SerializeField] private Text statusText;
     private List<InAppPurchaseData> productPurchasedList;
 
     // Please insert your products via custom editor. You can find it in Huawei > Kit Settings > IAP tab.
 
     void Start()
     {
+        Screen.orientation = ScreenOrientation.Landscape;
         Debug.Log("[HMS]: IapDemoManager Started");
         HMSIAPManager.Instance.OnBuyProductSuccess += OnBuyProductSuccess;
         HMSIAPManager.Instance.OnCheckIapAvailabilitySuccess += OnCheckIapAvailabilitySuccess;

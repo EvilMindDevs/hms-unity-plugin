@@ -18,6 +18,24 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance.ConsentOnFail = OnConsentFail;
         HMSAdsKitManager.Instance.ConsentOnSuccess = OnConsentSuccess;
         HMSAdsKitManager.Instance.RequestConsentUpdate();
+
+        #region SetNonPersonalizedAd , SetRequestLocation
+
+        var builder = HwAds.RequestOptions.ToBuilder();
+
+        builder
+            .SetConsent("tcfString")
+            .SetNonPersonalizedAd((int)NonPersonalizedAd.ALLOW_ALL)
+            .Build();
+
+        bool requestLocation = true;
+        var requestOptions = builder.SetConsent("testConsent").SetRequestLocation(requestLocation).Build();
+
+        Debug.Log($"RequestOptions NonPersonalizedAds:  {requestOptions.NonPersonalizedAd}");
+        Debug.Log($"Consent: {requestOptions.Consent}");
+
+        #endregion
+
     }
 
     private void OnConsentSuccess(ConsentStatus consentStatus, bool isNeedConsent, IList<AdProvider> adProviders)

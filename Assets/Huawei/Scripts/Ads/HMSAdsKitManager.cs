@@ -1,10 +1,14 @@
 ﻿using HuaweiConstants;
+
 using HuaweiMobileServices.Ads;
 using HuaweiMobileServices.Utils;
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using UnityEngine;
+
 using static HuaweiConstants.UnityBannerAdPositionCode;
 using static HuaweiMobileServices.Ads.SplashAd;
 
@@ -74,7 +78,15 @@ namespace HmsPlugin
         {
             if (!hasPurchasedNoAds)
             {
-                LoadBannerAd(UnityBannerAdPositionCodeType.POSITION_BOTTOM, UnityBannerAdSize.BANNER_SIZE_360_57);
+                UnityBannerAdPositionCodeType _adPositionCodeType = UnityBannerAdPositionCodeType.POSITION_BOTTOM;
+                UnityBannerAdSizeType _adSizeType = UnityBannerAdSizeType.BANNER_SIZE_360_57;
+
+                if (Enum.TryParse(adsKitSettings.Get(HMSAdsKitSettings.BannerAdPositionType), out UnityBannerAdPositionCodeType adPositionCodeType))
+                    _adPositionCodeType = adPositionCodeType;
+                if (Enum.TryParse(adsKitSettings.Get(HMSAdsKitSettings.UnityBannerAdSizeType), out UnityBannerAdSizeType adSizeType))
+                    _adSizeType = adSizeType;
+
+                LoadBannerAd(_adPositionCodeType, _adSizeType.ToString());
                 LoadInterstitialAd();
             }
             LoadRewardedAd();

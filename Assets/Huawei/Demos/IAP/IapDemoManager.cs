@@ -28,12 +28,50 @@ public class IapDemoManager : MonoBehaviour
     {
         Debug.Log("[HMS]: IapDemoManager Started");
         HMSIAPManager.Instance.OnBuyProductSuccess += OnBuyProductSuccess;
+
         HMSIAPManager.Instance.OnCheckIapAvailabilitySuccess += OnCheckIapAvailabilitySuccess;
         HMSIAPManager.Instance.OnCheckIapAvailabilityFailure += OnCheckIapAvailabilityFailure;
+
+        HMSIAPManager.Instance.OnBuyProductFailure = OnBuyProductFailure;
+
+        // This method should be run at every app start.
+        //DeliveryControl(); 
 
         // Uncomment below if InitializeOnStart is not enabled in Huawei > Kit Settings > IAP tab.
         //HMSIAPManager.Instance.CheckIapAvailability();
     }
+
+    private void DeliveryControl()
+    {
+        // https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/redelivering-consumables-0000001051356573
+        // Check whether the purchase token is in the purchase token list of the delivered products.
+    }
+
+    // For sandbox testing
+    private void OnBuyProductFailure(int code)
+    {
+        //https://developer.huawei.com/consumer/en/doc/development/HMSCore-References/client-error-code-0000001050746111
+        // this command is the solution of the error of product has already been purchased.(ORDER_PRODUCT_OWNED)
+
+        if (code == OrderStatusCode.ORDER_PRODUCT_OWNED)
+        {
+            HMSIAPManager.Instance.OnObtainOwnedPurchasesSuccess = OnObtainOwnedPurchasesSuccess;
+            HMSIAPManager.Instance.ObtainOwnedPurchases(PriceType.IN_APP_NONCONSUMABLE);
+        }
+    }
+
+    private void OnObtainOwnedPurchasesSuccess(OwnedPurchasesResult result)
+    {
+        if (result != null)
+        {
+            foreach (var obj in result.InAppPurchaseDataList)
+            {
+                HMSIAPManager.Instance.ConsumePurchaseWithToken(obj.PurchaseToken);
+            }
+        }
+    }
+
+
 
     private void OnCheckIapAvailabilityFailure(HMSException obj)
     {

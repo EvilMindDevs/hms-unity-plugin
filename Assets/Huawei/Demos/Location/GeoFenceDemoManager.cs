@@ -18,7 +18,7 @@ public class GeoFenceDemoManager : MonoBehaviour
 
     private void ApplyForLocationPermission()
     {
-        LocationBroadcastReceiver.ApplyActivityRecognitionPermissions();
+      //  LocationPermissions.ApplyActivityRecognitionPermissions();
     }
 
     void ApplyForFineLocationPermission()
@@ -34,7 +34,7 @@ public class GeoFenceDemoManager : MonoBehaviour
         ApplyForLocationPermission();
         // ApplyForFineLocationPermission();
         // ApplyForCoarseLocationPermission();
-        LocationPermissions.ApplyBackgroundLocationPermissions();
+       // LocationPermissions.ApplyBackgroundLocationPermissions();
         LocationPermissions.RequestLocationPermission();
     }
 

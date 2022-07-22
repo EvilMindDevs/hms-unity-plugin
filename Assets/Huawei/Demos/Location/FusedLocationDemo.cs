@@ -1,89 +1,165 @@
-using UnityEngine;
+using System;
+using System.Text;
 using HuaweiMobileServices.Location;
 using HuaweiMobileServices.Location.Location;
+using HuaweiMobileServices.Utils;
+using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
-public class FusedLocationDemo : MonoBehaviour
+namespace Huawei.Demos.Location
 {
-    LocationRequest mLocationRequest;
-
-    // Define a fusedLocationProviderClient object.
-    private FusedLocationProviderClient fusedLocationProviderClient;
-
-// Instantiate the fusedLocationProviderClient object.
-    private void ApplyForLocationPermission()
+    public class FusedLocationDemo : MonoBehaviour
     {
-        LocationBroadcastReceiver.ApplyActivityRecognitionPermissions();
-    }
+        private static String TAG = "FusedLocationDemo";
+
+        private LocationRequest locationRequest;
+        private FusedLocationProviderClient fusedLocationProviderClient;
+        private LocationCallback locationCallback;
+        [SerializeField] private Text resultText;
+        [SerializeField] private Text lastKnownLocationText;
+        [SerializeField] private Text locationAvailabilityText;
 
 
-    void Start()
-    {
-        ApplyForLocationPermission();
-        Debug.Log("Enes1 FusedLocationDemo servise1");
+        private void Start()
+        {
+            HMSLocationManager.Instance.onLocationResult += OnLocationResult;
+            HMSLocationManager.Instance.onLocationAvailability += OnLocationAvailability;
 
-        LocationPermissions.ApplyBackgroundLocationPermissions();
+            HMSLocationManager.Instance.RequestLocationPermission();
+            HMSLocationManager.Instance.RequestFineLocationPermission();
+            HMSLocationManager.Instance.RequestCoarseLocationPermission();
+        }
 
-        LocationPermissions.RequestLocationPermission();
-
-
-        Debug.Log("Enes1 FusedLocationDemo servise2");
-
-        SettingsClient settingsClient = LocationServices.GetSettingsClient();
-        Debug.Log("Enes1 FusedLocationDemo servise3");
-
-
-        CheckLocationSettings(settingsClient);
-        Debug.Log("Enes1 FusedLocationDemo servise4");
-
-        fusedLocationProviderClient = LocationServices.GetFusedLocationProviderClient();
-        Debug.Log("Enes1 FusedLocationDemo servise5");
-
-        SetLocationMode();
-        Debug.Log("Enes1 FusedLocationDemo servise6");
-    }
-
-    private void SetLocationMode()
-    {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.SetNumUpdates(1);
-    }
-
-    private void CheckLocationSettings(SettingsClient settingsClient)
-    {
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        mLocationRequest = new LocationRequest();
-        Debug.Log("Enes1 CheckLocationSettings servise1");
-
-        builder.AddLocationRequest(mLocationRequest);
-        Debug.Log("Enes1 CheckLocationSettings servise2");
-
-        LocationSettingsRequest locationSettingsRequest = builder.Build();
-
-        settingsClient.CheckLocationSettings(locationSettingsRequest)
-            .AddOnSuccessListener((locationSettingResponse) =>
+        private void OnLocationResult(LocationResult locationResult) 
+        {
+            Debug.Log($"{TAG} Location Result success");
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var location in locationResult.GetLocations())
             {
-                Debug.Log("Enes1 [Fuse Demo234]: Complete " + locationSettingResponse.ToString());
-                LocationSettingsStates locationSettingsStates = locationSettingResponse.GetLocationSettingsStates();
-                Debug.Log("Enes1 [Fuse Demo234]: Complete " + locationSettingResponse.ToString());
-                Debug.Log("Enes1 [Fuse Demo]: Complete " + locationSettingsStates.IsBleUsable());
-                Debug.Log("Enes1 [Fuse Demo]: Complete " + locationSettingsStates.IsGnssPresent());
-                Debug.Log("Enes1 [Fuse Demo]: Complete " + locationSettingsStates.IsGnssUsable());
-                Debug.Log("Enes1 [Fuse Demo]: Complete " + locationSettingsStates.IsLocationPresent());
-                Debug.Log("Enes1 [Fuse Demo]: Complete " + locationSettingsStates.IsLocationUsable());
-                Debug.Log("Enes1 [Fuse Demo]: Complete " + locationSettingsStates.IsNetworkLocationPresent());
-                Debug.Log("Enes1 [Fuse Demo]: Complete " + locationSettingsStates.IsNetworkLocationUsable());
-                Debug.Log("Enes1 [Fuse Demo]: Complete " + locationSettingsStates.IsHMSLocationPresent());
-                Debug.Log("Enes1 [Fuse Demo]: Complete " + locationSettingsStates.IsHMSLocationUsable());
-            })
-            .AddOnFailureListener((exception) =>
-            {
-                Debug.Log("Enes1 [Fuse Demo]: Fail123" + exception.WrappedCauseMessage + " " +
-                          exception.WrappedExceptionMessage + "Enes1 Error code: " + exception.ErrorCode);
-            });
-    }
+                stringBuilder.Append(",\nLocation = ").Append("Latitude " + location.GetLatitude())
+                    .Append(" Longitude " + location.GetLongitude());
+                resultText.text += stringBuilder.ToString();
+            }
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
+        private void OnLocationAvailability(LocationAvailability locationAvailability)
+        {
+            var isLocationAvailable = locationAvailability.IsLocationAvailable;
+            locationAvailabilityText.text = $"LocationStatus = {isLocationAvailable}";
+        }
+
+        private void CheckLocationSettings(LocationRequest locationRequest)
+        {
+            SettingsClient settingsClient = LocationServices.GetSettingsClient();
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+            builder.AddLocationRequest(locationRequest);
+            LocationSettingsRequest locationSettingsRequest = builder.Build();
+
+            settingsClient.CheckLocationSettings(locationSettingsRequest)
+                .AddOnSuccessListener(locationSettingsResponse =>
+                {
+                    LocationSettingsStates locationSettingsStates =
+                        locationSettingsResponse.GetLocationSettingsStates();
+                    StringBuilder stringBuilder = new StringBuilder();
+
+                    // Check whether the location function is enabled. 
+                    stringBuilder.Append(",\nisLocationUsable=").Append(locationSettingsStates.IsLocationUsable());
+
+                    // Check whether HMS Core (APK) is available. 
+                    stringBuilder.Append(",\nisHMSLocationUsable=")
+                        .Append(locationSettingsStates.IsHMSLocationUsable());
+
+                    Debug.Log($"{TAG} checkLocationSetting onComplete:" + stringBuilder);
+                })
+                .AddOnFailureListener(exception =>
+                {
+                    Debug.Log($"checkLocationSetting onFailure, Cause Message: {exception.WrappedCauseMessage} " +
+                              $"Exception message: {exception.WrappedExceptionMessage} Error code : {exception.ErrorCode}");
+                });
+        }
+
+        public void RequestLocationUpdatesWithCallback()
+        {
+            try
+            {
+                fusedLocationProviderClient = LocationServices.GetFusedLocationProviderClient();
+                locationRequest = new LocationRequest();
+                locationRequest.SetInterval(1000);
+
+                if (locationCallback == null) locationCallback = HMSLocationManager.Instance.DefineLocationCallback();
+
+                fusedLocationProviderClient
+                    .RequestLocationUpdates(locationRequest, locationCallback, Looper.GetMainLooper())
+                    .AddOnSuccessListener(
+                        (update) => { Debug.Log($"{TAG} RequestLocationUpdatesWithCallback success"); })
+                    .AddOnFailureListener((exception) =>
+                    {
+                        Debug.LogError($"{TAG} LocationCallBackListener Fail" + exception.WrappedCauseMessage + " " +
+                                       exception.WrappedExceptionMessage + $"{TAG} RequestLocationUpdates Error code: " +
+                                       exception.ErrorCode);
+                    });
+                
+                fusedLocationProviderClient.RequestLocationUpdates(locationRequest,HMSLocationManager.Instance.GetPendingIntent())
+                    .AddOnSuccessListener(
+                        (update) => { Debug.Log($"{TAG} RequestLocationUpdatesWithIntent success"); })
+                    .AddOnFailureListener((exception) =>
+                    {
+                        Debug.LogError($"{TAG} LocationCallBackListener Fail" + exception.WrappedCauseMessage + " " +
+                                       exception.WrappedExceptionMessage + $"{TAG} RequestLocationUpdates Error code: " +
+                                       exception.ErrorCode);
+                    });
+            }
+            catch (Exception exception)
+            {
+                Debug.Log(exception.ToString());
+            }
+        }
+
+        public void RemoveLocationUpdatesWithCallback()
+        {
+            try
+            {
+                fusedLocationProviderClient.RemoveLocationUpdates(locationCallback)
+                    .AddOnSuccessListener(
+                        (update) => { Debug.Log($"{TAG} removeLocationUpdatesWithIntent onSuccess"); })
+                    .AddOnFailureListener((exception) =>
+                    {
+                        Debug.LogError(
+                            $"{TAG} removeLocationUpdatesWithIntent onFailure: {exception.WrappedExceptionMessage}");
+                    });
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError($"{TAG} removeLocationUpdatesWithIntent exception: {exception}");
+            }
+        }
+
+        private void OnDestroy()
+        {
+            RemoveLocationUpdatesWithCallback();
+        }
+
+        public void GetLastKnownLocation()
+        {
+            fusedLocationProviderClient.GetLastLocation()
+                .AddOnSuccessListener(location =>
+                {
+                    Debug.Log($"{TAG} GetLastKnownLocation success");
+                    if (location != null)
+                    {
+                        lastKnownLocationText.text =
+                            $"{TAG} GetLastKnownLocation Latitude: {location.GetLatitude()} Longitude: {location.GetLongitude()}";
+                    }
+                    else
+                    {
+                        Debug.LogError($"{TAG} GetLastKnownLocation not available");
+                    }
+                }).AddOnFailureListener(exception =>
+                    {
+                        Debug.LogError($"{TAG} GetLastKnownLocation exception: {exception}");
+                    }
+                );
+        }
     }
 }

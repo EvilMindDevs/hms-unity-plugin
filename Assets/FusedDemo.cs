@@ -24,8 +24,8 @@ public class FusedDemo : MonoBehaviour
 // Instantiate the fusedLocationProviderClient object.
     private void ApplyForLocationPermission()
     {
-        LocationBroadcastReceiver.ApplyActivityRecognitionPermissions();
-        LocationPermissions.ApplyBackgroundLocationPermissions();
+      //  LocationBroadcastReceiver.ApplyActivityRecognitionPermissions();
+      //  LocationPermissions.ApplyBackgroundLocationPermissions();
         LocationPermissions.RequestLocationPermission();
     }
 
@@ -34,7 +34,7 @@ public class FusedDemo : MonoBehaviour
     {
         ApplyForLocationPermission();
         fusedLocationProviderClient = LocationServices.GetFusedLocationProviderClient();
-        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest = new LocationRequest();
         mLocationRequest.SetInterval(10000);
         LocationCallback mLocationCallback;
         // mLocationCallback = new LocationCallback() {        
@@ -48,65 +48,29 @@ public class FusedDemo : MonoBehaviour
         // }
         Debug.Log("Enes1 LocationCallBackListener 2200002 ");
 
-        LocationCallBackListener callBack = new LocationCallBackListener(this);
-        Debug.Log("Enes1 LocationCallBackListener 2 ");
-
-        var locationCallback = new LocationCallback(callBack);
+        mLocationCallback=LocationBridge.GetLocationResult();
+        
         Debug.Log("Enes1 LocationCallBackListener 3 ");
 
-        // fusedLocationProviderClient.RequestLocationUpdates(mLocationRequest, locationCallback, Looper.GetMainLooper())
-        //     .AddOnSuccessListener(
-        //         (update) =>
-        //         {
-        //             Debug.Log("Enes1 LocationCallBackListener sucess " + update
-        //                 .ToString());
-        //         })
-        //     .AddOnFailureListener((exception) =>
-        //     {
-        //         Debug.Log("Enes1 LocationCallBackListener Fail" + exception.WrappedCauseMessage + " " +
-        //                   exception.WrappedExceptionMessage + "Enes1 RequestLocationUpdates Error code: " +
-        //                   exception.ErrorCode);
-        //     });
-        // Debug.Log("Enes1 LocationCallBackListener 4 ");
+        fusedLocationProviderClient.RequestLocationUpdates(mLocationRequest, mLocationCallback, Looper.GetMainLooper())
+            .AddOnSuccessListener(
+                (update) =>
+                {
+                    Debug.Log("Enes1 LocationCallBackListener succcess " + update
+                        .ToString());
+                })
+            .AddOnFailureListener((exception) =>
+            {
+                Debug.Log("Enes1 LocationCallBackListener Fail" + exception.WrappedCauseMessage + " " +
+                          exception.WrappedExceptionMessage + "Enes1 RequestLocationUpdates Error code: " +
+                          exception.ErrorCode);
+            });
+        Debug.Log("Enes1 LocationCallBackListener 4 ");
 
 
         ///
 
-            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-            builder.AddLocationRequest(mLocationRequest);
-            LocationSettingsRequest locationSettingsRequest = builder.Build();
-            // Before requesting location update, invoke checkLocationSettings to check device settings.
-            ITask<LocationSettingsResponse> locationSettingsResponseTask =
-                mSettingsClient.CheckLocationSettings(locationSettingsRequest).AddOnSuccessListener(
-                        (update) =>
-                        {
-                            Debug.Log("Enes1 LocationCallBackListener sucess1 " + update
-                                .ToString());
 
-                            fusedLocationProviderClient
-                                .RequestLocationUpdates(mLocationRequest, locationCallback, Looper.GetMainLooper())
-                                .AddOnSuccessListener(
-                                    (update) =>
-                                    {
-                                        Debug.Log("Enes1 LocationCallBackListener sucess2 " + update
-                                            .ToString());
-                                    })
-                                .AddOnFailureListener((exception) =>
-                                {
-                                    Debug.Log("Enes1 LocationCallBackListener Fail" + exception.WrappedCauseMessage +
-                                              " " +
-                                              exception.WrappedExceptionMessage +
-                                              "Enes1 RequestLocationUpdates Error code: " +
-                                              exception.ErrorCode);
-                                });
-                        })
-                    .AddOnFailureListener((exception) =>
-                    {
-                        Debug.Log("Enes1 LocationCallBackListener Fail" + exception.WrappedCauseMessage + " " +
-                                  exception.WrappedExceptionMessage + "Enes1 RequestLocationUpdates Error code: " +
-                                  exception.ErrorCode);
-                    });
-            Debug.Log("Enes1 LocationCallBackListener3 4 ");
         //
 
         // Debug.Log("Enes1 FusedLocationDemo servise2");
@@ -334,10 +298,87 @@ public class FusedDemo : MonoBehaviour
         Debug.Log("Enes1 GetLocationResult 111 ");
 
 
+        LocationCallBackListener callBack = new LocationCallBackListener(this);
+        Debug.Log("Enes1 LocationCallBackListener 2 ");
+
+        var locationCallback = new LocationCallback(callBack);
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.AddLocationRequest(mLocationRequest);
+        LocationSettingsRequest locationSettingsRequest = builder.Build();
+        // Before requesting location update, invoke checkLocationSettings to check device settings.
+        ITask<LocationSettingsResponse> locationSettingsResponseTask =
+            mSettingsClient.CheckLocationSettings(locationSettingsRequest).AddOnSuccessListener(
+                    (update) =>
+                    {
+                        Debug.Log("Enes1 LocationCallBackListener sucess1 " + update
+                            .ToString());
+
+                        fusedLocationProviderClient
+                            .RequestLocationUpdates(mLocationRequest, locationCallback, Looper.GetMainLooper())
+                            .AddOnSuccessListener(
+                                (update) =>
+                                {
+                                    Debug.Log("Enes1 LocationCallBackListener sucess2 " + update
+                                        .ToString());
+                                })
+                            .AddOnFailureListener((exception) =>
+                            {
+                                Debug.Log("Enes1 LocationCallBackListener Fail" + exception.WrappedCauseMessage +
+                                          " " +
+                                          exception.WrappedExceptionMessage +
+                                          "Enes1 RequestLocationUpdates Error code: " +
+                                          exception.ErrorCode);
+                            });
+                    })
+                .AddOnFailureListener((exception) =>
+                {
+                    Debug.Log("Enes1 LocationCallBackListener Fail" + exception.WrappedCauseMessage + " " +
+                              exception.WrappedExceptionMessage + "Enes1 RequestLocationUpdates Error code: " +
+                              exception.ErrorCode);
+                });
+        Debug.Log("Enes1 LocationCallBackListener3 4 ");
+
+
         //  Debug.Log("Enes1 GetLocationResult 155 " + locationCallback.ToString());
 
 
         LocationBridge.GetLocationResult();
+        
+        
+        // Before requesting location update, invoke checkLocationSettings to check device settings.
+        ITask<LocationSettingsResponse> locationSettingsResponseTask2 =
+            mSettingsClient.CheckLocationSettings(locationSettingsRequest).AddOnSuccessListener(
+                    (update) =>
+                    {
+                        Debug.Log("Enes1 LocationCallBackListener sucess1222 " + update
+                            .ToString());
+
+                        fusedLocationProviderClient
+                            .RequestLocationUpdates(mLocationRequest, locationCallback, Looper.GetMainLooper())
+                            .AddOnSuccessListener(
+                                (update) =>
+                                {
+                                    Debug.Log("Enes1 LocationCallBackListener sucess3333332 " + update
+                                        .ToString());
+                                })
+                            .AddOnFailureListener((exception) =>
+                            {
+                                Debug.Log("Enes1 LocationCallBackListener Fail" + exception.WrappedCauseMessage +
+                                          " " +
+                                          exception.WrappedExceptionMessage +
+                                          "Enes1 RequestLocationUpdates Error code: " +
+                                          exception.ErrorCode);
+                            });
+                    })
+                .AddOnFailureListener((exception) =>
+                {
+                    Debug.Log("Enes1 LocationCallBackListener Fail" + exception.WrappedCauseMessage + " " +
+                              exception.WrappedExceptionMessage + "Enes1 RequestLocationUpdates Error code: " +
+                              exception.ErrorCode);
+                });
+        Debug.Log("Enes1 LocationCallBackListener3 4 ");
 
         Debug.Log("Enes1 GetLocationResult 222 ");
     }

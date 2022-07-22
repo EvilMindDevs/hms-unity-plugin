@@ -11,29 +11,12 @@ public class LocationDemoManager : MonoBehaviour
     private ActivityIdentificationService _activityIdentificationService;
     private AndroidPendingIntent _pendingIntent;
     [SerializeField] private Text statusText;
-
-    private void ApplyForLocationPermission()
-    {
-        LocationBroadcastReceiver.ApplyActivityRecognitionPermissions();
-    }
-
-    void Start()
-    {
-        ApplyForLocationPermission();
-        ApplyForFineLocationPermission();
-    }
-
-    void ApplyForFineLocationPermission()
-    {
-        if (!Permission.HasUserAuthorizedPermission(Permission.FineLocation))
-        {
-            Permission.RequestUserPermission(Permission.FineLocation);
-        }
-    }
+    
+    
 
     public void RequestActivityUpdates()
     {
-        _activityIdentificationService = ActivityIdentification.GetServiceWithContext();
+        _activityIdentificationService = ActivityIdentification.GetService();
 
         if (_activityIdentificationService == null)
         {

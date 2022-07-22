@@ -18,6 +18,7 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance.ConsentOnFail = OnConsentFail;
         HMSAdsKitManager.Instance.ConsentOnSuccess = OnConsentSuccess;
         HMSAdsKitManager.Instance.RequestConsentUpdate();
+        HMSAdsKitManager.Instance.OnSplashAdFailedToLoad += abc;
     }
 
     private void OnConsentSuccess(ConsentStatus consentStatus, bool isNeedConsent, IList<AdProvider> adProviders)
@@ -27,6 +28,10 @@ public class AdsDemoManager : MonoBehaviour
         {
             Debug.Log($"[HMS] AdsDemoManager OnConsentSuccess adproviders: Id:{AdProvider.Id} Name:{AdProvider.Name} PrivacyPolicyUrl:{AdProvider.PrivacyPolicyUrl} ServiceArea:{AdProvider.ServiceArea}");
         }
+    }
+    private void abc(int a)
+    {
+        Debug.Log($"[HMS] AdsDemoManager OnConsentFail:{a}");
     }
 
     private void OnConsentFail(string desc)

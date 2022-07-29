@@ -92,10 +92,18 @@ namespace HmsPlugin
             LoadRewardedAd();
         }
 
+
         public void SetTestAdStatus(bool value)
         {
             adsKitSettings.SetBool(HMSAdsKitSettings.UseTestAds, value);
             Debug.Log("[HMS] HMSAdsKitManager SetTestAdStatus set to " + value.ToString());
+        }
+
+        public void SetTestAd(bool status)
+        {
+            SetTestAdStatus(status);
+            DestroyBannerAd();
+            LoadAllAds();
         }
 
         #region BANNER

@@ -1,23 +1,21 @@
 ﻿using HmsPlugin;
+
 using HuaweiMobileServices.AuthService;
-using HuaweiMobileServices.Base;
 using HuaweiMobileServices.CloudDB;
 using HuaweiMobileServices.Common;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
-using UnityEngine.UI;
-using Text = UnityEngine.UI.Text;
 
 public class CloudDBDemo : MonoBehaviour
 {
     private string TAG = "CloudDBDemo";
     private HMSAuthServiceManager authServiceManager = null;
     private AGConnectUser user = null;
-    private Text loggedInUser;
 
     private const string NOT_LOGGED_IN = "No user logged in";
     private const string LOGGED_IN = "{0} is logged in";
@@ -30,10 +28,34 @@ public class CloudDBDemo : MonoBehaviour
     private readonly string ObjectTypeInfoHelper = "com.clouddbdemo.kb.huawei.ObjectTypeInfoHelper";
     List<BookInfo> bookInfoList = null;
 
+    public static Action<string> CloudDBDemoLog;
+
+
+    #region Singleton
+
+    public static CloudDBDemo Instance { get; private set; }
+    private void Singleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    #endregion
+
+    private void Awake()
+    {
+        Singleton();
+    }
+
     public void Start()
     {
-        loggedInUser = GameObject.Find("LoggedUserText").GetComponent<Text>();
-        loggedInUser.text = NOT_LOGGED_IN;
+        CloudDBDemoLog?.Invoke(NOT_LOGGED_IN);
 
         authServiceManager = HMSAuthServiceManager.Instance;
         authServiceManager.OnSignInSuccess = OnAuthSericeSignInSuccess;
@@ -42,7 +64,9 @@ public class CloudDBDemo : MonoBehaviour
         if (authServiceManager.GetCurrentUser() != null)
         {
             user = authServiceManager.GetCurrentUser();
-            loggedInUser.text = user.IsAnonymous() ? LOGGED_IN_ANONYMOUSLY : string.Format(LOGGED_IN, user.DisplayName);
+
+            string log = user.IsAnonymous() ? LOGGED_IN_ANONYMOUSLY : string.Format(LOGGED_IN, user.DisplayName);
+            CloudDBDemoLog?.Invoke(log);
         }
         else
         {
@@ -71,41 +95,64 @@ public class CloudDBDemo : MonoBehaviour
 
     private void OnAuthSericeSignInFailed(HMSException error)
     {
-        loggedInUser.text = LOGIN_ERROR;
+        CloudDBDemoLog?.Invoke(LOGIN_ERROR);
     }
 
     private void OnAuthSericeSignInSuccess(SignInResult signInResult)
     {
         user = signInResult.GetUser();
-        loggedInUser.text = user.IsAnonymous() ? LOGGED_IN_ANONYMOUSLY : string.Format(LOGGED_IN, user.DisplayName);
+        string log = user.IsAnonymous() ? LOGGED_IN_ANONYMOUSLY : string.Format(LOGGED_IN, user.DisplayName);
+        CloudDBDemoLog?.Invoke(log);
     }
 
     public void CreateObjectType()
     {
+        Debug.Log("CreateObjectType");
+
         cloudDBManager.CreateObjectType(ObjectTypeInfoHelper);
     }
 
     public void GetCloudDBZoneConfigs()
     {
+        Debug.Log("GetCloudDBZoneConfigs");
+
         IList<CloudDBZoneConfig> CloudDBZoneConfigs = cloudDBManager.GetCloudDBZoneConfigs();
         Debug.Log($"{TAG} " + CloudDBZoneConfigs.Count);
     }
 
     public void OpenCloudDBZone()
     {
+        Debug.Log("OpenCloudDBZone");
+
         cloudDBManager.OpenCloudDBZone(cloudDBZoneName, CloudDBZoneConfig.CloudDBZoneSyncProperty.CLOUDDBZONE_CLOUD_CACHE, CloudDBZoneConfig.CloudDBZoneAccessProperty.CLOUDDBZONE_PUBLIC);
     }
 
     public void OpenCloudDBZone2()
     {
+        Debug.Log("OpenCloudDBZone2");
+
         cloudDBManager.OpenCloudDBZone2(cloudDBZoneName, CloudDBZoneConfig.CloudDBZoneSyncProperty.CLOUDDBZONE_CLOUD_CACHE, CloudDBZoneConfig.CloudDBZoneAccessProperty.CLOUDDBZONE_PUBLIC);
     }
 
-    public void EnableNetwork() => cloudDBManager.EnableNetwork(cloudDBZoneName);
-    public void DisableNetwork() => cloudDBManager.DisableNetwork(cloudDBZoneName);
+    public void EnableNetwork()
+    {
+        Debug.Log("EnableNetwork");
+
+        cloudDBManager.EnableNetwork(cloudDBZoneName);
+    }
+
+    public void DisableNetwork()
+    {
+        Debug.Log("DisableNetwork");
+
+        cloudDBManager.DisableNetwork(cloudDBZoneName);
+    }
+
 
     public void AddBookInfo()
     {
+        Debug.Log("AddBookInfo");
+
         BookInfo bookInfo = new BookInfo();
         bookInfo.Id = 1;
         bookInfo.BookName = "bookName";
@@ -115,6 +162,8 @@ public class CloudDBDemo : MonoBehaviour
 
     public void AddBookInfoList()
     {
+        Debug.Log("AddBookInfoList");
+
         IList<AndroidJavaObject> bookInfoList = new List<AndroidJavaObject>();
 
         BookInfo bookInfo1 = new BookInfo();
@@ -132,6 +181,8 @@ public class CloudDBDemo : MonoBehaviour
 
     public void UpdateBookInfo()
     {
+        Debug.Log("UpdateBookInfo");
+
         BookInfo bookInfo = new BookInfo();
         bookInfo.Id = 1;
         bookInfo.BookName = "bookName";
@@ -142,6 +193,8 @@ public class CloudDBDemo : MonoBehaviour
 
     public void DeleteBookInfo()
     {
+        Debug.Log("DeleteBookInfo");
+
         BookInfo bookInfo = new BookInfo();
         bookInfo.Id = 1;
         cloudDBManager.ExecuteDelete(bookInfo);
@@ -149,6 +202,8 @@ public class CloudDBDemo : MonoBehaviour
 
     public void DeleteBookInfoList()
     {
+        Debug.Log("DeleteBookInfoList");
+
         IList<AndroidJavaObject> bookInfoList = new List<AndroidJavaObject>();
 
         BookInfo bookInfo1 = new BookInfo();
@@ -166,6 +221,8 @@ public class CloudDBDemo : MonoBehaviour
 
     public void GetBookInfo()
     {
+        Debug.Log("GetBookInfo");
+
         CloudDBZoneQuery mCloudQuery = CloudDBZoneQuery.Where(new AndroidJavaClass(BookInfoClass));
         cloudDBManager.ExecuteQuery(mCloudQuery, CloudDBZoneQuery.CloudDBZoneQueryPolicy.CLOUDDBZONE_LOCAL_ONLY);
     }
@@ -199,12 +256,16 @@ public class CloudDBDemo : MonoBehaviour
 
     public void ExecuteSumQuery()
     {
+        Debug.Log("ExecuteSumQuery");
+
         CloudDBZoneQuery mCloudQuery = CloudDBZoneQuery.Where(new AndroidJavaClass(BookInfoClass));
         cloudDBManager.ExecuteSumQuery(mCloudQuery, "price", CloudDBZoneQuery.CloudDBZoneQueryPolicy.CLOUDDBZONE_LOCAL_ONLY);
     }
 
     public void ExecuteCountQuery()
     {
+        Debug.Log("ExecuteCountQuery");
+
         CloudDBZoneQuery mCloudQuery = CloudDBZoneQuery.Where(new AndroidJavaClass(BookInfoClass));
         cloudDBManager.ExecuteCountQuery(mCloudQuery, "price", CloudDBZoneQuery.CloudDBZoneQueryPolicy.CLOUDDBZONE_LOCAL_ONLY);
     }

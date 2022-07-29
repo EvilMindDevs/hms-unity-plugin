@@ -1,7 +1,9 @@
 ﻿using HuaweiMobileServices.RemoteConfig;
 using HuaweiMobileServices.Utils;
+
 using System;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +13,28 @@ public class RemoteConfigDemo : MonoBehaviour
     private Text countOfVariables;
     string TAG = "RemoteConfig Demo";
 
+    #region Singleton
+
+    public static RemoteConfigDemo Instance { get; private set; }
+    private void Singleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    #endregion
+
+    private void Awake()
+    {
+        Singleton();
+    }
+
     void Start()
     {
         countOfVariables = GameObject.Find("countOfVariables").GetComponent<Text>();
@@ -18,6 +42,8 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void Fetch()
     {
+        Debug.Log("Fetch");
+
         HMSRemoteConfigManager.Instance.OnFecthSuccess = OnFecthSuccess;
         HMSRemoteConfigManager.Instance.OnFecthFailure = OnFecthFailure;
         HMSRemoteConfigManager.Instance.Fetch();
@@ -36,18 +62,24 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void GetMergedAll()
     {
+        Debug.Log("GetMergedAll");
+
         Dictionary<string, object> dictionary = HMSRemoteConfigManager.Instance.GetMergedAll();
         countOfVariables.text = $"Count of Variables : {dictionary.Count}";
     }
 
     public void ClearAll()
     {
+        Debug.Log("ClearAll");
+
         HMSRemoteConfigManager.Instance.ClearAll();
         GetMergedAll();
     }
 
     public void ApplyDefault()
     {
+        Debug.Log("ApplyDefault");
+
         Dictionary<string, object> dictionary = new Dictionary<string, object>();
         dictionary.Add("Key", "Value");
         dictionary.Add("Key1", true);
@@ -59,22 +91,30 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void ApplyDefaultXml()
     {
+        Debug.Log("ApplyDefaultXml");
+
         HMSRemoteConfigManager.Instance.ApplyDefault("xml/remoteConfig");
         GetMergedAll();
     }
 
     public void LoadLastFetched()
     {
+        Debug.Log("LoadLastFetched");
+
         Debug.Log($"[{TAG}]: LoadLastFetched {HMSRemoteConfigManager.Instance.LoadLastFetched().getValueAsString("abc")}");
     }
 
     public void DeveloperMode(bool val)
     {
+        Debug.Log("DeveloperMode");
+
         HMSRemoteConfigManager.Instance.SetDeveloperMode(val);
     }
 
     public void GetSource()
     {
+        Debug.Log("GetSource");
+
         Debug.Log($"[{TAG}]: GetSource(Key) {HMSRemoteConfigManager.Instance.GetSource("Key")}");
     }
 }

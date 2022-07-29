@@ -6,14 +6,33 @@ using HuaweiMobileServices.Ads;
 
 public class AdsDemoManager : MonoBehaviour
 {
-    [SerializeField]
-    private Toggle testAdStatusToggle;
+
+    #region Singleton
+
+    public static AdsDemoManager Instance { get; private set; }
+    private void Singleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    #endregion
+
+    private void Awake()
+    {
+        Singleton();
+    }
 
     private void Start()
     {
         HMSAdsKitManager.Instance.OnRewarded = OnRewarded;
         HMSAdsKitManager.Instance.OnInterstitialAdClosed = OnInterstitialAdClosed;
-        testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
 
         HMSAdsKitManager.Instance.ConsentOnFail = OnConsentFail;
         HMSAdsKitManager.Instance.ConsentOnSuccess = OnConsentSuccess;
@@ -54,11 +73,15 @@ public class AdsDemoManager : MonoBehaviour
 
     public void ShowBannerAd()
     {
+        Debug.Log("[HMS] AdsDemoManager ShowBannerAd");
+
         HMSAdsKitManager.Instance.ShowBannerAd();
     }
 
     public void HideBannerAd()
     {
+        Debug.Log("[HMS] AdsDemoManager HideBannerAd");
+
         HMSAdsKitManager.Instance.HideBannerAd();
     }
 
@@ -76,11 +99,15 @@ public class AdsDemoManager : MonoBehaviour
 
     public void ShowSplashImage()
     {
+        Debug.Log("[HMS] ShowSplashImage!");
+
         HMSAdsKitManager.Instance.LoadSplashAd("testq6zq98hecj", SplashAd.SplashAdOrientation.PORTRAIT);
     }
 
     public void ShowSplashVideo()
     {
+        Debug.Log("[HMS] ShowSplashVideo!");
+
         HMSAdsKitManager.Instance.LoadSplashAd("testd7c5cewoj6", SplashAd.SplashAdOrientation.PORTRAIT);
     }
 
@@ -94,9 +121,9 @@ public class AdsDemoManager : MonoBehaviour
         Debug.Log("[HMS] AdsDemoManager interstitial ad closed");
     }
 
-    public void SetTestAdStatus()
+    public void SetTestAdStatus(bool status)
     {
-        HMSAdsKitManager.Instance.SetTestAdStatus(testAdStatusToggle.isOn);
+        HMSAdsKitManager.Instance.SetTestAdStatus(status);
         HMSAdsKitManager.Instance.DestroyBannerAd();
         HMSAdsKitManager.Instance.LoadAllAds();
     }

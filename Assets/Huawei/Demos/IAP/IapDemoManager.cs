@@ -1,26 +1,45 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using HuaweiConstants;
-using HuaweiMobileServices.Base;
+﻿using HmsPlugin;
+
 using HuaweiMobileServices.IAP;
-using System;
-using UnityEngine.Events;
-using HuaweiMobileServices.Id;
-using HmsPlugin;
 using HuaweiMobileServices.Utils;
+
+using System;
+using System.Collections.Generic;
+
+using UnityEngine;
 using UnityEngine.UI;
 
 public class IapDemoManager : MonoBehaviour
 {
-    [SerializeField]
-    private Text statusText;
+    //[SerializeField]
+    //private Text statusText;
     private List<InAppPurchaseData> productPurchasedList;
+
+    public static Action<string> IAPLog;
 
     // Please insert your products via custom editor. You can find it in Huawei > Kit Settings > IAP tab.
 
-    void Awake() 
+    #region Singleton
+
+    public static IapDemoManager Instance { get; private set; }
+    private void Singleton()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    #endregion
+
+    void Awake()
+    {
+        Singleton();
+
         Screen.orientation = ScreenOrientation.Landscape;
     }
 
@@ -75,16 +94,18 @@ public class IapDemoManager : MonoBehaviour
 
     private void OnCheckIapAvailabilityFailure(HMSException obj)
     {
-        statusText.text = "IAP is not ready.";
+        IAPLog?.Invoke("IAP is not ready.");
     }
 
     private void OnCheckIapAvailabilitySuccess()
     {
-        statusText.text = "IAP is ready.";
+        IAPLog?.Invoke("IAP is ready.");
     }
 
     public void SignIn()
     {
+        Debug.Log("SignIn");
+
         HMSIAPManager.Instance.CheckIapAvailability();
     }
 
@@ -98,6 +119,8 @@ public class IapDemoManager : MonoBehaviour
 
     public void BuyProduct(string productID)
     {
+        Debug.Log("BuyProduct");
+
         HMSIAPManager.Instance.BuyProduct(productID);
     }
 

@@ -1,6 +1,9 @@
 using HuaweiMobileServices.AppLinking;
+
+using System;
+
 using UnityEngine;
-using UnityEngine.UI;
+
 using static HuaweiMobileServices.AppLinking.AGConnectAppLinking;
 
 public class AppLinkingDemo : MonoBehaviour
@@ -10,22 +13,44 @@ public class AppLinkingDemo : MonoBehaviour
     private static string longLink;
 
     [Header("Builder")]
-    [SerializeField] private string deepLink = "https://developer.huawei.com/consumer/cn";
-    [SerializeField] private string uriPrefix = "https://hmsunityplugin.dre.agconnect.link";
+    private readonly string deepLink = "https://developer.huawei.com/consumer/cn";
+    private readonly string uriPrefix = "https://hmsunityplugin.dre.agconnect.link";
 
     [Header("SocialCardInfo")]
-    [SerializeField] private string title = "Title";
-    [SerializeField] private string description = "Description";
-    [SerializeField] private string imageUrl = "https://appimg.dbankcdn.com/application/icon144/65/5ed8340ee28c4735915c1aa08e209fe5.png";
+    private readonly string title = "Title";
+    private readonly string description = "Description";
+    private readonly string imageUrl = "https://appimg.dbankcdn.com/application/icon144/65/5ed8340ee28c4735915c1aa08e209fe5.png";
 
     [Header("CampaignInfo")]
-    [SerializeField] private string name = "Name";
-    [SerializeField] private string AGC = "AGC";
-    [SerializeField] private string app = "App";
+    private string name = "Name";
+    private string AGC = "AGC";
+    private string app = "App";
 
-    [SerializeField] private Text shortLinkText;
-    [SerializeField] private Text longLinkText;
-    [SerializeField] private Text deepLinkText;
+    public static Action<string> shortLinkText;
+    public static Action<string> longLinkText;
+    public static Action<string> deepLinkText;
+
+    #region Singleton
+
+    public static AppLinkingDemo Instance { get; private set; }
+    private void Singleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    #endregion
+
+    private void Awake()
+    {
+        Singleton();
+    }
 
     void Start()
     {
@@ -34,6 +59,8 @@ public class AppLinkingDemo : MonoBehaviour
 
     public void CreateAppLinking()
     {
+        Debug.Log("CreateAppLinking");
+
         AppLinking.Builder builder = new AppLinking.Builder();
 
         builder.SetUriPrefix(uriPrefix).SetDeepLink(deepLink)
@@ -60,7 +87,7 @@ public class AppLinkingDemo : MonoBehaviour
     public void BuildLongAppLink(AppLinking.Builder builder)
     {
         longLink = builder.BuildAppLinking().GetUri();
-        longLinkText.text = longLink;
+        longLinkText?.Invoke(longLink);
         Debug.Log($"[{TAG}]:Long Link = {longLink}");
     }
 
@@ -72,7 +99,7 @@ public class AppLinkingDemo : MonoBehaviour
             shortLink = it.GetShortUrl();
             Debug.Log($"[{TAG}]:Short Link = {shortLink}");
 
-            shortLinkText.text = shortLink;
+            shortLinkText?.Invoke(shortLink);
 
         }).AddOnFailureListener(exception =>
         {
@@ -82,19 +109,25 @@ public class AppLinkingDemo : MonoBehaviour
 
     public void ShareShortLink()
     {
+        Debug.Log("ShareShortLink");
+
         AGConnectAppLinking.ShareLink(shortLink);
     }
 
     public void ShareLongLink()
     {
+        Debug.Log("ShareLongLink");
+
         AGConnectAppLinking.ShareLink(longLink);
     }
 
     public void GetLink()
     {
+        Debug.Log("GetLink");
+
         AGConnectAppLinking.GetInstance().GetAppLinking().AddOnSuccessListener(verifyCodeResult =>
                 {
-                    deepLinkText.text = verifyCodeResult.GetDeepLink();
+                    deepLinkText?.Invoke(verifyCodeResult.GetDeepLink());
                 })
             .AddOnFailureListener(exception =>
           {

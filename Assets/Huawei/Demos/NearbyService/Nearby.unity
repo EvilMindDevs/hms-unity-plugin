@@ -240,7 +240,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.4, y: 0}
+  m_AnchoredPosition: {x: -4.399994, y: 0}
   m_SizeDelta: {x: -8.864426, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &296482631
@@ -265,11 +265,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 39
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 76
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -298,7 +298,7 @@ GameObject:
   - component: {fileID: 419097204}
   - component: {fileID: 419097203}
   m_Layer: 5
-  m_Name: DisconnectAll
+  m_Name: Btn_DisconnectAll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -313,7 +313,7 @@ RectTransform:
   m_GameObject: {fileID: 419097201}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.6608, y: 2.6608, z: 2.6608}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1271385833}
   m_Father: {fileID: 1398840028}
@@ -322,7 +322,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -272, y: -196.85}
-  m_SizeDelta: {x: 100, y: 32.85582}
+  m_SizeDelta: {x: 266.21, y: 92.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &419097203
 MonoBehaviour:
@@ -367,19 +367,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 419097204}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 818556030}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: DisconnectAllConnection
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: SavedGame
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &419097204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,7 +440,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.4, y: 0}
+  m_AnchoredPosition: {x: -4.399994, y: 0}
   m_SizeDelta: {x: -8.864426, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &516927875
@@ -477,7 +465,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 35
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -510,7 +498,7 @@ GameObject:
   - component: {fileID: 755475323}
   - component: {fileID: 755475322}
   m_Layer: 5
-  m_Name: sendFile
+  m_Name: Btn_SendFile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -525,16 +513,16 @@ RectTransform:
   m_GameObject: {fileID: 755475320}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.6608, y: 2.6608, z: 2.6608}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 516927874}
   m_Father: {fileID: 1398840028}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -271.99997, y: 140.27}
-  m_SizeDelta: {x: 100, y: 32.85582}
+  m_SizeDelta: {x: 266.21, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &755475322
 MonoBehaviour:
@@ -579,19 +567,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 755475323}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 818556030}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: SendFilesInner
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: SavedGame
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &755475323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -640,6 +616,7 @@ GameObject:
   m_Component:
   - component: {fileID: 818556031}
   - component: {fileID: 818556030}
+  - component: {fileID: 818556032}
   m_Layer: 0
   m_Name: NearbyController
   m_TagString: Untagged
@@ -673,6 +650,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &818556032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818556029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090ffb7f34e26144fa3646038139812b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1041838327
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,14 +689,14 @@ RectTransform:
   m_GameObject: {fileID: 1041838327}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.6608, y: 2.6608, z: 2.6608}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1398840028}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 209.61002, y: 331.05}
+  m_AnchoredPosition: {x: -70, y: 751}
   m_SizeDelta: {x: 222.76562, y: 32.85582}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1041838329
@@ -732,11 +721,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 25
+    m_FontSize: 178
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 1
-    m_MaxSize: 100
+    m_MaxSize: 184
     m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -765,7 +754,7 @@ GameObject:
   - component: {fileID: 1060608684}
   - component: {fileID: 1060608683}
   m_Layer: 5
-  m_Name: startScan
+  m_Name: Btn_StartScan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -780,7 +769,7 @@ RectTransform:
   m_GameObject: {fileID: 1060608681}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.6608, y: 2.6608, z: 2.6608}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1092702429}
   m_Father: {fileID: 1398840028}
@@ -789,7 +778,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 268.15002, y: 140.27}
-  m_SizeDelta: {x: 100, y: 32.85582}
+  m_SizeDelta: {x: 266.21, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1060608683
 MonoBehaviour:
@@ -834,19 +823,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1060608684}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 818556030}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: OnScanResult
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: SavedGame
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &1060608684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -919,7 +896,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.4, y: 0}
+  m_AnchoredPosition: {x: -4.399994, y: 0}
   m_SizeDelta: {x: -8.864426, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1092702430
@@ -944,11 +921,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 44
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 44
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -998,7 +975,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.4, y: 0}
+  m_AnchoredPosition: {x: -4.399994, y: 0}
   m_SizeDelta: {x: -8.864426, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1140813627
@@ -1023,7 +1000,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -1077,7 +1054,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.4, y: 0}
+  m_AnchoredPosition: {x: -4.3999786, y: 0}
   m_SizeDelta: {x: -8.864426, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1271385834
@@ -1102,11 +1079,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 34
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 43
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -1150,8 +1127,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 755475321}
   - {fileID: 1041838328}
+  - {fileID: 755475321}
   - {fileID: 1060608682}
   - {fileID: 1533543256}
   - {fileID: 1966069178}
@@ -1189,7 +1166,7 @@ GameObject:
   - component: {fileID: 1533543258}
   - component: {fileID: 1533543257}
   m_Layer: 5
-  m_Name: stopB
+  m_Name: Btn_StopB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1204,7 +1181,7 @@ RectTransform:
   m_GameObject: {fileID: 1533543255}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.6608, y: 2.6608, z: 2.6608}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1140813626}
   m_Father: {fileID: 1398840028}
@@ -1213,7 +1190,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -271.99997, y: -18.312}
-  m_SizeDelta: {x: 100, y: 32.85582}
+  m_SizeDelta: {x: 266.21, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1533543257
 MonoBehaviour:
@@ -1258,19 +1235,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1533543258}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 818556030}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: StopBroadCasting
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: SavedGame
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &1533543258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1388,7 +1353,7 @@ GameObject:
   - component: {fileID: 1966069180}
   - component: {fileID: 1966069179}
   m_Layer: 5
-  m_Name: stopS
+  m_Name: Btn_StopS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1403,7 +1368,7 @@ RectTransform:
   m_GameObject: {fileID: 1966069177}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.6608, y: 2.6608, z: 2.6608}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 296482630}
   m_Father: {fileID: 1398840028}
@@ -1412,7 +1377,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 268.15002, y: -18.312}
-  m_SizeDelta: {x: 100, y: 32.85582}
+  m_SizeDelta: {x: 266.21, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1966069179
 MonoBehaviour:
@@ -1457,19 +1422,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1966069180}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 818556030}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: StopScanning
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: SavedGame
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &1966069180
 MonoBehaviour:
   m_ObjectHideFlags: 0

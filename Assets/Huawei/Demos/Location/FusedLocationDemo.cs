@@ -2,10 +2,8 @@ using System;
 using System.Text;
 using HuaweiMobileServices.Location;
 using HuaweiMobileServices.Location.Location;
-using HuaweiMobileServices.Utils;
 using UnityEngine;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace Huawei.Demos.Location
 {
@@ -20,18 +18,16 @@ namespace Huawei.Demos.Location
         [SerializeField] private Text lastKnownLocationText;
         [SerializeField] private Text locationAvailabilityText;
 
-
         private void Start()
         {
-            HMSLocationManager.Instance.onLocationResult += OnLocationResult;
-            HMSLocationManager.Instance.onLocationAvailability += OnLocationAvailability;
-
-            HMSLocationManager.Instance.RequestLocationPermission();
             HMSLocationManager.Instance.RequestFineLocationPermission();
             HMSLocationManager.Instance.RequestCoarseLocationPermission();
+
+            HMSLocationManager.Instance.onLocationResult += OnLocationResult;
+            HMSLocationManager.Instance.onLocationAvailability += OnLocationAvailability;
         }
 
-        private void OnLocationResult(LocationResult locationResult) 
+        private void OnLocationResult(LocationResult locationResult)
         {
             Debug.Log($"{TAG} Location Result success");
             StringBuilder stringBuilder = new StringBuilder();
@@ -54,6 +50,7 @@ namespace Huawei.Demos.Location
             SettingsClient settingsClient = LocationServices.GetSettingsClient();
             LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
             builder.AddLocationRequest(locationRequest);
+
             LocationSettingsRequest locationSettingsRequest = builder.Build();
 
             settingsClient.CheckLocationSettings(locationSettingsRequest)
@@ -96,17 +93,8 @@ namespace Huawei.Demos.Location
                     .AddOnFailureListener((exception) =>
                     {
                         Debug.LogError($"{TAG} LocationCallBackListener Fail" + exception.WrappedCauseMessage + " " +
-                                       exception.WrappedExceptionMessage + $"{TAG} RequestLocationUpdates Error code: " +
-                                       exception.ErrorCode);
-                    });
-                
-                fusedLocationProviderClient.RequestLocationUpdates(locationRequest,HMSLocationManager.Instance.GetPendingIntent())
-                    .AddOnSuccessListener(
-                        (update) => { Debug.Log($"{TAG} RequestLocationUpdatesWithIntent success"); })
-                    .AddOnFailureListener((exception) =>
-                    {
-                        Debug.LogError($"{TAG} LocationCallBackListener Fail" + exception.WrappedCauseMessage + " " +
-                                       exception.WrappedExceptionMessage + $"{TAG} RequestLocationUpdates Error code: " +
+                                       exception.WrappedExceptionMessage +
+                                       $"{TAG} RequestLocationUpdates Error code: " +
                                        exception.ErrorCode);
                     });
             }

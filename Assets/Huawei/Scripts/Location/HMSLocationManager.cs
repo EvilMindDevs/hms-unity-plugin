@@ -1,5 +1,6 @@
 using System;
 using HuaweiMobileServices.Location;
+using HuaweiMobileServices.Location.Geofences;
 using HuaweiMobileServices.Utils;
 using UnityEngine;
 using UnityEngine.Android;
@@ -9,7 +10,6 @@ public class HMSLocationManager : HMSManagerSingleton<HMSLocationManager>
 {
     public Action<LocationResult> onLocationResult;
     public Action<LocationAvailability> onLocationAvailability;
-    public Action<AndroidIntent> onReceive;
 
     public HMSLocationManager()
     {
@@ -30,19 +30,8 @@ public class HMSLocationManager : HMSManagerSingleton<HMSLocationManager>
         Debug.Log("[HMS] HMSLocationManager OnStart");
     }
 
-    public AndroidPendingIntent GetPendingIntent() => LocationBroadcastReceiver.GetPendingIntent();
-
-    public void SetLocationBroadcastListener()
-    {
-        LocationBroadcastReceiver.SetLocationCallbackListener(new LocationBroadcastListener
-            (LocationBroadcastListener_onReceive));
-    }
-
-    private void LocationBroadcastListener_onReceive(AndroidIntent intent)
-    {
-        Debug.LogError("Enes1 [HMS] LocationBroadcastListener_onReceive ");
-        onReceive?.Invoke(intent);
-    }
+    public AndroidPendingIntent GetPendingIntentFromLocation() => LocationBroadcastReceiver.GetPendingIntent();
+    public AndroidPendingIntent GetPendingIntentFromGeofence() => GeofenceBroadcastReceiver.GetPendingIntent();
 
     #region FusedLocation
 
@@ -85,9 +74,6 @@ public class HMSLocationManager : HMSManagerSingleton<HMSLocationManager>
     public void RequestActivityRecognitionPermissions() => LocationPermissions.RequestActivityRecognitionPermissions();
 
     public void RequestBackgroundLocationPermissions() => LocationPermissions.RequestBackgroundLocationPermissions();
-
-    //todo test and remove this this is equal to fine and coarse
-    public void RequestLocationPermission() => LocationPermissions.RequestLocationPermission();
 
     public void RequestFineLocationPermission()
     {

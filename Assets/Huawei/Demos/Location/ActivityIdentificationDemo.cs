@@ -1,22 +1,26 @@
-﻿using System;
-using HuaweiMobileServices.Location;
+﻿using HuaweiMobileServices.Location;
 using HuaweiMobileServices.Location.Activity;
 using HuaweiMobileServices.Utils;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Text;
+using Huawei.Scripts.Location;
 
 namespace Huawei.Demos.Location
 {
     public class ActivityIdentificationDemo : MonoBehaviour
     {
-        private static String TAG = "ActivityIdentificationDemo";
+        private static string TAG = "ActivityIdentificationDemo";
         private ActivityIdentificationService _activityIdentificationService;
+        private ActivityConversionRequest _request;
         private AndroidPendingIntent _pendingIntent;
-        private AndroidIntent _androidIntent;
+        [SerializeField] private Text activityIdentificationDataText;
 
         private void Start()
         {
             HMSLocationManager.Instance.RequestActivityRecognitionPermissions();
-            HMSLocationManager.Instance.onReceive += OnReceive;
+            LocationReceiver.Instance.onReceive += OnReceive;
 
             InitClient();
         }
@@ -24,31 +28,139 @@ namespace Huawei.Demos.Location
         private void InitClient()
         {
             _activityIdentificationService = ActivityIdentification.GetService();
-            _pendingIntent = HMSLocationManager.Instance.GetPendingIntent();
+            _pendingIntent = HMSLocationManager.Instance.GetPendingIntentFromLocation();
+            LocationReceiver.Instance.SetLocationBroadcastListener();
+            SetParameterForActivityConversion();
         }
 
         private void OnReceive(AndroidIntent intent)
         {
-            Debug.Log($"{TAG} ActivityIdentification OnReceive success");
-            _androidIntent = intent;
-            var activityIdentificationResponse = ActivityConversionResponse.GetDataFromIntent(intent);
-            var activityIdentificationResponse2 = ActivityIdentificationResponse.GetDataFromIntent(intent);
-            foreach (var activityConversionData in activityIdentificationResponse.GetActivityConversionDatas())
-            {
-                Debug.Log(
-                    $"{TAG} ActivityIdentification OnReceive activityConversionData: {activityConversionData.ToString()}");
+            Debug.Log($"{TAG} OnReceive success");
 
-                foreach (var activityConversionData2 in activityIdentificationResponse2.GetActivityConversionDatas())
+            StringBuilder stringBuilder = new StringBuilder();
+            if (LocationReceiver.isListenActivityIdentification)
+            {
+                Debug.Log($"{TAG} ActivityIdentification OnReceive success");
+
+                var activityIdentificationResponse = ActivityIdentificationResponse.GetDataFromIntent(intent);
+
+                if (activityIdentificationResponse != null)
                 {
-                    Debug.Log(
-                        $"{TAG} ActivityIdentification OnReceive activityConversionData: {activityConversionData2.ToString()}");
+                    foreach (var activityIdentificationData in
+                             activityIdentificationResponse.GetActivityIdentificationDatas())
+                    {
+                        stringBuilder
+                            .Append("\nIdentificationActivity = " +
+                                    GetActivityName(activityIdentificationData.GetIdentificationActivity()))
+                            .Append(" Possibility " + activityIdentificationData.GetPossibility());
+                      
+                        activityIdentificationDataText.text += stringBuilder.ToString();
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"{TAG} activityIdentificationResponse is null");
+                }
+            }
+
+            if (LocationReceiver.isListenActivityConversion)
+            {
+                Debug.Log($"{TAG} ActivityConversionResponse OnReceive success");
+
+                ActivityConversionResponse activityConversionResponse =
+                    ActivityConversionResponse.GetDataFromIntent(intent);
+                if (activityConversionResponse != null)
+                {
+                    var conversionDataList = activityConversionResponse.GetActivityConversionDatas();
+
+                    activityIdentificationDataText.text = "";
+                    foreach (var activityConversionData in conversionDataList)
+                    {
+                        stringBuilder
+                            .Append("\nActivityType = " +
+                                    activityConversionData.GetActivityType)
+                            .Append(" Conversion Type " + activityConversionData.GetConversionType)
+                            .Append(" Get Time From Reboot " + activityConversionData.GetElapsedTimeFromReboot);
+                        activityIdentificationDataText.text += stringBuilder.ToString();
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"{TAG} activityConversionResponse is null");
                 }
             }
         }
 
+        #region ActivityConversion
+
+        private void SetParameterForActivityConversion()
+        {
+            ActivityConversionInfo activityConversionInfoStillEnter = new ActivityConversionInfo(
+                ActivityIdentificationData.STILL, ActivityConversionInfo.ENTER_ACTIVITY_CONVERSION);
+
+            // Create an information object for switching from the activity state to the static state. 
+            ActivityConversionInfo activityConversionInfoStillExit = new ActivityConversionInfo(
+                ActivityIdentificationData.FOOT, ActivityConversionInfo.EXIT_ACTIVITY_CONVERSION);
+            List<ActivityConversionInfo> activityConversionInfos = new List<ActivityConversionInfo>();
+            activityConversionInfos.Add(activityConversionInfoStillEnter);
+            activityConversionInfos.Add(activityConversionInfoStillExit);
+
+            // Create an activity conversion request body instance.
+            _request = new ActivityConversionRequest();
+            _request.SetActivityConversions(activityConversionInfos);
+
+        }
+
+        public void CreateActivityConversionUpdates()
+        {
+            LocationReceiver.AddConversionListener();
+
+            Debug.Log($"{TAG} CreateActivityConversionUpdates clicked");
+            _activityIdentificationService.CreateActivityConversionUpdates(_request, _pendingIntent)
+                .AddOnSuccessListener(type => { Debug.Log($"{TAG} CreateActivityConversionUpdates Successful"); })
+                .AddOnFailureListener(exception =>
+                {
+                    Debug.LogError(
+                        $"{TAG} CreateActivityConversionUpdates Exception {exception.WrappedCauseMessage} with error code: {exception.ErrorCode}");
+                });
+        }
+
+        public void DeleteActivityConversionUpdates()
+        {
+            LocationReceiver.RemoveConversionListener();
+
+            Debug.Log($"{TAG} DeleteActivityConversionUpdates clicked");
+            _activityIdentificationService.DeleteActivityConversionUpdates(_pendingIntent)
+                .AddOnSuccessListener(type => { Debug.Log($"{TAG} DeleteActivityConversionUpdates Successful"); })
+                .AddOnFailureListener(exception =>
+                {
+                    Debug.LogError(
+                        $"{TAG} DeleteActivityConversionUpdates Exception {exception.WrappedCauseMessage} with error code: {exception.ErrorCode}");
+                });
+        }
+
+        #endregion
+
+        #region ActivityIdentification
+
+        private string GetActivityName(int activity)
+        {
+            return activity switch
+            {
+                100 => "VEHICLE",
+                101 => "BIKE",
+                102 => "FOOT",
+                103 => "STILL",
+                104 => "OTHERS",
+                107 => "WALKING",
+                108 => "RUNNING",
+                _ => "UNKNOWN"
+            };
+        }
+
         public void RequestActivityIdentificationUpdates()
         {
-            HMSLocationManager.Instance.SetLocationBroadcastListener();
+            LocationReceiver.AddIdentificationListener();
 
             _activityIdentificationService.CreateActivityIdentificationUpdates(5000, _pendingIntent)
                 .AddOnSuccessListener(type => { Debug.Log($"{TAG} CreateActivityIdentificationUpdates Successful"); })
@@ -57,6 +169,27 @@ namespace Huawei.Demos.Location
                     Debug.LogError(
                         $"{TAG} CreateActivityIdentificationUpdates Exception {exception.WrappedCauseMessage} with error code: {exception.ErrorCode}");
                 });
+        }
+
+        public void DeleteActivityIdentificationUpdates()
+        {
+            LocationReceiver.RemoveIdentificationListener();
+
+            _activityIdentificationService.DeleteActivityIdentificationUpdates(_pendingIntent)
+                .AddOnSuccessListener(type => { Debug.Log($"{TAG} DeleteActivityIdentificationUpdates Successful"); })
+                .AddOnFailureListener(exception =>
+                {
+                    Debug.LogError(
+                        $"{TAG} ) Exception {exception.WrappedCauseMessage} with error code: {exception.ErrorCode}");
+                });
+        }
+
+        #endregion
+
+        private void OnDestroy()
+        {
+            DeleteActivityIdentificationUpdates();
+            DeleteActivityConversionUpdates();
         }
     }
 }

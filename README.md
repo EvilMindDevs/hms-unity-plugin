@@ -114,7 +114,7 @@ ____
 In order for the plugin to work, you need to select the needed kits Huawei > Kit Settings.
 ![image](https://user-images.githubusercontent.com/6827857/142605459-04ca144e-6b34-4018-8f81-44a5ed67cbf3.png)
 
-It will automaticly create the GameObject for you and it has DontDestroyOnLoad implemented so you don't need to worry about reference being lost.
+It will automaticly create the GameObject for you and it has DontDestroyOnLoad implemented so you don't need to worry about reference being lost. (After v2.2 there is no visible Kit manager object on the scene.)
 
 Now you need your game to call the Kit Managers from your game. See below for further instructions.
     

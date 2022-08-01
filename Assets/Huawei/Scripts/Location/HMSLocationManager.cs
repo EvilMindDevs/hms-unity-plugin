@@ -8,12 +8,14 @@ using HuaweiMobileServices.Location.Location;
 
 public class HMSLocationManager : HMSManagerSingleton<HMSLocationManager>
 {
+    private static String TAG = "HMSLocationManager";
+
     public Action<LocationResult> onLocationResult;
     public Action<LocationAvailability> onLocationAvailability;
 
     public HMSLocationManager()
     {
-        Debug.Log("[HMS] HMSAdsKitManager Constructor");
+        Debug.Log($"{TAG} HMSAdsKitManager Constructor");
         if (!HMSDispatcher.InstanceExists)
             HMSDispatcher.CreateDispatcher();
         HMSDispatcher.InvokeAsync(OnAwake);
@@ -22,12 +24,12 @@ public class HMSLocationManager : HMSManagerSingleton<HMSLocationManager>
 
     private void OnAwake()
     {
-        Debug.Log("[HMS] HMSLocationManager OnAwake");
+        Debug.Log($"{TAG} HMSLocationManager OnAwake");
     }
 
     private void OnStart()
     {
-        Debug.Log("[HMS] HMSLocationManager OnStart");
+        Debug.Log($"{TAG} HMSLocationManager OnStart");
     }
 
     public AndroidPendingIntent GetPendingIntentFromLocation() => LocationBroadcastReceiver.GetPendingIntent();
@@ -37,7 +39,7 @@ public class HMSLocationManager : HMSManagerSingleton<HMSLocationManager>
 
     public LocationCallback DefineLocationCallback()
     {
-        Debug.Log("[HMS] HMSLocationManager DefineLocationCallback");
+        Debug.Log($"{TAG} HMSLocationManager DefineLocationCallback");
 
         LocationBridge.SetLocationCallbackListener
         (new LocationCallbackListener
@@ -48,13 +50,13 @@ public class HMSLocationManager : HMSManagerSingleton<HMSLocationManager>
 
     private void LocationCallbackListener_onLocationResult(LocationResult locationResult)
     {
-        Debug.LogError("Enes1 [HMS] LocationCallbackListener_onLocationResult ");
+        Debug.LogError($"{TAG} LocationCallbackListener_onLocationResult ");
         onLocationResult?.Invoke(locationResult);
     }
 
     private void LocationCallbackListener_onLocationAvailability(LocationAvailability locationAvailability)
     {
-        Debug.LogError("Enes1 [HMS] LocationCallbackListener_onLocationAvailability ");
+        Debug.LogError($"{TAG} LocationCallbackListener_onLocationAvailability ");
         onLocationAvailability?.Invoke(locationAvailability);
     }
 

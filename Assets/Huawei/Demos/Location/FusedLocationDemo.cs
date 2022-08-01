@@ -100,7 +100,7 @@ namespace Huawei.Demos.Location
             }
             catch (Exception exception)
             {
-                Debug.Log(exception.ToString());
+                Debug.Log($"{TAG} {exception.Message}");
             }
         }
 

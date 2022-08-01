@@ -1,6 +1,7 @@
 ﻿using HuaweiConstants;
 
 using HuaweiMobileServices.Ads;
+using HuaweiMobileServices.Ads.InstallReferrer;
 using HuaweiMobileServices.Utils;
 
 using System;
@@ -32,6 +33,12 @@ namespace HmsPlugin
         private HMSSettings adsKitSettings;
 
         private bool isInitialized;
+
+        public Action<ReferrerDetails> InstallReferrerSuccess { get; set; }
+        public Action InstallReferrerFail { get; set; }
+        public Action InstallReferrerDisconnect { get; set; }
+
+        InstallReferrerClient installReferrerClient;
 
         public HMSAdsKitManager()
         {
@@ -105,6 +112,84 @@ namespace HmsPlugin
             DestroyBannerAd();
             LoadAllAds();
         }
+
+        #region Install-Referrer
+
+        public void Init_InstallReferrer(bool isTest)
+        {
+
+            var installReferrerStateCallbackListener =
+                new InstallReferrerStateCallbackListener(
+                    OnInstallReferrerSetupFinished,
+                OnInstallReferrerServiceDisconnected);
+
+            InstallReferrerStateBridge.SetInstallReferrerCallbackListener(installReferrerStateCallbackListener);
+
+            var listener = InstallReferrerStateBridge.GetInstallReferrerStateCallback();
+
+            HMSDispatcher.Invoke(() =>
+            {
+                installReferrerClient = InstallReferrerClient.newBuilder().setTest(isTest).build();
+                installReferrerClient.StartConnection(listener);
+            });
+
+        }
+
+        private void OnInstallReferrerSetupFinished(int responseCode)
+        {
+            Debug.Log("OnInstallReferrerSetupFinished");
+
+            var response = (InstallReferrerResponse)(responseCode);
+
+            if (response == InstallReferrerResponse.OK)
+            {
+                Debug.Log("Install Referrer Setup Finished");
+
+                var referrerDetails = installReferrerClient.getInstallReferrer();
+
+                InstallReferrerSuccess?.Invoke(referrerDetails);
+
+                return;
+            }
+
+            if (response == InstallReferrerResponse.SERVICE_UNAVAILABLE)
+            {
+                Debug.Log("SERVICE_UNAVAILABLE");
+
+                InstallReferrerFail?.Invoke();
+
+                return;
+            }
+
+            if (response == InstallReferrerResponse.FEATURE_NOT_SUPPORTED)
+            {
+                Debug.Log("FEATURE_NOT_SUPPORTED");
+
+                InstallReferrerFail?.Invoke();
+
+                return;
+            }
+
+            if (response == InstallReferrerResponse.DEVELOPER_ERROR)
+            {
+                Debug.Log("DEVELOPER_ERROR");
+
+                InstallReferrerFail?.Invoke();
+
+                return;
+            }
+
+        }
+
+        private void OnInstallReferrerServiceDisconnected()
+        {
+            Debug.Log("OnInstallReferrerServiceDisconnected");
+
+            InstallReferrerDisconnect?.Invoke();
+        }
+
+        #endregion
+
 
         #region BANNER
 

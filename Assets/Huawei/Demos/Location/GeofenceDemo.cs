@@ -150,7 +150,11 @@ public class GeofenceDemo : MonoBehaviour
         var geofenceRequest = GetAddGeofenceRequest();
 
         geofenceService.CreateGeofenceList(geofenceRequest, pendingIntent)
-            .AddOnSuccessListener(type => { Debug.Log($"{TAG} CreateGeofenceList Successful"); })
+            .AddOnSuccessListener(type =>
+            {
+                resultText.text= "GeofenceList Successfully Created ";
+                Debug.Log($"{TAG} CreateGeofenceList Successful");
+            })
             .AddOnFailureListener(exception =>
             {
                 Debug.LogError(
@@ -161,7 +165,11 @@ public class GeofenceDemo : MonoBehaviour
     public void DeleteGeofence()
     {
         geofenceService.DeleteGeofenceList(pendingIntent)
-            .AddOnSuccessListener(type => { Debug.Log($"{TAG} DeleteGeofenceList Successful"); })
+            .AddOnSuccessListener(type =>
+            {
+                resultText.text= "GeofenceList Successfully Deleted ";
+                Debug.Log($"{TAG} DeleteGeofenceList Successful");
+            })
             .AddOnFailureListener(exception =>
             {
                 Debug.LogError(

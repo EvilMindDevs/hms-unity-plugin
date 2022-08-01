@@ -10,6 +10,7 @@ namespace HmsPlugin
 {
     public class AnalyticsDemoManager : MonoBehaviour
     {
+        private readonly string TAG = "[HMS] AnalyticsDemoManager ";
 
         #region Singleton
 
@@ -37,11 +38,11 @@ namespace HmsPlugin
         {
             if (string.IsNullOrEmpty(eventIdFieldText) && string.IsNullOrEmpty(keyFieldtext) && string.IsNullOrEmpty(valueFieldText))
             {
-                Debug.Log("[HMS]: Fill Fields");
+                Debug.Log(TAG+": Fill Fields");
             }
             else
             {
-                Debug.Log(eventIdFieldText + " " + keyFieldtext + " " + valueFieldText);
+                Debug.Log(TAG+eventIdFieldText + " " + keyFieldtext + " " + valueFieldText);
                 HMSAnalyticsKitManager.Instance.SendEventWithBundle(eventIdFieldText, keyFieldtext, valueFieldText);
             }
         }

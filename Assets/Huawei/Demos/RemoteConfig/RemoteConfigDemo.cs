@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class RemoteConfigDemo : MonoBehaviour
 {
     private Text countOfVariables;
-    string TAG = "RemoteConfig Demo";
+    private readonly string TAG = "[HMS] RemoteConfigDemo";
 
     #region Singleton
 
@@ -42,7 +42,7 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void Fetch()
     {
-        Debug.Log("Fetch");
+        Debug.Log(TAG + " Fetch");
 
         HMSRemoteConfigManager.Instance.OnFecthSuccess = OnFecthSuccess;
         HMSRemoteConfigManager.Instance.OnFecthFailure = OnFecthFailure;
@@ -62,7 +62,7 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void GetMergedAll()
     {
-        Debug.Log("GetMergedAll");
+        Debug.Log(TAG + " GetMergedAll");
 
         Dictionary<string, object> dictionary = HMSRemoteConfigManager.Instance.GetMergedAll();
         countOfVariables.text = $"Count of Variables : {dictionary.Count}";
@@ -70,7 +70,7 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void ClearAll()
     {
-        Debug.Log("ClearAll");
+        Debug.Log(TAG + " ClearAll");
 
         HMSRemoteConfigManager.Instance.ClearAll();
         GetMergedAll();
@@ -78,7 +78,7 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void ApplyDefault()
     {
-        Debug.Log("ApplyDefault");
+        Debug.Log(TAG + " ApplyDefault");
 
         Dictionary<string, object> dictionary = new Dictionary<string, object>();
         dictionary.Add("Key", "Value");
@@ -91,7 +91,7 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void ApplyDefaultXml()
     {
-        Debug.Log("ApplyDefaultXml");
+        Debug.Log(TAG + " ApplyDefaultXml");
 
         HMSRemoteConfigManager.Instance.ApplyDefault("xml/remoteConfig");
         GetMergedAll();
@@ -99,21 +99,21 @@ public class RemoteConfigDemo : MonoBehaviour
 
     public void LoadLastFetched()
     {
-        Debug.Log("LoadLastFetched");
+        Debug.Log(TAG + " LoadLastFetched");
 
         Debug.Log($"[{TAG}]: LoadLastFetched {HMSRemoteConfigManager.Instance.LoadLastFetched().getValueAsString("abc")}");
     }
 
     public void DeveloperMode(bool val)
     {
-        Debug.Log("DeveloperMode");
+        Debug.Log(TAG + " DeveloperMode");
 
         HMSRemoteConfigManager.Instance.SetDeveloperMode(val);
     }
 
     public void GetSource()
     {
-        Debug.Log("GetSource");
+        Debug.Log(TAG + " GetSource");
 
         Debug.Log($"[{TAG}]: GetSource(Key) {HMSRemoteConfigManager.Instance.GetSource("Key")}");
     }

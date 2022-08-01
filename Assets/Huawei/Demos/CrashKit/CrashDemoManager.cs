@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CrashDemoManager : MonoBehaviour
 {
-
+    private readonly string TAG = "[HMS] CrashDemoManager ";
     #region Singleton
 
     public static CrashDemoManager Instance { get; private set; }
@@ -28,21 +28,21 @@ public class CrashDemoManager : MonoBehaviour
 
     public void TestCrash()
     {
-        Debug.Log("TestCrash");
+        Debug.Log(TAG + " TestCrash");
 
         HMSCrashManager.Instance.TestCrash();
     }
 
     public void EnableCrashCollection(bool value)
     {
-        Debug.Log("EnableCrashCollection");
+        Debug.Log(TAG + " EnableCrashCollection");
 
         HMSCrashManager.Instance.EnableCrashCollection(value);
     }
 
     public void CustomReport()
     {
-        Debug.Log("CustomReport");
+        Debug.Log(TAG + " CustomReport");
 
         HMSCrashManager.Instance.CustomReport();
     }

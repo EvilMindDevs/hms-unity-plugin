@@ -8,7 +8,7 @@ using static HuaweiMobileServices.AppLinking.AGConnectAppLinking;
 
 public class AppLinkingDemo : MonoBehaviour
 {
-    private string TAG = "HMS AppLinking Demo";
+    private string TAG = "[HMS] AppLinking Demo ";
     private static string shortLink;
     private static string longLink;
 
@@ -59,7 +59,7 @@ public class AppLinkingDemo : MonoBehaviour
 
     public void CreateAppLinking()
     {
-        Debug.Log("CreateAppLinking");
+        Debug.Log(TAG+"CreateAppLinking");
 
         AppLinking.Builder builder = new AppLinking.Builder();
 
@@ -109,21 +109,21 @@ public class AppLinkingDemo : MonoBehaviour
 
     public void ShareShortLink()
     {
-        Debug.Log("ShareShortLink");
+        Debug.Log(TAG + "ShareShortLink");
 
         AGConnectAppLinking.ShareLink(shortLink);
     }
 
     public void ShareLongLink()
     {
-        Debug.Log("ShareLongLink");
+        Debug.Log(TAG + "ShareLongLink");
 
         AGConnectAppLinking.ShareLink(longLink);
     }
 
     public void GetLink()
     {
-        Debug.Log("GetLink");
+        Debug.Log(TAG + "GetLink");
 
         AGConnectAppLinking.GetInstance().GetAppLinking().AddOnSuccessListener(verifyCodeResult =>
                 {

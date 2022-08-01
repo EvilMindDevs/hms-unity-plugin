@@ -7,6 +7,7 @@ using System;
 
 public class AccountDemoManager : MonoBehaviour
 {
+    private readonly string TAG = "[HMS] AccountDemoManager ";
 
     private const string NOT_LOGGED_IN = "No user logged in";
     private const string LOGGED_IN = "{0} is logged in";
@@ -46,21 +47,21 @@ public class AccountDemoManager : MonoBehaviour
 
     public void LogIn()
     {
-        Debug.Log("LogIn");
+        Debug.Log(TAG+"LogIn");
 
         HMSAccountKitManager.Instance.SignIn();
     }
 
     public void SilentSignIn()
     {
-        Debug.Log("SilentSignIn");
+        Debug.Log(TAG+"SilentSignIn");
 
         HMSAccountKitManager.Instance.SilentSignIn();
     }
 
     public void LogOut()
     {
-        Debug.Log("LogOut");
+        Debug.Log(TAG+"LogOut");
 
         HMSAccountKitManager.Instance.SignOut();
 

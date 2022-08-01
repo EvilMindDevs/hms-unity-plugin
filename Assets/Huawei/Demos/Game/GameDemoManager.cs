@@ -12,6 +12,8 @@ using UnityEngine.UI;
 
 public class GameDemoManager : MonoBehaviour
 {
+    private readonly string TAG = "[HMS] GameDemoManager ";
+
     private bool customUnit = false;
     private const string MAX_FILE_SIZE = "Max File Size: {0}";
     private const string MAX_IMAGE_SIZE = "Max Image Size: {0}";
@@ -66,7 +68,7 @@ public class GameDemoManager : MonoBehaviour
 
     public void GetMaxImageSize()
     {
-        Debug.Log("GetMaxImageSize");
+        Debug.Log(TAG + " GetMaxImageSize");
 
         ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxImageSize();
         detailSizeTask.AddOnSuccessListener((result) =>
@@ -81,7 +83,7 @@ public class GameDemoManager : MonoBehaviour
 
     public void GetMaxFileSize()
     {
-        Debug.Log("GetMaxFileSize");
+        Debug.Log(TAG + " GetMaxFileSize");
 
         ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxFileSize();
         detailSizeTask.AddOnSuccessListener((result) =>
@@ -96,7 +98,7 @@ public class GameDemoManager : MonoBehaviour
 
     public void CommitGame()
     {
-        Debug.Log("CommitGame");
+        Debug.Log(TAG + " CommitGame");
 
         //Example Image Path: give statics path of image on phone
         string ImagePath = Application.streamingAssetsPath;
@@ -123,14 +125,14 @@ public class GameDemoManager : MonoBehaviour
 
     public void ShowArchive()
     {
-        Debug.Log("ShowArchive");
+        Debug.Log(TAG + " ShowArchive");
 
         HMSSaveGameManager.Instance.ShowArchive();
     }
 
     public void ShowAchievements()
     {
-        Debug.Log("ShowAchievements");
+        Debug.Log(TAG + " ShowAchievements");
 
         HMSAchievementsManager.Instance.ShowAchievements();
     }
@@ -212,7 +214,7 @@ public class GameDemoManager : MonoBehaviour
 
     public void UnlockAchievement(string achievementId)
     {
-        Debug.Log("UnlockAchievement");
+        Debug.Log(TAG + " UnlockAchievement");
 
         HMSAchievementsManager.Instance.UnlockAchievement(achievementId);
     }
@@ -295,7 +297,7 @@ public class GameDemoManager : MonoBehaviour
 
     public void ShowLeaderboards()
     {
-        Debug.Log("ShowLeaderboards");
+        Debug.Log(TAG + " ShowLeaderboards");
 
         HMSLeaderboardManager.Instance.ShowLeaderboards();
         HMSLeaderboardManager.Instance.OnShowLeaderboardsSuccess = OnShowLeaderboardsSuccess;

@@ -67,7 +67,7 @@ public class DriveDemoManager : MonoBehaviour
 
     public void GetAboutOnClick()
     {
-        Debug.Log("GetAboutOnClick");
+        Debug.Log(TAG + " GetAboutOnClick");
 
         About about = HMSDriveKitManager.Instance.GetAbout();
         string log = (about == null) ? "GetAbout Failed" : "GetAbout Success";
@@ -76,7 +76,7 @@ public class DriveDemoManager : MonoBehaviour
 
     public void CreateDirectoryOnClick()
     {
-        Debug.Log("CreateDirectoryOnClick");
+        Debug.Log(TAG + " CreateDirectoryOnClick");
 
         File file = HMSDriveKitManager.Instance.CreateDirectory();
         string log = (file == null) ? "CreateDirectory Failed" : "CreateDirectory Success file.ID:" + file.GetId();
@@ -85,7 +85,7 @@ public class DriveDemoManager : MonoBehaviour
 
     public void CreateFileOnClick()
     {
-        Debug.Log("CreateFileOnClick");
+        Debug.Log(TAG + " CreateFileOnClick");
 
         string fileName = "testFile.txt";
         string filePath = System.IO.Path.Combine(Application.persistentDataPath, fileName);
@@ -96,7 +96,7 @@ public class DriveDemoManager : MonoBehaviour
 
     public void ListCommentsOnClick()
     {
-        Debug.Log("ListCommentsOnClick");
+        Debug.Log(TAG + " ListCommentsOnClick");
 
         List<Comment> commentList = HMSDriveKitManager.Instance.ListComments();
         string log = (commentList.Count == 0) ? "ListComments Failed or there is no comment" : "ListComments Success commentList.Count:" + commentList.Count;
@@ -105,7 +105,7 @@ public class DriveDemoManager : MonoBehaviour
 
     public void CreateCommentsOnClick()
     {
-        Debug.Log("CreateCommentsOnClick");
+        Debug.Log(TAG + " CreateCommentsOnClick");
 
         Comment comment = HMSDriveKitManager.Instance.CreateComments();
         string log = (comment == null) ? "CreateComments Failed" : "CreateComments Success comment.ID:" + comment.GetId();

@@ -14,8 +14,8 @@ public class CrashDemoManager : MonoBehaviour
         HMSCrashManager.Instance.EnableCrashCollection(value);
     }
 
-    public void customReport()
+    public void CustomReport()
     {
-        HMSCrashManager.Instance.customReport();
+        HMSCrashManager.Instance.CustomReport();
     }
 }

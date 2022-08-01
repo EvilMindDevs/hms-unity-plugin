@@ -12,6 +12,11 @@ public class IapDemoManager : MonoBehaviour
 
     // Please insert your products via custom editor. You can find it in Huawei > Kit Settings > IAP tab.
 
+    void Awake() 
+    {
+        Screen.orientation = ScreenOrientation.Landscape;
+    }
+
     void Start()
     {
         Screen.orientation = ScreenOrientation.Landscape;

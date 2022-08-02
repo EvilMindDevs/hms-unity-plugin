@@ -1,18 +1,41 @@
-using System;
-using System.Collections.Generic;
 using HmsPlugin;
+
 using HuaweiMobileServices.Drive;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
+
+using System;
+using System.Collections.Generic;
+
 using UnityEngine;
-using UnityEditor;
-using UnityEngine.UI;
 
 public class DriveDemoManager : MonoBehaviour
 {
     private readonly string TAG = "[HMS] DriveDemoManager ";
 
-    public Text description;
+    public static Action<string> DriveKitLog;
+
+    #region Singleton
+
+    public static DriveDemoManager Instance { get; private set; }
+    private void Singleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    #endregion
+
+    private void Awake()
+    {
+        Singleton();
+    }
 
     void Start()
     {
@@ -21,57 +44,72 @@ public class DriveDemoManager : MonoBehaviour
 
         HMSAccountKitManager.Instance.SignInDrive(AccountAuthManager.GetService(GetAccountAuthParams()));
 
-        description.text = string.Empty;
+        DriveKitLog?.Invoke(string.Empty);
     }
 
     private void OnSignInFailed(HMSException exception)
     {
-        Debug.LogError(TAG+"OnSignInFailed HMSException:" + exception.WrappedExceptionMessage);
+        Debug.LogError(TAG + "OnSignInFailed HMSException:" + exception.WrappedExceptionMessage);
     }
 
     private void OnSignInSuccess(AuthAccount authAccount)
     {
-        Debug.Log(TAG+"OnSignInSuccess");
-        if (CredentialManager.GetInstance().InitDrive(authAccount)) 
+        Debug.Log(TAG + "OnSignInSuccess");
+        if (CredentialManager.GetInstance().InitDrive(authAccount))
         {
-            description.text = "Drive init success";
+            DriveKitLog?.Invoke("Drive init success");
         }
-        else 
+        else
         {
-            description.text = "Drive init failed";
+            DriveKitLog?.Invoke("Drive init failed");
         }
     }
 
     public void GetAboutOnClick()
     {
+        Debug.Log(TAG + " GetAboutOnClick");
+
         About about = HMSDriveKitManager.Instance.GetAbout();
-        description.text = (about == null) ? "GetAbout Failed" : "GetAbout Success";
+        string log = (about == null) ? "GetAbout Failed" : "GetAbout Success";
+        DriveKitLog?.Invoke(log);
     }
 
     public void CreateDirectoryOnClick()
     {
+        Debug.Log(TAG + " CreateDirectoryOnClick");
+
         File file = HMSDriveKitManager.Instance.CreateDirectory();
-        description.text = (file == null) ? "CreateDirectory Failed" : "CreateDirectory Success file.ID:" + file.GetId();
+        string log = (file == null) ? "CreateDirectory Failed" : "CreateDirectory Success file.ID:" + file.GetId();
+        DriveKitLog?.Invoke(log);
     }
 
     public void CreateFileOnClick()
     {
+        Debug.Log(TAG + " CreateFileOnClick");
+
         string fileName = "testFile.txt";
         string filePath = System.IO.Path.Combine(Application.persistentDataPath, fileName);
         File file = HMSDriveKitManager.Instance.CreateFiles(MimeType.MimeTypeFromSuffix(".txt"), filePath);
-        description.text = (file == null) ? "CreateFiles Failed" : "CreateFiles Success file.ID:" + file.GetId();
+        string log = (file == null) ? "CreateFiles Failed" : "CreateFiles Success file.ID:" + file.GetId();
+        DriveKitLog?.Invoke(log);
     }
 
     public void ListCommentsOnClick()
     {
+        Debug.Log(TAG + " ListCommentsOnClick");
+
         List<Comment> commentList = HMSDriveKitManager.Instance.ListComments();
-        description.text = (commentList.Count == 0) ? "ListComments Failed or there is no comment" : "ListComments Success commentList.Count:" + commentList.Count;
+        string log = (commentList.Count == 0) ? "ListComments Failed or there is no comment" : "ListComments Success commentList.Count:" + commentList.Count;
+        DriveKitLog?.Invoke(log);
     }
 
     public void CreateCommentsOnClick()
     {
+        Debug.Log(TAG + " CreateCommentsOnClick");
+
         Comment comment = HMSDriveKitManager.Instance.CreateComments();
-        description.text = (comment == null) ? "CreateComments Failed" : "CreateComments Success comment.ID:" + comment.GetId();
+        string log = (comment == null) ? "CreateComments Failed" : "CreateComments Success comment.ID:" + comment.GetId();
+        DriveKitLog?.Invoke(log);
     }
 
     public AccountAuthParams GetAccountAuthParams()
@@ -88,7 +126,9 @@ public class DriveDemoManager : MonoBehaviour
             .SetScopeList(scopeList)
             .CreateParams();
 
-        description.text = "authParams is null -> " + (authParams == null).ToString() + "\n";
+        string log = "authParams is null -> " + (authParams == null).ToString() + "\n";
+        DriveKitLog?.Invoke(log);
+
         return authParams;
     }
 

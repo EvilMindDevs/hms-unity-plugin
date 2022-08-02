@@ -24,7 +24,7 @@ public class InstallReferrerDemo : MonoBehaviour
 
     void Start()
     {
-        bool isTest = true;
+        bool isTest = false;
         HMSAdsKitManager.Instance.Init_InstallReferrer(isTest);
     }
 

@@ -7,6 +7,9 @@ using HuaweiMobileServices.Ads;
 public class AdsDemoManager : MonoBehaviour
 {
 
+    [SerializeField]
+    private Toggle testAdStatusToggle;
+
     #region Singleton
 
     public static AdsDemoManager Instance { get; private set; }
@@ -37,6 +40,8 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance.ConsentOnFail = OnConsentFail;
         HMSAdsKitManager.Instance.ConsentOnSuccess = OnConsentSuccess;
         HMSAdsKitManager.Instance.RequestConsentUpdate();
+
+        testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
 
         #region SetNonPersonalizedAd , SetRequestLocation
 
@@ -121,9 +126,9 @@ public class AdsDemoManager : MonoBehaviour
         Debug.Log("[HMS] AdsDemoManager interstitial ad closed");
     }
 
-    public void SetTestAdStatus(bool status)
+    public void SetTestAdStatus()
     {
-        HMSAdsKitManager.Instance.SetTestAdStatus(status);
+        HMSAdsKitManager.Instance.SetTestAdStatus(testAdStatusToggle.isOn);
         HMSAdsKitManager.Instance.DestroyBannerAd();
         HMSAdsKitManager.Instance.LoadAllAds();
     }

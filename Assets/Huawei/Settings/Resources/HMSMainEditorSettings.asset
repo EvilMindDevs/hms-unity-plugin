@@ -14,10 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
     _keys:
-    - AdsKitEnabled
-    - RemoteConfigEnabled
-    - IAPKitEnabled
-    - GameServiceEnabled
     - AppCompat
     - AdsKit
     - AccountKit
@@ -29,16 +25,12 @@ MonoBehaviour:
     - RemoteConfig
     - CrashKit
     - CloudDB
+    - DriveKit
     - NearbyService
     - AppMessaging
     - AppLinking
     - Location
     _values:
-    - False
-    - False
-    - False
-    - False
-    - True
     - True
     - False
     - False
@@ -52,4 +44,6 @@ MonoBehaviour:
     - False
     - False
     - False
-    - True
+    - False
+    - False
+    - False

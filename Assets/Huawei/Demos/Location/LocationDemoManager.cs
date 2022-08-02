@@ -14,6 +14,7 @@ public class LocationDemoManager : MonoBehaviour
 
     private void Start()
     {
+        Screen.orientation = ScreenOrientation.Portrait;
         DisplayDemoMenu();
     }
 

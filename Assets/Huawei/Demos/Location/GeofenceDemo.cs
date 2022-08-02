@@ -55,8 +55,8 @@ public class GeofenceDemo : MonoBehaviour
                 (update) => { Debug.Log($"{TAG} RequestLocationUpdates success"); })
             .AddOnFailureListener((exception) =>
             {
-                Debug.LogError($"{TAG} RequestLocationUpdates Fail" + exception.WrappedCauseMessage + " " +
-                               exception.WrappedExceptionMessage + $"{TAG} RequestLocationUpdates Error code: " +
+                Debug.LogError($"{TAG} RequestLocationUpdates Fail " + exception.WrappedCauseMessage + " " +
+                               exception.WrappedExceptionMessage + " HMS RequestLocationUpdates Error code: " +
                                exception.ErrorCode);
             });
     }
@@ -95,9 +95,9 @@ public class GeofenceDemo : MonoBehaviour
 
             stringBuilder.Append("\nConversion = " + conversion)
                 .Append("\nStatus = " + status)
-                .Append("\nerrorCode=" + errorCode)
-                .Append("\nLocation=")
-                .Append("Latitude" + mLocation.GetLatitude() + "Longitude" + mLocation.GetLongitude());
+                .Append("\nerrorCode= " + errorCode)
+                .Append("\nLocation= ")
+                .Append("Latitude " + mLocation.GetLatitude() + "\nLongitude " + mLocation.GetLongitude());
 
             resultText.text = stringBuilder.ToString();
         }

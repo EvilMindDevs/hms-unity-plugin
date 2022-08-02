@@ -22,7 +22,7 @@ namespace HuaweiConstants
             /**
              * Position constant for a position with a custom offset.
              */
-            POSITION_CUSTOM = -1,
+            //POSITION_CUSTOM = -1,
 
             /**
              * Position constant for top of the screen.
@@ -62,6 +62,20 @@ namespace HuaweiConstants
 
     }
 
+    public enum UnityBannerAdSizeType
+    {
+        BANNER_SIZE_320_50,
+        BANNER_SIZE_320_100,
+        BANNER_SIZE_468_60,
+        BANNER_SIZE_DYNAMIC,
+        BANNER_SIZE_728_90,
+        BANNER_SIZE_300_250,
+        BANNER_SIZE_SMART,
+        BANNER_SIZE_160_600,
+        BANNER_SIZE_360_57,
+        BANNER_SIZE_360_144
+    }
+
     public static class UnityBannerAdSize
     {
 
@@ -87,7 +101,7 @@ namespace HuaweiConstants
 
         public const string BANNER_SIZE_360_144 = "BANNER_SIZE_360_144";
 
-        public static string CustomBannerSize(int widht, int height) 
+        public static string CustomBannerSize(int widht, int height)
         {
             return ($"BANNER_SIZE_{widht}_{height}");
         }

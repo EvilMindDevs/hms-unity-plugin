@@ -1,14 +1,16 @@
 ﻿using HmsPlugin.Dropdown;
 using HmsPlugin.Image;
 using HmsPlugin.TextField;
-using HmsPlugin.Toggle;
+
+using HuaweiConstants;
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using UnityEditor;
+
 using UnityEngine;
+
+using static HuaweiConstants.UnityBannerAdPositionCode;
 using static HuaweiMobileServices.Ads.SplashAd;
 
 namespace HmsPlugin
@@ -16,14 +18,26 @@ namespace HmsPlugin
     internal class HMSAdsSettingsDrawer : VerticalSequenceDrawer
     {
 
+        private bool bannerIsActive = false;
+        private bool interstitialAdsIsActive = false;
+        private bool rewardedAdsIsActive = false;
+        private bool splashAdsIsActive = false;
+
+        private bool testIsActive = false;
+
         private Toggle.Toggle _enableBannerAdsToggle;
         private TextField.TextFieldWithAccept _bannerAdsTextField;
         private TextField.TextFieldWithAccept _bannerAdsRefreshField;
         private Toggle.Toggle _enableBannerAdLoadToggle;
+        private EnumDropdown _bannerAdPositionType;
+        private EnumDropdown _BannerAdSizeType;
+
         private DisabledDrawer _bannerAdsDisabledDrawer;
+        private DisabledDrawer _bannerAdsIDDrawer;
 
         private Toggle.Toggle _enableInterstitialAdsToggle;
         private TextField.TextFieldWithAccept _interstitialAdsTextField;
+
         private DisabledDrawer _interstitialAdsDisabledDrawer;
 
         private Toggle.Toggle _enableRewardedAdsToggle;
@@ -36,7 +50,11 @@ namespace HmsPlugin
         private TextField.TextFieldWithAccept _splashAdsTitleTextField;
         private TextField.TextFieldWithAccept _splashAdsSubTextField;
         private SpriteImage _splashSpriteImage;
+
         private DisabledDrawer _splashAdsDisabledDrawer;
+        private DisabledDrawer _splashAdsIDDrawer;
+        private DisabledDrawer _splashAdsPreviewButtonDisabledDrawer;
+
         private Button.ButtonBase _previewButton;
 
         private Toggle.Toggle _testAdstoggle;
@@ -47,32 +65,84 @@ namespace HmsPlugin
         public HMSAdsSettingsDrawer()
         {
             _settings = HMSAdsKitSettings.Instance.Settings;
-            _enableBannerAdsToggle = new Toggle.Toggle("Enable Banner Ads", _settings.GetBool(HMSAdsKitSettings.EnableBannerAd), OnBannerAdsToggleChanged, false);
-            _bannerAdsTextField = new TextFieldWithAccept("Banner Ad ID", _settings.Get(HMSAdsKitSettings.BannerAdID), "Save", OnBannerAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
+
+            bannerIsActive = _settings.GetBool(HMSAdsKitSettings.EnableBannerAd);
+            testIsActive = _settings.GetBool(HMSAdsKitSettings.UseTestAds);
+
+            _testAdstoggle = new Toggle.Toggle("Use Test Ads*", testIsActive, OnTestAdsToggleChanged);
+            _testAdstoggle.SetTooltip("This will overwrite all ads with test ads.");
+
+            #region BannerAds
+
+            _enableBannerAdsToggle = new Toggle.Toggle("Enable Banner Ads", bannerIsActive, OnBannerAdsToggleChanged, false);
             _bannerAdsRefreshField = new TextFieldWithAccept("Banner Refresh Interval*", _settings.Get(HMSAdsKitSettings.BannerRefreshInterval), "Save", OnBannerRefreshIntervalSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100).AddTooltip("Default is 60 seconds. Value can be between 30 and 120 seconds");
             _enableBannerAdLoadToggle = new Toggle.Toggle("Show Banner on Load*", _settings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad), OnShowBannerOnLoadChanged, false).SetTooltip("Enabling this will make the banner to be shown right after it finishes loading.");
-            _bannerAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_bannerAdsTextField, _bannerAdsRefreshField, _enableBannerAdLoadToggle)).SetEnabled(!_enableBannerAdsToggle.IsChecked());
 
-            _enableInterstitialAdsToggle = new Toggle.Toggle("Enable Interstitial Ads", _settings.GetBool(HMSAdsKitSettings.EnableInterstitialAd), OnInterstitialAdsToggleChanged, false);
+            _bannerAdPositionType = new EnumDropdown((UnityBannerAdPositionCodeType)Enum.Parse(typeof(UnityBannerAdPositionCodeType), _settings.Get(HMSAdsKitSettings.BannerAdPositionType, "POSITION_BOTTOM")), "Banner Ad Position");
+            _BannerAdSizeType = new EnumDropdown((UnityBannerAdSizeType)Enum.Parse(typeof(UnityBannerAdSizeType), _settings.Get(HMSAdsKitSettings.UnityBannerAdSizeType, "BANNER_SIZE_360_57")), "Banner Size Type");
+            _bannerAdsTextField = new TextFieldWithAccept("Banner Ad ID", _settings.Get(HMSAdsKitSettings.BannerAdID), "Save", OnBannerAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
+
+            _bannerAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_BannerAdSizeType, _bannerAdPositionType, _bannerAdsRefreshField, _enableBannerAdLoadToggle)).SetEnabled(!bannerIsActive);
+
+            bool bannerAdsIDState = bannerIsActive && !testIsActive;
+            _bannerAdsIDDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_bannerAdsTextField)).SetEnabled(!bannerAdsIDState);
+
+            #endregion
+
+
+
+            #region Interstitial Ads
+
+            interstitialAdsIsActive = _settings.GetBool(HMSAdsKitSettings.EnableInterstitialAd);
+
+            bool interstitialAdsIDState = interstitialAdsIsActive && !testIsActive;
+
+            _enableInterstitialAdsToggle = new Toggle.Toggle("Enable Interstitial Ads", interstitialAdsIsActive, OnInterstitialAdsToggleChanged, false);
             _interstitialAdsTextField = new TextFieldWithAccept("Interstitial Ad ID", _settings.Get(HMSAdsKitSettings.InterstitialAdID), "Save", OnInterstitialAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
-            _interstitialAdsDisabledDrawer = new DisabledDrawer(_interstitialAdsTextField).SetEnabled(!_enableInterstitialAdsToggle.IsChecked());
+            _interstitialAdsDisabledDrawer = new DisabledDrawer(_interstitialAdsTextField).SetEnabled(!interstitialAdsIDState);
 
-            _enableRewardedAdsToggle = new Toggle.Toggle("Enable Rewarded Ads", _settings.GetBool(HMSAdsKitSettings.EnableRewardedAd), OnRewardedAdsToggleChanged, false);
+            #endregion
+
+
+
+            #region Rewarded Ads
+
+            rewardedAdsIsActive = _settings.GetBool(HMSAdsKitSettings.EnableRewardedAd);
+            bool rewardedAdsIDState = rewardedAdsIsActive && !testIsActive;
+
+            _enableRewardedAdsToggle = new Toggle.Toggle("Enable Rewarded Ads", rewardedAdsIsActive, OnRewardedAdsToggleChanged, false);
             _rewardedAdsTextField = new TextFieldWithAccept("Rewarded Ad ID", _settings.Get(HMSAdsKitSettings.RewardedAdID), "Save", OnRewardedAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
-            _rewardedAdsDisabledDrawer = new DisabledDrawer(_rewardedAdsTextField).SetEnabled(!_enableRewardedAdsToggle.IsChecked());
+            _rewardedAdsDisabledDrawer = new DisabledDrawer(_rewardedAdsTextField).SetEnabled(!rewardedAdsIDState);
 
-            _enableSplashAdsToggle = new Toggle.Toggle("Enable Splash Ads", _settings.GetBool(HMSAdsKitSettings.EnableSplashAd), OnSplashAdToggleChanged, false);
+            #endregion
+
+
+
+            #region Splash Ads
+
+            splashAdsIsActive = _settings.GetBool(HMSAdsKitSettings.EnableSplashAd);
+            bool splashAdsIDState = splashAdsIsActive && !testIsActive;
+
+            _enableSplashAdsToggle = new Toggle.Toggle("Enable Splash Ads", splashAdsIsActive, OnSplashAdToggleChanged, false);
             _splashAdsIdTextField = new TextFieldWithAccept("Splash Ad ID", _settings.Get(HMSAdsKitSettings.SplashAdID), "Save", OnSplashAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashAdOrientation = new EnumDropdown((SplashAdOrientation)Enum.Parse(typeof(SplashAdOrientation), _settings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT")), "Orientation");
             _splashAdsTitleTextField = new TextFieldWithAccept("Splash Title", _settings.Get(HMSAdsKitSettings.SplashTitle), "Save", OnSplashTitleSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashAdsSubTextField = new TextFieldWithAccept("Splash Sub Text", _settings.Get(HMSAdsKitSettings.SplashSubText), "Save", OnSplashSubTextSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashSpriteImage = new SpriteImage(AssetDatabase.LoadAssetAtPath<Sprite>(_settings.Get(HMSAdsKitSettings.SplashImagePath, "")), "Icon*", OnSpriteImageChanged).SetTooltip("Image will be shown as 28x28 pixels");
             _previewButton = new Button.Button("Preview", OnPreviewClick).SetWidth(150).SetBGColor(Color.green);
-            _splashAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_splashAdsIdTextField, _splashAdOrientation, _splashAdsTitleTextField, _splashAdsSubTextField, _splashSpriteImage, new Space(10), new HorizontalSequenceDrawer(new Spacer(), _previewButton, new Spacer()))).SetEnabled(!_enableSplashAdsToggle.IsChecked());
+
+            _splashAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_splashAdOrientation, _splashAdsTitleTextField, _splashAdsSubTextField, _splashSpriteImage, new Space(10))).SetEnabled(!_enableSplashAdsToggle.IsChecked());
+            _splashAdsIDDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_splashAdsIdTextField)).SetEnabled(!splashAdsIDState);
+            _splashAdsPreviewButtonDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(new Space(10), new HorizontalSequenceDrawer(new Spacer(), _previewButton, new Spacer()))).SetEnabled(!_enableSplashAdsToggle.IsChecked());
+
+            #endregion
+
+
 
             _splashAdOrientation.OnChangedSelection += _splashAdOrientation_OnChangedSelection;
-            _testAdstoggle = new Toggle.Toggle("Use Test Ads*", _settings.GetBool(HMSAdsKitSettings.UseTestAds), OnTestAdsToggleChanged);
-            _testAdstoggle.SetTooltip("This will overwrite all ads with test ads.");
+            _bannerAdPositionType.OnChangedSelection += _bannerAdPositionType_OnChangedSelection;
+            _BannerAdSizeType.OnChangedSelection += _BannerAdSizeType_OnChangedSelection;
+
             SetupSequence();
             _splashAdPreviewObj = GameObject.FindObjectOfType<HMSSplashAdPreview>();
             SetupPreviewButtonText(_splashAdPreviewObj == null);
@@ -110,6 +180,16 @@ namespace HmsPlugin
                 _previewButton.SetText("Close Preview").SetBGColor(Color.red);
         }
 
+        private void _BannerAdSizeType_OnChangedSelection(Enum returnedEnum)
+        {
+            _settings.Set(HMSAdsKitSettings.UnityBannerAdSizeType, returnedEnum.ToString());
+        }
+
+        private void _bannerAdPositionType_OnChangedSelection(Enum returnedEnum)
+        {
+            _settings.Set(HMSAdsKitSettings.BannerAdPositionType, returnedEnum.ToString());
+        }
+
         private void _splashAdOrientation_OnChangedSelection(Enum returnedEnum)
         {
             _settings.Set(HMSAdsKitSettings.SplashOrientation, ((SplashAdOrientation)_splashAdOrientation.GetCurrentValue()).ToString());
@@ -145,20 +225,28 @@ namespace HmsPlugin
 
         private void OnRewardedAdsToggleChanged(bool value)
         {
-            _rewardedAdsDisabledDrawer.SetEnabled(!value);
+            rewardedAdsIsActive = value;
+            _rewardedAdsDisabledDrawer.SetEnabled((rewardedAdsIsActive && testIsActive) || (!rewardedAdsIsActive));
+
             _settings.SetBool(HMSAdsKitSettings.EnableRewardedAd, value);
         }
 
         private void OnInterstitialAdsToggleChanged(bool value)
         {
-            _interstitialAdsDisabledDrawer.SetEnabled(!value);
+            interstitialAdsIsActive = value;
+            _interstitialAdsDisabledDrawer.SetEnabled((interstitialAdsIsActive && testIsActive) || (!interstitialAdsIsActive));
+
             _settings.SetBool(HMSAdsKitSettings.EnableInterstitialAd, value);
         }
 
         private void OnBannerAdsToggleChanged(bool value)
         {
-            _bannerAdsDisabledDrawer.SetEnabled(!value);
-            _settings.SetBool(HMSAdsKitSettings.EnableBannerAd, value);
+            bannerIsActive = value;
+            _bannerAdsIDDrawer.SetEnabled((bannerIsActive && testIsActive) || (!bannerIsActive));
+
+            _bannerAdsDisabledDrawer.SetEnabled(!bannerIsActive);
+
+            _settings.SetBool(HMSAdsKitSettings.EnableBannerAd, bannerIsActive);
         }
 
         private void OnInterstitialAdIDSaveButtonClick()
@@ -178,7 +266,14 @@ namespace HmsPlugin
 
         private void OnTestAdsToggleChanged(bool value)
         {
-            _settings.SetBool(HMSAdsKitSettings.UseTestAds, value);
+            testIsActive = value;
+
+            _bannerAdsIDDrawer.SetEnabled((bannerIsActive && testIsActive) || (!bannerIsActive));
+            _interstitialAdsDisabledDrawer.SetEnabled((interstitialAdsIsActive && testIsActive) || (!interstitialAdsIsActive));
+            _rewardedAdsDisabledDrawer.SetEnabled((rewardedAdsIsActive && testIsActive) || (!rewardedAdsIsActive));
+            _splashAdsIDDrawer.SetEnabled((splashAdsIsActive && testIsActive) || (!splashAdsIsActive));
+
+            _settings.SetBool(HMSAdsKitSettings.UseTestAds, testIsActive);
         }
 
         private void OnShowBannerOnLoadChanged(bool value)
@@ -188,9 +283,16 @@ namespace HmsPlugin
 
         private void OnSplashAdToggleChanged(bool value)
         {
-            _splashAdsDisabledDrawer.SetEnabled(!value);
-            _settings.SetBool(HMSAdsKitSettings.EnableSplashAd, value);
-            if (!value)
+            splashAdsIsActive = value;
+
+            _splashAdsIDDrawer.SetEnabled((splashAdsIsActive && testIsActive) || (!splashAdsIsActive));
+
+            _splashAdsDisabledDrawer.SetEnabled(!splashAdsIsActive);
+            _splashAdsPreviewButtonDisabledDrawer.SetEnabled(!splashAdsIsActive);
+
+            _settings.SetBool(HMSAdsKitSettings.EnableSplashAd, splashAdsIsActive);
+
+            if (!splashAdsIsActive)
             {
                 DestroySplashPreviews();
             }
@@ -257,6 +359,7 @@ namespace HmsPlugin
             AddDrawer(new Space(3));
             AddDrawer(_enableBannerAdsToggle);
             AddDrawer(_bannerAdsDisabledDrawer);
+            AddDrawer(_bannerAdsIDDrawer);
             AddDrawer(new HorizontalLine());
             AddDrawer(new Space(25));
 
@@ -278,6 +381,8 @@ namespace HmsPlugin
             AddDrawer(new Space(3));
             AddDrawer(_enableSplashAdsToggle);
             AddDrawer(_splashAdsDisabledDrawer);
+            AddDrawer(_splashAdsIDDrawer);
+            AddDrawer(_splashAdsPreviewButtonDisabledDrawer);
             AddDrawer(new HorizontalLine());
             AddDrawer(new Space(25));
         }

@@ -152,7 +152,7 @@ namespace HmsPlugin
 
         private string[] CoreGradles()
         {
-            return new string[] { "com.huawei.hms:base:6.4.0.303", "com.huawei.agconnect:agconnect-core:1.6.5.300" };
+            return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300", "com.huawei.hms:hmscoreinstaller:6.6.0.300" };
         }
 
         public void OnPreprocessBuild(BuildReport report)

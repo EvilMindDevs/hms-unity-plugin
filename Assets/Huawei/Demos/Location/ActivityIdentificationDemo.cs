@@ -37,11 +37,13 @@ namespace Huawei.Demos.Location
         {
             Debug.Log($"{TAG} OnReceive success");
 
+            var isIntentUsed = false;
             StringBuilder stringBuilder = new StringBuilder();
             if (LocationReceiver.isListenActivityIdentification)
             {
                 Debug.Log($"{TAG} ActivityIdentification OnReceive success");
-
+                isIntentUsed = true;
+                
                 var activityIdentificationResponse = ActivityIdentificationResponse.GetDataFromIntent(intent);
 
                 if (activityIdentificationResponse != null)
@@ -53,7 +55,7 @@ namespace Huawei.Demos.Location
                             .Append("\nIdentificationActivity = " +
                                     GetActivityName(activityIdentificationData.GetIdentificationActivity()))
                             .Append(" Possibility " + activityIdentificationData.GetPossibility());
-                      
+
                         activityIdentificationDataText.text += stringBuilder.ToString();
                     }
                 }
@@ -66,6 +68,7 @@ namespace Huawei.Demos.Location
             if (LocationReceiver.isListenActivityConversion)
             {
                 Debug.Log($"{TAG} ActivityConversionResponse OnReceive success");
+                isIntentUsed = true;
 
                 ActivityConversionResponse activityConversionResponse =
                     ActivityConversionResponse.GetDataFromIntent(intent);
@@ -89,6 +92,8 @@ namespace Huawei.Demos.Location
                     Debug.LogError($"{TAG} activityConversionResponse is null");
                 }
             }
+
+            if (!isIntentUsed) Debug.LogError($"{TAG} OnReceive called but not used");
         }
 
         #region ActivityConversion
@@ -145,17 +150,25 @@ namespace Huawei.Demos.Location
 
         private string GetActivityName(int activity)
         {
-            return activity switch
+            switch (activity)
             {
-                100 => "VEHICLE",
-                101 => "BIKE",
-                102 => "FOOT",
-                103 => "STILL",
-                104 => "OTHERS",
-                107 => "WALKING",
-                108 => "RUNNING",
-                _ => "UNKNOWN"
-            };
+                case 100:
+                    return "VEHICLE";
+                case 101:
+                    return "BIKE";
+                case 102:
+                    return "FOOT";
+                case 103:
+                    return "STILL";
+                case 104:
+                    return "OTHERS";
+                case 107:
+                    return "WALKING";
+                case 108:
+                    return "RUNNING";
+                default:
+                    return "UNKNOWN";
+            }
         }
 
         public void RequestActivityIdentificationUpdates()

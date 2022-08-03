@@ -365,7 +365,145 @@ To receive app links (a special type of deep link, available in Android 6.0 and 
 </intent-filter>
 ```
 
+## Location Kit
 
+Location Kit provides capabilities for you to obtain the precise user device location quickly, helping you build up global positioning capabilities and expand your global business. Currently, Location Kit offers the following modes for accessing its capabilities:
+
+Learn more about the service from [here](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050706106)
+
+### Developing the Fused Location Service
+
+#### Assigning App Permissions
+1-) Declare the required permissions in the AndroidManifest.xml file. 
+The Android OS provides two location permissions: **ACCESS_COARSE_LOCATION** (approximate location permission) and **ACCESS_FINE_LOCATION** (precise location permission).
+
+```groovy
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+```
+
+2-) (Optional) If your app needs to continuously locate the device when it runs in the background in Android 10 or later, declare the **ACCESS_BACKGROUND_LOCATION** permission in the AndroidManifest.xml file.
+```groovy
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+```
+
+Dynamically apply for related location permissions (according to requirements for dangerous permissions in Android 6.0 or later).
+```csharp
+HMSLocationManager.Instance.RequestFineLocationPermission();
+HMSLocationManager.Instance.RequestCoarseLocationPermission();
+HMSLocationManager.Instance.RequestBackgroundLocationPermissions();
+```
+
+#### Requesting Location Updates
+By using DefineLocationCallback() you can listen for onLocationResult and onLocationAvailability.
+```csharp
+locationCallback = HMSLocationManager.Instance.DefineLocationCallback();
+```
+Then you can simply listen the actions to get the locationResult and locationAvailability.
+```csharp
+HMSLocationManager.Instance.onLocationResult += OnLocationResult;
+HMSLocationManager.Instance.onLocationAvailability += OnLocationAvailability;
+
+void OnLocationResult(LocationResult locationResult) {
+    ...
+}
+void OnLocationAvailability(LocationAvailability locationAvailability) {
+    ...
+}
+```
+
+### Developing Activity Identification Service
+To use the activity identification service in versions earlier than Android 10, declare the following permission in the AndroidManifest.xml file:
+```grovy
+<uses-permission android:name="com.huawei.hms.permission.ACTIVITY_RECOGNITION"/>
+```
+To use the activity identification service in Android 10 and later versions, declare the following permission in the AndroidManifest.xml file:
+```grovy
+<uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+```
+Note: The android.permission.ACTIVITY_RECOGNITION and com.huawei.hms.permission.ACTIVITY_RECOGNITION permissions are dangerous permissions and need to be dynamically applied for.
+```csharp
+HMSLocationManager.Instance.RequestActivityRecognitionPermissions();
+```
+#### Create a PendingIntent object
+```csharp
+HMSLocationManager.Instance.GetPendingIntentFromLocation();
+```
+#### RequestActivityIdentification / ActivityConversionUpdates
+```csharp
+//If you are planning to use more than one Activity update make sure to add and remove its listeners when necessary from HMSLocationManager
+ HMSLocationManager.AddIdentificationListener();
+            
+_activityIdentificationService.CreateActivityConversionUpdates(_request, _pendingIntent)
+.AddOnSuccessListener(type => { ... })
+.AddOnFailureListener(exception =>{ ...});
+```
+
+#### How to Listen OnReceive from BroadcastReceiver
+You can listen OnReceive by using the following line and adding your OnReceive Method
+```csharp
+LocationReceiver.Instance.onReceive += OnReceive;
+LocationReceiver.Instance.SetLocationBroadcastListener();
+
+private void OnReceive(AndroidIntent intent){
+ if (LocationReceiver.isListenActivityConversion)
+ {   
+    var activityIdentificationResponse = ActivityIdentificationResponse.GetDataFromIntent(intent);
+        foreach (var activityIdentificationData in activityIdentificationResponse.GetActivityIdentificationDatas())
+        {
+         ...
+        }
+ }
+}
+```
+### Developing the Geofence Service
+To use the geofence service APIs of Location Kit, declare the ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions in the AndroidManifest.xml file.
+```grovy
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+```
+In Android 10, declare the ACCESS_BACKGROUND_LOCATION permission in the AndroidManifest.xml file so that your app can obtain the device location when it runs in the background.
+```groovy
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+```
+Note: The preceding permissions are dangerous permissions and need to be dynamically applied for.
+```csharp
+HMSLocationManager.Instance.RequestFineLocationPermission();
+HMSLocationManager.Instance.RequestCoarseLocationPermission();
+HMSLocationManager.Instance.RequestBackgroundLocationPermissions();
+```
+#### Initialize Geofence Receiver and LocationResult
+Note: By listening GeofenceReceiver's onReceive method you can get intent result from GeoFenceBroadcastReceiver which extends BroadcastReceiver.
+```csharp
+private void Start() {
+GeofenceReceiver.Instance.onReceive += OnReceive;
+HMSLocationManager.Instance.onLocationResult += OnLocationResult;
+GeofenceReceiver.Instance.SetGeofenceBroadcastListener();
+}
+```
+#### InitGeofenceServiceClient
+```csharp
+// Create a GeofenceService instance.
+geofenceService = LocationServices.GetGeofenceService();
+
+// Obtain a PendingIntent object.
+pendingIntent = HMSLocationManager.Instance.GetPendingIntentFromGeofence();
+```
+#### Send the request to add a geofence
+```csharp
+geofenceService.CreateGeofenceList(geofenceRequest, pendingIntent)
+.AddOnSuccessListener(type => { Debug.Log($"{TAG} CreateGeofenceList Successful"); })
+.AddOnFailureListener(exception => { 
+Debug.LogError($"{TAG} CreateGeofenceList Exception {exception.WrappedCauseMessage} with error code: {exception.ErrorCode}");
+});
+```
+#### Set your onReceive Method
+```csharp
+private void OnReceive(AndroidIntent intent){
+GeofenceData geofenceData = GeofenceData.GetDataFromIntent(intent);
+DisplayGeofenceData(geofenceData);
+}
+```
 ## Kits Specification
 Find below the specific information on the included functionalities in this plugin
 
@@ -383,6 +521,7 @@ Find below the specific information on the included functionalities in this plug
 12. Nearby Service
 13. App Messaging
 14. App Linking
+15. Location Kit
 
 ### Account
 
@@ -439,6 +578,11 @@ Official Documentation on App Messaging: [ Documentation](https://developer.huaw
 ### App Linking
 
 Official Documentation on App Linking: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-applinking-introduction-0000001054143215)
+
+### Location Kit
+
+Official Documentation on Location Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050706106)
+
 ______
 
 ## License

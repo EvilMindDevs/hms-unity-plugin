@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 
 namespace HmsPlugin
 {
-    public class PushToggleEditor : ToggleEditor, IDrawer
+    public class PushToggleEditor : ToggleEditor, IDrawer, IDependentToggle
     {
         public const string PushKitEnabled = "PushKit";
 
@@ -25,6 +25,12 @@ namespace HmsPlugin
             }
             else
             {
+                if (HMSMainEditorSettings.Instance.Settings.GetBool(DriveKitToggleEditor.DriveKitEnabled))
+                {
+                    EditorUtility.DisplayDialog("Error", "DriveKit is dependent on PushKit. Please disable DriveKit first.", "OK");
+                    _toggle.SetChecked(true);
+                    return;
+                }
                 DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(PushKitEnabled, value);
@@ -57,6 +63,13 @@ namespace HmsPlugin
             {
                 _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(PushKitEnabled));
             }
+        }
+
+        public void SetToggle()
+        {
+            _toggle.SetChecked(true);
+            HMSMainEditorSettings.Instance.Settings.SetBool(PushKitEnabled, true);
+            EnableToggle();
         }
     }
 }

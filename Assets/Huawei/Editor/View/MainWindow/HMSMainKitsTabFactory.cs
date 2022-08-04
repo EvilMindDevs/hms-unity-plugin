@@ -45,10 +45,11 @@ internal class HMSMainKitsTabFactory
         var remoteConfigToggleEditor = new RemoteConfigToggleEditor(tabBar, analyticsEditor);
         var crashToggleEditor = new CrashToggleEditor(analyticsEditor);
         var cloudDBToggleEditor = new CloudDBToggleEditor(tabBar, authEditor);
-        //var driveToggleEditor = new DriveKitToggleEditor();
+        var driveToggleEditor = new DriveKitToggleEditor(accountEditor, pushToggleEditor);
         var nearbyServiceToggleEditor = new NearbyServiceToggleEditor();
         var appMessagingToggleEditor = new AppMessagingToggleEditor();
-        var appLinkingToogleEditor = new AppLinkingToogleEditor(analyticsEditor);
+        var appLinkingToggleEditor = new AppLinkingToggleEditor(analyticsEditor);
+        var locationToggleEditor = new LocationToggleEditor();
 
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), pluginToggleEditor, new Spacer()));
         tab.AddDrawer(new HorizontalLine());
@@ -66,10 +67,11 @@ internal class HMSMainKitsTabFactory
                     new HorizontalSequenceDrawer(new Spacer(), crashToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), authEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), cloudDBToggleEditor, new Spacer()),
-                    //new HorizontalSequenceDrawer(new Spacer(), driveToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), driveToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), nearbyServiceToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), appMessagingToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), appLinkingToogleEditor, new Spacer())
+                    new HorizontalSequenceDrawer(new Spacer(), appLinkingToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), locationToggleEditor, new Spacer())
 
                 )
             ));
@@ -88,10 +90,11 @@ internal class HMSMainKitsTabFactory
         toggleEditors.Add(remoteConfigToggleEditor);
         toggleEditors.Add(crashToggleEditor);
         toggleEditors.Add(cloudDBToggleEditor);
-        //toggleEditors.Add(driveToggleEditor);
+        toggleEditors.Add(driveToggleEditor);
         toggleEditors.Add(nearbyServiceToggleEditor);
         toggleEditors.Add(appMessagingToggleEditor);
-        toggleEditors.Add(appLinkingToogleEditor);
+        toggleEditors.Add(appLinkingToggleEditor);
+        toggleEditors.Add(locationToggleEditor);
         _disabledDrawer.SetEnabled(!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
 
         return tab;

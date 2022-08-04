@@ -1,10 +1,15 @@
 ﻿using HuaweiConstants;
+
 using HuaweiMobileServices.Ads;
+using HuaweiMobileServices.Ads.InstallReferrer;
 using HuaweiMobileServices.Utils;
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using UnityEngine;
+
 using static HuaweiConstants.UnityBannerAdPositionCode;
 using static HuaweiMobileServices.Ads.SplashAd;
 
@@ -13,6 +18,7 @@ namespace HmsPlugin
 
     public class HMSAdsKitManager : HMSManagerSingleton<HMSAdsKitManager>
     {
+        private readonly string TAG = "[HMS] HMSAdsKitManager ";
 
         private const string TestBannerAdId = "testw6vs28auh3";
         private const string TestInterstitialAdId = "testb4znbuh3n2";
@@ -29,9 +35,15 @@ namespace HmsPlugin
 
         private bool isInitialized;
 
+        public Action<ReferrerDetails> InstallReferrerSuccess { get; set; }
+        public Action InstallReferrerFail { get; set; }
+        public Action InstallReferrerDisconnect { get; set; }
+
+        InstallReferrerClient installReferrerClient;
+
         public HMSAdsKitManager()
         {
-            Debug.Log("[HMS] HMSAdsKitManager Constructor");
+            Debug.Log(TAG + "Constructor");
             adsKitSettings = HMSAdsKitSettings.Instance.Settings;
             if (!HMSDispatcher.InstanceExists)
                 HMSDispatcher.CreateDispatcher();
@@ -41,7 +53,7 @@ namespace HmsPlugin
 
         private void OnAwake()
         {
-            Debug.Log("[HMS] HMSAdsKitManager OnAwake");
+            Debug.Log(TAG + "OnAwake");
             Init();
             if (adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd))
                 LoadSplashAd();
@@ -49,13 +61,13 @@ namespace HmsPlugin
 
         private void OnStart()
         {
-            Debug.Log("[HMS] HMSAdsKitManager OnStart");
+            Debug.Log(TAG + "OnStart");
             LoadingAds();
         }
 
         private void Init()
         {
-            Debug.Log("[HMS] HMSAdsKitManager Init");
+            Debug.Log(TAG + "Init");
             HwAds.Init();
             isInitialized = true;
             adsKitSettings = HMSAdsKitSettings.Instance.Settings;
@@ -66,7 +78,7 @@ namespace HmsPlugin
             while (Application.internetReachability == NetworkReachability.NotReachable)
                 await Task.Delay(500);
 
-            Debug.Log("[HMS] HMSAdsKitManager Loading Ads");
+            Debug.Log(TAG + " Loading Ads");
             LoadAllAds();
         }
 
@@ -74,17 +86,111 @@ namespace HmsPlugin
         {
             if (!hasPurchasedNoAds)
             {
-                LoadBannerAd(UnityBannerAdPositionCodeType.POSITION_BOTTOM, UnityBannerAdSize.BANNER_SIZE_360_57);
+                UnityBannerAdPositionCodeType _adPositionCodeType = UnityBannerAdPositionCodeType.POSITION_BOTTOM;
+                UnityBannerAdSizeType _adSizeType = UnityBannerAdSizeType.BANNER_SIZE_360_57;
+
+                if (Enum.TryParse(adsKitSettings.Get(HMSAdsKitSettings.BannerAdPositionType), out UnityBannerAdPositionCodeType adPositionCodeType))
+                    _adPositionCodeType = adPositionCodeType;
+                if (Enum.TryParse(adsKitSettings.Get(HMSAdsKitSettings.UnityBannerAdSizeType), out UnityBannerAdSizeType adSizeType))
+                    _adSizeType = adSizeType;
+
+                LoadBannerAd(_adPositionCodeType, _adSizeType.ToString());
                 LoadInterstitialAd();
             }
             LoadRewardedAd();
         }
 
+
         public void SetTestAdStatus(bool value)
         {
             adsKitSettings.SetBool(HMSAdsKitSettings.UseTestAds, value);
-            Debug.Log("[HMS] HMSAdsKitManager SetTestAdStatus set to " + value.ToString());
+            Debug.Log(TAG + " SetTestAdStatus set to " + value.ToString());
         }
+
+        public void SetTestAd(bool status)
+        {
+            SetTestAdStatus(status);
+            DestroyBannerAd();
+            LoadAllAds();
+        }
+
+        #region Install-Referrer
+
+        public void Init_InstallReferrer(bool isTest)
+        {
+
+            var installReferrerStateCallbackListener =
+                new InstallReferrerStateCallbackListener(
+                    OnInstallReferrerSetupFinished,
+                OnInstallReferrerServiceDisconnected);
+
+            InstallReferrerStateBridge.SetInstallReferrerCallbackListener(installReferrerStateCallbackListener);
+
+            var listener = InstallReferrerStateBridge.GetInstallReferrerStateCallback();
+
+            HMSDispatcher.Invoke(() =>
+            {
+                installReferrerClient = InstallReferrerClient.NewBuilder().SetTest(isTest).Build();
+                installReferrerClient.StartConnection(listener);
+            });
+
+        }
+
+        private void OnInstallReferrerSetupFinished(int responseCode)
+        {
+            Debug.Log(TAG + "OnInstallReferrerSetupFinished");
+
+            var response = (InstallReferrerResponse)(responseCode);
+
+            if (response == InstallReferrerResponse.OK)
+            {
+                Debug.Log(TAG + "Install Referrer Setup Finished");
+
+                var referrerDetails = installReferrerClient.GetInstallReferrer();
+
+                InstallReferrerSuccess?.Invoke(referrerDetails);
+
+                return;
+            }
+
+            if (response == InstallReferrerResponse.SERVICE_UNAVAILABLE)
+            {
+                Debug.Log(TAG + "SERVICE_UNAVAILABLE");
+
+                InstallReferrerFail?.Invoke();
+
+                return;
+            }
+
+            if (response == InstallReferrerResponse.FEATURE_NOT_SUPPORTED)
+            {
+                Debug.Log(TAG + "FEATURE_NOT_SUPPORTED");
+
+                InstallReferrerFail?.Invoke();
+
+                return;
+            }
+
+            if (response == InstallReferrerResponse.DEVELOPER_ERROR)
+            {
+                Debug.Log(TAG + "DEVELOPER_ERROR");
+
+                InstallReferrerFail?.Invoke();
+
+                return;
+            }
+
+        }
+
+        private void OnInstallReferrerServiceDisconnected()
+        {
+            Debug.Log(TAG + " OnInstallReferrerServiceDisconnected");
+
+            InstallReferrerDisconnect?.Invoke();
+        }
+
+        #endregion
+
 
         #region BANNER
 
@@ -94,7 +200,7 @@ namespace HmsPlugin
         {
             if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableBannerAd)) return;
 
-            Debug.Log("[HMS] HMSAdsKitManager Loading Banner Ad.");
+            Debug.Log(TAG + " Loading Banner Ad.");
             var bannerAdStatusListener = new AdStatusListener();
             bannerAdStatusListener.mOnAdLoaded += BannerAdStatusListener_mOnAdLoaded;
             bannerAdStatusListener.mOnAdClosed += BannerAdStatusListener_mOnAdClosed;
@@ -122,7 +228,7 @@ namespace HmsPlugin
         {
             if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableBannerAd)) return;
 
-            Debug.Log("[HMS] HMSAdsKitManager Loading Banner Ad.");
+            Debug.Log(TAG + " Loading Banner Ad.");
             var bannerAdStatusListener = new AdStatusListener();
             bannerAdStatusListener.mOnAdLoaded += BannerAdStatusListener_mOnAdLoaded;
             bannerAdStatusListener.mOnAdClosed += BannerAdStatusListener_mOnAdClosed;
@@ -201,33 +307,33 @@ namespace HmsPlugin
 
         private void BannerAdStatusListener_mOnAdFailed(object sender, AdLoadErrorCodeEventArgs e)
         {
-            Debug.LogError("[HMS] HMSAdsKitManager BannerAdLoadFailed. Error Code: " + e.ErrorCode);
+            Debug.LogError(TAG+"BannerAdLoadFailed. Error Code: " + e.ErrorCode);
             OnBannerFailedToLoadEvent?.Invoke();
         }
 
         private void BannerAdStatusListener_mOnAdOpened(object sender, EventArgs e)
         {
-            Debug.Log("[HMS] HMSAdsKitManager BannerAdOpened : ");
+            Debug.Log(TAG + " BannerAdOpened : ");
         }
 
         private void BannerAdStatusListener_mOnAdClicked(object sender, EventArgs e)
         {
-            Debug.Log("[HMS] HMSAdsKitManager BannerAdClicked : ");
+            Debug.Log(TAG + " BannerAdClicked : ");
         }
 
         private void BannerAdStatusListener_mOnAdImpression(object sender, EventArgs e)
         {
-            Debug.Log("[HMS] HMSAdsKitManager BannerAdImpression : ");
+            Debug.Log(TAG + " BannerAdImpression : ");
         }
 
         private void BannerAdStatusListener_mOnAdClosed(object sender, EventArgs e)
         {
-            Debug.Log("[HMS] HMSAdsKitManager BannerAdClosed : ");
+            Debug.Log(TAG + " BannerAdClosed : ");
         }
 
         private void BannerAdStatusListener_mOnAdLoaded(object sender, EventArgs e)
         {
-            Debug.Log("[HMS] HMSAdsKitManager BannerAdLoadSuccess : ");
+            Debug.Log(TAG + " BannerAdLoadSuccess : ");
             _isBannerAdLoaded = true;
             OnBannerLoadEvent?.Invoke();
         }
@@ -243,7 +349,7 @@ namespace HmsPlugin
         public void LoadInterstitialAd()
         {
             if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableInterstitialAd)) return;
-            Debug.Log("[HMS] HMSAdsKitManager Loading Interstitial Ad.");
+            Debug.Log(TAG + " Loading Interstitial Ad.");
             interstitialView = new InterstitialAd
             {
                 AdId = adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestInterstitialAdId : adsKitSettings.Get(HMSAdsKitSettings.InterstitialAdID),
@@ -255,7 +361,7 @@ namespace HmsPlugin
         public void LoadInterstitialAd(string adId)
         {
             if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableInterstitialAd)) return;
-            Debug.Log("[HMS] HMSAdsKitManager Loading Interstitial Ad.");
+            Debug.Log(TAG + " Loading Interstitial Ad.");
             interstitialView = new InterstitialAd
             {
                 AdId = adId,
@@ -266,10 +372,10 @@ namespace HmsPlugin
 
         public void ShowInterstitialAd()
         {
-            Debug.Log("[HMS] HMSAdsKitManager ShowInterstitialAd called");
+            Debug.Log(TAG + " ShowInterstitialAd called");
             if (interstitialView?.Loaded == true)
             {
-                Debug.Log("[HMS] HMSAdsKitManager Showing Interstitial Ad");
+                Debug.Log(TAG + " Showing Interstitial Ad");
                 interstitialView.Show();
             }
             else
@@ -501,7 +607,7 @@ namespace HmsPlugin
         public void LoadSplashAd(string adId, SplashAdOrientation orientation)
         {
             if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd)) return;
-            Debug.Log("[HMS] HMSAdsKitManager Loading Splash Ad.");
+            Debug.Log(TAG + " Loading Splash Ad.");
             splashView = new SplashAd();
             splashView.AdId = adId;
             splashView.Orientation = orientation;
@@ -530,7 +636,7 @@ namespace HmsPlugin
 
         private void SplashAdStatusListener_OnAdDismissed()
         {
-            Debug.Log("[HMS] HMSAdsKitManager SplashAdDismissed.");
+            Debug.Log(TAG + " SplashAdDismissed.");
             OnSplashAdDismissed?.Invoke();
         }
 
@@ -542,19 +648,19 @@ namespace HmsPlugin
 
         private void SplashAdStatusListener_OnAdLoaded()
         {
-            Debug.Log("[HMS] HMSAdsKitManager SplashAdLoaded.");
+            Debug.Log(TAG + " SplashAdLoaded.");
             OnSplashAdLoaded?.Invoke();
         }
 
         private void SplashAdStatusListener_OnAdClicked()
         {
-            Debug.Log("[HMS] HMSAdsKitManager SplashAdClicked.");
+            Debug.Log(TAG + " SplashAdClicked.");
             OnSplashAdClicked?.Invoke();
         }
 
         private void SplashAdStatusListener_OnAdShowed()
         {
-            Debug.Log("[HMS] HMSAdsKitManager SplashAdShowed.");
+            Debug.Log(TAG + " SplashAdShowed.");
             OnSplashAdShowed?.Invoke();
         }
 
@@ -616,7 +722,7 @@ namespace HmsPlugin
             }
             void IConsentUpdateListener.OnFail(string desc)
             {
-                Debug.Log("[HMS] HMSAdsKitManager CONSENT OnFail " + desc);
+                Debug.Log("[HMS] AdsKitManager CONSENT OnFail " + desc);
                 mAdsManager.ConsentOnFail?.Invoke(desc);
             }
 

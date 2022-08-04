@@ -31,6 +31,12 @@ namespace HmsPlugin
                     _toggle.SetChecked(true);
                     return;
                 }
+                if (HMSMainEditorSettings.Instance.Settings.GetBool(DriveKitToggleEditor.DriveKitEnabled))
+                {
+                    EditorUtility.DisplayDialog("Error", "DriveKit is dependent on AccountKit. Please disable DriveKit first.", "OK");
+                    _toggle.SetChecked(true);
+                    return;
+                }
 
                 DisableToggle();
             }

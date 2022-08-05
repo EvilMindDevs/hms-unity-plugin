@@ -270,6 +270,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2001515470}
   - component: {fileID: 2001515469}
+  - component: {fileID: 2001515471}
   m_Layer: 0
   m_Name: IAPDemoManager
   m_TagString: Untagged
@@ -289,7 +290,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c9566e3b74067e45b9cfa314943ef0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusText: {fileID: 1541257162302857388}
 --- !u!4 &2001515470
 Transform:
   m_ObjectHideFlags: 0
@@ -304,6 +304,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2001515471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2001515468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f7ee010b51766f429500be0fb8d9ef1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1541257161782053160
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,7 +453,7 @@ GameObject:
   - component: {fileID: 1541257161826211263}
   - component: {fileID: 1541257161826211262}
   m_Layer: 5
-  m_Name: ItemBuyButton
+  m_Name: ItemBuyButtonRemoveAds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -506,18 +518,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1541257161826211263}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2001515469}
-        m_MethodName: BuyProduct
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: removeAds
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1541257161826211263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,18 +922,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1541257162010823357}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2001515469}
-        m_MethodName: SignIn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1541257162010823357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1249,7 +1239,7 @@ GameObject:
   - component: {fileID: 1541257162247569147}
   - component: {fileID: 1541257162247569146}
   m_Layer: 5
-  m_Name: ItemBuyButton
+  m_Name: ItemBuyButtonC100
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1294,18 +1284,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1541257162247569147}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2001515469}
-        m_MethodName: BuyProduct
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: coins100
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1541257162247569147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1713,7 +1692,7 @@ GameObject:
   - component: {fileID: 1541257162374128139}
   - component: {fileID: 1541257162374128138}
   m_Layer: 5
-  m_Name: ItemBuyButton
+  m_Name: ItemBuyButtonC1000
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1778,18 +1757,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1541257162374128139}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2001515469}
-        m_MethodName: BuyProduct
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: coins1000
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1541257162374128139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3514,7 +3482,7 @@ GameObject:
   - component: {fileID: 1541257163800355157}
   - component: {fileID: 1541257163800355156}
   m_Layer: 5
-  m_Name: ItemBuyButton
+  m_Name: ItemBuyButtonPremium
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3579,18 +3547,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1541257163800355157}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2001515469}
-        m_MethodName: BuyProduct
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: premium
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1541257163800355157
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -989,18 +989,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 367289024}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1391133567}
-        m_MethodName: SignInAnonymously
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &367289024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1623,18 +1612,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 725766532}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1391133567}
-        m_MethodName: SignOut
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &725766532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2653,18 +2631,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 984253489}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1391133567}
-        m_MethodName: SignInWithHuaweiAccount
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &984253489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2863,18 +2830,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1005276712}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1391133567}
-        m_MethodName: DeleteUser
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1005276712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3162,8 +3118,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9a09a4267309a4990056585a7533c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verifyCodePhone: {fileID: 748870960}
-  verifyCodeEmail: {fileID: 1948305074}
 --- !u!4 &1391133568
 Transform:
   m_ObjectHideFlags: 0
@@ -3535,18 +3489,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1445559053}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1391133567}
-        m_MethodName: RequestVerifyCodeWithPhoneNumber
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!222 &1445559051
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4243,18 +4186,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1740618451}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1391133567}
-        m_MethodName: RequestVerifyCodeWithEmail
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1740618451
 MonoBehaviour:
   m_ObjectHideFlags: 0

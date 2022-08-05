@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 124228713}
   - component: {fileID: 124228712}
   m_Layer: 5
-  m_Name: getSource
+  m_Name: Btn_getSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -190,18 +190,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 124228713}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1590310700}
-        m_MethodName: GetSource
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &124228713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,7 +316,7 @@ GameObject:
   - component: {fileID: 166541906}
   - component: {fileID: 166541905}
   m_Layer: 5
-  m_Name: getMergetAll
+  m_Name: Btn_getMergetAll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -392,18 +381,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 166541906}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1590310700}
-        m_MethodName: GetMergedAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &166541906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,7 +430,7 @@ GameObject:
   - component: {fileID: 196130230}
   - component: {fileID: 196130229}
   m_Layer: 5
-  m_Name: applyDefault w/ Dictionary
+  m_Name: Btn_applyDefaultWDictionary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -517,18 +495,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 196130230}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1590310700}
-        m_MethodName: ApplyDefault
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &196130230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -731,7 +698,7 @@ GameObject:
   - component: {fileID: 960082472}
   - component: {fileID: 960082471}
   m_Layer: 5
-  m_Name: fetch
+  m_Name: Btn_fetch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -796,18 +763,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 960082472}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1590310700}
-        m_MethodName: Fetch
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &960082472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -855,7 +811,7 @@ GameObject:
   - component: {fileID: 973820568}
   - component: {fileID: 973820567}
   m_Layer: 5
-  m_Name: countOfVariables
+  m_Name: Txt_countOfVariables
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1194,7 +1150,7 @@ GameObject:
   - component: {fileID: 1534404209}
   - component: {fileID: 1534404208}
   m_Layer: 5
-  m_Name: clearAll
+  m_Name: Btn_clearAll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1259,18 +1215,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1534404209}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1590310700}
-        m_MethodName: ClearAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1534404209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1398,6 +1343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1590310701}
   - component: {fileID: 1590310700}
+  - component: {fileID: 1590310702}
   m_Layer: 0
   m_Name: RemoteConfigDemo
   m_TagString: Untagged
@@ -1431,6 +1377,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1590310702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590310699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988e17ddf5fa1ed4c8c2ca898b041275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1614963061
 GameObject:
   m_ObjectHideFlags: 0
@@ -1513,7 +1471,7 @@ GameObject:
   - component: {fileID: 1687117712}
   - component: {fileID: 1687117711}
   m_Layer: 5
-  m_Name: applyDefault w/XML
+  m_Name: Btn_applyDefaultWXML
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1578,18 +1536,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1687117712}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1590310700}
-        m_MethodName: ApplyDefaultXml
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1687117712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1638,7 +1585,7 @@ GameObject:
   - component: {fileID: 1723290016}
   - component: {fileID: 1723290015}
   m_Layer: 5
-  m_Name: LoadLastFetched
+  m_Name: Btn_LoadLastFetched
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1703,18 +1650,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1723290016}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1590310700}
-        m_MethodName: LoadLastFetched
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1723290016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1917,7 +1853,7 @@ GameObject:
   - component: {fileID: 1988229298}
   - component: {fileID: 1988229297}
   m_Layer: 5
-  m_Name: Developer Mode
+  m_Name: Btn_DeveloperMode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1982,18 +1918,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1988229298}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1590310700}
-        m_MethodName: DeveloperMode
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1988229298
 MonoBehaviour:
   m_ObjectHideFlags: 0

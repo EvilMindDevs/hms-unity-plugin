@@ -317,6 +317,7 @@ GameObject:
   m_Component:
   - component: {fileID: 681743552}
   - component: {fileID: 681743551}
+  - component: {fileID: 681743553}
   m_Layer: 0
   m_Name: AccountDemoManager
   m_TagString: Untagged
@@ -336,7 +337,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c150b30d5985d24d900454f0da7dd59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loggedInUser: {fileID: 154961399}
 --- !u!4 &681743552
 Transform:
   m_ObjectHideFlags: 0
@@ -351,6 +351,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &681743553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 681743550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe77f97564fd2f640a81933e08619b7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &691449081
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,18 +441,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 691449084}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 681743551}
-        m_MethodName: LogOut
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &691449084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,18 +632,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1016624855}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 681743551}
-        m_MethodName: LogIn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1016624855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -756,18 +746,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1051396185}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 681743551}
-        m_MethodName: LogIn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1051396185
 MonoBehaviour:
   m_ObjectHideFlags: 0

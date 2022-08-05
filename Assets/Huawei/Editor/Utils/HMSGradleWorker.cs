@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+
 using UnityEngine;
 
 namespace HmsPlugin
@@ -20,7 +22,7 @@ namespace HmsPlugin
             gradleSettings = new Dictionary<string, string[]>()
             {
                 { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:6.4.0.301" } },
-                { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.54.300", "com.huawei.hms:ads-consent:3.4.54.300", "com.huawei.hms:ads-identifier:3.4.39.302" } },
+                { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.54.300", "com.huawei.hms:ads-consent:3.4.54.300", "com.huawei.hms:ads-identifier:3.4.39.302", "com.huawei.hms:ads-installreferrer:3.4.39.302" } },
                 { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:6.4.1.302" } },
                 { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.6.5.300" } },
                 { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:6.2.0.301" } },
@@ -32,7 +34,9 @@ namespace HmsPlugin
                 { NearbyServiceToggleEditor.NearbyServiceEnabled, new string[] { "com.huawei.hms:nearby:6.2.0.301" } },
                 { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },
                 { HMSLibrariesDrawer.AppCompatEnabled,new string[]{ "com.android.support:appcompat-v7:21.0.0" } },
-                { AppLinkingToogleEditor.AppLinkingEnabled,new string[]{ "com.huawei.agconnect:agconnect-applinking:1.6.5.300"} }
+                { AppLinkingToggleEditor.AppLinkingEnabled,new string[]{ "com.huawei.agconnect:agconnect-applinking:1.6.5.300"} },
+                { LocationToggleEditor.LocationEnabled,new string[]{ "com.huawei.hms:location:6.4.0.300"} },
+                { DriveKitToggleEditor.DriveKitEnabled, new string[]{ "com.huawei.hms:drive:5.0.0.307" } }
             };
         }
 
@@ -149,7 +153,7 @@ namespace HmsPlugin
 
         private string[] CoreGradles()
         {
-            return new string[] { "com.huawei.hms:base:6.4.0.303", "com.huawei.agconnect:agconnect-core:1.6.5.300" };
+            return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300", "com.huawei.hms:hmscoreinstaller:6.6.0.300" };
         }
 
         public void OnPreprocessBuild(BuildReport report)

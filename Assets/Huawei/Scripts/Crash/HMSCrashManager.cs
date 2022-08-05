@@ -7,9 +7,11 @@ public class HMSCrashManager : HMSManagerSingleton<HMSCrashManager>
 {
     IAGConnectCrash agConnectCrash;
 
+    private readonly string TAG = "[HMS] HMSCrashManager ";
+
     public HMSCrashManager()
     {
-        Debug.Log($"[HMS] : HMSCrashManager Constructor");
+        Debug.Log($"{TAG}Constructor");
         if (!HMSDispatcher.InstanceExists)
             HMSDispatcher.CreateDispatcher();
         HMSDispatcher.InvokeAsync(OnAwake);
@@ -17,7 +19,7 @@ public class HMSCrashManager : HMSManagerSingleton<HMSCrashManager>
 
     private void OnAwake()
     {
-        Debug.Log("[HMS]: Crash OnAwake - Initialized");
+        Debug.Log($"[HMS]: Crash OnAwake - Initialized");
         agConnectCrash = AGConnectCrash.GetInstance();
     }
 
@@ -25,12 +27,12 @@ public class HMSCrashManager : HMSManagerSingleton<HMSCrashManager>
     public void EnableCrashCollection(bool value)
     {
         agConnectCrash.EnableCrashCollection(value);
-        Debug.Log($"[HMS]: Crash enableCrashCollection {value}");
+        Debug.Log($"{TAG}enableCrashCollection {value}");
     }
 
     public void TestCrash()
     {
-        Debug.Log("[HMS]: Crash testIt");
+        Debug.Log($"{TAG}TestCrash");
         Utils.ForceCrash(0);
     }
 
@@ -42,7 +44,7 @@ public class HMSCrashManager : HMSManagerSingleton<HMSCrashManager>
         ERROR = 6,
     }
 
-    public void customReport()
+    public void CustomReport()
     {
         agConnectCrash.SetUserId("testuser");
         agConnectCrash.Log((int)Log.DEBUG, "set debug log.");
@@ -55,6 +57,6 @@ public class HMSCrashManager : HMSManagerSingleton<HMSCrashManager>
         agConnectCrash.SetCustomKey("floatKey", 1.1f);
         agConnectCrash.SetCustomKey("intKey", 0);
         agConnectCrash.SetCustomKey("longKey", 11L);
-        Debug.Log("[HMS]: Crash customReport");
+        Debug.Log($"{TAG}CustomReport");
     }
 }

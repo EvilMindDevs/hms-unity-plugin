@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 
 namespace HmsPlugin
 {
     public class DriveKitToggleEditor : ToggleEditor, IDrawer
     {
+        private List<IDependentToggle> _dependentToggleList;
+
         public const string DriveKitEnabled = "DriveKit";
 
-        public DriveKitToggleEditor()
+        public DriveKitToggleEditor(IDependentToggle _dependent1, IDependentToggle _dependent2)
         {
+            _dependentToggleList = new List<IDependentToggle>();
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(DriveKitEnabled);
-            _toggle = new Toggle.Toggle("Drive Kit", enabled, OnStateChanged, true);
+            _dependentToggleList.Add(_dependent1);
+            _dependentToggleList.Add(_dependent2);
+            _toggle = new Toggle.Toggle("Drive Kit*", enabled, OnStateChanged, true).SetTooltip("DriveKit is dependent on AccountKit and PushKit");
             Enabled = enabled;
         }
 
@@ -21,24 +27,11 @@ namespace HmsPlugin
         {
             if (value)
             {
-                //_tabBar.AddTab(_tabView);
-                //if (GameObject.FindObjectOfType<HMSDriveKitManager>() == null)
-                //{
-                //    GameObject obj = new GameObject("HMSAdsKitManager");
-                //    obj.AddComponent<HMSAdsKitManager>();
-                //    EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                //}
+                EnableToggle();
             }
             else
             {
-                //var adsKitManagers = GameObject.FindObjectsOfType<HMSAdsKitManager>();
-                //if (adsKitManagers.Length > 0)
-                //{
-                //    for (int i = 0; i < adsKitManagers.Length; i++)
-                //    {
-                //        GameObject.DestroyImmediate(adsKitManagers[i].gameObject);
-                //    }
-                //}
+                DisableToggle();
             }
             HMSMainEditorSettings.Instance.Settings.SetBool(DriveKitEnabled, value);
         }
@@ -50,22 +43,36 @@ namespace HmsPlugin
 
         public override void EnableToggle()
         {
-            //base.CreateManagers();
-            //throw new NotImplementedException();
+            if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
+                return;
+
+            if (_dependentToggleList.Count > 1)
+            {
+                foreach (IDependentToggle _dependentToggle in _dependentToggleList) {
+                    _dependentToggle.SetToggle();
+                }
+            }
+
+            Enabled = true;
+
         }
 
         public override void DisableToggle()
         {
-            //throw new NotImplementedException();
+            Enabled = false;
         }
+
         public override void RemoveToggleTabView(bool removeTabs)
         {
-            //throw new NotImplementedException();
+            //throw new NotImplementedException(); Not Implemented because not needed.
         }
 
         public override void RefreshToggles()
         {
-            //throw new NotImplementedException();
+            if (_toggle != null )
+            {
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(DriveKitEnabled));
+            }
         }
     }
 }

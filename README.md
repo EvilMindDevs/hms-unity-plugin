@@ -1,20 +1,26 @@
-# Huawei Mobile Services Plugin
+# Huawei Mobile Services Plugin for Unity
+[![latestV](https://img.shields.io/github/v/release/EvilMindDevs/hms-unity-plugin?color=E10027&label=Latest%20Version&style=plastic)](https://github.com/EvilMindDevs/hms-unity-plugin/releases)
+## Overview
 
-The HMS Unity plugin helps you integrate all the power of Huawei Mobile Services in your Unity game:
+The HMS Unity plugin helps you integrate the full power of Huawei Mobile Services into your game developed with Unity. Also you can access other features such as Connect API which provides RESTful APIs that can be used to customize services provided by AppGallery Connect or implement process automation, thereby improving your work efficiency.<br />Huawei kits and services that our plugin will help you to integrate:
 
-* Huawei Account Kit
-* In App purchases: Consumable, non consumables and Subscriptions.
-* Ads: Interstitial, rewarded videos and banner
-* Push notifications
-* Game leaderboards and achievements
-* Huawei Anayltics kit
-* Crash Service
-* Remote Config
-* Auth Service
-* Drive Kit
-* Nearby Service
-* App Messaging
+* Account Kit
+* Ads Kit
+* Analytics Kit
 * App Linking
+* Drive Kit
+* Game Service
+* In-App purchases
+* :new: Location Kit :new:
+* Push Kit
+* Auth Service
+* Cloud DB
+* Connect API
+* Remote Configuration
+* App Messaging
+* Crash Service
+* Nearby Service
+* In-App Comments
 
 
 ## Requirements
@@ -28,567 +34,102 @@ This plugin supports:
 
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
 
-## Troubleshooting
-Please check our [wiki page](https://github.com/EvilMindDevs/hms-unity-plugin/wiki/Troubleshooting)
+For more information, please refer to the [documentation](https://evilminddevs.gitbook.io/hms-unity-plugin/).
+<br />Is there something we can help with? You can join our [discord](https://discord.io/hmsunityplugin) channel.
 
-## Status
-This is an ongoing project, currently WIP. Feel free to contact us if you'd like to collaborate and use Github issues for any problems you might encounter. We'd try to answer in no more than a working day.
+## Downloading the plugins
 
-## Connect your game Huawei Mobile Services in 5 easy steps
+There are 2 different options for obtaining the plugins:
 
-1. Register your app at Huawei Developer
-2. Import the Plugin to your Unity project
-3. Connect your game with the HMS Kit Managers
+*   Download plugins as `.unitypackage` file from
+    [releases page](https://github.com/EvilMindDevs/hms-unity-plugin/releases).
 
-### 1 - Register your app at Huawei Developer
+*   `git clone` master branch (for 2018 -> 2.0-2018 Branch) into the **Assets** folder of your Unity project.
 
-#### 1.1-  Register at [Huawei Developer](https://developer.huawei.com/consumer/en/)
+## Installing the plugins
+Please refer to
+[Import the plugin into your Unity project](https://evilminddevs.gitbook.io/hms-unity-plugin/getting-started/quick-start/import-the-plugin-into-your-unity-project).
 
-#### 1.2 - Create an app in AppGallery Connect.
-During this step, you will create an app in AppGallery Connect (AGC) of HUAWEI Developer. When creating the app, you will need to enter the app name, app category, default language, and signing certificate fingerprint. After the app has been created, you will be able to obtain the basic configurations for the app, for example, the app ID and the CPID.
+# Account Kit
 
-1. Sign in to Huawei Developer and click **Console**.
-2. Click the under **Ecosystem services**, click on **App Services**.
-3. Click on the **AppGallery Connect** under Distribution and Promotion.
-4. Click **My apps**.
-5. On the displayed **My apps** page, click **New app** on top right.
-6. Enter the App name, select App category (Game), and select Default language as needed.
-7. Upon successful app creation, the App information page will automatically display. There you can find the App ID that is assigned by the system to your app.
+Account Kit provides you with simple, secure, and quick sign-in and authorization functions. For more [About the Service](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050048870).
 
-#### 1.3 Add Package Name
-Set the package name of the created application on the AGC.
+# Ads Kit
 
-1. In app information page, there is a label at top saying **"My Apps"**. Mouse hover on it and select **My Project**. This will lead you to the project information of your application
-2. You should see a pop up asking about your package name for the application. Select **Manually enter a package name**
-3. Fill in the application package name in the input box and click save.
+Ads Kit leverages the vast user base of Huawei devices and Huawei's extensive data capabilities to provide you with the Publisher Service, helping you monetize traffic. For more [About the Service](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/publisher-service-introduction-0000001070671805).
 
-> Your package name should end in .huawei in order to release in App Gallery
+# Analytics Kit
 
-#### Generate a keystore.
+Analytics Kit is a one-stop user behavior analysis platform for your games. For more [About the Service](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050745149).
 
-Create a keystore using Unity or Android Tools. make sure your Unity project uses this keystore under the **Build Settings>PlayerSettings>Publishing settings**
+# App Linking
 
+App Linking allows you to create cross-platform links that can work as defined regardless of whether a user has installed your game. For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-applinking-introduction-0000001054143215).
 
-#### Generate a signing certificate fingerprint.
+# Drive Kit
 
-During this step, you will need to export the SHA-256 fingerprint by using keytool provided by the JDK and signature file.
+Drive Kit allows you to create games that use HUAWEI Drive capabilities. For more [About the Service](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050039630).
 
-1. Open the command window or terminal and access the bin directory where the JDK is installed.
-2. Run the keytool command in the bin directory to view the signature file and run the command.
+# Game Service
 
-    ``keytool -list -v -keystore D:\Android\WorkSpcae\HmsDemo\app\HmsDemo.jks``
-3. Enter the password of the signature file keystore in the information area. The password is the password used to generate the signature file.
-4. Obtain the SHA-256 fingerprint from the result. Save for next step.
+Game Service helps you build basic game functions such as achievements, leaderboards, and saved games at low costs. Improve efficiency in testing, managing, and releasing games and keep attracting users with continuous optimization based on game data analysis. For more  
+[About the Service](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050121216).
 
+# In-App purchases
 
-#### Add fingerprint certificate to AppGallery Connect
-During this step, you will configure the generated SHA-256 fingerprint in AppGallery Connect.
+In-App Purchases (IAP) enables you to sell digital products and content directly within your game.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050033062).
 
-1. In AppGallery Connect, go to **My Project** and select your project.
-2. Go to the App information section, click on **+** button and enter the SHA-256 fingerprint that you generated earlier.
-3. Click √ to save the fingerprint.
+# Location Kit
 
-____
+Location Kit provides capabilities for you to obtain the precise user device location quickly, helping you build up global positioning capabilities and expand your global business. For more  
+[About the Service](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050706106).
 
-### 2 - Import the plugin to your Unity Project
+# Push Kit
 
-To import the plugin:
+Push Kit is a messaging service provided for you to establish a cloud-to-device messaging channel.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/service-introduction-0000001050040060).
 
-1. Download the [.unitypackage](https://github.com/EvilMindDevs/hms-unity-plugin/releases)
-2. Open your game in Unity
-3. Choose Assets> Import Package> Custom
-![Import Package](http://evil-mind.com/huawei/images/importCustomPackage.png "Import package")
-4. In the file explorer select the downloaded HMS Unity plugin. The Import Unity Package dialog box will appear, with all the items in the package pre-checked, ready to install.
-![image](https://user-images.githubusercontent.com/6827857/113576269-e8e2ca00-9627-11eb-9948-e905be1078a4.png)
-5. Select Import and Unity will deploy the Unity plugin into your Assets Folder
-____
+# Auth Service
 
-### 3 - Update your agconnect-services.json file.
+Auth Service provides an SDK and backend services, supports multiple authentication modes, and provides a powerful management console, enabling you to easily develop and manage user authentication.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-auth-introduction-0000001053732605).
 
-In order for the plugin to work, some kits are in need of agconnect-json file. Please download your latest config file from AGC and import into Assets/StreamingAssets folder.
-![image](https://user-images.githubusercontent.com/6827857/113585485-f488bd80-9634-11eb-8b1e-6d0b5e06ecf0.png)
-____
+# Cloud DB
 
-### 4 - Connect your game with any HMS Kit
-
-In order for the plugin to work, you need to select the needed kits Huawei > Kit Settings.
-![image](https://user-images.githubusercontent.com/6827857/142605459-04ca144e-6b34-4018-8f81-44a5ed67cbf3.png)
-
-It will automaticly create the GameObject for you and it has DontDestroyOnLoad implemented so you don't need to worry about reference being lost. (After v2.2 there is no visible Kit manager object on the scene.)
-
-Now you need your game to call the Kit Managers from your game. See below for further instructions.
-    
-## Account Kit (Sign In)
-Call login method in order to open the login dialog. Be sure to have AccountKit enabled in Huawei > Kit Settings.
-
-```csharp
-HMSAccountManager.Instance.SignIn();
-```
-
-## Analytics kit
- 
-1. Enable Analtics kit from AGC
-2. Update ...Assets\StreamingAssets\agconnect-services.json file
- 
- Send analytics function:
- 
-``` csharp
-HMSAnalyticsManager.Instance.SendEventWithBundle(eventId, key, value);
-  ```
-  
-## In App Purchases
-Register your products via custom editor under Huawei > Kit Settings > IAP tab.
-![image](https://user-images.githubusercontent.com/6827857/113579431-f8184680-962c-11eb-9bfd-13ec69402536.png)
-Write your product identifier that is in AGC and select product type.
-
-If you check "Initialize On Start" checkbox, it'll automaticly retrieve registered products on Start.
-If you want to initialize the IAP by yourself, call the function mentioned in below. You can also set callbacks as well.
-
-``` csharp
-HMSIAPManager.Instance.CheckIapAvailability();
-
-HMSIAPManager.Instance.OnCheckIapAvailabilitySuccess += OnCheckIapAvailabilitySuccess;
-HMSIAPManager.Instance.OnCheckIapAvailabilityFailure += OnCheckIapAvailabilityFailure;
-
-private void OnCheckIapAvailabilityFailure(HMSException ex)
-    {
-        
-    }
-
-    private void OnCheckIapAvailabilitySuccess()
-    {
-        
-    }
-```
-
-Open the Purchase dialog by calling to BuyProduct method. You can set callbacks and check which product was purchased.
-```csharp
-HMSIAPManager.Instance.BuyProduct(string productID)
-
-HMSIAPManager.Instance.OnBuyProductSuccess += OnBuyProductSuccess;
-
-private void OnBuyProductSuccess(PurchaseResultInfo result)
-    {
-        if (result.InAppPurchaseData.ProductId == "removeAds")
-        {
-            // Write your remove ads logic here.
-        }
-    }
-```
-
-Restore purchases that have been bought by user before.
-```csharp
- HMSIAPManager.Instance.RestorePurchases((restoredProducts) =>
-        {
-            //restoredProducts contains all products that has been restored.
-        });
-```
-
-You can also use "Create Constant Classes" button to create a class called HMSIAPConstants which will contain all products as constants and you can call it from your code. Such as;
-```csharp
-HMSIAPManager.Instance.BuyProduct(HMSIAPConstants.testProduct);
-```
-
-## Ads kit
-There is a custom editor in Huawei > Kit Settings > Ads tab.
-![image](https://user-images.githubusercontent.com/6827857/142604639-57b5856d-f001-492f-9014-eb670eb50e8f.png)
-
-You can enable/disable ads that you want in your project.
-Insert your Ad Id into these textboxes in the editor.
-If you want to use test ads, you can check UseTestAds checkbox that'll overwrite all ad ids with test ads.
-
-If you want to know more details about Splash Ad and its configuration, please check this article written by @sametguzeldev [here](https://medium.com/huawei-developers-tr/extend-your-advertisement-with-hms-ads-kit-splash-ad-in-unity-3e13f38f3abe).
-
-Then you can call certain functions such as
-```csharp
-    HMSAdsKitManager.Instance.ShowBannerAd();
-    HMSAdsKitManager.Instance.HideBannerAd();
-    HMSAdsKitManager.Instance.ShowInterstitialAd();
-    
-    HMSAdsKitManager.Instance.OnRewarded = OnRewarded;
-    HMSAdsKitManager.Instance.ShowRewardedAd();
-    
-    public void OnRewarded(Reward reward)
-    {
-       
-    }
-```
-**For Using the Consent SDK, please refer to [Consent](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/publisher-service-consent-settings-0000001075342977).**
-
-## Game kit
-There is a custom editor in Huawei > Kit Settings > Game Service tab.
-![image](https://user-images.githubusercontent.com/6827857/114309121-cef52b80-9aee-11eb-93d8-e69fda402ee3.png)
-
-Check "Initialize on Start" checkbox to initialize the Game Service Kit on Start or call HMSGameManager.Instance.Init() in your custom logic.
-
-```csharp
-   HMSGameManager.Instance.Init();
-```
-
-You can use "Create Constant Classes" button to create a class called HMSLeaderboardConstants or HMSAchievementConstants which will contain all achievements and leaderboards as constants and you can call it from your code. Such as;
-```csharp
-    HMSLeaderboardManager.Instance.SubmitScore(HMSLeaderboardConstants.topleaderboard,50);
-    HMSAchievementsManager.Instance.RevealAchievement(HMSAchievementConstants.firstshot);
-```
-
-You can call native calls to list achievements or leaderboards.
-```csharp
-  HMSAchievementsManager.Instance.ShowAchievements();
-  HMSLeaderboardManager.Instance.ShowLeaderboards();
-```
-
-# App Update in Game Service
-
-There is a method in Game Service called CheckAppUpdate that will trigger the update mechanism of HMS to detect if there is newer version in AppGallery.
-It triggers OnAppUpdateInfo inside HMSGameManager that is returning status,rtnCode,rtnMessage,isExit,buttonStatus. This callback gets called after CheckAppUpdate is done.
-If you want to receive this callback, please subscribe into it before calling CheckAppUpdate.
-
-It requires two booleans;
-showAppUpdate: Making this true will prompt a native UI that will show the user there is a newer version if there is an update.
-forceAppUpdate: Making this true will remove the cancel button from the UI and forcing user to update.
-```csharp
-    HMSGameManager.Instance.OnAppUpdateInfo = OnAppUpdateInfo;
-    HMSGameManager.Instance.CheckAppUpdate(showAppUpdate,forceAppUpdate);
-```
-# Nearby Service
-## Permissions
-
-In order for Nearby Service demo to work we have to declare specific permissions in the AndroidManifest.xml file.
-
-Adding Permissions for Nearby Service Documentation: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/system-Guides/nearbyservice-add-access-0000001142548835)
-
-```groovy
-<!-- Permission to check Wi-Fi status -->
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<!-- Permission to change Wi-Fi status -->
-<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-<!-- Permission to obtain a coarse device location -->
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<!-- Permission to obtain the accurate device location -->
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<!--Permission to read external storage -->
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-<!-- Permission to write data to external storage -->
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<!-- Bluetooth permissions -->
-<uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />    
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>    
-<uses-permission android:name="android.permission.BLUETOOTH_SCAN" />    
-<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />    
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-```
-**Note:** The **ACCESS_FINE_LOCATION** , **WRITE_EXTERNAL_STORAGE**, and **READ_EXTERNAL_STORAGE** permissions are dangerous system permissions, so you need to dynamically apply for these permissions. If your app does not have these permissions, Nearby Service cannot enable broadcast or scanning for your app.
+Cloud DB is a device-cloud synergy database product that provides data synergy management capabilities between the device and cloud, unified data models, and various data management APIs.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-clouddb-introduction-0000001054212760).
 
 # Connect API
-2.1.0 version comes with Connect API features!
-Right now we've implemented Publishing API and PMS API. To be able to use these APIs, you need to create an API Client through AppGallery Connect.
 
-After selecting your project on AGC, please go to Users and Permissions section.
-Find API key section on the left side and click Connect API.
-On the right side, you will see a button called "Create". Click on it to create an API Client for Connect API.
-![image](https://user-images.githubusercontent.com/6827857/146188264-f423b51c-c5eb-4de1-a230-3afd6f2f39ad.png)
+The AppGallery Connect API provides RESTful APIs that can be used to customize services provided by AppGallery Connect or implement process automation, thereby improving your work efficiency.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agcapi-overview-0000001158245083).
 
-After creating your key, please copy Client ID and Key section.
-![image](https://user-images.githubusercontent.com/6827857/146189847-6d49f155-472b-4259-b3e2-760599662ae4.png)
+# Remote Configuration
 
-Paste your Client ID to Client ID section, Key to Client Secret section in Token Obtainer Editor.
-![image](https://user-images.githubusercontent.com/6827857/146190339-db5f98b9-7419-46aa-b660-1deb35f7183e.png)
+Remote Configuration provides cloud-based services. By integrating the client SDK, your game can periodically fetch parameter values from the cloud.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-remoteconfig-introduction-0000001055149778).
 
+# App Messaging
 
-## Publishing API
-This API here to help you to publish your apk or aab after a successfull build. You can access this API by going 
->Huawei>Connect API>Publishing API>Querying App Information
+You can use App Messaging of AppGallery Connect to send relevant messages to target users actively using your app to encourage them to use key app functions, or send attractive promotion activities to enhance user loyalty.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-appmessage-introduction-0000001071884501).
 
-From Querying App Information, you can check you app name, app category and your release state.
-But most fun part starts after those information. Cause those informations there just for letting you know "I can communicate with AppGallery".
+# Crash Service
 
-After informations there are a checkbox called "Upload After Build". If you select this checkbox, than Plugin will ask you everytime you do a successfull build "Should I send this apk/aab to AppGallery Connect?". If you select yes, than sending work will be started and you can check it from console or from progress bar. After uploading, you can check your apk/abb from the App Gallery Connect.
+The AppGallery Connect Crash service provides a powerful yet lightweight solution to game crash problems. With the service, you can quickly detect, locate, and resolve game crashes.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-crash-introduction-0000001055732708).
 
-***Note: If you are using AAB, you should consider reading the warning after enabling the checkbox. 
-"Please Check the App Signing Feature Enabled on AppGallery Connect For Uploading AAB Packages"***
+# Nearby Service
 
-![readmePhotoCensored](https://user-images.githubusercontent.com/16370078/145428901-ba2150ca-995d-443d-9498-24c4e64e6760.png)
+Nearby Data Communication allows apps to easily discover nearby devices and set up communication channels with them using technologies such as Bluetooth and Wi-Fi.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/system-Guides/nearby-introduction-0000001060364528).
 
-## PMS API
-This API here to help you to manage your products. You can access this API by going 
->Huawei>Connect API>PMS API
+# In-App Comments
 
-***Query IAP Products***, You can view all of your products with or without filtering by Product ID and Product name.
+The in-app comments service allows you to prompt your users to submit ratings and make comments for your app.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-comments-introduction-0000001063018306).
 
-You can create a product with ***Create a Product*** or import your products with ***Create Products***.
-
-***Note: You can not edit your deleted products.
-Note: You can not change your products' purchase type which you created.***
-
-![readmePhotoCensored](https://user-images.githubusercontent.com/39373386/145815616-c2abf3d2-e303-41df-b000-bb4fe953a86f.png)
-
-## App Linking
-
-App Linking allows you to create cross-platform links that can work as defined regardless of whether your app has been installed by a user.
-
-(Optional) Configure clipboard reading rules.
-When an app that has integrated the App Linking SDK is launched for the first time, the SDK reads content on the clipboard to obtain link information, which can reach the specific in-app content. 
-
-```groovy
-<meta-data
-    android:name="com.huawei.agconnect.applinking.READ_CLIPBOARD_PERMISSION"
-    android:value="xxxx"/> 
-```
-If value is set to Available, the App Linking SDK will read content on the clipboard each time the app is launched.
-If value is set to Unavailable, the App Linking SDK will not read content on the clipboard.
-
-Before You Start
-
-Add an intent filter to the manifest file of your Android project, to specify how to process a link of App Linking.
-
-```groovy
-<intent-filter>
-    <action android:name="android.intent.action.VIEW"/>
-    <category android:name="android.intent.category.DEFAULT"/>
-    <category android:name="android.intent.category.BROWSABLE"/>
-    <!-- Set android:host to the prefix of your App Linking deep link or Android deep link. Set android:scheme to a custom scheme. -->
-    <data android:host="xxx.com" android:scheme="xxx"/>
-</intent-filter>
-```
-
-To receive app links (a special type of deep link, available in Android 6.0 and later), add the following configuration to the activity for processing links:
-
-```groovy
-<intent-filter android:autoVerify="true">
-    <action android:name="android.intent.action.VIEW"/>
-    <category android:name="android.intent.category.DEFAULT"/>
-    <category android:name="android.intent.category.BROWSABLE"/>
-    <!-- Set android:host to the prefix of your link to be processed. -->
-    <data android:host="xxx" android:scheme="http"/>
-    <!-- Set android:host to the prefix of your link to be processed. -->
-    <data android:host="xxx" android:scheme="https"/>
-</intent-filter>
-```
-
-## Location Kit
-
-Location Kit provides capabilities for you to obtain the precise user device location quickly, helping you build up global positioning capabilities and expand your global business. Currently, Location Kit offers the following modes for accessing its capabilities:
-
-Learn more about the service from [here](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050706106)
-
-### Developing the Fused Location Service
-
-#### Assigning App Permissions
-1-) Declare the required permissions in the AndroidManifest.xml file. 
-The Android OS provides two location permissions: **ACCESS_COARSE_LOCATION** (approximate location permission) and **ACCESS_FINE_LOCATION** (precise location permission).
-
-```groovy
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-```
-
-2-) (Optional) If your app needs to continuously locate the device when it runs in the background in Android 10 or later, declare the **ACCESS_BACKGROUND_LOCATION** permission in the AndroidManifest.xml file.
-```groovy
-<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-```
-
-Dynamically apply for related location permissions (according to requirements for dangerous permissions in Android 6.0 or later).
-```csharp
-HMSLocationManager.Instance.RequestFineLocationPermission();
-HMSLocationManager.Instance.RequestCoarseLocationPermission();
-HMSLocationManager.Instance.RequestBackgroundLocationPermissions();
-```
-
-#### Requesting Location Updates
-By using DefineLocationCallback() you can listen for onLocationResult and onLocationAvailability.
-```csharp
-locationCallback = HMSLocationManager.Instance.DefineLocationCallback();
-```
-Then you can simply listen the actions to get the locationResult and locationAvailability.
-```csharp
-HMSLocationManager.Instance.onLocationResult += OnLocationResult;
-HMSLocationManager.Instance.onLocationAvailability += OnLocationAvailability;
-
-void OnLocationResult(LocationResult locationResult) {
-    ...
-}
-void OnLocationAvailability(LocationAvailability locationAvailability) {
-    ...
-}
-```
-
-### Developing Activity Identification Service
-To use the activity identification service in versions earlier than Android 10, declare the following permission in the AndroidManifest.xml file:
-```grovy
-<uses-permission android:name="com.huawei.hms.permission.ACTIVITY_RECOGNITION"/>
-```
-To use the activity identification service in Android 10 and later versions, declare the following permission in the AndroidManifest.xml file:
-```grovy
-<uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-```
-Note: The android.permission.ACTIVITY_RECOGNITION and com.huawei.hms.permission.ACTIVITY_RECOGNITION permissions are dangerous permissions and need to be dynamically applied for.
-```csharp
-HMSLocationManager.Instance.RequestActivityRecognitionPermissions();
-```
-#### Create a PendingIntent object
-```csharp
-HMSLocationManager.Instance.GetPendingIntentFromLocation();
-```
-#### RequestActivityIdentification / ActivityConversionUpdates
-```csharp
-//If you are planning to use more than one Activity update make sure to add and remove its listeners when necessary from HMSLocationManager
- HMSLocationManager.AddIdentificationListener();
-            
-_activityIdentificationService.CreateActivityConversionUpdates(_request, _pendingIntent)
-.AddOnSuccessListener(type => { ... })
-.AddOnFailureListener(exception =>{ ...});
-```
-
-#### How to Listen OnReceive from BroadcastReceiver
-You can listen OnReceive by using the following line and adding your OnReceive Method
-```csharp
-LocationReceiver.Instance.onReceive += OnReceive;
-LocationReceiver.Instance.SetLocationBroadcastListener();
-
-private void OnReceive(AndroidIntent intent){
- if (LocationReceiver.isListenActivityConversion)
- {   
-    var activityIdentificationResponse = ActivityIdentificationResponse.GetDataFromIntent(intent);
-        foreach (var activityIdentificationData in activityIdentificationResponse.GetActivityIdentificationDatas())
-        {
-         ...
-        }
- }
-}
-```
-### Developing the Geofence Service
-To use the geofence service APIs of Location Kit, declare the ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions in the AndroidManifest.xml file.
-```grovy
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-```
-In Android 10, declare the ACCESS_BACKGROUND_LOCATION permission in the AndroidManifest.xml file so that your app can obtain the device location when it runs in the background.
-```groovy
-<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-```
-Note: The preceding permissions are dangerous permissions and need to be dynamically applied for.
-```csharp
-HMSLocationManager.Instance.RequestFineLocationPermission();
-HMSLocationManager.Instance.RequestCoarseLocationPermission();
-HMSLocationManager.Instance.RequestBackgroundLocationPermissions();
-```
-#### Initialize Geofence Receiver and LocationResult
-Note: By listening GeofenceReceiver's onReceive method you can get intent result from GeoFenceBroadcastReceiver which extends BroadcastReceiver.
-```csharp
-private void Start() {
-GeofenceReceiver.Instance.onReceive += OnReceive;
-HMSLocationManager.Instance.onLocationResult += OnLocationResult;
-GeofenceReceiver.Instance.SetGeofenceBroadcastListener();
-}
-```
-#### InitGeofenceServiceClient
-```csharp
-// Create a GeofenceService instance.
-geofenceService = LocationServices.GetGeofenceService();
-
-// Obtain a PendingIntent object.
-pendingIntent = HMSLocationManager.Instance.GetPendingIntentFromGeofence();
-```
-#### Send the request to add a geofence
-```csharp
-geofenceService.CreateGeofenceList(geofenceRequest, pendingIntent)
-.AddOnSuccessListener(type => { Debug.Log($"{TAG} CreateGeofenceList Successful"); })
-.AddOnFailureListener(exception => { 
-Debug.LogError($"{TAG} CreateGeofenceList Exception {exception.WrappedCauseMessage} with error code: {exception.ErrorCode}");
-});
-```
-#### Set your onReceive Method
-```csharp
-private void OnReceive(AndroidIntent intent){
-GeofenceData geofenceData = GeofenceData.GetDataFromIntent(intent);
-DisplayGeofenceData(geofenceData);
-}
-```
-## Kits Specification
-Find below the specific information on the included functionalities in this plugin
-
-1. Account
-2. In App Purchases
-3. Ads
-4. Push notifications
-5. Game
-6. Analytics
-7. Remote Config
-8. Crash
-9. Cloud DB
-10. Auth Service
-11. Drive Kit
-12. Nearby Service
-13. App Messaging
-14. App Linking
-15. Location Kit
-
-### Account
-
-Official Documentation on Account Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050048870)
-
-### In App Purchases
-
-Official Documentation on IAP Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050033062)
-
-### Ads
-
-Official Documentation on Ads Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/publisher-service-introduction-0000001070671805)
-
-### Push
-
-Official Documentation on Push Kit: [Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/service-introduction-0000001050040060)
-
-### Game
-
-Official Documentation on Game Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050121216)
-
-### Analytics
-
-Official Documentation on Analytics Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050745149)
-
-### Remote Config
-
-Official Documentation on Remote Config: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-get-started)
-
-### Crash
-
-Official Documentation on Crash Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-crash-getstarted-0000001055260538)
-
-### Cloud DB
-
-Official Documentation on Cloud DB: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-clouddb-introduction)
-
-### Auth Service
-
-Official Documentation on Auth Service: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050048870)
-
-### Drive Kit
-
-Official Documentation on Drive Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050039630)
-
-### Nearby Service
-
-Official Documentation on Nearby Service: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/system-Guides/introduction-nearby-0000001060363166)
-
-### App Messaging
-
-Official Documentation on App Messaging: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-appmessage-introduction-0000001071884501)
-
-### App Linking
-
-Official Documentation on App Linking: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-applinking-introduction-0000001054143215)
-
-### Location Kit
-
-Official Documentation on Location Kit: [ Documentation](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050706106)
-
-______
-
-## License
+# License
 
 This project is licensed under the MIT License
-
-
-
-

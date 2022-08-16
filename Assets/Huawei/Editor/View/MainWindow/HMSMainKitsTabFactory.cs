@@ -5,13 +5,16 @@ using HmsPlugin.HelpBox;
 using HmsPlugin.Label;
 using HmsPlugin.TextField;
 using HmsPlugin.Toggle;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using UnityEditor;
+
 using UnityEngine;
 
 internal class HMSMainKitsTabFactory
@@ -50,6 +53,7 @@ internal class HMSMainKitsTabFactory
         var appMessagingToggleEditor = new AppMessagingToggleEditor();
         var appLinkingToggleEditor = new AppLinkingToggleEditor(analyticsEditor);
         var locationToggleEditor = new LocationToggleEditor();
+        var scanToogleEditor = new ScanKitToggleEditor();
 
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), pluginToggleEditor, new Spacer()));
         tab.AddDrawer(new HorizontalLine());
@@ -71,8 +75,8 @@ internal class HMSMainKitsTabFactory
                     new HorizontalSequenceDrawer(new Spacer(), nearbyServiceToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), appMessagingToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), appLinkingToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), locationToggleEditor, new Spacer())
-
+                    new HorizontalSequenceDrawer(new Spacer(), locationToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), scanToogleEditor, new Spacer())
                 )
             ));
         tab.AddDrawer(new HorizontalLine());
@@ -95,6 +99,8 @@ internal class HMSMainKitsTabFactory
         toggleEditors.Add(appMessagingToggleEditor);
         toggleEditors.Add(appLinkingToggleEditor);
         toggleEditors.Add(locationToggleEditor);
+        toggleEditors.Add(scanToogleEditor);
+
         _disabledDrawer.SetEnabled(!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
 
         return tab;

@@ -36,7 +36,8 @@ namespace HmsPlugin
                 { HMSLibrariesDrawer.AppCompatEnabled,new string[]{ "com.android.support:appcompat-v7:21.0.0" } },
                 { AppLinkingToggleEditor.AppLinkingEnabled,new string[]{ "com.huawei.agconnect:agconnect-applinking:1.6.5.300"} },
                 { LocationToggleEditor.LocationEnabled,new string[]{ "com.huawei.hms:location:6.4.0.300"} },
-                { DriveKitToggleEditor.DriveKitEnabled, new string[]{ "com.huawei.hms:drive:5.0.0.307" } }
+                { DriveKitToggleEditor.DriveKitEnabled, new string[]{ "com.huawei.hms:drive:5.0.0.307" } },
+                { ScanKitToggleEditor.ScanKitEnabled, new string[]{ "com.huawei.hms:scan:2.6.0.301" } }
             };
         }
 

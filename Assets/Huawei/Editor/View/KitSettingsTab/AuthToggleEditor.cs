@@ -16,7 +16,7 @@ namespace HmsPlugin
         public AuthToggleEditor()
         {
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(AuthEnabled);
-            _toggle = new Toggle.Toggle("Auth", enabled, OnStateChanged, true);
+            _toggle = new Toggle.Toggle("Auth Service", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
 

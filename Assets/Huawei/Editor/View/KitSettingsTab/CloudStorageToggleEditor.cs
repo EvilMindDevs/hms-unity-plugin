@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor.SceneManagement;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class CrashToggleEditor : ToggleEditor, IDrawer
+    public class CloudStorageToggleEditor : ToggleEditor, IDrawer
     {
-        private IDependentToggle _dependentToggle;
+        //private IDependentToggle _dependentToggle;
 
-        public const string CrashKitEnabled = "CrashKit";
-        public CrashToggleEditor(IDependentToggle analyticsToggle)
+        public const string CloudStorageEnabled = "CloudStorage";
+        public CloudStorageToggleEditor()
         {
-            _dependentToggle = analyticsToggle;
-            bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(CrashKitEnabled);
-            _toggle = new Toggle.Toggle("Crash Service*", enabled, OnStateChanged, true).SetTooltip("Crash Kit is dependent on Analytics Kit.");
+            bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(CloudStorageEnabled);
+            _toggle = new Toggle.Toggle("Cloud Storage", enabled, OnStateChanged, true);//.SetTooltip("");
             Enabled = enabled;
         }
 
@@ -31,7 +24,8 @@ namespace HmsPlugin
             {
                 DisableToggle();
             }
-            HMSMainEditorSettings.Instance.Settings.SetBool(CrashKitEnabled, value);
+            HMSMainEditorSettings.Instance.Settings.SetBool(CloudStorageEnabled, value);
+
         }
 
         public void Draw()
@@ -44,8 +38,6 @@ namespace HmsPlugin
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
 
-            if (_dependentToggle != null)
-                _dependentToggle.SetToggle();
             Enabled = true;
         }
 
@@ -55,16 +47,17 @@ namespace HmsPlugin
                 return;
             Enabled = false;
         }
+
         public override void RemoveToggleTabView(bool removeTabs)
         {
-            //throw new NotImplementedException();
+            Debug.Log("Not Implemented");
         }
 
         public override void RefreshToggles()
         {
             if (_toggle != null)
             {
-                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(CrashKitEnabled));
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(CloudStorageEnabled));
             }
         }
     }

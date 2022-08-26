@@ -1,7 +1,5 @@
 ﻿using HmsPlugin;
 using HmsPlugin.Button;
-using HmsPlugin.ConnectAPI;
-using HmsPlugin.HelpBox;
 using HmsPlugin.Label;
 using HmsPlugin.TextField;
 using HmsPlugin.Toggle;
@@ -54,6 +52,7 @@ internal class HMSMainKitsTabFactory
         var appLinkingToggleEditor = new AppLinkingToggleEditor(analyticsEditor);
         var locationToggleEditor = new LocationToggleEditor();
         var scanToogleEditor = new ScanKitToggleEditor();
+        var cloudStorageToggleEditor = new CloudStorageToggleEditor();
 
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), pluginToggleEditor, new Spacer()));
         tab.AddDrawer(new HorizontalLine());
@@ -61,27 +60,34 @@ internal class HMSMainKitsTabFactory
             (
                 new VerticalSequenceDrawer
                 (
-                    new HorizontalSequenceDrawer(new Spacer(), adsToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), gameServiceToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), pushToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), iapToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), new Label("- HMS Core -").SetBold(true),new Spacer()),
+                    new HorizontalSequenceDrawer(new HorizontalLine()),
                     new HorizontalSequenceDrawer(new Spacer(), accountEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), adsToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), analyticsEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), remoteConfigToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), crashToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), appLinkingToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), driveToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), gameServiceToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), iapToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), locationToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), nearbyServiceToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), pushToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), scanToogleEditor, new Spacer())
+                    new Spacer(),
+                    new HorizontalSequenceDrawer(new HorizontalLine()),
+                    new HorizontalSequenceDrawer(new Spacer(), new Label("- AppGallery Connect -").SetBold(true), new Spacer()),
+                    new HorizontalSequenceDrawer(new HorizontalLine()),
+                    new HorizontalSequenceDrawer(new Spacer(), appMessagingToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), authEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), cloudDBToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), driveToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), nearbyServiceToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), appMessagingToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), appLinkingToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), locationToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), scanToogleEditor, new Spacer())
+                    new HorizontalSequenceDrawer(new Spacer(), cloudStorageToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), crashToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), remoteConfigToggleEditor, new Spacer())
                 )
             ));
-        tab.AddDrawer(new HorizontalLine());
+        //tab.AddDrawer(new HorizontalLine());
         tab.AddDrawer(new Spacer());
-        tab.AddDrawer(new Clickable(new Label("HMS Unity Plugin v" + versionInfo).SetBold(true), () => { Application.OpenURL("https://github.com/EvilMindDevs/hms-unity-plugin/"); }));
+        tab.AddDrawer(new HorizontalSequenceDrawer(new Label("HMS Unity Plugin v" + versionInfo).SetBold(true), new Spacer(), new Clickable(new Label(guiContent: new GUIContent(EditorGUIUtility.FindTexture("_Help"))), () => { Application.OpenURL("https://evilminddevs.gitbook.io/hms-unity-plugin/"); })));
         tab.AddDrawer(new HelpboxAGConnectFile());
 
         toggleEditors.Add(adsToggleEditor);
@@ -100,7 +106,7 @@ internal class HMSMainKitsTabFactory
         toggleEditors.Add(appLinkingToggleEditor);
         toggleEditors.Add(locationToggleEditor);
         toggleEditors.Add(scanToogleEditor);
-
+        toggleEditors.Add(cloudStorageToggleEditor);
         _disabledDrawer.SetEnabled(!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
 
         return tab;

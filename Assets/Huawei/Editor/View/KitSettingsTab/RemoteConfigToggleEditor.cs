@@ -21,7 +21,7 @@ namespace HmsPlugin
             _dependentToggle = analyticsToggle;
             _tabView = HMSRemoteConfigTabFactory.CreateTab("Remote Config");
             _tabBar = tabBar;
-            _toggle = new Toggle.Toggle("Remote Config*", enabled, OnStateChanged, true).SetTooltip("Remote Config is dependent on Analytics Kit.");
+            _toggle = new Toggle.Toggle("Remote Configuration*", enabled, OnStateChanged, true).SetTooltip("Remote Config is dependent on Analytics Kit.");
             Enabled = enabled;
         }
 

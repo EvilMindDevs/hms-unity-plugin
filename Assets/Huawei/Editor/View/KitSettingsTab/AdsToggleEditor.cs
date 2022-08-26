@@ -18,7 +18,7 @@ namespace HmsPlugin
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(AdsKitEnabled);
             _tabView = HMSAdsTabFactory.CreateTab("Ads");
             _tabBar = tabBar;
-            _toggle = new Toggle.Toggle("Ads", enabled, OnStateChanged, true);
+            _toggle = new Toggle.Toggle("Ads Kit", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
 

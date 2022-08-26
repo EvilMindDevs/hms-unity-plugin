@@ -13,7 +13,7 @@ namespace HmsPlugin
         public AccountToggleEditor()
         {
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(AccountKitEnabled);
-            _toggle = new Toggle.Toggle("Account", enabled, OnStateChanged, true);
+            _toggle = new Toggle.Toggle("Account Kit", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
 

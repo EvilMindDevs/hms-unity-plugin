@@ -33,7 +33,8 @@ namespace HmsPlugin
                 { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },
                 { HMSLibrariesDrawer.AppCompatEnabled,new string[]{ "com.android.support:appcompat-v7:21.0.0" } },
                 { AppLinkingToogleEditor.AppLinkingEnabled,new string[]{ "com.huawei.agconnect:agconnect-applinking:1.6.5.300"} },
-                { DriveKitToggleEditor.DriveKitEnabled, new string[]{ "com.huawei.hms:drive:5.0.0.307" } }
+                { DriveKitToggleEditor.DriveKitEnabled, new string[]{ "com.huawei.hms:drive:5.0.0.307" } },
+                { CloudStorageToggleEditor.CloudStorageEnabled, new string[]{ "com.huawei.agconnect:agconnect-storage:1.5.0.100" } }
             };
         }
 

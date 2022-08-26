@@ -9,7 +9,7 @@ namespace HmsPlugin
         public AnalyticsToggleEditor()
         {
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(AnalyticsKitEnabled);
-            _toggle = new Toggle.Toggle("Analytics", enabled, OnStateChanged, true);
+            _toggle = new Toggle.Toggle("Analytics Kit", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
 

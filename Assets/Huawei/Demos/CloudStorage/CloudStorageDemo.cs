@@ -1,80 +1,71 @@
-﻿using HuaweiMobileServices.Base;
+﻿using HmsPlugin;
 using HuaweiMobileServices.CloudStorage;
 using HuaweiMobileServices.Utils;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static HuaweiMobileServices.CloudStorage.UploadTask;
+using UnityEngine.UI;
 
 public class CloudStorageDemo : MonoBehaviour
 {
-    private readonly string TAG = "[HMS] HMSCloudStorageManager ";
-    private AGCStorageManagement mAGCStorageManagement;
+    private readonly string TAG = "[HMS] HMSCloudStorageDemo";
 
-    // Start is called before the first frame update
     void Start()
     {
-        InitAGCStorageManagement();
-        uploadFile();
+        //Requires modifying manifest file https://evilminddevs.gitbook.io/hms-unity-plugin/kits-and-services/cloud-storage/guides-and-references#modifying-the-androidmanifest-file
+        HMSCloudStorageManager.CheckRequestUserPermissionForCloudStorage();
+
+        HMSCloudStorageManager.Instance.OnUploadFileSuccess = OnUploadFileSuccess;
+        HMSCloudStorageManager.Instance.OnDownloadFileSuccess = OnDownloadFileSuccess;
+        HMSCloudStorageManager.Instance.OnDeleteFileSuccess = OnDeleteFileSuccess;
+
+        HMSCloudStorageManager.Instance.OnAllFailureListeners = FailureListener;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UploadFile()
     {
-        
+        string filePath =
+            System.IO.Path.Combine(Application.persistentDataPath, "testFile.jpg");//example: \HUAWEI P40 lite\Internal storage\Android\data\com.samet.reffapp.huawei\files\testFile.jpg
+        HMSCloudStorageManager.Instance.UploadFile(filePathInDevice: filePath);
     }
 
-    private void InitAGCStorageManagement()
+    public void DownloadFile() 
     {
-        mAGCStorageManagement = AGCStorageManagement.GetInstance();
-        Debug.Log(TAG + "2");
+        HMSCloudStorageManager.Instance.DownloadFile();
     }
 
-
-    private void uploadFile()
+    public void DeleteFile() 
     {
-        if (mAGCStorageManagement == null)
-        {
-            InitAGCStorageManagement();
-            Debug.Log(TAG + "1");
-        }
-        Debug.Log(TAG + "3");
-        string fileName = "testFile.jpg";
-        string filePath = System.IO.Path.Combine(Application.persistentDataPath, fileName);
-        HuaweiMobileServices.Utils.java.io.File file = new HuaweiMobileServices.Utils.java.io.File(filePath);
-        Debug.Log(TAG + "4");
-
-        if (file.Exists())
-        {
-            Debug.LogError(TAG + "createFile error, filePath notExists. fileName:" + filePath);
-            return;
-        }
-        Debug.Log(TAG + "5");
-
-        StorageReference storageReference = mAGCStorageManagement.GetStorageReference(Application.persistentDataPath);
-        Debug.Log(TAG + "6");
-        UploadTask uploadTask = storageReference.PutFile(file);
-        Debug.Log(TAG + "7");
-        
-        Debug.Log(TAG + "7a");
-       // IOnSuccessListener<UploadResult> a = new IOnSuccessListener<UploadResult>()
-        
-        Debug.Log(TAG + "7b");
-        uploadTask.AddOnSuccessListener(Result => 
-        {
-            Debug.Log(TAG + "[HMS] !!!!!!!!!! AddOnSuccessListener");
-        }); ;
-        Debug.Log(TAG + "8");
-        uploadTask.AddOnFailureListener(result =>
-        {
-            Debug.Log(TAG + "[HMS] !!!!!!!!!! AddOnFailureListenerSUCCESS");
-        });
-
-
+        HMSCloudStorageManager.Instance.DeleteFile();
     }
 
+    private void OnDeleteFileSuccess()
+    {
+        Debug.Log($"{TAG} Delete File Success");
+        PrintDescription("Delete File Success");
+    }
 
-    
+    private void OnDownloadFileSuccess(DownloadTask.DownloadResult result)
+    {
+        Debug.Log($"{TAG} Download File Success:" + result.BytesTransferred);
+        PrintDescription("Download File Success");
+    }
+
+    private void OnUploadFileSuccess(UploadTask.UploadResult result)
+    {
+        Debug.Log($"{TAG} Upload File Success:" + result.BytesTransferred);
+        PrintDescription("Upload File Success");
+    }
+
+    private void FailureListener(HMSException exception)
+    {
+        Debug.LogError($"{TAG} FailureListener:" + exception);
+        PrintDescription("Failed:"+ exception);
+    }
+
+    private void PrintDescription(string text) 
+    {
+        Text desc = GameObject.Find("Description").GetComponent<Text>();
+        desc.text = text;
+    }
 }
 
 

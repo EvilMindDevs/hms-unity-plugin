@@ -3,47 +3,78 @@ using HuaweiMobileServices.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using HmsPlugin;
+using System;
 
 public class AccountDemoManager : MonoBehaviour
 {
+    private readonly string TAG = "[HMS] AccountDemoManager ";
+
     private const string NOT_LOGGED_IN = "No user logged in";
     private const string LOGGED_IN = "{0} is logged in";
     private const string LOGIN_ERROR = "Error or cancelled login";
 
-    [SerializeField]
-    private Text loggedInUser;
+    public static Action<string> AccountKitLog;
+
+    #region Singleton
+
+    public static AccountDemoManager Instance { get; private set; }
+    private void Singleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    #endregion
+
+    private void Awake()
+    {
+        Singleton();
+    }
 
     void Start()
     {
-        loggedInUser.text = NOT_LOGGED_IN;
-
         HMSAccountKitManager.Instance.OnSignInSuccess = OnLoginSuccess;
         HMSAccountKitManager.Instance.OnSignInFailed = OnLoginFailure;
+
+        AccountKitLog?.Invoke(NOT_LOGGED_IN);
     }
 
     public void LogIn()
     {
+        Debug.Log(TAG+"LogIn");
+
         HMSAccountKitManager.Instance.SignIn();
     }
 
     public void SilentSignIn()
     {
+        Debug.Log(TAG+"SilentSignIn");
+
         HMSAccountKitManager.Instance.SilentSignIn();
     }
 
     public void LogOut()
     {
+        Debug.Log(TAG+"LogOut");
+
         HMSAccountKitManager.Instance.SignOut();
-        loggedInUser.text = NOT_LOGGED_IN;
+
+        AccountKitLog?.Invoke(NOT_LOGGED_IN);
     }
 
     public void OnLoginSuccess(AuthAccount authHuaweiId)
     {
-        loggedInUser.text = string.Format(LOGGED_IN, authHuaweiId.DisplayName);
+        AccountKitLog?.Invoke(string.Format(LOGGED_IN, authHuaweiId.DisplayName));
     }
 
     public void OnLoginFailure(HMSException error)
     {
-        loggedInUser.text = LOGIN_ERROR;
+        AccountKitLog?.Invoke(LOGIN_ERROR);
     }
 }

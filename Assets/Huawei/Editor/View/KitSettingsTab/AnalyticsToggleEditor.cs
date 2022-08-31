@@ -34,7 +34,7 @@ namespace HmsPlugin
                     _toggle.SetChecked(true);
                     return;
                 }
-                else if (HMSMainEditorSettings.Instance.Settings.GetBool(AppLinkingToogleEditor.AppLinkingEnabled))
+                else if (HMSMainEditorSettings.Instance.Settings.GetBool(AppLinkingToggleEditor.AppLinkingEnabled))
                 {
                     EditorUtility.DisplayDialog("Error", "App Linking is dependent on AnalyticsKit. Please disable App Linking first.", "OK");
                     _toggle.SetChecked(true);

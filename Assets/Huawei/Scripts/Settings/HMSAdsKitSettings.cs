@@ -1,4 +1,5 @@
 ﻿using System;
+
 using UnityEngine;
 
 namespace HmsPlugin
@@ -8,6 +9,8 @@ namespace HmsPlugin
         private const string SettingsFilename = "HMSAdsKitSettings";
         public const string EnableBannerAd = "EnableBannerAd";
         public const string BannerAdID = "BannerAdID";
+        public const string BannerAdPositionType = "BannerAdPositionType";
+        public const string UnityBannerAdSizeType = "UnityBannerAdSizeType";
         public const string BannerRefreshInterval = "BannerRefreshInterval";
         public const string ShowBannerOnLoad = "ShowBannerOnLoad";
         public const string EnableInterstitialAd = "EnableInterstitialAd";

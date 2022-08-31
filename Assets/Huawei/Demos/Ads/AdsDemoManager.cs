@@ -6,18 +6,60 @@ using HuaweiMobileServices.Ads;
 
 public class AdsDemoManager : MonoBehaviour
 {
+
     [SerializeField]
     private Toggle testAdStatusToggle;
+
+    #region Singleton
+
+    public static AdsDemoManager Instance { get; private set; }
+    private void Singleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    #endregion
+
+    private void Awake()
+    {
+        Singleton();
+    }
 
     private void Start()
     {
         HMSAdsKitManager.Instance.OnRewarded = OnRewarded;
         HMSAdsKitManager.Instance.OnInterstitialAdClosed = OnInterstitialAdClosed;
-        testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
 
         HMSAdsKitManager.Instance.ConsentOnFail = OnConsentFail;
         HMSAdsKitManager.Instance.ConsentOnSuccess = OnConsentSuccess;
         HMSAdsKitManager.Instance.RequestConsentUpdate();
+
+        testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
+
+        #region SetNonPersonalizedAd , SetRequestLocation
+
+        var builder = HwAds.RequestOptions.ToBuilder();
+
+        builder
+            .SetConsent("tcfString")
+            .SetNonPersonalizedAd((int)NonPersonalizedAd.ALLOW_ALL)
+            .Build();
+
+        bool requestLocation = true;
+        var requestOptions = builder.SetConsent("testConsent").SetRequestLocation(requestLocation).Build();
+
+        Debug.Log($"RequestOptions NonPersonalizedAds:  {requestOptions.NonPersonalizedAd}");
+        Debug.Log($"Consent: {requestOptions.Consent}");
+
+        #endregion
+
     }
 
     private void OnConsentSuccess(ConsentStatus consentStatus, bool isNeedConsent, IList<AdProvider> adProviders)
@@ -36,11 +78,15 @@ public class AdsDemoManager : MonoBehaviour
 
     public void ShowBannerAd()
     {
+        Debug.Log("[HMS] AdsDemoManager ShowBannerAd");
+
         HMSAdsKitManager.Instance.ShowBannerAd();
     }
 
     public void HideBannerAd()
     {
+        Debug.Log("[HMS] AdsDemoManager HideBannerAd");
+
         HMSAdsKitManager.Instance.HideBannerAd();
     }
 
@@ -58,11 +104,15 @@ public class AdsDemoManager : MonoBehaviour
 
     public void ShowSplashImage()
     {
+        Debug.Log("[HMS] ShowSplashImage!");
+
         HMSAdsKitManager.Instance.LoadSplashAd("testq6zq98hecj", SplashAd.SplashAdOrientation.PORTRAIT);
     }
 
     public void ShowSplashVideo()
     {
+        Debug.Log("[HMS] ShowSplashVideo!");
+
         HMSAdsKitManager.Instance.LoadSplashAd("testd7c5cewoj6", SplashAd.SplashAdOrientation.PORTRAIT);
     }
 

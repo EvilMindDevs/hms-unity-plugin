@@ -10,26 +10,43 @@ namespace HmsPlugin
 {
     public class AnalyticsDemoManager : MonoBehaviour
     {
-        [SerializeField]
-        private InputField eventIdField;
+        private readonly string TAG = "[HMS] AnalyticsDemoManager ";
 
-        [SerializeField]
-        private InputField keyField;
+        #region Singleton
 
-        [SerializeField]
-        private InputField valueField;
-
-        public void SendEvent()
+        public static AnalyticsDemoManager Instance { get; private set; }
+        private void Singleton()
         {
-            if (string.IsNullOrEmpty(eventIdField.text) && string.IsNullOrEmpty(keyField.text) && string.IsNullOrEmpty(valueField.text))
+            if (Instance != null && Instance != this)
             {
-                Debug.Log("[HMS]: Fill Fields");
+                Destroy(this);
             }
             else
             {
-                HMSAnalyticsKitManager.Instance.SendEventWithBundle(eventIdField.text, keyField.text, valueField.text);
+                Instance = this;
             }
         }
+
+        #endregion
+
+        private void Awake()
+        {
+            Singleton();
+        }
+
+        public void SendEvent(string eventIdFieldText, string keyFieldtext, string valueFieldText)
+        {
+            if (string.IsNullOrEmpty(eventIdFieldText) && string.IsNullOrEmpty(keyFieldtext) && string.IsNullOrEmpty(valueFieldText))
+            {
+                Debug.Log(TAG+": Fill Fields");
+            }
+            else
+            {
+                Debug.Log(TAG+eventIdFieldText + " " + keyFieldtext + " " + valueFieldText);
+                HMSAnalyticsKitManager.Instance.SendEventWithBundle(eventIdFieldText, keyFieldtext, valueFieldText);
+            }
+        }
+
     }
 }
 

@@ -1,20 +1,26 @@
 ﻿using HmsPlugin;
+
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Push;
 using HuaweiMobileServices.Utils;
+
 using System;
 using System.Collections;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PushDemoManager : MonoBehaviour
 {
     private string pushToken;
-    [SerializeField]
     private Text remoteMessageText, tokenText;
 
-   //private NotificationData notificationDataOnStart;
+    private void Awake()
+    {
+        remoteMessageText = GameObject.Find("RemoteMessageText").GetComponent<Text>();
+        tokenText = GameObject.Find("PushToken").GetComponent<Text>();
+    }
 
     void Start()
     {

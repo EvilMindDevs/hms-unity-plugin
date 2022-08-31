@@ -12,12 +12,37 @@ using UnityEngine.UI;
 
 public class GameDemoManager : MonoBehaviour
 {
+    private readonly string TAG = "[HMS] GameDemoManager ";
+
     private bool customUnit = false;
     private const string MAX_FILE_SIZE = "Max File Size: {0}";
     private const string MAX_IMAGE_SIZE = "Max Image Size: {0}";
 
     private Text fileSize, imageSize;
     private InputField InputFieldDesc, InputFieldPlayedTime, InputFieldProgress;
+
+    #region Singleton
+
+    public static GameDemoManager Instance { get; private set; }
+    private void Singleton()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    #endregion
+
+    private void Awake()
+    {
+        Singleton();
+    }
+
     void Start()
     {
         HMSGameServiceManager.Instance.OnGetPlayerInfoSuccess = OnGetPlayerInfoSuccess;
@@ -37,12 +62,14 @@ public class GameDemoManager : MonoBehaviour
         InputFieldPlayedTime = GameObject.Find("PlayedTime").GetComponent<InputField>();
         InputFieldProgress = GameObject.Find("Progress").GetComponent<InputField>();
 
-       //did you enable initialize on start => Unity Editor > Huawei > HMS kit settings > Game Service ?
-       // HMSAccountKitManager.Instance.SignIn();
+        //did you enable initialize on start => Unity Editor > Huawei > HMS kit settings > Game Service ?
+        // HMSAccountKitManager.Instance.SignIn();
     }
 
     public void GetMaxImageSize()
     {
+        Debug.Log(TAG + " GetMaxImageSize");
+
         ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxImageSize();
         detailSizeTask.AddOnSuccessListener((result) =>
         {
@@ -56,6 +83,8 @@ public class GameDemoManager : MonoBehaviour
 
     public void GetMaxFileSize()
     {
+        Debug.Log(TAG + " GetMaxFileSize");
+
         ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxFileSize();
         detailSizeTask.AddOnSuccessListener((result) =>
         {
@@ -69,6 +98,8 @@ public class GameDemoManager : MonoBehaviour
 
     public void CommitGame()
     {
+        Debug.Log(TAG + " CommitGame");
+
         //Example Image Path: give statics path of image on phone
         string ImagePath = Application.streamingAssetsPath;
         if (InputFieldDesc.text != null && InputFieldProgress.text != null && InputFieldPlayedTime.text != null)
@@ -89,16 +120,19 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnGetPlayerInfoFailure(HMSException exception)
     {
-        Debug.Log("HMS Games: GetPlayerInfo ERROR:"+ exception.Message);
+        Debug.Log("HMS Games: GetPlayerInfo ERROR:" + exception.Message);
     }
 
     public void ShowArchive()
     {
+        Debug.Log(TAG + " ShowArchive");
+
         HMSSaveGameManager.Instance.ShowArchive();
     }
 
     public void ShowAchievements()
     {
+        Debug.Log(TAG + " ShowAchievements");
 
         HMSAchievementsManager.Instance.ShowAchievements();
     }
@@ -180,6 +214,8 @@ public class GameDemoManager : MonoBehaviour
 
     public void UnlockAchievement(string achievementId)
     {
+        Debug.Log(TAG + " UnlockAchievement");
+
         HMSAchievementsManager.Instance.UnlockAchievement(achievementId);
     }
 
@@ -261,6 +297,8 @@ public class GameDemoManager : MonoBehaviour
 
     public void ShowLeaderboards()
     {
+        Debug.Log(TAG + " ShowLeaderboards");
+
         HMSLeaderboardManager.Instance.ShowLeaderboards();
         HMSLeaderboardManager.Instance.OnShowLeaderboardsSuccess = OnShowLeaderboardsSuccess;
         HMSLeaderboardManager.Instance.OnShowLeaderboardsFailure = OnShowLeaderboardsFailure;

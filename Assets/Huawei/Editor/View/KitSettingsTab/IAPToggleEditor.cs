@@ -20,7 +20,7 @@ namespace HmsPlugin
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(IAPKitEnabled);
             _tabView = HMSIAPTabFactory.CreateTab("IAP");
             _tabBar = tabBar;
-            _toggle = new Toggle.Toggle("IAP", enabled, OnStateChanged, true);
+            _toggle = new Toggle.Toggle("In-App Purchases", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
 

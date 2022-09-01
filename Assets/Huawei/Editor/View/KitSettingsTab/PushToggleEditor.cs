@@ -13,7 +13,7 @@ namespace HmsPlugin
         public PushToggleEditor()
         {
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(PushKitEnabled);
-            _toggle = new Toggle.Toggle("Push", enabled, OnStateChanged, true);
+            _toggle = new Toggle.Toggle("Push Kit", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
 

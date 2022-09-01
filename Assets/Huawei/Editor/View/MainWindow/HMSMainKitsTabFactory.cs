@@ -72,7 +72,7 @@ internal class HMSMainKitsTabFactory
                     new HorizontalSequenceDrawer(new Spacer(), locationToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), nearbyServiceToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), pushToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), scanToogleEditor, new Spacer())
+                    new HorizontalSequenceDrawer(new Spacer(), scanToogleEditor, new Spacer()),
                     new Spacer(),
                     new HorizontalSequenceDrawer(new HorizontalLine()),
                     new HorizontalSequenceDrawer(new Spacer(), new Label("- AppGallery Connect -").SetBold(true), new Spacer()),

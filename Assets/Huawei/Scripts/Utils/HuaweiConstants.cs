@@ -22,7 +22,7 @@ namespace HuaweiConstants
             /**
              * Position constant for a position with a custom offset.
              */
-            //POSITION_CUSTOM = -1,
+            POSITION_CUSTOM = -1,
 
             /**
              * Position constant for top of the screen.

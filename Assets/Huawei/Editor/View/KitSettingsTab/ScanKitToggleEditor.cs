@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEditor.SceneManagement;
-using UnityEngine;
+
+using UnityEditor;
 
 namespace HmsPlugin
 {
-    public class CrashToggleEditor : ToggleEditor, IDrawer
+    public class ScanKitToggleEditor : ToggleEditor, IDrawer
     {
-        private IDependentToggle _dependentToggle;
 
-        public const string CrashKitEnabled = "CrashKit";
-        public CrashToggleEditor(IDependentToggle analyticsToggle)
+        public const string ScanKitEnabled = "Scan";
+
+        public ScanKitToggleEditor()
         {
-            _dependentToggle = analyticsToggle;
-            bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(CrashKitEnabled);
-            _toggle = new Toggle.Toggle("Crash Service*", enabled, OnStateChanged, true).SetTooltip("Crash Kit is dependent on Analytics Kit.");
+            bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(ScanKitEnabled);
+            _toggle = new Toggle.Toggle("Scan", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
 
@@ -31,7 +30,7 @@ namespace HmsPlugin
             {
                 DisableToggle();
             }
-            HMSMainEditorSettings.Instance.Settings.SetBool(CrashKitEnabled, value);
+            HMSMainEditorSettings.Instance.Settings.SetBool(ScanKitEnabled, value);
         }
 
         public void Draw()
@@ -44,27 +43,24 @@ namespace HmsPlugin
             if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
                 return;
 
-            if (_dependentToggle != null)
-                _dependentToggle.SetToggle();
             Enabled = true;
         }
 
         public override void DisableToggle()
         {
-            if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
-                return;
             Enabled = false;
         }
+
         public override void RemoveToggleTabView(bool removeTabs)
         {
-            //throw new NotImplementedException();
+            //throw new NotImplementedException(); Not Implemented because not needed.
         }
 
         public override void RefreshToggles()
         {
             if (_toggle != null)
             {
-                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(CrashKitEnabled));
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(ScanKitEnabled));
             }
         }
     }

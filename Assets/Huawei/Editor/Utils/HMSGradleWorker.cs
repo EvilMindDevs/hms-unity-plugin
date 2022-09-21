@@ -38,7 +38,8 @@ namespace HmsPlugin
                 { ScanKitToggleEditor.ScanKitEnabled, new string[]{ "com.huawei.hms:scan:2.6.0.301" } },
                 { AppLinkingToggleEditor.AppLinkingEnabled,new string[]{ "com.huawei.agconnect:agconnect-applinking:1.6.5.300"} },
                 { DriveKitToggleEditor.DriveKitEnabled, new string[]{ "com.huawei.hms:drive:5.0.0.307" } },
-                { CloudStorageToggleEditor.CloudStorageEnabled, new string[]{ "com.huawei.agconnect:agconnect-storage:1.5.0.100" } }
+                { CloudStorageToggleEditor.CloudStorageEnabled, new string[]{ "com.huawei.agconnect:agconnect-storage:1.5.0.100" } },
+                { APMToggleEditor.APMEnabled, new string[]{ "com.huawei.agconnect:agconnect-apms:1.6.1.300"} }
             };
         }
 

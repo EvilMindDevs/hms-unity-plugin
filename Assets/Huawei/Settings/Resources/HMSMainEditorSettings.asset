@@ -30,6 +30,9 @@ MonoBehaviour:
     - AppMessaging
     - AppLinking
     - Location
+    - Scan
+    - CloudStorage
+    - APM
     _values:
     - True
     - False
@@ -47,3 +50,6 @@ MonoBehaviour:
     - False
     - False
     - False
+    - False
+    - False
+    - True

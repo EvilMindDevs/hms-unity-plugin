@@ -53,6 +53,7 @@ internal class HMSMainKitsTabFactory
         var locationToggleEditor = new LocationToggleEditor();
         var scanToogleEditor = new ScanKitToggleEditor();
         var cloudStorageToggleEditor = new CloudStorageToggleEditor();
+        var apmToggleEditor = new APMToggleEditor();
 
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), pluginToggleEditor, new Spacer()));
         tab.AddDrawer(new HorizontalLine());
@@ -60,7 +61,7 @@ internal class HMSMainKitsTabFactory
             (
                 new VerticalSequenceDrawer
                 (
-                    new HorizontalSequenceDrawer(new Spacer(), new Label("- HMS Core -").SetBold(true),new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), new Label("- HMS Core -").SetBold(true), new Spacer()),
                     new HorizontalSequenceDrawer(new HorizontalLine()),
                     new HorizontalSequenceDrawer(new Spacer(), accountEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), adsToggleEditor, new Spacer()),
@@ -82,7 +83,8 @@ internal class HMSMainKitsTabFactory
                     new HorizontalSequenceDrawer(new Spacer(), cloudDBToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), cloudStorageToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), crashToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), remoteConfigToggleEditor, new Spacer())
+                    new HorizontalSequenceDrawer(new Spacer(), remoteConfigToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), apmToggleEditor, new Spacer())
                 )
             ));
         //tab.AddDrawer(new HorizontalLine());
@@ -107,6 +109,8 @@ internal class HMSMainKitsTabFactory
         toggleEditors.Add(locationToggleEditor);
         toggleEditors.Add(scanToogleEditor);
         toggleEditors.Add(cloudStorageToggleEditor);
+        toggleEditors.Add(apmToggleEditor);
+
         _disabledDrawer.SetEnabled(!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
 
         return tab;

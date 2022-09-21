@@ -79,12 +79,13 @@ internal class HMSMainKitsTabFactory
                     new HorizontalSequenceDrawer(new Spacer(), new Label("- AppGallery Connect -").SetBold(true), new Spacer()),
                     new HorizontalSequenceDrawer(new HorizontalLine()),
                     new HorizontalSequenceDrawer(new Spacer(), appMessagingToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), apmToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), authEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), cloudDBToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), cloudStorageToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), crashToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), remoteConfigToggleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), apmToggleEditor, new Spacer())
+                    new HorizontalSequenceDrawer(new Spacer(), remoteConfigToggleEditor, new Spacer())
+                    
                 )
             ));
         //tab.AddDrawer(new HorizontalLine());

@@ -14,18 +14,19 @@ The HMS Unity plugin helps you integrate the full power of Huawei Mobile Service
 * App Linking
 * Drive Kit
 * Game Service
-* In-App purchases
-* :new: Location Kit :new:
+* In-App Purchases
+* Location Kit
+* Nearby Service
 * Push Kit
+* :new: Scan Kit :new:
+* App Messaging
 * Auth Service
 * Cloud DB
+* :new: Cloud Storage :new:
 * Connect API
-* Remote Configuration
-* App Messaging
 * Crash Service
-* Nearby Service
 * In-App Comments
-
+* Remote Configuration
 
 ## Requirements
 Android SDK min 21

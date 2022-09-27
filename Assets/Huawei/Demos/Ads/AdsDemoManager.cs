@@ -6,9 +6,7 @@ using HuaweiMobileServices.Ads;
 
 public class AdsDemoManager : MonoBehaviour
 {
-
-    [SerializeField]
-    private Toggle testAdStatusToggle;
+    //private Toggle testAdStatusToggle;
 
     #region Singleton
 
@@ -41,7 +39,9 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance.ConsentOnSuccess = OnConsentSuccess;
         HMSAdsKitManager.Instance.RequestConsentUpdate();
 
-        testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
+        //testAdStatusToggle = GameObject.FindGameObjectWithTag("Toggle").GetComponent<Toggle>();
+        //testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
+        
 
         #region SetNonPersonalizedAd , SetRequestLocation
 
@@ -128,7 +128,8 @@ public class AdsDemoManager : MonoBehaviour
 
     public void SetTestAdStatus()
     {
-        HMSAdsKitManager.Instance.SetTestAdStatus(testAdStatusToggle.isOn);
+       // HMSAdsKitManager.Instance.SetTestAdStatus(testAdStatusToggle.isOn);
+        HMSAdsKitManager.Instance.SetTestAdStatus(HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds));
         HMSAdsKitManager.Instance.DestroyBannerAd();
         HMSAdsKitManager.Instance.LoadAllAds();
     }

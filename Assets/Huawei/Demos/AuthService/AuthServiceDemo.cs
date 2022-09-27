@@ -1,11 +1,14 @@
 ﻿using HmsPlugin;
+
 using HuaweiMobileServices.AuthService;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -87,9 +90,10 @@ public class AuthServiceDemo : MonoBehaviour
         authServiceManager.OnCreateUserSuccess = OnAuthSericeCreateUserSuccess;
         authServiceManager.OnCreateUserFailed = OnAuthSericeCreateUserFailed;
 
-        if (authServiceManager.GetCurrentUser() != null)
+        user = authServiceManager.GetCurrentUser();
+
+        if (user != null)
         {
-            user = authServiceManager.GetCurrentUser();
             loggedInUser.text = user.IsAnonymous() ? LOGGED_IN_ANONYMOUSLY : string.Format(LOGGED_IN, user.DisplayName);
         }
     }

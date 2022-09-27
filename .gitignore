@@ -67,3 +67,5 @@ crashlytics-build.properties
 
 # IntelliJ’s project specific settings files 
 /.idea/
+UserSettings/AndroidLogcatSettings.asset
+UserSettings/QuickSearch.settings

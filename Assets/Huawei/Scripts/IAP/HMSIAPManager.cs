@@ -477,5 +477,49 @@ namespace HmsPlugin
                 Debug.LogError("[HMSIAPManager]: IsSandboxActivated failed. IAP is not initialized.");
             }
         }
+
+        //reference from: https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/subscription-functions-0000001050130264#section142151720185114
+        public void RedirectingtoSubscriptionEditingScreen(string SubscribeProductId)
+        {
+            StartIapActivityReq req = new StartIapActivityReq
+            {
+                SubscribeProductId = SubscribeProductId,
+                Type = StartIapActivityReq.TYPE_SUBSCRIBE_EDIT_ACTIVITY
+            };
+            var task = iapClient.StartIapActivity(req);
+            task.AddOnFailureListener(
+                exception =>
+                {
+                    Debug.LogError("[HMSIAPManager]: RedirectingtoSubscriptionEditingScreen error" + exception);
+                }
+                );
+            task.AddOnSuccessListener(activity =>
+            {
+                Debug.Log("[HMSIAPManager]: RedirectingtoSubscriptionEditingScreen Success");
+                activity.StartActivity();
+            });
+        }
+
+        public void RedirectingtoSubscriptionManagementScreen(string SubscribeProductId)
+        {
+            StartIapActivityReq req = new StartIapActivityReq
+            {
+                SubscribeProductId = SubscribeProductId,
+                Type = StartIapActivityReq.TYPE_SUBSCRIBE_MANAGER_ACTIVITY
+            };
+            var task = iapClient.StartIapActivity(req);
+            task.AddOnFailureListener(
+                exception =>
+                {
+                    Debug.LogError("[HMSIAPManager]: RedirectingtoSubscriptionManagementScreen error" + exception);
+                }
+                );
+            task.AddOnSuccessListener(activity =>
+            {
+                Debug.Log("[HMSIAPManager]: RedirectingtoSubscriptionManagementScreen Success");
+                activity.StartActivity();
+            });
+        }
+
     }
 }

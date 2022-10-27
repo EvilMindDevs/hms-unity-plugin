@@ -51,17 +51,17 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         destPath = Path.Combine(Directory.GetParent(path).FullName + Path.DirectorySeparatorChar + "launcher", fileName);
 
         string hmsMainTemplatePath = Application.dataPath + "/Huawei/Plugins/Android/hmsMainTemplate.gradle";
-        FileUtil.CopyFileOrDirectory(hmsMainTemplatePath, Path.GetFullPath(path) + @"/hmsMainTemplate.gradle");
+        FileUtil.ReplaceFile(hmsMainTemplatePath, Path.GetFullPath(path) + @"/hmsMainTemplate.gradle");
         using (var writer = File.AppendText(Path.GetFullPath(path) + "/build.gradle"))
             writer.WriteLine("\napply from: 'hmsMainTemplate.gradle'");
 
         string launcherTemplatePath = Application.dataPath + "/Huawei/Plugins/Android/hmsLauncherTemplate.gradle";
-        FileUtil.CopyFileOrDirectory(launcherTemplatePath, Directory.GetParent(path).FullName + @"/launcher/hmsLauncherTemplate.gradle");
+        FileUtil.ReplaceFile(launcherTemplatePath, Directory.GetParent(path).FullName + @"/launcher/hmsLauncherTemplate.gradle");
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/launcher/build.gradle"))
             writer.WriteLine("\napply from: 'hmsLauncherTemplate.gradle'");
 
         string baseProjectTemplatePath = Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle";
-        FileUtil.CopyFileOrDirectory(baseProjectTemplatePath, Directory.GetParent(path).FullName + @"/hmsBaseProjectTemplate.gradle");
+        FileUtil.ReplaceFile(baseProjectTemplatePath, Directory.GetParent(path).FullName + @"/hmsBaseProjectTemplate.gradle");
 
         //TODO: HMSMainKitsTabFactory.GetEnabledEditors() counts zero sometimes
                 // Get enabled Kits and check if they are one of the below, because only them needs to be updated to the latest version.

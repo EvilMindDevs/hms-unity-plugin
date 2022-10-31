@@ -15,6 +15,7 @@ namespace HmsPlugin
                 "Assets/Huawei/Demos",
                 "Assets/Huawei/Dlls",
                 "Assets/Huawei/Editor",
+                "Assets/Huawei/Prefabs",
                 "Assets/Huawei/Scripts",
                 "Assets/Huawei/VERSION",
                 "Assets/Huawei/HuaweiMobileServices.Core.asmdef",

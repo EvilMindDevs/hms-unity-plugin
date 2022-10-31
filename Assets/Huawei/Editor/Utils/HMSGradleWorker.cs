@@ -103,6 +103,9 @@ namespace HmsPlugin
             using (var file = File.CreateText(Application.dataPath + "/Huawei/Plugins/Android/hmsLauncherTemplate.gradle"))
             {
                 file.Write("apply plugin: 'com.huawei.agconnect'\n\n");
+
+                #region Dependencies
+
                 file.Write("dependencies {\n\t");
 
                 for (int i = 0; i < gradleConfigs.Length; i++)
@@ -111,6 +114,17 @@ namespace HmsPlugin
                 }
 
                 file.Write("\n}\n");
+
+                #endregion
+
+                file.Write("android {\n");
+                file.Write("packagingOptions {\n\t");
+                file.Write("pickFirst \"okhttp3/internal/publicsuffix/publicsuffixes.gz\"");
+                file.Write("\n}\n");
+                file.Write("}\n");
+
+
+
             }
         }
 

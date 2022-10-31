@@ -1,4 +1,8 @@
 
+using HmsPlugin;
+
+using HuaweiMobileServices.IAP;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +14,8 @@ public class IAPDemoUIView : MonoBehaviour
     private Button Btn_ItemRemoveAds;
     private Button Btn_ItemPremium;
     private Button Btn_SignIn;
+    private Button Btn_ManageSubscriptions;
+    private Button Btn_EditSubscriptions;
 
     private Text Txt_Log;
 
@@ -24,6 +30,9 @@ public class IAPDemoUIView : MonoBehaviour
         Btn_ItemPremium = GameObject.Find("ItemBuyButtonPremium").GetComponent<Button>();
         Btn_SignIn = GameObject.Find("LoginButton").GetComponent<Button>();
 
+        Btn_ManageSubscriptions = GameObject.Find("ManageSubscription").GetComponent<Button>();
+        Btn_EditSubscriptions = GameObject.Find("EditSubscription").GetComponent<Button>();
+
         Txt_Log = GameObject.Find("StatusText").GetComponent<Text>();
     }
 
@@ -35,6 +44,9 @@ public class IAPDemoUIView : MonoBehaviour
         Btn_ItemPremium.onClick.AddListener(ButtonClick_BuyItemPremium);
         Btn_SignIn.onClick.AddListener(ButtonClick_BuySignIn);
 
+        Btn_ManageSubscriptions.onClick.AddListener(OpenSubscriptionManagementScreen);
+        Btn_EditSubscriptions.onClick.AddListener(OpenSubscriptionEditingScreen);
+
         IapDemoManager.IAPLog += OnIAPLog;
     }
 
@@ -45,6 +57,9 @@ public class IAPDemoUIView : MonoBehaviour
         Btn_ItemRemoveAds.onClick.RemoveListener(ButtonClick_BuyItemRemoveAds);
         Btn_ItemPremium.onClick.RemoveListener(ButtonClick_BuyItemPremium);
         Btn_SignIn.onClick.RemoveListener(ButtonClick_BuySignIn);
+
+        Btn_ManageSubscriptions.onClick.RemoveListener(OpenSubscriptionManagementScreen);
+        Btn_EditSubscriptions.onClick.RemoveListener(OpenSubscriptionEditingScreen);
 
         IapDemoManager.IAPLog -= OnIAPLog;
     }
@@ -85,6 +100,16 @@ public class IAPDemoUIView : MonoBehaviour
     private void ButtonClick_BuySignIn()
     {
         IapDemoManager.Instance.SignIn();
+    }
+
+    private void OpenSubscriptionEditingScreen()
+    {
+        HMSIAPManager.Instance.RedirectingtoSubscriptionEditingScreen("premium");
+    }
+
+    private void OpenSubscriptionManagementScreen()
+    {
+        HMSIAPManager.Instance.RedirectingtoSubscriptionManagementScreen("premium");
     }
 
     #endregion

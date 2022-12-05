@@ -38,6 +38,14 @@ public class LargeImageNative : MonoBehaviour
                 nativeAd.TriggerClick(new HuaweiMobileServices.Utils.Bundle());
     }
 
+    public void OnClosedButtonClicked() 
+    {
+        if (nativeAd != null)
+            nativeAd.Destroy();
+
+        this.gameObject.SetActive(false);
+    }
+
     //Call this method with Why This Ad button
     private void GotoWhyThisAdPage() 
     {

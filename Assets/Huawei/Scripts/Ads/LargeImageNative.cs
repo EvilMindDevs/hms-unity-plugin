@@ -74,17 +74,17 @@ public class LargeImageNative : MonoBehaviour
         NativeAdLoader.Builder builder = new NativeAdLoader.Builder(adUnitID);
 
 
-        builder.SetNativeAdLoadedListener(new NativeAdLoadedListener(new LargeImageNativeNativeNativeAdLoadedListener(OnNativeAdLoaded)))
+        builder.SetNativeAdLoadedListener(new NativeAdLoadedListener(new LargeImageNativeAdLoadedListener(OnNativeAdLoaded)))
             .SetAdListener(new AdStatusListener());
         NativeAdLoader nativeAdLoader = builder.Build();
        
         nativeAdLoader.LoadAd(new AdParam.Builder().Build());
     }
 
-    private class LargeImageNativeNativeNativeAdLoadedListener : INativeAdLoadedListener
+    private class LargeImageNativeAdLoadedListener : INativeAdLoadedListener
     {
         Action<NativeAd> OnNativeAdLoaded;
-        public LargeImageNativeNativeNativeAdLoadedListener(Action<NativeAd> OnNativeAdLoaded) 
+        public LargeImageNativeAdLoadedListener(Action<NativeAd> OnNativeAdLoaded) 
         {
             this.OnNativeAdLoaded = OnNativeAdLoaded;
         }

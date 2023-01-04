@@ -10,25 +10,21 @@ using System.Threading;
 public class HMSAnalyticsKitManager : HMSManagerSingleton<HMSAnalyticsKitManager>
 {
     private HiAnalyticsInstance hiAnalyticsInstance;
+    private AndroidJavaObject activity;
 
     public HMSAnalyticsKitManager()
     {
         Debug.Log($"[HMS] : HMSAnalyticsKitManager Constructor");
         if (!HMSDispatcher.InstanceExists)
             HMSDispatcher.CreateDispatcher();
-        HMSDispatcher.InvokeAsync(OnAwake);
-    }
-
-    void OnAwake() 
-    {
-        Debug.Log("HMSAnalyticsKitManager: OnAwake");
-        InitilizeAnalyticsInstane();
+        HMSDispatcher.InvokeAsync(InitilizeAnalyticsInstane);
     }
 
     void InitilizeAnalyticsInstane()
     {
+        Debug.Log("HMSAnalyticsKitManager: InitilizeAnalyticsInstane");
         AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-        AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
+        activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
 
         activity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
         {
@@ -38,18 +34,31 @@ public class HMSAnalyticsKitManager : HMSManagerSingleton<HMSAnalyticsKitManager
         }));
     }
 
-    public async void SendEventWithBundle(String eventID, String key, String value)
+    public void SendEventWithBundle(string eventID, string key, string value) 
+    {
+        activity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
+        {
+            _SendEventWithBundle(eventID, key, value);
+        }));
+    }
+
+    void _SendEventWithBundle(string eventID, string key, string value)
     {
         Bundle bundleUnity = new Bundle();
         bundleUnity.PutString(key, value);
         Debug.Log($"[HMS] : Analytics Kits Event Id:{eventID} Key:{key} Value:{value}");
-
-        while (hiAnalyticsInstance == null)
-            await Task.Delay(500);
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
     public void SendEventWithBundle(string eventID, Dictionary<string, object> values)
+    {
+        activity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
+        {
+            _SendEventWithBundle(eventID, values);
+        }));
+    }
+
+    void _SendEventWithBundle(string eventID, Dictionary<string, object> values)
     {
         Bundle bundleUnity = new Bundle();
         foreach (var item in values)
@@ -74,7 +83,15 @@ public class HMSAnalyticsKitManager : HMSManagerSingleton<HMSAnalyticsKitManager
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
-    public void SendEventWithBundle(String eventID, String key, int value)
+    public void SendEventWithBundle(string eventID, string key, int value)
+    {
+        activity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
+        {
+            _SendEventWithBundle(eventID, key, value);
+        }));
+    }
+
+    void _SendEventWithBundle(string eventID, string key, int value)
     {
         Bundle bundleUnity = new Bundle();
         bundleUnity.PutInt(key, value);

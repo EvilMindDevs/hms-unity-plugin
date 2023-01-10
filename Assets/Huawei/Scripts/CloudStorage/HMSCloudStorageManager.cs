@@ -1,9 +1,12 @@
 ﻿using HuaweiMobileServices.Base;
 using HuaweiMobileServices.CloudStorage;
 using HuaweiMobileServices.Utils;
+
 using System;
+
 using UnityEngine;
 using UnityEngine.Android;
+
 using static HuaweiMobileServices.CloudStorage.DownloadTask;
 using static HuaweiMobileServices.CloudStorage.UploadTask;
 
@@ -34,6 +37,9 @@ namespace HmsPlugin
         public Action OnDeleteFileSuccess { get; set; }
         public Action<HMSException> OnDeleteFileFailure { get; set; }
 
+        public Action<byte[]> OnGetImageByteArray { get; set; }
+        public Action<HMSException> OnGetImageByteArrayFailure { get; set; }
+
         public HMSCloudStorageManager()
         {
             if (!HMSDispatcher.InstanceExists)
@@ -47,7 +53,7 @@ namespace HmsPlugin
         }
 
         //Requires modifying manifest file https://evilminddevs.gitbook.io/hms-unity-plugin/kits-and-services/cloud-storage/guides-and-references#modifying-the-androidmanifest-file
-        public static void CheckRequestUserPermissionForCloudStorage() 
+        public static void CheckRequestUserPermissionForCloudStorage()
         {
             if (Permission.HasUserAuthorizedPermission("android.permission.READ_EXTERNAL_STORAGE"))
             {
@@ -75,13 +81,13 @@ namespace HmsPlugin
         }
 
         //https://developer.huawei.com/consumer/en/codelabsPortal/carddetails/CloudStorage-Android-Hard
-        public void UploadFile(string filePathInDevice = "",string filePathInCloudStorage = "/files/test/testImage.jpg")
+        public void UploadFile(string filePathInDevice = "", string filePathInCloudStorage = "/files/test/testImage.jpg")
         {
             if (mAGCStorageManagement == null)
             {
                 InitAGCStorageManagement();
             }
-            
+
             var file = new HuaweiMobileServices.Utils.java.io.File(filePathInDevice);
 
             if (!file.Exists())
@@ -111,12 +117,12 @@ namespace HmsPlugin
             {
                 InitAGCStorageManagement();
             }
-            if(whereToDownload == "") 
+            if (whereToDownload == "")
             {
                 string fileName = "testDownloaded.jpg";
                 whereToDownload = System.IO.Path.Combine(Application.persistentDataPath, fileName);
             }
-            
+
             var file = new HuaweiMobileServices.Utils.java.io.File(whereToDownload);
 
             StorageReference storageReference = mAGCStorageManagement.GetStorageReference(filePathInCloudStorage);
@@ -227,6 +233,35 @@ namespace HmsPlugin
                 OnAllFailureListeners?.Invoke(exception);
             });
         }
+
+        public void GetImageByteArray(string filePathInCloudStorage = "/files/test/testImage.jpg", long maxBytes = 99999999)
+        {
+            StorageReference storageReference = null;
+
+            if (mAGCStorageManagement == null)
+            {
+                InitAGCStorageManagement();
+            }
+            if (storageReference == null)
+            {
+                storageReference = mAGCStorageManagement.GetStorageReference(filePathInCloudStorage);
+            }
+
+            var byteArrayTask = storageReference.GetBytes(maxBytes);
+
+            byteArrayTask.AddOnSuccessListener(byteArray =>
+            {
+                Debug.Log($"{TAG} GetBytes Successfully");
+                OnGetImageByteArray?.Invoke(byteArray);
+            });
+            byteArrayTask.AddOnFailureListener(exception =>
+            {
+                Debug.LogError($"{TAG} GetFileMetadata failed:" + exception);
+                OnGetImageByteArrayFailure?.Invoke(exception);
+            });
+        }
+
+
 
 
     }

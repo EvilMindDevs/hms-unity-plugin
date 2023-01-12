@@ -1,6 +1,10 @@
 ﻿using HmsPlugin;
+
 using HuaweiMobileServices.CloudStorage;
 using HuaweiMobileServices.Utils;
+
+using System;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +22,9 @@ public class CloudStorageDemo : MonoBehaviour
         HMSCloudStorageManager.Instance.OnDeleteFileSuccess = OnDeleteFileSuccess;
 
         HMSCloudStorageManager.Instance.OnAllFailureListeners = FailureListener;
+
+        HMSCloudStorageManager.Instance.OnGetImageByteArray = OnGetImageByteArray;
+        HMSCloudStorageManager.Instance.OnGetImageByteArrayFailure = OnGetImageByteArrayFailure;
     }
 
     public void UploadFile()
@@ -27,14 +34,19 @@ public class CloudStorageDemo : MonoBehaviour
         HMSCloudStorageManager.Instance.UploadFile(filePathInDevice: filePath);
     }
 
-    public void DownloadFile() 
+    public void DownloadFile()
     {
         HMSCloudStorageManager.Instance.DownloadFile();
     }
 
-    public void DeleteFile() 
+    public void DeleteFile()
     {
         HMSCloudStorageManager.Instance.DeleteFile();
+    }
+
+    public void GetByteArray()
+    {
+        HMSCloudStorageManager.Instance.GetImageByteArray();
     }
 
     private void OnDeleteFileSuccess()
@@ -58,15 +70,25 @@ public class CloudStorageDemo : MonoBehaviour
     private void FailureListener(HMSException exception)
     {
         Debug.LogError($"{TAG} FailureListener:" + exception);
-        PrintDescription("Failed:"+ exception);
+        PrintDescription("Failed:" + exception);
     }
 
-    private void PrintDescription(string text) 
+    private void PrintDescription(string text)
     {
         Text desc = GameObject.Find("Description").GetComponent<Text>();
         desc.text = text;
     }
+
+    private void OnGetImageByteArrayFailure(HMSException exception)
+    {
+        Debug.LogError($"{TAG} OnGetImageByteArrayFailure:" + exception);
+    }
+
+    private void OnGetImageByteArray(byte[] imageByteArray)
+    {
+        Debug.Log($"{TAG} OnGetImageByteArray Success , image byte array length " + imageByteArray.Length);
+    }
+
 }
 
 
-    

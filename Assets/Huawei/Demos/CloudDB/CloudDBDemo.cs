@@ -30,6 +30,8 @@ public class CloudDBDemo : MonoBehaviour
 
     public static Action<string> CloudDBDemoLog;
 
+    public Action<CloudDBZoneSnapshot<BookInfo>> OnCloudDBZoneSnapshot { get; set; }
+    public Action<AGConnectCloudDBException> OnCloudDBZoneSnapshotException { get; set; }
 
     #region Singleton
 
@@ -76,8 +78,6 @@ public class CloudDBDemo : MonoBehaviour
         cloudDBManager = HMSCloudDBManager.Instance;
         cloudDBManager.Initialize();
         cloudDBManager.GetInstance(AGConnectInstance.GetInstance(), AGConnectAuth.GetInstance());
-        cloudDBManager.OnExecuteQuerySuccess = OnExecuteQuerySuccess;
-        cloudDBManager.OnExecuteQueryFailed = OnExecuteQueryFailed;
     }
 
     private void OnAccountKitLoginSuccess(AuthAccount authHuaweiId)
@@ -147,7 +147,6 @@ public class CloudDBDemo : MonoBehaviour
 
         cloudDBManager.DisableNetwork(cloudDBZoneName);
     }
-
 
     public void AddBookInfo()
     {
@@ -224,12 +223,56 @@ public class CloudDBDemo : MonoBehaviour
         Debug.Log(TAG + " GetBookInfo");
 
         CloudDBZoneQuery mCloudQuery = CloudDBZoneQuery.Where(new AndroidJavaClass(BookInfoClass));
-        cloudDBManager.ExecuteQuery(mCloudQuery, CloudDBZoneQuery.CloudDBZoneQueryPolicy.CLOUDDBZONE_LOCAL_ONLY);
+        var cloudDBZoneQueryPolicy = CloudDBZoneQuery.CloudDBZoneQueryPolicy.CLOUDDBZONE_LOCAL_ONLY;
+
+        HMSCloudDBManager.Instance.MCloudDBZone.ExecuteQuery<BookInfo>(mCloudQuery, cloudDBZoneQueryPolicy)
+                .AddOnSuccessListener(snapshot =>
+                {
+                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteQuery AddOnSuccessListener {snapshot}");
+
+                    OnExecuteQuerySuccess(snapshot);
+
+                }).AddOnFailureListener(exception =>
+                {
+                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteQuery AddOnFailureListener " +
+                        exception.WrappedCauseMessage + " - " +
+                        exception.WrappedExceptionMessage + " - ");
+
+                    OnExecuteQueryFailed(exception);
+                });
+
     }
 
-    private void OnExecuteQuerySuccess(CloudDBZoneSnapshot<BookInfo> snapshot) => ProcessQueryResult(snapshot);
+    public void GetBookInfo2()
+    {
+        Debug.Log(TAG + " GetBookInfo2");
+
+        CloudDBZoneQuery mCloudQuery = CloudDBZoneQuery.Where(new AndroidJavaClass(BookInfoClass));
+        var cloudDBZoneQueryPolicy = CloudDBZoneQuery.CloudDBZoneQueryPolicy.CLOUDDBZONE_LOCAL_ONLY;
+
+        HMSCloudDBManager.Instance.MCloudDBZone.ExecuteQueryUnsynced<BookInfo>(mCloudQuery)
+                .AddOnSuccessListener(snapshot =>
+                {
+                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteQuery AddOnSuccessListener {snapshot}");
+
+                    OnExecuteQuerySuccess(snapshot);
+
+                }).AddOnFailureListener(exception =>
+                {
+                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteQuery AddOnFailureListener " +
+                        exception.WrappedCauseMessage + " - " +
+                        exception.WrappedExceptionMessage + " - ");
+
+                    OnExecuteQueryFailed(exception);
+                });
+
+    }
+
+    #region Query
 
     private void OnExecuteQueryFailed(HMSException error) => Debug.Log($"{TAG} OnExecuteQueryFailed(HMSException error) => {error.WrappedExceptionMessage}");
+
+    private void OnExecuteQuerySuccess(CloudDBZoneSnapshot<BookInfo> snapshot) => ProcessQueryResult(snapshot);
 
     private void ProcessQueryResult(CloudDBZoneSnapshot<BookInfo> snapshot)
     {
@@ -254,6 +297,8 @@ public class CloudDBDemo : MonoBehaviour
         }
     }
 
+    #endregion
+
     public void ExecuteSumQuery()
     {
         Debug.Log(TAG + " ExecuteSumQuery");
@@ -268,6 +313,27 @@ public class CloudDBDemo : MonoBehaviour
 
         CloudDBZoneQuery mCloudQuery = CloudDBZoneQuery.Where(new AndroidJavaClass(BookInfoClass));
         cloudDBManager.ExecuteCountQuery(mCloudQuery, "price", CloudDBZoneQuery.CloudDBZoneQueryPolicy.CLOUDDBZONE_LOCAL_ONLY);
+    }
+
+    public void SubscribeSnapshot(CloudDBZoneQuery cloudDBZoneQuery, CloudDBZoneQuery.CloudDBZoneQueryPolicy cloudDBZoneQueryPolicy)
+    {
+        if (!HMSCloudDBManager.Instance.IsCloudDBActive)
+            return;
+
+        void OnOnCloudDBZoneSnapshot(CloudDBZoneSnapshot<BookInfo> snapshot)
+        {
+            ProcessQueryResult(snapshot);
+        }
+
+        void OnOnCloudDBZoneSnapshotException(AGConnectCloudDBException exception)
+        {
+            Debug.LogError(exception);
+        }
+
+        OnCloudDBZoneSnapshot += OnOnCloudDBZoneSnapshot;
+        OnCloudDBZoneSnapshotException += OnOnCloudDBZoneSnapshotException;
+
+        HMSCloudDBManager.Instance.MRegister = HMSCloudDBManager.Instance.MCloudDBZone.SubscribeSnapshot(cloudDBZoneQuery, cloudDBZoneQueryPolicy, OnCloudDBZoneSnapshot, OnCloudDBZoneSnapshotException);
     }
 
 }

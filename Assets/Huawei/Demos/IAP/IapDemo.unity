@@ -861,7 +861,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: MANAGE Subscription (Premium)
+  m_Text: MANAGE Subscriptions
 --- !u!222 &2004270532
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1525,7 +1525,7 @@ GameObject:
   - component: {fileID: 1541257162010823353}
   - component: {fileID: 1541257162010823352}
   m_Layer: 5
-  m_Name: LoginButton
+  m_Name: InitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2677,7 +2677,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Login
+  m_Text: Initialize IAP
 --- !u!222 &1541257162510681779
 CanvasRenderer:
   m_ObjectHideFlags: 0

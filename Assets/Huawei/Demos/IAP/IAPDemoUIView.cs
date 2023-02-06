@@ -1,8 +1,6 @@
 
 using HmsPlugin;
 
-using HuaweiMobileServices.IAP;
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +11,7 @@ public class IAPDemoUIView : MonoBehaviour
     private Button Btn_ItemCoins1000;
     private Button Btn_ItemRemoveAds;
     private Button Btn_ItemPremium;
-    private Button Btn_SignIn;
+    private Button Btn_Init;
     private Button Btn_ManageSubscriptions;
     private Button Btn_EditSubscriptions;
 
@@ -21,14 +19,13 @@ public class IAPDemoUIView : MonoBehaviour
 
     #region Monobehaviour
 
-
     private void Awake()
     {
         Btn_ItemCoins100 = GameObject.Find("ItemBuyButtonC100").GetComponent<Button>();
         Btn_ItemCoins1000 = GameObject.Find("ItemBuyButtonC1000").GetComponent<Button>();
         Btn_ItemRemoveAds = GameObject.Find("ItemBuyButtonRemoveAds").GetComponent<Button>();
         Btn_ItemPremium = GameObject.Find("ItemBuyButtonPremium").GetComponent<Button>();
-        Btn_SignIn = GameObject.Find("LoginButton").GetComponent<Button>();
+        Btn_Init = GameObject.Find("InitButton").GetComponent<Button>();
 
         Btn_ManageSubscriptions = GameObject.Find("ManageSubscription").GetComponent<Button>();
         Btn_EditSubscriptions = GameObject.Find("EditSubscription").GetComponent<Button>();
@@ -42,7 +39,7 @@ public class IAPDemoUIView : MonoBehaviour
         Btn_ItemCoins1000.onClick.AddListener(ButtonClick_BuyItemCoins1000);
         Btn_ItemRemoveAds.onClick.AddListener(ButtonClick_BuyItemRemoveAds);
         Btn_ItemPremium.onClick.AddListener(ButtonClick_BuyItemPremium);
-        Btn_SignIn.onClick.AddListener(ButtonClick_BuySignIn);
+        Btn_Init.onClick.AddListener(ButtonClick_InitializeIAP);
 
         Btn_ManageSubscriptions.onClick.AddListener(OpenSubscriptionManagementScreen);
         Btn_EditSubscriptions.onClick.AddListener(OpenSubscriptionEditingScreen);
@@ -56,7 +53,7 @@ public class IAPDemoUIView : MonoBehaviour
         Btn_ItemCoins1000.onClick.RemoveListener(ButtonClick_BuyItemCoins1000);
         Btn_ItemRemoveAds.onClick.RemoveListener(ButtonClick_BuyItemRemoveAds);
         Btn_ItemPremium.onClick.RemoveListener(ButtonClick_BuyItemPremium);
-        Btn_SignIn.onClick.RemoveListener(ButtonClick_BuySignIn);
+        Btn_Init.onClick.RemoveListener(ButtonClick_InitializeIAP);
 
         Btn_ManageSubscriptions.onClick.RemoveListener(OpenSubscriptionManagementScreen);
         Btn_EditSubscriptions.onClick.RemoveListener(OpenSubscriptionEditingScreen);
@@ -79,27 +76,27 @@ public class IAPDemoUIView : MonoBehaviour
 
     private void ButtonClick_BuyItemCoins100()
     {
-        IapDemoManager.Instance.BuyProduct("coins100");
+        IapDemoManager.Instance.PurchaseProduct("coins100");
     }
 
     private void ButtonClick_BuyItemCoins1000()
     {
-        IapDemoManager.Instance.BuyProduct("coins1000");
+        IapDemoManager.Instance.PurchaseProduct("coins1000");
     }
 
     private void ButtonClick_BuyItemRemoveAds()
     {
-        IapDemoManager.Instance.BuyProduct("removeAds");
+        IapDemoManager.Instance.PurchaseProduct("removeAds");
     }
 
     private void ButtonClick_BuyItemPremium()
     {
-        IapDemoManager.Instance.BuyProduct("premium");
+        IapDemoManager.Instance.PurchaseProduct("premium");
     }
 
-    private void ButtonClick_BuySignIn()
+    private void ButtonClick_InitializeIAP()
     {
-        IapDemoManager.Instance.SignIn();
+        IapDemoManager.Instance.InitializeIAP();
     }
 
     private void OpenSubscriptionEditingScreen()
@@ -109,7 +106,7 @@ public class IAPDemoUIView : MonoBehaviour
 
     private void OpenSubscriptionManagementScreen()
     {
-        HMSIAPManager.Instance.RedirectingtoSubscriptionManagementScreen("premium");
+        HMSIAPManager.Instance.RedirectingtoSubscriptionManagementScreen();
     }
 
     #endregion

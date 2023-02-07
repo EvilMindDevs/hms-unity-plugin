@@ -1241,7 +1241,7 @@ GameObject:
   - component: {fileID: 1541257162010823357}
   - component: {fileID: 1541257162010823356}
   m_Layer: 5
-  m_Name: LoginButton
+  m_Name: InitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2479,7 +2479,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Login
+  m_Text: Initialize IAP
 --- !u!1 &1541257162582885016
 GameObject:
   m_ObjectHideFlags: 0

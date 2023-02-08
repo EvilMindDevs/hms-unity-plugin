@@ -1,20 +1,39 @@
 ﻿using HuaweiMobileServices.AuthService;
-using HuaweiMobileServices.Base;
 using HuaweiMobileServices.CloudDB;
 using HuaweiMobileServices.Common;
 using HuaweiMobileServices.Utils;
+
 using System;
 using System.Collections.Generic;
+
 using UnityEngine;
 namespace HmsPlugin
 {
     public class HMSCloudDBManager : HMSManagerSingleton<HMSCloudDBManager>
     {
         string TAG = "HMSCloudDBManager";
+
         AGConnectCloudDB mCloudDB = null;
         CloudDBZoneConfig mConfig = null;
         CloudDBZone mCloudDBZone = null;
         ListenerHandler mRegister = null;
+
+        public CloudDBZone MCloudDBZone { get => mCloudDBZone; set => mCloudDBZone = value; }
+        public ListenerHandler MRegister { get => mRegister; set => mRegister = value; }
+
+        public bool IsCloudDBActive
+        {
+            get
+            {
+                if (mCloudDBZone == null)
+                {
+                    Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+                    return false;
+                }
+
+                return true;
+            }
+        }
 
         public Action<CloudDBZone> OnOpenCloudDBZone2Success { get; set; }
         public Action<HMSException> OnOpenCloudDBZone2Failed { get; set; }
@@ -24,9 +43,6 @@ namespace HmsPlugin
 
         public Action<int> OnExecuteDeleteSuccess { get; set; }
         public Action<HMSException> OnExecuteDeleteFailed { get; set; }
-
-        public Action<CloudDBZoneSnapshot<BookInfo>> OnExecuteQuerySuccess { get; set; }
-        public Action<HMSException> OnExecuteQueryFailed { get; set; }
 
         public Action<double> OnExecuteAverageQuerySuccess { get; set; }
         public Action<HMSException> OnExecuteAverageQueryFailed { get; set; }
@@ -42,12 +58,6 @@ namespace HmsPlugin
 
         public Action<long> OnExecuteCountQuerySuccess { get; set; }
         public Action<HMSException> OnExecuteCountQueryFailed { get; set; }
-
-        public Action<CloudDBZoneSnapshot<BookInfo>> OnExecuteQueryUnsyncedSuccess { get; set; }
-        public Action<HMSException> OnExecuteQueryUnsyncedFailed { get; set; }
-
-        public Action<CloudDBZoneSnapshot<BookInfo>> OnCloudDBZoneSnapshot { get; set; }
-        public Action<AGConnectCloudDBException> OnCloudDBZoneSnapshotException { get; set; }
 
         public void Initialize()
         {
@@ -144,16 +154,12 @@ namespace HmsPlugin
             mCloudDB.UpdateDataEncryptionKey().AddOnSuccessListener(result => { }).AddOnFailureListener(error => { });
         }
 
-        public void ExecuteUpsert(BookInfo obj)
+        public void ExecuteUpsert(ICloudDBZoneObject cloudDBZoneObject)
         {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+            if (!IsCloudDBActive)
                 return;
-            }
 
-
-            mCloudDBZone.ExecuteUpsert(obj)
+            mCloudDBZone.ExecuteUpsert(cloudDBZoneObject)
                 .AddOnSuccessListener(cloudDBZoneResult =>
                 {
                     OnExecuteUpsertSuccess?.Invoke(cloudDBZoneResult);
@@ -170,11 +176,8 @@ namespace HmsPlugin
 
         public void ExecuteUpsert(IList<AndroidJavaObject> obj)
         {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+            if (!IsCloudDBActive)
                 return;
-            }
 
             mCloudDBZone.ExecuteUpsert(obj)
                 .AddOnSuccessListener(result =>
@@ -190,15 +193,12 @@ namespace HmsPlugin
                 });
         }
 
-        public void ExecuteDelete(BookInfo obj)
+        public void ExecuteDelete(ICloudDBZoneObject cloudDBZoneObject)
         {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+            if (!IsCloudDBActive)
                 return;
-            }
 
-            mCloudDBZone.ExecuteDelete(obj)
+            mCloudDBZone.ExecuteDelete(cloudDBZoneObject)
                 .AddOnSuccessListener(cloudDBZoneResult =>
                 {
                     OnExecuteDeleteSuccess?.Invoke(cloudDBZoneResult);
@@ -215,11 +215,8 @@ namespace HmsPlugin
 
         public void ExecuteDelete(IList<AndroidJavaObject> obj)
         {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+            if (!IsCloudDBActive)
                 return;
-            }
 
             mCloudDBZone.ExecuteDelete(obj)
                 .AddOnSuccessListener(result =>
@@ -236,35 +233,10 @@ namespace HmsPlugin
                 });
         }
 
-        public void ExecuteQuery(CloudDBZoneQuery query, CloudDBZoneQuery.CloudDBZoneQueryPolicy CloudDBZoneQueryPolicy)
-        {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
-                return;
-            }
-
-            mCloudDBZone.ExecuteQuery<BookInfo>(query, CloudDBZoneQueryPolicy)
-                .AddOnSuccessListener(snapshot =>
-                {
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteQuery AddOnSuccessListener");
-                    OnExecuteQuerySuccess?.Invoke(snapshot);
-                }).AddOnFailureListener(exception =>
-                {
-                    OnExecuteQueryFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteQuery AddOnFailureListener " +
-                        exception.WrappedCauseMessage + " - " +
-                        exception.WrappedExceptionMessage + " - ");
-                });
-        }
-
         public void ExecuteAverageQuery(CloudDBZoneQuery query, string fieldName, CloudDBZoneQuery.CloudDBZoneQueryPolicy CloudDBZoneQueryPolicy)
         {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+            if (!IsCloudDBActive)
                 return;
-            }
 
             mCloudDBZone.ExecuteCountQuery(query, fieldName, CloudDBZoneQueryPolicy)
                 .AddOnSuccessListener(result =>
@@ -283,11 +255,8 @@ namespace HmsPlugin
 
         public void ExecuteSumQuery(CloudDBZoneQuery query, string fieldName, CloudDBZoneQuery.CloudDBZoneQueryPolicy CloudDBZoneQueryPolicy)
         {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+            if (!IsCloudDBActive)
                 return;
-            }
 
             mCloudDBZone.ExecuteSumQuery(query, fieldName, CloudDBZoneQueryPolicy)
                 .AddOnSuccessListener(result =>
@@ -306,11 +275,8 @@ namespace HmsPlugin
 
         public void ExecuteMaximumQuery(CloudDBZoneQuery query, string fieldName, CloudDBZoneQuery.CloudDBZoneQueryPolicy CloudDBZoneQueryPolicy)
         {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+            if (!IsCloudDBActive)
                 return;
-            }
 
             mCloudDBZone.ExecuteMaximumQuery(query, fieldName, CloudDBZoneQueryPolicy)
                 .AddOnSuccessListener(result =>
@@ -329,11 +295,8 @@ namespace HmsPlugin
 
         public void ExecuteMinimalQuery(CloudDBZoneQuery query, string fieldName, CloudDBZoneQuery.CloudDBZoneQueryPolicy CloudDBZoneQueryPolicy)
         {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+            if (!IsCloudDBActive)
                 return;
-            }
 
             mCloudDBZone.ExecuteMinimalQuery(query, fieldName, CloudDBZoneQueryPolicy)
                 .AddOnSuccessListener(result =>
@@ -352,11 +315,8 @@ namespace HmsPlugin
 
         public void ExecuteCountQuery(CloudDBZoneQuery query, string fieldName, CloudDBZoneQuery.CloudDBZoneQueryPolicy CloudDBZoneQueryPolicy)
         {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
+            if (!IsCloudDBActive)
                 return;
-            }
 
             mCloudDBZone.ExecuteCountQuery(query, fieldName, CloudDBZoneQueryPolicy)
                 .AddOnSuccessListener(result =>
@@ -373,40 +333,5 @@ namespace HmsPlugin
                 });
         }
 
-        public void ExecuteQueryUnsynced(CloudDBZoneQuery query)
-        {
-            if (mCloudDBZone == null)
-            {
-                Debug.Log($"[{TAG}]: CloudDBZone is null, try re-open it");
-                return;
-            }
-
-            mCloudDBZone.ExecuteQueryUnsynced<BookInfo>(query)
-                .AddOnSuccessListener(result =>
-                {
-                    OnExecuteQueryUnsyncedSuccess?.Invoke(result);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteQueryUnsynced AddOnSuccessListener " + result);
-                })
-                .AddOnFailureListener(exception =>
-                {
-                    OnExecuteQueryUnsyncedFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteQueryUnsynced AddOnFailureListener " +
-                        exception.WrappedCauseMessage + " - " +
-                        exception.WrappedExceptionMessage + " - ");
-                });
-        }
-
-        public void SubscribeSnapshot(CloudDBZoneQuery cloudDBZoneQuery, CloudDBZoneQuery.CloudDBZoneQueryPolicy cloudDBZoneQueryPolicy)
-        {
-            if (mCloudDBZone == null)
-            {
-                Debug.LogError($"[{TAG}]: CloudDBZone is null, try re-open it");
-                return;
-            }
-
-
-            mRegister = mCloudDBZone.SubscribeSnapshot(cloudDBZoneQuery, cloudDBZoneQueryPolicy, OnCloudDBZoneSnapshot, OnCloudDBZoneSnapshotException);
-            Debug.Log($"[{TAG}]: SubscribeSnaphot()");
-        }
     }
 }

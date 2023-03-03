@@ -13,29 +13,33 @@ public class LargeImageNative : MonoBehaviour
 
     [Header("Components")]
     public Text ad_title;
-    public Text ad_source;
     public Text button_title;
+    public Text ad_source;
     public Button ad_call_to_action;
     public Button why_this_ad;
     public RawImage ad_media;
 
     NativeAd nativeAd;
+    NativeView nativeView;
 
     //!!!! Must: The "Why this ad" icon (i) or "Dislike this ad" icon (x), and the ad flag must be displayed in the corner of each ad view.
     void Start()
     {
         Debug.Log("[HMS]LargeImageNative Start");
-        why_this_ad.onClick.AddListener(delegate { GotoWhyThisAdPage(); });
         LoadNativeAd();
     }
 
     //Call this method with click_catcher
-    //You can create multiple click catchers and call this method with them. In this way, you can determine exactly where your user clicks on the ad and send it with a bundle.
+    //You can create multiple click catchers and call this method with them. In this way, you can determine exactly where your user clicks on the ad.
     public void OnAdClicked(int value = 0) 
     {
-        if(nativeAd != null)
-            //if(value == 0) // Default
-                nativeAd.TriggerClick(new HuaweiMobileServices.Utils.Bundle());
+        if (nativeAd != null) 
+        {
+            //if(value == 0) // You can create a customClick logic in here
+            
+            PerformClick();
+        }
+            
     }
 
     public void OnClosedButtonClicked() 
@@ -57,14 +61,30 @@ public class LargeImageNative : MonoBehaviour
     {
         Debug.Log("[HMS] OnNativeAdLoaded");
         this.nativeAd = nativeAd;
-        
+        nativeView = new NativeView();
+        nativeView.SetNativeAd(nativeAd);
         ad_title.text = nativeAd.Title;
-        ad_source.text = nativeAd.AdSource;
-        button_title.text = nativeAd.CallToAction;
-        ad_call_to_action.onClick.AddListener(delegate { nativeAd.TriggerClick(new HuaweiMobileServices.Utils.Bundle()); });
+
+        if (nativeAd.AdSource != null)
+            ad_source.text = nativeAd.AdSource;
+        else
+            ad_source.gameObject.SetActive(false);
+        
+        button_title.text = (nativeAd.CallToAction!=null)? nativeAd.CallToAction : "Open";
+        ad_call_to_action.onClick.AddListener(delegate { PerformClick(); });
+        why_this_ad.onClick.AddListener(delegate { GotoWhyThisAdPage(); });
 
         foreach (var image in nativeAd.Images)
             StartCoroutine(DownloadImage(image.Uri.ToString()));
+        Debug.Log("[HMS] OnNativeAdLoaded completed. Init success.");
+    }
+
+    private void PerformClick() 
+    {
+        if (nativeView != null)
+            nativeView.PerformClick();
+        else
+            Debug.LogError("[HMS] Cannot Perform Click. nativeView is null.");
     }
 
     IEnumerator DownloadImage(string MediaUrl)
@@ -98,7 +118,7 @@ public class LargeImageNative : MonoBehaviour
         }
         public void onNativeAdLoaded(NativeAd nativeAd)
         {
-            Debug.Log("[HMS] onNativeAdLoaded");
+            Debug.Log("[HMS] LargeImageNativeAdLoadedListener onNativeAdLoaded");
             OnNativeAdLoaded.Invoke(nativeAd);
         }
     }
@@ -119,7 +139,7 @@ public class LargeImageNative : MonoBehaviour
 
         public void OnAdFailed(int reason)
         {
-            Debug.Log("[HMS] OnNativeAdFailed reason:" + reason);
+            Debug.LogError("[HMS] OnNativeAdFailed reason:" + reason);
         }
 
         public void OnAdImpression()

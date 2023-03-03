@@ -345,7 +345,7 @@ namespace HmsPlugin
 
         public static void RequestPermission()
         {
-            sJavaClass.CallStatic("requestStoragePermissions", AndroidContext.ActivityContext);
+            sJavaClass.CallStatic("requestStoragePermissions", new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity"));
             //sJavaClass.CallStatic("requestStoragePermissions", AndroidContext.ApplicationContext);
         }
 

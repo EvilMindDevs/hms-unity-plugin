@@ -20,7 +20,7 @@ The HMS Unity plugin helps you integrate the full power of Huawei Mobile Service
 * Push Kit
 * Scan Kit
 * App Messaging
-* :new: APM :new: 
+* APM
 * Auth Service
 * Cloud DB
 * Cloud Storage

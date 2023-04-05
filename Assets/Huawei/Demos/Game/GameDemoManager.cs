@@ -103,8 +103,6 @@ public class GameDemoManager : MonoBehaviour
     public void CommitGame()
     {
         Debug.Log(TAG + "CommitGame");
-        HMSGameServiceManager.Instance.IsAllowContinuePlayGames();
-        HMSGameServiceManager.Instance.GetUserPlayState();
 
         //Example Image Path: give statics path of image on phone
         string ImagePath = Application.streamingAssetsPath;

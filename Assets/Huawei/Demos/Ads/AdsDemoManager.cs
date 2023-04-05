@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using HmsPlugin;
-using UnityEngine.UI;
 using HuaweiMobileServices.Ads;
 
 public class AdsDemoManager : MonoBehaviour
 {
     //private Toggle testAdStatusToggle;
+    private readonly string TAG = "[HMS] AdsDemoManager: ";
 
     #region Singleton
 
@@ -55,8 +55,8 @@ public class AdsDemoManager : MonoBehaviour
         bool requestLocation = true;
         var requestOptions = builder.SetConsent("testConsent").SetRequestLocation(requestLocation).Build();
 
-        Debug.Log($"RequestOptions NonPersonalizedAds:  {requestOptions.NonPersonalizedAd}");
-        Debug.Log($"Consent: {requestOptions.Consent}");
+        Debug.Log($"{TAG}RequestOptions NonPersonalizedAds:  {requestOptions.NonPersonalizedAd}");
+        Debug.Log($"{TAG}Consent: {requestOptions.Consent}");
 
         #endregion
 
@@ -64,66 +64,66 @@ public class AdsDemoManager : MonoBehaviour
 
     private void OnConsentSuccess(ConsentStatus consentStatus, bool isNeedConsent, IList<AdProvider> adProviders)
     {
-        Debug.Log($"[HMS] AdsDemoManager OnConsentSuccess consentStatus:{consentStatus} isNeedConsent:{isNeedConsent}");
+        Debug.Log($"{TAG}OnConsentSuccess consentStatus:{consentStatus} isNeedConsent:{isNeedConsent}");
         foreach (var AdProvider in adProviders)
         {
-            Debug.Log($"[HMS] AdsDemoManager OnConsentSuccess adproviders: Id:{AdProvider.Id} Name:{AdProvider.Name} PrivacyPolicyUrl:{AdProvider.PrivacyPolicyUrl} ServiceArea:{AdProvider.ServiceArea}");
+            Debug.Log($"{TAG}OnConsentSuccess adproviders: Id:{AdProvider.Id} Name:{AdProvider.Name} PrivacyPolicyUrl:{AdProvider.PrivacyPolicyUrl} ServiceArea:{AdProvider.ServiceArea}");
         }
     }
 
     private void OnConsentFail(string desc)
     {
-        Debug.Log($"[HMS] AdsDemoManager OnConsentFail:{desc}");
+        Debug.LogError($"{TAG}OnConsentFail:{desc}");
     }
 
     public void ShowBannerAd()
     {
-        Debug.Log("[HMS] AdsDemoManager ShowBannerAd");
+        Debug.Log($"{TAG}ShowBannerAd");
 
         HMSAdsKitManager.Instance.ShowBannerAd();
     }
 
     public void HideBannerAd()
     {
-        Debug.Log("[HMS] AdsDemoManager HideBannerAd");
+        Debug.Log($"{TAG}HideBannerAd");
 
         HMSAdsKitManager.Instance.HideBannerAd();
     }
 
     public void ShowRewardedAd()
     {
-        Debug.Log("[HMS] AdsDemoManager ShowRewardedAd");
+        Debug.Log($"{TAG}ShowRewardedAd");
         HMSAdsKitManager.Instance.ShowRewardedAd();
     }
 
     public void ShowInterstitialAd()
     {
-        Debug.Log("[HMS] AdsDemoManager ShowInterstitialAd");
+        Debug.Log($"{TAG}ShowInterstitialAd");
         HMSAdsKitManager.Instance.ShowInterstitialAd();
     }
 
     public void ShowSplashImage()
     {
-        Debug.Log("[HMS] ShowSplashImage!");
+        Debug.Log($"{TAG}ShowSplashImage!");
 
         HMSAdsKitManager.Instance.LoadSplashAd("testq6zq98hecj", SplashAd.SplashAdOrientation.PORTRAIT);
     }
 
     public void ShowSplashVideo()
     {
-        Debug.Log("[HMS] ShowSplashVideo!");
+        Debug.Log($"{TAG}ShowSplashVideo!");
 
         HMSAdsKitManager.Instance.LoadSplashAd("testd7c5cewoj6", SplashAd.SplashAdOrientation.PORTRAIT);
     }
 
     public void OnRewarded(Reward reward)
     {
-        Debug.Log("[HMS] AdsDemoManager rewarded!");
+        Debug.Log($"{TAG}rewarded!");
     }
 
     public void OnInterstitialAdClosed()
     {
-        Debug.Log("[HMS] AdsDemoManager interstitial ad closed");
+        Debug.Log($"{TAG}interstitial ad closed");
     }
 
     public void SetTestAdStatus()

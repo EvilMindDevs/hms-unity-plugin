@@ -15,6 +15,9 @@ namespace HmsPlugin
     public class HuaweiStore : IStore
     {
         static HuaweiStore currentInstance;
+
+        public static string PurchaseTokenOfLastPurchase = null;
+
         public static HuaweiStore GetInstance()
         {
             if (currentInstance != null) return currentInstance;
@@ -224,6 +227,7 @@ namespace HmsPlugin
         {
             var sb = new StringBuilder(1024);
 
+
             sb.Append('{').Append("\"Store\":\"AppGallery\",\"TransactionID\":\"").Append(purchaseData.OrderID).Append("\", \"Payload\":{ ");
             sb.Append("\"product\":\"").Append(purchaseData.ProductId).Append("\"");
             sb.Append('}');
@@ -278,6 +282,10 @@ namespace HmsPlugin
                 {
                     case OrderStatusCode.ORDER_STATE_SUCCESS:
                         this.purchasedData[product.storeSpecificId] = purchaseResultInfo.InAppPurchaseData;
+
+                        Debug.Log($"token {purchaseResultInfo.InAppPurchaseData.PurchaseToken}");
+                        PurchaseTokenOfLastPurchase = purchaseResultInfo.InAppPurchaseData.PurchaseToken;
+
                         currentProduct = product;
                         storeEvents.OnPurchaseSucceeded(product.storeSpecificId, purchaseResultInfo.InAppDataSignature, purchaseResultInfo.InAppPurchaseData.OrderID);
                         break;

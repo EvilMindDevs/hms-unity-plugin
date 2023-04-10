@@ -19,6 +19,10 @@ namespace HmsPlugin
         public Action<AuthAccount> SignInSuccess { get; set; }
         public Action<HMSException> SignInFailure { get; set; }
         public Action<OnAppUpdateInfoRes> OnAppUpdateInfo { get; set; }
+        public Action<int> OnGetUserPlayStateSuccess { get; set; }
+        public Action<HMSException> OnGetUserPlayStateFailure { get; set; }
+        public Action<bool> OnIsAllowContinuePlayGamesSuccess { get; set; }
+        public Action<HMSException> OnIsAllowContinuePlayGamesFailure { get; set; }
 
         private AccountAuthService authService;
         private AccountAuthParams authParams;
@@ -188,6 +192,50 @@ namespace HmsPlugin
             {
                 Debug.LogError("[HMSGameManager]: GetPlayerExtraInfo failed. HMSAccountKitManager.Instance.HuaweiId is null");
                 OnGetPlayerInfoFailure?.Invoke(new HMSException("GetPlayerExtraInfo failed. HMSAccountKitManager.Instance.HuaweiId is null"));
+            }
+        }
+
+        public void GetUserPlayState()
+        {
+            if (HMSAccountKitManager.Instance.HuaweiId != null)
+            {
+                var task = playersClient.UserPlayState;
+                task.AddOnSuccessListener((result) =>
+                {
+                    Debug.Log("[HMSGameManager] GetUserPlayState Success");
+                    OnGetUserPlayStateSuccess?.Invoke(result);
+                }).AddOnFailureListener((exception) =>
+                {
+                    Debug.LogError("[HMSGameManager]: GetUserPlayState failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                    OnGetUserPlayStateFailure?.Invoke(exception);
+                });
+            }
+            else
+            {
+                Debug.LogError("[HMSGameManager]: GetUserPlayState failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                OnGetUserPlayStateFailure?.Invoke(new HMSException("GetUserPlayState failed. HMSAccountKitManager.Instance.HuaweiId is null"));
+            }
+        }
+
+        public void IsAllowContinuePlayGames()
+        {
+            if (HMSAccountKitManager.Instance.HuaweiId != null)
+            {
+                var task = playersClient.IsAllowContinuePlayGames;
+                task.AddOnSuccessListener((result) =>
+                {
+                    Debug.Log("[HMSGameManager] IsAllowContinuePlayGames Success");
+                    OnIsAllowContinuePlayGamesSuccess?.Invoke(result);
+                }).AddOnFailureListener((exception) =>
+                {
+                    Debug.LogError("[HMSGameManager]: IsAllowContinuePlayGames failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                    OnIsAllowContinuePlayGamesFailure?.Invoke(exception);
+                });
+            }
+            else
+            {
+                Debug.LogError("[HMSGameManager]: IsAllowContinuePlayGames failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                OnIsAllowContinuePlayGamesFailure?.Invoke(new HMSException("IsAllowContinuePlayGames failed. HMSAccountKitManager.Instance.HuaweiId is null"));
             }
         }
 

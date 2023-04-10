@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 public class GameDemoManager : MonoBehaviour
 {
-    private readonly string TAG = "[HMS] GameDemoManager ";
+    private readonly string TAG = "[HMS] GameDemoManager: ";
 
     private bool customUnit = false;
     private const string MAX_FILE_SIZE = "Max File Size: {0}";
@@ -46,15 +46,19 @@ public class GameDemoManager : MonoBehaviour
     void Start()
     {
         HMSGameServiceManager.Instance.OnGetPlayerInfoSuccess = OnGetPlayerInfoSuccess;
-        HMSGameServiceManager.Instance.OnGetPlayerInfoFailure = OnGetPlayerInfoFailure;
+        HMSGameServiceManager.Instance.OnGetPlayerInfoFailure = OnFailureListener;
         HMSAchievementsManager.Instance.OnShowAchievementsSuccess = OnShowAchievementsSuccess;
-        HMSAchievementsManager.Instance.OnShowAchievementsFailure = OnShowAchievementsFailure;
+        HMSAchievementsManager.Instance.OnShowAchievementsFailure = OnFailureListener;
         HMSAchievementsManager.Instance.OnRevealAchievementSuccess = OnRevealAchievementSuccess;
-        HMSAchievementsManager.Instance.OnRevealAchievementFailure = OnRevealAchievementFailure;
+        HMSAchievementsManager.Instance.OnRevealAchievementFailure = OnFailureListener;
         HMSAchievementsManager.Instance.OnIncreaseStepAchievementSuccess = OnIncreaseStepAchievementSuccess;
-        HMSAchievementsManager.Instance.OnIncreaseStepAchievementFailure = OnIncreaseStepAchievementFailure;
+        HMSAchievementsManager.Instance.OnIncreaseStepAchievementFailure = OnFailureListener;
         HMSAchievementsManager.Instance.OnUnlockAchievementSuccess = OnUnlockAchievementSuccess;
-        HMSAchievementsManager.Instance.OnUnlockAchievementFailure = OnUnlockAchievementFailure;
+        HMSAchievementsManager.Instance.OnUnlockAchievementFailure = OnFailureListener;
+        HMSGameServiceManager.Instance.OnGetUserPlayStateSuccess = OnGetUserPlayStateSuccess;
+        HMSGameServiceManager.Instance.OnGetUserPlayStateFailure = OnFailureListener;
+        HMSGameServiceManager.Instance.OnIsAllowContinuePlayGamesSuccess = OnIsAllowContinuePlayGamesSuccess;
+        HMSGameServiceManager.Instance.OnIsAllowContinuePlayGamesFailure = OnFailureListener;
 
         fileSize = GameObject.Find("FileSize").GetComponent<Text>();
         imageSize = GameObject.Find("ImageSize").GetComponent<Text>();
@@ -68,37 +72,37 @@ public class GameDemoManager : MonoBehaviour
 
     public void GetMaxImageSize()
     {
-        Debug.Log(TAG + " GetMaxImageSize");
+        Debug.Log(TAG + "GetMaxImageSize");
 
         ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxImageSize();
         detailSizeTask.AddOnSuccessListener((result) =>
         {
-            Debug.Log("[HMSP:] GetMaxImageSize Success " + result);
+            Debug.Log(TAG + "GetMaxImageSize Success " + result);
             imageSize.text = string.Format(MAX_IMAGE_SIZE, result);
         }).AddOnFailureListener((exception) =>
         {
-            Debug.Log("[HMSP:] GetMaxImageSize Failed");
+            Debug.LogError(TAG + "GetMaxImageSize Failed:" + exception);
         });
     }
 
     public void GetMaxFileSize()
     {
-        Debug.Log(TAG + " GetMaxFileSize");
+        Debug.Log(TAG + "GetMaxFileSize");
 
         ITask<int> detailSizeTask = HMSSaveGameManager.Instance.GetMaxFileSize();
         detailSizeTask.AddOnSuccessListener((result) =>
         {
-            Debug.Log("[HMSP:] GetMaxFileSize Success " + result);
+            Debug.Log(TAG + "GetMaxFileSize Success " + result);
             fileSize.text = string.Format(MAX_FILE_SIZE, result);
         }).AddOnFailureListener((exception) =>
         {
-            Debug.Log("[HMSP:] GetMaxFileSize Failed");
+            Debug.LogError(TAG + "GetMaxFileSize Failed:" + exception);
         });
     }
 
     public void CommitGame()
     {
-        Debug.Log(TAG + " CommitGame");
+        Debug.Log(TAG + "CommitGame");
 
         //Example Image Path: give statics path of image on phone
         string ImagePath = Application.streamingAssetsPath;
@@ -110,59 +114,58 @@ public class GameDemoManager : MonoBehaviour
             HMSSaveGameManager.Instance.Commit(description, playedTime, progress, ImagePath, "png");
         }
         else
-            Debug.Log("[HMSP:] Fill box");
+            Debug.Log(TAG + "Fill box");
     }
 
     private void OnGetPlayerInfoSuccess(Player player)
     {
-        Debug.Log("HMS Games: GetPlayerInfo SUCCESS");
-    }
-
-    private void OnGetPlayerInfoFailure(HMSException exception)
-    {
-        Debug.Log("HMS Games: GetPlayerInfo ERROR:" + exception.Message);
+        Debug.Log(TAG + "GetPlayerInfo SUCCESS");
     }
 
     public void ShowArchive()
     {
-        Debug.Log(TAG + " ShowArchive");
+        Debug.Log(TAG + "ShowArchive");
 
         HMSSaveGameManager.Instance.ShowArchive();
     }
 
     public void ShowAchievements()
     {
-        Debug.Log(TAG + " ShowAchievements");
+        Debug.Log(TAG + "ShowAchievements");
 
         HMSAchievementsManager.Instance.ShowAchievements();
     }
 
     private void OnShowAchievementsSuccess()
     {
-        Debug.Log("HMS Games: ShowAchievements SUCCESS ");
-    }
-
-    private void OnShowAchievementsFailure(HMSException exception)
-    {
-        Debug.Log("HMS Games: ShowAchievements ERROR ");
+        Debug.Log(TAG + "ShowAchievements SUCCESS.");
     }
 
     public void GetAchievementsList()
     {
         HMSAchievementsManager.Instance.GetAchievementsList();
         HMSAchievementsManager.Instance.OnGetAchievementsListSuccess = OnGetAchievemenListSuccess;
-        HMSAchievementsManager.Instance.OnGetAchievementsListFailure = OnGetAchievementListFailure;
-
+        HMSAchievementsManager.Instance.OnGetAchievementsListFailure = OnFailureListener;
     }
 
     private void OnGetAchievemenListSuccess(IList<Achievement> achievementList)
     {
-        Debug.Log("HMS Games: GetAchievementsList SUCCESS ");
+        Debug.Log(TAG + "GetAchievementsList SUCCESS.");
     }
 
-    private void OnGetAchievementListFailure(HMSException error)
+    private void OnFailureListener(HMSException exception)
     {
-        Debug.Log("HMS Games: GetAchievementsList ERROR ");
+        Debug.LogError(TAG + "OnFailureListener ERROR:" + exception.Message);
+    }
+
+    private void OnIsAllowContinuePlayGamesSuccess(bool isAllow)
+    {
+        Debug.Log(TAG + "IsAllowContinuePlayGames SUCCESS. isAllow:"+ isAllow);
+    }
+
+    private void OnGetUserPlayStateSuccess(int state)
+    {
+        Debug.Log(TAG + "GetUserPlayState SUCCESS. state:" + state);
     }
 
     public void RevealAchievement(string achievementId)
@@ -172,12 +175,7 @@ public class GameDemoManager : MonoBehaviour
 
     public void OnRevealAchievementSuccess()
     {
-        Debug.Log("HMS Games: RevealAchievement SUCCESS ");
-    }
-
-    private void OnRevealAchievementFailure(HMSException error)
-    {
-        Debug.Log("HMS Games: RevealAchievement ERROR ");
+        Debug.Log(TAG + "RevealAchievement SUCCESS.");
     }
 
     public void IncreaseStepAchievement(string achievementId, int stepIncrement = 1)
@@ -187,46 +185,31 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnIncreaseStepAchievementSuccess()
     {
-        Debug.Log("HMS Games: IncreaseStepAchievement SUCCESS ");
-    }
-
-    private void OnIncreaseStepAchievementFailure(HMSException error)
-    {
-        Debug.Log("HMS Games: IncreaseStepAchievement ERROR ");
+        Debug.Log(TAG + "IncreaseStepAchievement SUCCESS.");
     }
 
     public void SetStepAchievement(string achievementId, int stepsNum)
     {
         HMSAchievementsManager.Instance.OnSetStepAchievementSuccess = OnSetStepAchievementSuccess;
-        HMSAchievementsManager.Instance.OnSetStepAchievementFailure = OnSetStepAchievemenFailure;
+        HMSAchievementsManager.Instance.OnSetStepAchievementFailure = OnFailureListener;
         HMSAchievementsManager.Instance.SetStepAchievement(achievementId, stepsNum);
     }
 
     private void OnSetStepAchievementSuccess()
     {
-        Debug.Log("HMS Games: SetStepAchievement SUCCESS ");
-    }
-
-    private void OnSetStepAchievemenFailure(HMSException error)
-    {
-        Debug.Log("HMS Games: SetStepAchievement ERROR ");
+        Debug.Log(TAG + "SetStepAchievement SUCCESS.");
     }
 
     public void UnlockAchievement(string achievementId)
     {
-        Debug.Log(TAG + " UnlockAchievement");
+        Debug.Log(TAG + "UnlockAchievement");
 
         HMSAchievementsManager.Instance.UnlockAchievement(achievementId);
     }
 
     private void OnUnlockAchievementSuccess()
     {
-        Debug.Log("HMS Games: UnlockAchievement SUCCESS ");
-    }
-
-    private void OnUnlockAchievementFailure(HMSException error)
-    {
-        Debug.Log("HMS Games: UnlockAchievement ERROR ");
+        Debug.Log(TAG + "UnlockAchievement SUCCESS.");
     }
 
     /******************  LEADERBOARDS  ********************/
@@ -242,12 +225,12 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnIsUserScoreShownOnLeaderboardsSuccess(int i)
     {
-        Debug.Log("HMS Games: GetUserScoreShownOnLeaderboards SUCCESS ");
+        Debug.Log(TAG + "GetUserScoreShownOnLeaderboards SUCCESS.");
     }
 
-    private void OnIsUserScoreShownOnLeaderboardsFailure(HMSException error)
+    private void OnIsUserScoreShownOnLeaderboardsFailure(HMSException exception)
     {
-        Debug.Log("HMS Games: GetUserScoreShownOnLeaderboards ERROR ");
+        Debug.LogError(TAG + "GetUserScoreShownOnLeaderboards ERROR:" + exception);
     }
 
     public void SetUserScoreShownOnLeaderboards(int active)
@@ -260,12 +243,12 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnSetUserScoreShownOnLeaderboardsSuccess(int active)
     {
-        Debug.Log("HMS Games: SetUserScoreShownOnLeaderboards SUCCESS ");
+        Debug.Log(TAG + "SetUserScoreShownOnLeaderboards SUCCESS.");
     }
 
     private void OnSetUserScoreShownOnLeaderboardsFailure(HMSException exception)
     {
-        Debug.Log("HMS Games: SetUserScoreShownOnLeaderboards ERROR ");
+        Debug.LogError(TAG + "SetUserScoreShownOnLeaderboards ERROR:" + exception);
     }
 
     public void SubmitScore(string leaderboardId, long score, string scoreTips)
@@ -286,18 +269,18 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnSubmitScoreSuccess(ScoreSubmissionInfo scoreSubmission)
     {
-        Debug.Log("HMS Games: SubmitScore SUCCESS ");
+        Debug.Log(TAG + "SubmitScore SUCCESS.");
     }
 
     private void OnSubmitScoreFailure(HMSException exception)
     {
-        Debug.Log("HMS Games: SubmitScore ERROR ");
+        Debug.LogError(TAG + "SubmitScore ERROR:" + exception);
 
     }
 
     public void ShowLeaderboards()
     {
-        Debug.Log(TAG + " ShowLeaderboards");
+        Debug.Log(TAG + "ShowLeaderboards");
 
         HMSLeaderboardManager.Instance.ShowLeaderboards();
         HMSLeaderboardManager.Instance.OnShowLeaderboardsSuccess = OnShowLeaderboardsSuccess;
@@ -307,13 +290,13 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnShowLeaderboardsSuccess()
     {
-        Debug.Log("HMS Games: ShowLeaderboards SUCCESS ");
+        Debug.Log(TAG + "ShowLeaderboards SUCCESS.");
 
     }
 
-    private void OnShowLeaderboardsFailure(HMSException error)
+    private void OnShowLeaderboardsFailure(HMSException exception)
     {
-        Debug.Log("HMS Games: ShowLeaderboards ERROR ");
+        Debug.LogError(TAG + "ShowLeaderboards ERROR:" + exception);
 
     }
 
@@ -327,12 +310,12 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnGetLeaderboardDataSuccess(Ranking ranking)
     {
-        Debug.Log("HMS Games: GetLeaderboardsData SUCCESS ");
+        Debug.Log(TAG + "GetLeaderboardsData SUCCESS.");
 
     }
     private void OnGetLeaderboardsDataFailure(HMSException exception)
     {
-        Debug.Log("HMS Games: GetLeaderboardsData ERROR ");
+        Debug.LogError(TAG + "GetLeaderboardsData ERROR:" + exception);
 
     }
 
@@ -348,11 +331,11 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnGetScoresFromLeaderboardSuccess(RankingScores rankingScores)
     {
-        Debug.Log("HMS Games: GetScoresFromLeaderboard SUCCESS ");
+        Debug.Log(TAG + "GetScoresFromLeaderboard SUCCESS.");
     }
 
-    private void OnGetScoresFromLeaderboardFailure(HMSException error)
+    private void OnGetScoresFromLeaderboardFailure(HMSException exception)
     {
-        Debug.Log("HMS Games: GetScoresFromLeaderboard ERROR ");
+        Debug.LogError(TAG + "GetScoresFromLeaderboard ERROR:" + exception);
     }
 }

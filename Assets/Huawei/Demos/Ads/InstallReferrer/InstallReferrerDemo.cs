@@ -33,9 +33,9 @@ public class InstallReferrerDemo : MonoBehaviour
         Debug.Log(TAG+"InstallReferrerDisconnect");
     }
 
-    private void OnInstallReferrerFail()
+    private void OnInstallReferrerFail(InstallReferrerResponse response)
     {
-        Debug.Log(TAG+"InstallReferrerFail");
+        Debug.LogError(TAG+ "InstallReferrerFail response:"+ response);
     }
 
     private void OnInstallReferrerSuccess(ReferrerDetails referrerDetails)

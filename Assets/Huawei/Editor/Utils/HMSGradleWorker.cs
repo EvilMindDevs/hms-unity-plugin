@@ -25,7 +25,7 @@ namespace HmsPlugin
                 { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.61.300", "com.huawei.hms:ads-consent:3.4.61.300", "com.huawei.hms:ads-identifier:3.4.58.301", "com.huawei.hms:ads-installreferrer:3.4.58.301" } },
                 { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:6.4.1.302" } },
                 { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.8.0.300" } },
-                { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:6.2.0.301" } },
+                { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:6.8.0.300" } },
                 { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:6.4.0.301" } },
                 { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:6.7.0.300" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },

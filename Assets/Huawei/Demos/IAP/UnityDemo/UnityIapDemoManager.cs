@@ -21,12 +21,15 @@ using UnityEngine.Purchasing.Extension;
 
 public class UnityIapDemoManager : MonoBehaviour
 #if UNITY_PURCHASING
-    ,  IStoreCallback
+    , IStoreCallback
 #endif
 {
 #if UNITY_PURCHASING
 
     public static Action<string> IAPLog;
+
+    public static string lastPurchaseToken;
+
     public ProductCollection products => throw new NotImplementedException();
     public bool useTransactionLog { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -105,7 +108,7 @@ public class UnityIapDemoManager : MonoBehaviour
     public void OnProductsRetrieved(List<ProductDescription> products)
     {
 
-        Debug.Log($"OnProductsRetrieved {  products.Count  }");
+        Debug.Log($"OnProductsRetrieved {products.Count}");
 
         foreach (var item in products)
         {
@@ -124,6 +127,9 @@ public class UnityIapDemoManager : MonoBehaviour
         Debug.Log($"storeSpecificId {storeSpecificId} ,receipt {receipt} , transactionIdentifier {transactionIdentifier}");
 
         var productDefinition = new ProductDefinition(storeSpecificId, storeSpecificId, HuaweiStore.currentProduct.type);
+        lastPurchaseToken = HuaweiStore.PurchaseTokenOfLastPurchase;
+
+        Debug.Log($"lastPurchaseToken {lastPurchaseToken}");
 
         iStore.FinishTransaction(productDefinition, receipt);
     }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using System.Text;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -21,27 +21,47 @@ namespace HmsPlugin
         {
             gradleSettings = new Dictionary<string, string[]>()
             {
-                { AccountToggleEditor.AccountKitEnabled, new string[]{ "com.huawei.hms:hwid:6.9.0.301" } },
-                { AdsToggleEditor.AdsKitEnabled, new string[]{ "com.huawei.hms:ads-lite:13.4.61.300", "com.huawei.hms:ads-consent:3.4.61.300", "com.huawei.hms:ads-identifier:3.4.58.301", "com.huawei.hms:ads-installreferrer:3.4.58.301" } },
-                { AnalyticsToggleEditor.AnalyticsKitEnabled, new string[] { "com.huawei.hms:hianalytics:6.4.1.302" } },
-                { CrashToggleEditor.CrashKitEnabled, new string[] { "com.huawei.agconnect:agconnect-crash:1.8.0.300" } },
-                { GameServiceToggleEditor.GameServiceEnabled, new string[] { "com.huawei.hms:game:6.8.0.300" } },
-                { IAPToggleEditor.IAPKitEnabled, new string[] { "com.huawei.hms:iap:6.4.0.301" } },
-                { PushToggleEditor.PushKitEnabled, new string[] { "com.huawei.hms:push:6.7.0.300" } },
-                { RemoteConfigToggleEditor.RemoteConfigEnabled, new string[] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },
-                { CloudDBToggleEditor.CloudDBEnabled, new string[] { "com.huawei.agconnect:agconnect-cloud-database:1.5.5.300" } },
-                { AuthToggleEditor.AuthEnabled, new string[] { "com.huawei.agconnect:agconnect-auth:1.8.0.300" } },
-                { NearbyServiceToggleEditor.NearbyServiceEnabled, new string[] { "com.huawei.hms:nearby:6.2.0.301" } },
-                { AppMessagingToggleEditor.AppMessagingEnabled, new string[] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },
-                { HMSLibrariesDrawer.AppCompatEnabled,new string[]{ "com.android.support:appcompat-v7:21.0.0" } },
-                { LocationToggleEditor.LocationEnabled,new string[]{ "com.huawei.hms:location:6.4.0.300"} },
-                { ScanKitToggleEditor.ScanKitEnabled, new string[]{ "com.huawei.hms:scan:2.6.0.301" } },
-                { AppLinkingToggleEditor.AppLinkingEnabled,new string[]{ "com.huawei.agconnect:agconnect-applinking:1.8.0.300"} },
-                { DriveKitToggleEditor.DriveKitEnabled, new string[]{ "com.huawei.hms:drive:5.0.0.307" } },
-                { CloudStorageToggleEditor.CloudStorageEnabled, new string[]{ "com.huawei.agconnect:agconnect-storage:1.5.0.100" } },
-                { APMToggleEditor.APMEnabled, new string[]{ "com.huawei.agconnect:agconnect-apms:1.6.1.300"} }
+                { AccountToggleEditor.AccountKitEnabled,        new [] { "com.huawei.hms:hwid:6.9.0.301" } },
+                { AdsToggleEditor.AdsKitEnabled,                new []
+                    {
+                        "com.huawei.hms:ads-lite:13.4.61.300",
+                        "com.huawei.hms:ads-consent:3.4.61.300",
+                        "com.huawei.hms:ads-identifier:3.4.58.301",
+                        "com.huawei.hms:ads-installreferrer:3.4.58.301"
+                    }
+                },
+                { AnalyticsToggleEditor.AnalyticsKitEnabled,    new [] { "com.huawei.hms:hianalytics:6.4.1.302" } },
+                { CrashToggleEditor.CrashKitEnabled,            new [] { "com.huawei.agconnect:agconnect-crash:1.8.0.300" } },
+                { GameServiceToggleEditor.GameServiceEnabled,   new [] { "com.huawei.hms:game:6.2.0.301" } },
+                { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.4.0.301" } },
+                { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.7.0.300" } },
+                { RemoteConfigToggleEditor.RemoteConfigEnabled, new [] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },
+                { CloudDBToggleEditor.CloudDBEnabled,           new [] { "com.huawei.agconnect:agconnect-cloud-database:1.5.5.300" } },
+                { AuthToggleEditor.AuthEnabled,                 new [] { "com.huawei.agconnect:agconnect-auth:1.8.0.300" } },
+                { NearbyServiceToggleEditor.NearbyServiceEnabled, new [] { "com.huawei.hms:nearby:6.2.0.301" } },
+                { AppMessagingToggleEditor.AppMessagingEnabled, new [] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },
+                { HMSLibrariesDrawer.AppCompatEnabled,          new []{ "com.android.support:appcompat-v7:21.0.0" } },
+                { LocationToggleEditor.LocationEnabled,          new [] { "com.huawei.hms:location:6.4.0.300" } },
+                { ScanKitToggleEditor.ScanKitEnabled,            new [] { "com.huawei.hms:scan:2.6.0.301" } },
+                { AppLinkingToggleEditor.AppLinkingEnabled,      new [] { "com.huawei.agconnect:agconnect-applinking:1.8.0.300" } },
+                { DriveKitToggleEditor.DriveKitEnabled,          new [] { "com.huawei.hms:drive:5.0.0.307" } },
+                { CloudStorageToggleEditor.CloudStorageEnabled,  new [] { "com.huawei.agconnect:agconnect-storage:1.5.0.100" } },
+                { APMToggleEditor.APMEnabled,                    new [] { "com.huawei.agconnect:agconnect-apms:1.6.1.300" } },
+                { Modeling3dKitToggleEditor.Modeling3dKitEnabled,new []
+                    {
+                        "com.huawei.hms:modeling3d-object-reconstruct:1.8.0.300",
+                        "com.huawei.hms:modeling3d-motion-capture-model:1.7.0.301",
+                        "com.huawei.hms:modeling3d-material-generate:1.7.0.301",
+                        "com.huawei.hms:modeling3d-motion-capture:1.7.0.301",
+                        "com.huawei.hms:modeling3d-objectreconstruct-slam:1.7.0.301",
+                        "com.huawei.hms:xrkitsdk:1.4.0.0",
+                        "com.huawei.hms:arenginesdk:3.7.0.3",
+                        "com.google.ar:core:1.30.0"
+                    }
+                }
             };
         }
+
 
         private void CreateGradleFiles(string[] gradleConfigs)
         {
@@ -104,34 +124,29 @@ namespace HmsPlugin
 
         private void CreateLauncherGradleFile(string[] gradleConfigs)
         {
-            using (var file = File.CreateText(Application.dataPath + "/Huawei/Plugins/Android/hmsLauncherTemplate.gradle"))
+            var path = Path.Combine(Application.dataPath, "Huawei/Plugins/Android/hmsLauncherTemplate.gradle");
+
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("apply plugin: 'com.huawei.agconnect'\n");
+
+            #region Dependencies
+
+            stringBuilder.AppendLine("dependencies {");
+            for (int i = 0; i < gradleConfigs.Length; i++)
             {
-                file.Write("apply plugin: 'com.huawei.agconnect'\n\n");
-
-                #region Dependencies
-
-                file.Write("dependencies {\n\t");
-
-                for (int i = 0; i < gradleConfigs.Length; i++)
-                {
-                    file.Write(AddDependency(gradleConfigs[i]));
-                }
-
-                file.Write("\n}\n");
-
-                #endregion
-
-                file.Write("android {\n");
-                file.Write("packagingOptions {\n\t");
-                file.Write("pickFirst \"okhttp3/internal/publicsuffix/publicsuffixes.gz\"");
-                file.Write("\n}\n");
-                file.Write("}\n");
-
-
-
+                stringBuilder.AppendLine($"\t{AddDependency(gradleConfigs[i])}");
             }
-        }
+            stringBuilder.AppendLine("}");
+            #endregion
+            stringBuilder.AppendLine("android {");
+            stringBuilder.AppendLine("packagingOptions {");
+            stringBuilder.AppendLine("pickFirst \"okhttp3/internal/publicsuffix/publicsuffixes.gz\"");
+            stringBuilder.AppendLine("pickFirst \"**/*.so\"");
+            stringBuilder.AppendLine("}");
+            stringBuilder.AppendLine("}");
 
+            File.WriteAllText(path, stringBuilder.ToString());
+        }
         private void BaseProjectGradleFile()
         {
             using (var file = File.CreateText(Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle"))

@@ -10,7 +10,7 @@ namespace HmsPlugin
         public Modeling3dKitToggleEditor()
         {
             bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(Modeling3dKitEnabled);
-            _toggle = new Toggle.Toggle("Modeling 3D Kit", enabled, OnStateChanged, true);
+            _toggle = new Toggle.Toggle("3D Modeling Kit (beta)", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
 

@@ -98,9 +98,20 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
     }
     private void SetDefaultParameters(ref int? ReconstructMode, ref int? TextureMode, ref int? FaceLevel)
     {
-        ReconstructMode ??= Modeling3dReconstructConstants.ReconstructMode.PICTURE;
-        TextureMode ??= Modeling3dReconstructConstants.TextureMode.PBR;
-        FaceLevel ??= Modeling3dReconstructConstants.FaceLevel.HIGH;
+        if(ReconstructMode == null) 
+        {
+            ReconstructMode = Modeling3dReconstructConstants.ReconstructMode.PICTURE;
+        }
+
+        if (TextureMode == null)
+        {
+            TextureMode = Modeling3dReconstructConstants.TextureMode.PBR;
+        }
+
+        if (FaceLevel == null)
+        {
+            FaceLevel = Modeling3dReconstructConstants.FaceLevel.HIGH;
+        }
     }
     public Modeling3dReconstructInitResult InitTask(Modeling3dReconstructSetting setting)
     {
@@ -187,7 +198,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         }
         Debug.Log("Permission Granted");
     }
-    public void DownloadFile(Modeling3dReconstructDownloadConfig config, string taskId, string path)
+    public void DownloadFile(Modeling3dReconstructDownloadConfig config, string taskID, string path)
     {
         OnDownloadProgress += (taskId, progress, obj) =>
         {
@@ -218,17 +229,17 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         Debug.Log(TAG + "DownloadsPath: " + downloadsPath);
 
-        PlayerPrefs.SetString("currentTaskId", taskId);
+        PlayerPrefs.SetString("currentTaskId", taskID);
 
 
         var listener = new Modeling3dReconstructDownloadListener(new Modeling3dReconstructUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResultDownload));
 
         modeling3DReconstructEngine.SetReconstructDownloadListener(listener);        
 
-        modeling3DReconstructEngine.DownloadModelWithConfig(taskId, downloadsPath, config);
+        modeling3DReconstructEngine.DownloadModelWithConfig(taskID, downloadsPath, config);
 
     }
-    public void PreviewFile(Modeling3dReconstructPreviewConfig config, string taskId)
+    public void PreviewFile(Modeling3dReconstructPreviewConfig config, string taskID)
     {
         OnError += (taskId, errorCode, errorMessage) =>
         {
@@ -244,9 +255,9 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
             Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + obj);
         };
         var listener = new Modeling3dReconstructPreviewListener(new Modeling3dReconstructUploadORDownloadORPreviewListener(OnError, OnResultPreview));
-        PlayerPrefs.SetString("currentTaskId", taskId);
+        PlayerPrefs.SetString("currentTaskId", taskID);
 
-        modeling3DReconstructEngine.PreviewModelWithConfig(taskId,config, listener);
+        modeling3DReconstructEngine.PreviewModelWithConfig(taskID, config, listener);
     }
     public Modeling3dReconstructQueryResult QueryTask(string taskId)
     {
@@ -358,7 +369,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
     {
         var modeling3DTextureInitResult = InitTask(setting);
 
-        string taskId = modeling3DTextureInitResult.TaskId;
+        string taskID = modeling3DTextureInitResult.TaskId;
 
         OnUploadProgress += (taskId, progress, obj) =>
         {
@@ -382,13 +393,13 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         string uploadsPath = uploadPath ?? Application.persistentDataPath;
         Debug.LogFormat(TAG + "AsyncUploadFile uploadPath: {0}", uploadsPath);
 
-        modeling3DTextureEngine.AsyncUploadFile(taskId, uploadsPath);
+        modeling3DTextureEngine.AsyncUploadFile(taskID, uploadsPath);
 
-        Debug.LogFormat(TAG + "AsyncUploadFile taskId: {0}", taskId);
+        Debug.LogFormat(TAG + "AsyncUploadFile taskId: {0}", taskID);
 
-        return taskId;
+        return taskID;
     }
-    public void AsyncDownloadFile(string taskId, string savePath)
+    public void AsyncDownloadFile(string taskID, string savePath)
     {
         OnDownloadProgress += (taskId, progress, obj) =>
         {
@@ -410,12 +421,12 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         modeling3DTextureEngine.SetTextureDownloadListener(listener);
 
-        modeling3DTextureEngine.AsyncDownloadTexture(taskId, downloadsPath);
+        modeling3DTextureEngine.AsyncDownloadTexture(taskID, downloadsPath);
 
-        Debug.LogFormat(TAG + "AsyncDownloadFile taskId: {0} savePath: {1}", taskId, downloadsPath);
+        Debug.LogFormat(TAG + "AsyncDownloadFile taskId: {0} savePath: {1}", taskID, downloadsPath);
 
     }
-    public void PreviewFile3dTexture(string taskId)
+    public void PreviewFile3dTexture(string taskID)
     {
         OnDownloadProgress += (taskId, progress, obj) =>
         {

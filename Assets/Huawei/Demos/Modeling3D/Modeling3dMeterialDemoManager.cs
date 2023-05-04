@@ -44,7 +44,7 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
     {
         if (!ArePermissionsGranted(REQUIRED_PERMISSIONS))
         {
-            Permission.RequestUserPermissions(REQUIRED_PERMISSIONS);
+            RequestUserPermissions(REQUIRED_PERMISSIONS);
         }
         HMSAccountKitManager.Instance.OnSignInSuccess = OnLoginSuccess;
         HMSAccountKitManager.Instance.OnSignInFailed = OnLoginFailure;
@@ -80,10 +80,12 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
         return true;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void RequestUserPermissions(string[] permissions)
     {
-        
+        foreach (string permission in permissions)
+        {
+            Permission.RequestUserPermission(permission);
+        }
     }
 
     public void UploadFile()

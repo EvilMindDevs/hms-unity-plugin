@@ -65,7 +65,7 @@ public class Modeling3dDemoManager : MonoBehaviour
     {
         if (!ArePermissionsGranted(REQUIRED_PERMISSIONS))
         {
-            Permission.RequestUserPermissions(REQUIRED_PERMISSIONS);
+            RequestUserPermissions(REQUIRED_PERMISSIONS);
         }
 
         HMSModeling3dKitManager.Instance.OnUploadProgress = OnUploadProgress;
@@ -319,7 +319,7 @@ public class Modeling3dDemoManager : MonoBehaviour
         var taskListItem = taskItemPrefab.GetComponent<TaskListDisplay>();
         taskList.gameObject.SetActive(true);
         var taskListItemParentObj = GameObject.Find("TaskList/Body/ScrollView/Panel/Body");
-        var noDataText = FindObjectsOfType<Text>(true).FirstOrDefault(t => t.name == "NoDataText");
+        var noDataText = FindObjectsOfType<Text>().FirstOrDefault(t => t.name == "NoDataText");
         var taskListData = modeling3dTaskEntity.GetAll();
         Debug.LogFormat(TAG + "PlayerPrefsJsonDatabase Count {0}", taskListData.Count);
         noDataText.gameObject.SetActive(taskListData.Count == 0 ? true : false);
@@ -342,7 +342,7 @@ public class Modeling3dDemoManager : MonoBehaviour
                 taskListItem.RawImage.texture = texture;
             }
             taskListItem.HasDownloaded.gameObject.SetActive(!string.IsNullOrWhiteSpace(task.DownloadFilePath));
-            var successCondition = task.Status.Contains("3") && task.Status.Contains("success", System.StringComparison.InvariantCultureIgnoreCase);
+            var successCondition = task.Status.Contains("3") && task.Status.Contains("success");
             taskListItem.PreviewButton.gameObject.SetActive(successCondition);
             taskListItem.DownloadButton.gameObject.SetActive(successCondition);
 
@@ -380,6 +380,14 @@ public class Modeling3dDemoManager : MonoBehaviour
         }
         Debug.Log($"Current TaskId {taskId}");
         HMSModeling3dKitManager.Instance.DeleteTask(taskId);
+    }
+
+    private void RequestUserPermissions(string[] permissions)
+    {
+        foreach (string permission in permissions)
+        {
+            Permission.RequestUserPermission(permission);
+        }
     }
     #endregion
 }

@@ -71,7 +71,19 @@ namespace HmsPlugin
             var getJson = PlayerPrefs.GetString(prefsKey);
             var list = JsonHelper.FromJsonList<T>(getJson);
             
-            var newList = list.Select(item => item.Equals(data) ? data : data).ToList();
+            var newList = new List<T>();
+
+            foreach (var item in list)
+            {
+                if (item.Equals(data))
+                {
+                    newList.Add(data);
+                }
+                else
+                {
+                    newList.Add(item);
+                }
+            }
             
             var newJson = JsonHelper.ToJson(newList);
             

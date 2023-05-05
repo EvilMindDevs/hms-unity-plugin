@@ -47,12 +47,12 @@ namespace HmsPlugin
                 { DriveKitToggleEditor.DriveKitEnabled,          new [] { "com.huawei.hms:drive:5.0.0.307" } },
                 { CloudStorageToggleEditor.CloudStorageEnabled,  new [] { "com.huawei.agconnect:agconnect-storage:1.5.0.100" } },
                 { APMToggleEditor.APMEnabled,                    new [] { "com.huawei.agconnect:agconnect-apms:1.6.1.300" } },
-                { Modeling3dKitToggleEditor.Modeling3dKitEnabled,new []
+                { Modeling3dKitToggleEditor.Modeling3dkitEnabled,new []
                     {
                         "com.huawei.hms:modeling3d-object-reconstruct:1.8.0.300",
                         "com.huawei.hms:modeling3d-motion-capture-model:1.7.0.301",
                         "com.huawei.hms:modeling3d-material-generate:1.7.0.301",
-                        "com.huawei.hms:modeling3d-motion-capture:1.7.0.301",
+                        //"com.huawei.hms:modeling3d-motion-capture:1.7.0.301",
                         "com.huawei.hms:modeling3d-objectreconstruct-slam:1.7.0.301",
                         "com.huawei.hms:xrkitsdk:1.4.0.0",
                         "com.huawei.hms:arenginesdk:3.7.0.3",
@@ -222,7 +222,7 @@ namespace HmsPlugin
             if (pushKitPlugin != null)
                 pushKitPlugin.SetCompatibleWithPlatform(BuildTarget.Android, HMSMainEditorSettings.Instance.Settings.GetBool(PushToggleEditor.PushKitEnabled) && pluginEnabled);
             if (modeling3dPlugin != null)
-                modeling3dPlugin.SetCompatibleWithPlatform(BuildTarget.Android, HMSMainEditorSettings.Instance.Settings.GetBool(PushToggleEditor.Modeling3dkitEnabled) && pluginEnabled);
+                modeling3dPlugin.SetCompatibleWithPlatform(BuildTarget.Android, HMSMainEditorSettings.Instance.Settings.GetBool(Modeling3dKitToggleEditor.Modeling3dkitEnabled) && pluginEnabled);
             if (appDebugAar != null)
                 appDebugAar.SetCompatibleWithPlatform(BuildTarget.Android, pluginEnabled);
 

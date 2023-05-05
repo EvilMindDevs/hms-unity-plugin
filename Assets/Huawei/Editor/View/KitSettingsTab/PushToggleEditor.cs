@@ -9,7 +9,6 @@ namespace HmsPlugin
     public class PushToggleEditor : ToggleEditor, IDrawer, IDependentToggle
     {
         public const string PushKitEnabled = "PushKit";
-        public const string Modeling3dkitEnabled = "Modeling3dkit";
 
         public PushToggleEditor()
         {

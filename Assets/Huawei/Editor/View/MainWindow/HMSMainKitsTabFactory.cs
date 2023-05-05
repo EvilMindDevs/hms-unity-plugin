@@ -75,7 +75,8 @@ internal class HMSMainKitsTabFactory
                     new HorizontalSequenceDrawer(new Spacer(), nearbyServiceToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), pushToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), scanToogleEditor, new Spacer()),
-                    new HorizontalSequenceDrawer(new Spacer(), modeling3DToggleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), new Clickable(new Label(guiContent: new GUIContent(EditorGUIUtility.FindTexture("_help"))), () => { Application.OpenURL("https://evilminddevs.gitbook.io/hms-unity-plugin_/kits-and-services/3d-modeling-kit/guides-and-references"); })
+                    , modeling3DToggleEditor, new Spacer()),
                     new Spacer(),
                     new HorizontalSequenceDrawer(new HorizontalLine()),
                     new HorizontalSequenceDrawer(new Spacer(), new Label("- AppGallery Connect -").SetBold(true), new Spacer()),

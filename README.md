@@ -28,6 +28,7 @@ The HMS Unity plugin helps you integrate the full power of Huawei Mobile Service
 * Crash Service
 * In-App Comments
 * Remote Configuration
+* :new: 3D Modeling Kit (Beta) :new:
 
 ## Requirements
 Android SDK min 21

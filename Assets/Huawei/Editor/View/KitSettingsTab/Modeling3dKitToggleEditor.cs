@@ -4,12 +4,12 @@ namespace HmsPlugin
 {
     public class Modeling3dKitToggleEditor : ToggleEditor, IDrawer
     {
-        public const string Modeling3dKitEnabled = "Modeling3dkit";
+        public const string Modeling3dkitEnabled = "Modeling3dkit";
 
 
         public Modeling3dKitToggleEditor()
         {
-            bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(Modeling3dKitEnabled);
+            bool enabled = HMSMainEditorSettings.Instance.Settings.GetBool(Modeling3dkitEnabled);
             _toggle = new Toggle.Toggle("3D Modeling Kit (beta)", enabled, OnStateChanged, true);
             Enabled = enabled;
         }
@@ -24,7 +24,7 @@ namespace HmsPlugin
             {
                 DisableToggle();
             }
-            HMSMainEditorSettings.Instance.Settings.SetBool(Modeling3dKitEnabled, value);
+            HMSMainEditorSettings.Instance.Settings.SetBool(Modeling3dkitEnabled, value);
         }
 
         public void Draw()
@@ -50,13 +50,13 @@ namespace HmsPlugin
         {
             if (_toggle != null)
             {
-                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(Modeling3dKitEnabled));
+                _toggle.SetChecked(HMSMainEditorSettings.Instance.Settings.GetBool(Modeling3dkitEnabled));
             }
         }
 
         public override void RemoveToggleTabView(bool removeTabs)
         {
-            Debug.Log("Not Implemented");
+            Debug.LogError("Modeling3dKitToggleEditor RemoveToggleTabView Not Implemented");
         }
     }
 }

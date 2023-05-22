@@ -54,6 +54,7 @@ internal class HMSMainKitsTabFactory
         var scanToogleEditor = new ScanKitToggleEditor();
         var cloudStorageToggleEditor = new CloudStorageToggleEditor();
         var apmToggleEditor = new APMToggleEditor();
+        var modeling3DToggleEditor = new Modeling3dKitToggleEditor();
 
         tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), pluginToggleEditor, new Spacer()));
         tab.AddDrawer(new HorizontalLine());
@@ -74,6 +75,8 @@ internal class HMSMainKitsTabFactory
                     new HorizontalSequenceDrawer(new Spacer(), nearbyServiceToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), pushToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), scanToogleEditor, new Spacer()),
+                    new HorizontalSequenceDrawer(new Spacer(), new Clickable(new Label(guiContent: new GUIContent(EditorGUIUtility.FindTexture("_help"))), () => { Application.OpenURL("https://evilminddevs.gitbook.io/hms-unity-plugin_/kits-and-services/3d-modeling-kit/guides-and-references"); })
+                    , modeling3DToggleEditor, new Spacer()),
                     new Spacer(),
                     new HorizontalSequenceDrawer(new HorizontalLine()),
                     new HorizontalSequenceDrawer(new Spacer(), new Label("- AppGallery Connect -").SetBold(true), new Spacer()),
@@ -111,6 +114,7 @@ internal class HMSMainKitsTabFactory
         toggleEditors.Add(scanToogleEditor);
         toggleEditors.Add(cloudStorageToggleEditor);
         toggleEditors.Add(apmToggleEditor);
+        toggleEditors.Add(modeling3DToggleEditor);
 
         _disabledDrawer.SetEnabled(!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
 

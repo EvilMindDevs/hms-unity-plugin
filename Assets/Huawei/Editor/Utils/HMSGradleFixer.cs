@@ -9,11 +9,11 @@ using System.Text.RegularExpressions;
 
 public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 {
-
     public int callbackOrder => 1;
     private const string MINGRADLEVERSION = "3.5.4";
     private const string agconnect_agcp = "classpath 'com.huawei.agconnect:agcp:1.6.1.300'";
     private const string build_gradle = "classpath 'com.android.tools.build:gradle:"+ MINGRADLEVERSION + "'";
+
     private void GradleVersionFixer(string gradleFileAsString, string path)
     {
 #if UNITY_2022_2_OR_NEWER
@@ -50,7 +50,6 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 
     Match gradleRowMatch = Regex.Match(gradleFileAsString, gradleRowPattern);
     Match gradleVersionMatch = Regex.Match(gradleRowMatch.Value, gradleVersionPattern);
-    Debug.Log("gradle2" + gradleVersionMatch + ":::::" + gradleRowMatch);
     Version gradleVersion = Version.Parse(gradleVersionMatch.Value);
     // if users gradle version is lesser than our minimum version.
     if (gradleVersion.CompareTo(gradleMinVersion) < 0)

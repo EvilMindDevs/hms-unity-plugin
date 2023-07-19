@@ -1,39 +1,68 @@
 ﻿using HmsPlugin;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Android;
 using UnityEngine;
+using System;
+using System.Text.RegularExpressions;
 
 public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 {
     public int callbackOrder => 1;
     private const string MINGRADLEVERSION = "3.5.4";
+    private const string agconnect_agcp = "classpath 'com.huawei.agconnect:agcp:1.6.1.300'";
+    private const string build_gradle = "classpath 'com.android.tools.build:gradle:"+ MINGRADLEVERSION + "'";
 
     private void GradleVersionFixer(string gradleFileAsString, string path)
     {
-        string gradleRowPattern = @".*gradle:(\d\.?)+";
-        string gradleVersionPattern = @"(\d\.?)+";
-        Version gradleMinVersion = Version.Parse(MINGRADLEVERSION);
+#if UNITY_2022_2_OR_NEWER
+        // Grade 7.2
+        string currentBuildgradle = File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle").Replace("apply from: 'hmsBaseProjectTemplate.gradle'", "");
 
-        Match gradleRowMatch = Regex.Match(gradleFileAsString, gradleRowPattern);
-        Match gradleVersionMatch = Regex.Match(gradleRowMatch.Value, gradleVersionPattern);
-        Version gradleVersion = Version.Parse(gradleVersionMatch.Value);
-        // if users gradle version is lesser than our minimum version.
-        if (gradleVersion.CompareTo(gradleMinVersion) < 0)
-        {
-            gradleFileAsString = gradleFileAsString.Replace(gradleVersion.ToString(), gradleMinVersion.ToString());
+        if (currentBuildgradle.Contains("dependencies")){
+            if(!currentBuildgradle.Contains("com.huawei.agconnect:agcp:")){
+
+                string buildscriptdependencies = "buildscript {\n\tdependencies {\n\t\t" + agconnect_agcp + "\n\t}\n}\n";
+                currentBuildgradle = buildscriptdependencies + currentBuildgradle;
+                File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", currentBuildgradle);
+            }
+            if (!currentBuildgradle.Contains("com.android.tools.build:gradle:")){//TODO: check for gradle version is bigger then minGradle Version
+
+                string buildscriptdependencies = "buildscript {\n\tdependencies {\n\t\t" + build_gradle + "\n\t}\n}\n";
+                currentBuildgradle = buildscriptdependencies + currentBuildgradle;
+                File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", currentBuildgradle);
+            }
+        }else{
+            string buildscriptdependencies = "buildscript {\n\tdependencies {\n\t\t" + build_gradle + "\n\t\t" + agconnect_agcp + "\n\t}\n}\n";
+            currentBuildgradle = buildscriptdependencies + currentBuildgradle;
+            File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", currentBuildgradle);
+        }
+
+        string currentSettingsgradle = File.ReadAllText(Directory.GetParent(path).FullName + "/settings.gradle");
+        if(!currentSettingsgradle.Contains("https://developer.huawei.com/repo/"))
+            File.WriteAllText(Directory.GetParent(path).FullName + "/settings.gradle", currentSettingsgradle.Replace("mavenCentral()", "mavenCentral()\n\t\tmaven { url 'https://developer.huawei.com/repo/' }"));
+
+#else
+    string gradleRowPattern = @".*gradle:(\d\.?)+";
+    string gradleVersionPattern = @"(\d\.?)+";
+    Version gradleMinVersion = Version.Parse(MINGRADLEVERSION);
+
+    Match gradleRowMatch = Regex.Match(gradleFileAsString, gradleRowPattern);
+    Match gradleVersionMatch = Regex.Match(gradleRowMatch.Value, gradleVersionPattern);
+    Version gradleVersion = Version.Parse(gradleVersionMatch.Value);
+    // if users gradle version is lesser than our minimum version.
+    if (gradleVersion.CompareTo(gradleMinVersion) < 0)
+    {
+        gradleFileAsString = gradleFileAsString.Replace(gradleVersion.ToString(), gradleMinVersion.ToString());
 
 #if UNITY_2019_3_OR_NEWER
-            File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", gradleFileAsString);
+                File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", gradleFileAsString);
 #elif UNITY_2018_1_OR_NEWER
                 File.WriteAllText(path + "/build.gradle", gradleFileAsString);
 #endif
-        }
+    }
+#endif
     }
 
     public void OnPostGenerateGradleAndroidProject(string path)
@@ -64,22 +93,28 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
         FileUtil.ReplaceFile(baseProjectTemplatePath, Directory.GetParent(path).FullName + @"/hmsBaseProjectTemplate.gradle");
 
         //TODO: HMSMainKitsTabFactory.GetEnabledEditors() counts zero sometimes
-                // Get enabled Kits and check if they are one of the below, because only them needs to be updated to the latest version.
-                /*foreach (var toggle in HMSMainKitsTabFactory.GetEnabledEditors())
-                {
-                    if (toggle.GetType() == typeof(AccountToggleEditor) 
-                        || toggle.GetType() == typeof(PushToggleEditor)
-                        || toggle.GetType() == typeof(IAPToggleEditor)
-                        || toggle.GetType() == typeof(NearbyServiceToggleEditor)
-                        || toggle.GetType() == typeof(AnalyticsToggleEditor))
-                    {
-                        GradleVersionFixer(File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle"), path);
-                    }
-                }*/
-        GradleVersionFixer(File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle"), path);
+        // Get enabled Kits and check if they are one of the below, because only them needs to be updated to the latest version.
+        /*foreach (var toggle in HMSMainKitsTabFactory.GetEnabledEditors())
+        {
+            if (toggle.GetType() == typeof(AccountToggleEditor) 
+                || toggle.GetType() == typeof(PushToggleEditor)
+                || toggle.GetType() == typeof(IAPToggleEditor)
+                || toggle.GetType() == typeof(NearbyServiceToggleEditor)
+                || toggle.GetType() == typeof(AnalyticsToggleEditor))
+            {
+                GradleVersionFixer(File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle"), path);
+            }
+        }*/
 
+
+#if UNITY_2022_2_OR_NEWER
+
+        GradleVersionFixer(File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle"), path);
+#else
+        GradleVersionFixer(File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle"), path);
         using (var writer = File.AppendText(Directory.GetParent(path).FullName + "/build.gradle"))
             writer.WriteLine("\napply from: 'hmsBaseProjectTemplate.gradle'");
+#endif
 
         if (HMSMainEditorSettings.Instance.Settings.GetBool(PushToggleEditor.PushKitEnabled))
         {

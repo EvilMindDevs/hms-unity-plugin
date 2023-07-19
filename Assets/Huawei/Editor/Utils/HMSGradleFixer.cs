@@ -4,6 +4,8 @@ using System.Text;
 using UnityEditor;
 using UnityEditor.Android;
 using UnityEngine;
+using System;
+using System.Text.RegularExpressions;
 
 public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 {

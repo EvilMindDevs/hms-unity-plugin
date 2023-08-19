@@ -1,14 +1,9 @@
-﻿
-
-using HuaweiConstants;
-
+﻿using HuaweiConstants;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.IAP;
 using HuaweiMobileServices.Utils;
-
 using System;
 using System.Collections.Generic;
-
 using UnityEngine;
 
 namespace HmsPlugin
@@ -60,6 +55,28 @@ namespace HmsPlugin
         #region Variable: productInfoList
 
         private List<ProductInfo> productInfoList = new List<ProductInfo>();
+
+        public List<ProductInfo> GetProductsList() 
+        {
+            if (productInfoList.Count == 0)
+                    Debug.LogWarning($"[{Tag}]: GetProductsList: productInfoList is empty.");
+
+            return productInfoList;
+        }
+
+        #endregion
+
+        #region Variable: ownedProductLists
+
+        private List<InAppPurchaseData> ownedProductList = new List<InAppPurchaseData>();
+
+        public List<InAppPurchaseData> GetAllOwnedPurchasesasList()
+        {
+            if (ownedProductList.Count == 0)
+                Debug.LogWarning($"[{Tag}]: GetownedAllProductsList: ownedProductList is empty.");
+
+            return ownedProductList;
+        }
 
         #endregion
 
@@ -158,6 +175,7 @@ namespace HmsPlugin
             {
                 RestoreOwnedPurchases((ownedPurchaseResult) =>
                 {
+                    Debug.Log($"[{Tag}]: Success on Prepare_IAP_Products");
                     if (ownedPurchaseResult != null)
                     {
                         foreach (var obj in ownedPurchaseResult.InAppPurchaseDataList)
@@ -177,6 +195,7 @@ namespace HmsPlugin
                     }
                 });
             }
+
 
             void NextPhase()
             {
@@ -311,8 +330,16 @@ namespace HmsPlugin
 
             task.AddOnSuccessListener((result) =>
             {
-                OnObtainOwnedPurchasesSuccess?.Invoke(result);
+                foreach (InAppPurchaseData purchaseData in result.InAppPurchaseDataList)
+                {
+                    if (!ownedProductList.Exists(c => c.ProductId == purchaseData.ProductId))
+                    {
+                        ownedProductList.Add(purchaseData);
+                    }
+                }
 
+                Debug.Log($"[{Tag}]: Obtain Owned Purchases Request success. result.count:{result.ItemList.Count}");
+                OnObtainOwnedPurchasesSuccess?.Invoke(result);
             }).AddOnFailureListener((exception) =>
             {
                 Debug.LogError($"[{Tag}]: Obtain Owned Purchases Request failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
@@ -402,7 +429,7 @@ namespace HmsPlugin
 
         #region Purchase
 
-        public void PurchaseProduct(string productId)
+        public void PurchaseProduct(string productId, bool consume = true)
         {
             Debug.Log($"[{Tag}]: PurchaseProduct");
 
@@ -410,7 +437,7 @@ namespace HmsPlugin
 
             if (productInfo != null)
             {
-                PurchaseProductMethod(productInfo);
+                PurchaseProductMethod(productInfo, consume);
             }
             else
             {
@@ -418,7 +445,7 @@ namespace HmsPlugin
             }
         }
 
-        private void PurchaseProductMethod(ProductInfo productInfo)
+        private void PurchaseProductMethod(ProductInfo productInfo, bool consume)
         {
             Debug.Log($"[{Tag}]: PurchaseProductMethod");
 
@@ -460,7 +487,9 @@ namespace HmsPlugin
 
                         OnBuyProductSuccess.Invoke(purchaseResultInfo);
 
-                        if (sandboxState.SandboxUser)
+                        if(consume)
+                            ConsumePurchase(purchaseResultInfo.InAppPurchaseData);
+                        /*if (sandboxState.SandboxUser)
                         {
                             if (isConsumable || isNonConsumable)
                             {
@@ -470,7 +499,7 @@ namespace HmsPlugin
                         else if (isConsumable)
                         {
                             ConsumePurchase(purchaseResultInfo.InAppPurchaseData);
-                        }
+                        }*/
 
                     }
                     else
@@ -582,12 +611,12 @@ namespace HmsPlugin
 
         public void RestoreOwnedPurchases(Action<OwnedPurchasesResult> action)
         {
-            OnObtainOwnedPurchasesSuccess = (ownedPurchaseResult) =>
+            OnObtainOwnedPurchasesSuccess += (ownedPurchaseResult) =>
             {
                 action?.Invoke(ownedPurchaseResult);
             };
 
-            OnObtainOwnedPurchasesFailure = (error) =>
+            OnObtainOwnedPurchasesFailure += (error) =>
             {
                 Debug.LogError($"[{Tag}]: RestorePurchasesError failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
             };
@@ -599,12 +628,12 @@ namespace HmsPlugin
         {
             Debug.Log($"[{Tag}]: RestorePurchases");
 
-            OnObtainOwnedPurchaseRecordSuccess = (ownedPurchaseResult) =>
+            OnObtainOwnedPurchaseRecordSuccess += (ownedPurchaseResult) =>
             {
                 action?.Invoke(ownedPurchaseResult);
             };
 
-            OnObtainOwnedPurchaseRecordFailure = (error) =>
+            OnObtainOwnedPurchaseRecordFailure += (error) =>
             {
                 Debug.LogError($"[{Tag}]: RestorePurchasesError failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
             };
@@ -625,6 +654,16 @@ namespace HmsPlugin
         public ProductInfo GetProductInfo(string productID)
         {
             return productInfoList.Find(productInfo => productInfo.ProductId == productID);
+        }
+
+        public bool isUserOwnThisProduct(string productID) 
+        {
+            return ownedProductList.Exists(c => c.ProductId == productID);
+        }
+
+        public bool isIapAvailable() 
+        {
+            return (iapAvailable != null) ? (bool)iapAvailable : false;
         }
 
         #endregion

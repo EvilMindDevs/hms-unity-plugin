@@ -94,7 +94,7 @@ public class StoreManager : MonoBehaviour
         {
             GameObject panel;
             //If you want to create constants, you can use IAP tab from Huawei>Kit Settings>IAP Then fill with your products and click "create constant classes". (Coin100 is an example of using constant class)
-            if (pinfo.ProductId.Equals(HMSIAPConstants.coin100))
+            if (pinfo.ProductId.Equals("coin100"))//or HMSIAPConstants.coin100))
                 panel = coin100;
 
             else if (pinfo.ProductId == "coin1000")

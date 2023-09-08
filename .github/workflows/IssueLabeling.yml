@@ -1,0 +1,42 @@
+name: Label issues
+on:
+  issues:
+    types:
+      - opened
+jobs:
+  label_issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ["new"]
+            })
+  auto-assign:
+    runs-on: ubuntu-latest
+    permissions:
+        issues: write
+    steps:
+        - name: 'Auto-assign issue'
+          uses: pozil/auto-assign-issue@v1
+          with:
+              assignees: alihan98ersoy
+              allowSelfAssign: true
+  add-comment:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Add comment
+        uses: peter-evans/create-or-update-comment@5f728c3dae25f329afbe34ee4d08eef25569d79f
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            &nbsp;Thank you for reporting this **issue/advice**. <br>We will get back to you as soon as possible. <br>&emsp;&emsp;&emsp;&emsp;Would you like to star our plugin <br>&emsp;&emsp;&emsp;to support us?:sparkles:
+      

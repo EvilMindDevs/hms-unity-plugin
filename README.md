@@ -3,10 +3,10 @@
 <br />
 [![Official Documentation](https://img.shields.io/badge/Documentation-9146FF?style=plastic&logo=gitbook&logoColor=white)](https://evilminddevs.gitbook.io/hms-unity-plugin/)
 <br />
-[![Discord](https://img.shields.io/badge/Discord-7289DA?style=plastic&logo=discord&logoColor=white)](https://discord.io/hmsunityplugin)
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=plastic&logo=discord&logoColor=white)](https://discord.gg/gAyryuM9Gd)
 ## Overview
 
-The HMS Unity plugin helps you integrate the full power of Huawei Mobile Services into your game developed with Unity. Also you can access other features such as Connect API which provides RESTful APIs that can be used to customize services provided by AppGallery Connect or implement process automation, thereby improving your work efficiency.<br />Huawei kits and services that our plugin will help you to integrate:
+The HMS Unity plugin helps you integrate the full power of Huawei Mobile Services into your game developed with Unity. Also, you can access other features such as Connect API which provides RESTful APIs that can be used to customize services provided by AppGallery Connect or implement process automation, thereby improving your work efficiency.<br />Huawei kits and services that our plugin will help you to integrate:
 
 * Account Kit
 * Ads Kit

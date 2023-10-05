@@ -20,9 +20,6 @@ android {
     defaultConfig {
         targetSdkVersion 16
     }
-    buildFeatures {
-        buildConfig false
-    }
     lintOptions {
         abortOnError false
     }

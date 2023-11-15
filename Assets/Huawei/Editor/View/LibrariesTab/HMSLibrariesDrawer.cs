@@ -8,17 +8,17 @@
         private Toggle.Toggle _hmsCoreInstallToggle;
 
         public const string AppCompatEnabled = "AppCompat";
-        public const string GooglePlayReleaseEnabled = "GooglePlayRelease";
+        public const string HMSCoreInstalledEnabled = "HMSCoreInstalled";
 
         public HMSLibrariesDrawer(TabBar tabBar)
         {
             _tabBar = tabBar;
             if (!HMSMainEditorSettings.Instance.Settings.HasKey(AppCompatEnabled)) 
                 HMSMainEditorSettings.Instance.Settings.SetBool(AppCompatEnabled, true);
-            if (!HMSMainEditorSettings.Instance.Settings.HasKey(GooglePlayReleaseEnabled)) 
-                HMSMainEditorSettings.Instance.Settings.SetBool(GooglePlayReleaseEnabled, true);
+            if (!HMSMainEditorSettings.Instance.Settings.HasKey(HMSCoreInstalledEnabled)) 
+                HMSMainEditorSettings.Instance.Settings.SetBool(HMSCoreInstalledEnabled, true);
             _appSupportToggle = new Toggle.Toggle("App Compat (com.android.support:appcompat-v7:21.0.0)", HMSMainEditorSettings.Instance.Settings.GetBool(AppCompatEnabled, true), OnAppSupportToggleChanged, false).SetLabelWidth(350);
-            _hmsCoreInstallToggle = new Toggle.Toggle("HMS Core Installer (com.huawei.hms:hmscoreinstaller:6.6.0.300)", HMSMainEditorSettings.Instance.Settings.GetBool(GooglePlayReleaseEnabled, true), OnGooglePlayReleaseEnabledChanged, false).SetLabelWidth(375);
+            _hmsCoreInstallToggle = new Toggle.Toggle("HMS Core Installer (com.huawei.hms:hmscoreinstaller:6.6.0.300)", HMSMainEditorSettings.Instance.Settings.GetBool(HMSCoreInstalledEnabled, true), OnHMSCoreInstalledEnabledChanged, false).SetLabelWidth(375);
         }
         
 
@@ -28,9 +28,9 @@
         }
 
         
-        private void OnGooglePlayReleaseEnabledChanged(bool value)
+        private void OnHMSCoreInstalledEnabledChanged(bool value)
         {
-            HMSMainEditorSettings.Instance.Settings.SetBool(GooglePlayReleaseEnabled, value);
+            HMSMainEditorSettings.Instance.Settings.SetBool(HMSCoreInstalledEnabled, value);
         }
 
         public void CreateDrawer()

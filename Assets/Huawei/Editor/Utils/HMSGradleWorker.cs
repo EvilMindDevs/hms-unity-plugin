@@ -59,7 +59,7 @@ namespace HmsPlugin
                         "com.google.ar:core:1.30.0"
                     }
                 },
-                {HMSLibrariesDrawer.GooglePlayReleaseEnabled, new [] {"com.huawei.hms:hmscoreinstaller:6.6.0.300"}}
+                {HMSLibrariesDrawer.HMSCoreInstalledEnabled, new [] {"com.huawei.hms:hmscoreinstaller:6.6.0.300"}}
             };
         }
 

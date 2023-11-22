@@ -35,6 +35,12 @@ public class HMSMainWindow : HMSEditorWindow
         HMSEditorUtils.SetHMSPlugin(false, false);
     }
 
+    [MenuItem("Huawei/Utils/Key Tool")]
+    public static void KeyTool()
+    {
+       GetWindow(typeof(HMSKeyToolWindow), false, "HMS Key Tool", true);
+    }
+
     public override IDrawer CreateDrawer()
     {
         var tabBar = new TabBar();

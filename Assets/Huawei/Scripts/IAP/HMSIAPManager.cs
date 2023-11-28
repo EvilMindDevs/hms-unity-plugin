@@ -26,7 +26,7 @@ namespace HmsPlugin
         public Action<HMSException> OnConsumePurchaseFailure { get; set; }
 
         public Action<PurchaseResultInfo> OnBuyProductSuccess { get; set; }
-        public Action<int> OnBuyProductFailure { get; set; }
+        public Action<PurchaseResultInfo> OnBuyProductFailure { get; set; }
 
         public Action<OwnedPurchasesResult> OnObtainOwnedPurchasesSuccess { get; set; }
         public Action<HMSException> OnObtainOwnedPurchasesFailure { get; set; }
@@ -429,7 +429,7 @@ namespace HmsPlugin
 
         #region Purchase
 
-        public void PurchaseProduct(string productId, bool consume = true)
+        public void PurchaseProduct(string productId, string developerPayload = "", bool consume = true)
         {
             Debug.Log($"[{Tag}]: PurchaseProduct");
 
@@ -437,7 +437,7 @@ namespace HmsPlugin
 
             if (productInfo != null)
             {
-                PurchaseProductMethod(productInfo, consume);
+                PurchaseProductMethod(productInfo, developerPayload, consume);
             }
             else
             {
@@ -445,7 +445,7 @@ namespace HmsPlugin
             }
         }
 
-        private void PurchaseProductMethod(ProductInfo productInfo, bool consume)
+        private void PurchaseProductMethod(ProductInfo productInfo, string developerPayload, bool consume)
         {
             Debug.Log($"[{Tag}]: PurchaseProductMethod");
 
@@ -459,7 +459,7 @@ namespace HmsPlugin
             {
                 PriceType = productInfo.PriceType,
                 ProductId = productInfo.ProductId,
-                DeveloperPayload = string.Empty
+                DeveloperPayload = developerPayload,
             };
 
             bool isSubscription = (IAPProductType)productInfo.PriceType.Value == IAPProductType.Subscription;
@@ -591,7 +591,7 @@ namespace HmsPlugin
                                 Debug.LogError($"[{Tag}]: BuyProduct failed. ReturnCode: " + purchaseResultInfo.ReturnCode + ", ErrorMsg: " + purchaseResultInfo.ErrMsg);
                                 break;
                         }
-                        OnBuyProductFailure?.Invoke(purchaseResultInfo.ReturnCode);
+                        OnBuyProductFailure?.Invoke(purchaseResultInfo);
                     }
 
                 }, (exception) =>

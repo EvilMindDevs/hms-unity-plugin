@@ -173,6 +173,9 @@ namespace HmsPlugin
 
             void ConsumeControl()
             {
+                if (!HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.ConsumptionOwnedItemsOnInitialize))
+                    return;
+
                 RestoreOwnedPurchases((ownedPurchaseResult) =>
                 {
                     Debug.Log($"[{Tag}]: Success on Prepare_IAP_Products");

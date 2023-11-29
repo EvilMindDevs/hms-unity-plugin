@@ -11,6 +11,7 @@ namespace HmsPlugin
     {
         private const string SettingsFilename = "HMSIAPKitSettings";
         public const string InitializeOnStart = "InitializeOnStart";
+        public const string ConsumptionOwnedItemsOnInitialize = "ConsumptionOwnedItemsOnInitialize";
         private SettingsScriptableObject loadedSettings;
 
         private HMSSettings _settings;

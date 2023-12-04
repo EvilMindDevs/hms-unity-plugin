@@ -1,5 +1,6 @@
 using HmsPlugin;
 using HuaweiMobileServices.Id;
+using HuaweiMobileServices.Modeling3D.MeterialGenerateSdk.Cloud;
 using HuaweiMobileServices.Utils;
 using UnityEngine;
 using UnityEngine.Android;
@@ -18,6 +19,8 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
     private const string LOGGED_IN = "{0} is logged in";
     private const string LOGIN_ERROR = "Error or cancelled login";
 
+    private string TASKID = "";
+    private Modeling3dTextureSetting settings;
 
     #region Singleton
 
@@ -46,26 +49,21 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
         {
             RequestUserPermissions(REQUIRED_PERMISSIONS);
         }
-        HMSAccountKitManager.Instance.OnSignInSuccess = OnLoginSuccess;
-        HMSAccountKitManager.Instance.OnSignInFailed = OnLoginFailure;
-
-        Debug.Log(TAG + "LogIn");
-
-        // HMSAccountKitManager.Instance.SignIn();
-        //Getting apikey in agconnect json file.
-        HMSModeling3dKitManager.Instance.AuthWithApiKey("DAEDAGtU1aO9158M5/1uIFS57ZkwmQhmep73W5AFzVyw63yA9I5JjgAZdEq5A03pFZp4OGcBORXVd6OBKFwRvye5GoqR2lTbW216qA==");
-
+        HMSModeling3dKitManager.Instance.AuthWithApiKey(HMSModelingKitSettings.ModelingKeyAPI);
+        settings = HMSModeling3dKitManager.Instance.Create3dTextureEngine();
+        HMSModeling3dKitManager.Instance.OnResult3dTextureUpload += OnMaterialUploadResult;
+        HMSModeling3dKitManager.Instance.OnUploadProgress += OnUploadProgress;
+        HMSModeling3dKitManager.Instance.OnError += OnError;
     }
-
     public void OnLoginSuccess(AuthAccount authHuaweiId)
     {
-        Debug.Log(string.Format(LOGGED_IN, authHuaweiId.DisplayName) + " " + authHuaweiId.AccessToken);
-        // HMSModeling3dKitManager.Instance.AuthWithAccessToken(authHuaweiId.AccessToken);
+        Debug.Log(TAG + string.Format(LOGGED_IN, authHuaweiId.DisplayName) + " " + authHuaweiId.AccessToken);
+        // HMSModeling3dKitManager.Instance.AuthWithAccessToken(authHuaweiId.AccessToken); //ForAuthService
     }
 
     public void OnLoginFailure(HMSException error)
     {
-        Debug.Log(LOGIN_ERROR);
+        Debug.LogError(TAG + LOGIN_ERROR +"error:" + error);
     }
 
     private bool ArePermissionsGranted(string[] permissions)
@@ -88,20 +86,81 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
         }
     }
 
+    #region Upload Material
+    private void OnMaterialUploadResult(string TaskId, Modeling3dTextureUploadResult result, JavaObject @object)
+    {
+        Debug.Log(TAG + "UploadResult TaskId:" + TaskId + " -- result.TaskId:" + result.TaskId);
+        TASKID = TaskId;
+    }
+    private void OnError(string taskId, int errorCode, string errorMessage)
+    {
+        AndroidToast.MakeText("Upload error "+errorMessage).Show();
+        Debug.LogError(TAG + "Upload error -- TaskID:" + taskId + " Code:" + errorCode + " msg:" + errorMessage);
+    }
+    private void OnUploadProgress(string taskId, double progress, AndroidJavaObject obj)
+    {
+        Debug.Log(TAG + " OnUploadProgress:" + progress);
+    }
     public void UploadFile()
     {
-        var settings = HMSModeling3dKitManager.Instance.Create3dTextureEngine();
-        var initResult = HMSModeling3dKitManager.Instance.InitTask(settings);
-        PlayerPrefs.SetString("currentTaskId", initResult.TaskId);
-        HMSModeling3dKitManager.Instance.AsyncUploadFile(settings,null);
+        AndroidToast.MakeText("Number of Input Images: 1 - 5 images").Show();
+        AndroidFolderPicker.mOnSuccessListener = OnUploadSuccessFolderPicker;
+        AndroidFolderPicker.OpenFolderPicker();
     }
+    public void OnUploadSuccessFolderPicker(AndroidIntent androidIntent)
+    {
+        var currentUploadFilePath = androidIntent.GetData().GetPath;
+        HMSModeling3dKitManager.Instance.AsyncUploadFile(settings, currentUploadFilePath);
+        AndroidToast.MakeText("Start Uploading...").Show();
+    }
+    #endregion
+    #region Download Material
+    public void DownloadFile()
+    {
+        AndroidFolderPicker.mOnSuccessListener = OnDownloadSuccessFolderPicker;
+        AndroidFolderPicker.OpenFolderPicker();
+    }
+    public void OnDownloadSuccessFolderPicker(AndroidIntent androidIntent)
+    {
+        HMSModeling3dKitManager.Instance.Create3dTextureEngine();
+        var currentDownloadFilePath = androidIntent.GetData().GetPath;
+        HMSModeling3dKitManager.Instance.AsyncDownloadFile(TASKID, currentDownloadFilePath);
+        AndroidToast.MakeText("Start Downloading...").Show();
+    }
+    #endregion
+    #region Query Task
     public void QueryTask()
     {
-        var currTaskId = PlayerPrefs.GetString("currentTaskId");
-        Debug.Log($"Current TaskId {currTaskId}");
-        HMSModeling3dKitManager.Instance.QueryTaskRestrictStatusModeling3dTexture(currTaskId);
-        HMSModeling3dKitManager.Instance.QueryTaskModeling3dTexture(currTaskId);
+        Debug.Log($"{TAG} QueryTask Current TaskId {TASKID}");
+        //HMSModeling3dKitManager.Instance.QueryTaskRestrictStatusModeling3dTexture(TASKID);
+        Modeling3dTextureQueryResult result = HMSModeling3dKitManager.Instance.QueryTaskModeling3dTexture(TASKID);
+        IdentifyStatus(result.Status);
     }
+    private void IdentifyStatus(int status) 
+    {
+        switch (status) 
+        {
+            case ((int)HMSModeling3dKitManager.ProgressStatus.INITED):
+                AndroidToast.MakeText("TaskID:" + TASKID + "\nTask initialization is complete.").Show();
+                break;
+            case ((int)HMSModeling3dKitManager.ProgressStatus.UPLOAD_COMPLETED):
+                AndroidToast.MakeText("TaskID:" + TASKID + "\nFile upload is complete.").Show();
+                break;
+            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_START):
+                AndroidToast.MakeText("TaskID:" + TASKID + "\nA material generation task starts.").Show();
+                break;
+            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_COMPLETED):
+                AndroidToast.MakeText("TaskID:" + TASKID + "\nA material generation task is complete.").Show();
+                break;
+            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_FAILED):
+                AndroidToast.MakeText("TaskID:" + TASKID + "\nA material generation task fails.").Show();
+                break;
+            default:
+                AndroidToast.MakeText("TaskID:" + TASKID + "\n Status:"+status+" Unknown status.").Show();
+                break;
+        }
+    }
+    #endregion
 
     public void Create3DCaptureImage()
     {
@@ -109,8 +168,12 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
         AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
         AndroidJavaObject context = activity.Call<AndroidJavaObject>("getApplicationContext");
 
-
         HMSModeling3dKitManager.Instance.Create3DCaptureImageEngine(context);
     }
 
+    public void MaterialPreview() 
+    {
+        Debug.Log($"{TAG} Material preview TaskId:{TASKID}");
+        HMSModeling3dKitManager.Instance.PreviewFile3dTexture(TASKID);
+    }
 }

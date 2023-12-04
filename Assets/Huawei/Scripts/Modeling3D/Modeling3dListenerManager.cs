@@ -6,6 +6,7 @@ using static HuaweiMobileServices.Modeling3D.MeterialGenerateSdk.Cloud.Modeling3
 using static HuaweiMobileServices.Modeling3D.MeterialGenerateSdk.Cloud.Modeling3dTexturePreviewListener;
 using static HuaweiMobileServices.Modeling3D.MeterialGenerateSdk.Cloud.Modeling3dTextureUploadListener;
 using static HuaweiMobileServices.Modeling3D.ModelingCaptureSdk.Modeling3dCaptureImageListener;
+using HuaweiMobileServices.Utils;
 
 namespace HmsPlugin
 {
@@ -108,13 +109,13 @@ namespace HmsPlugin
     {
         private Action<string, double, AndroidJavaObject> Progress;
         private Action<string, int, string> Error;
-        private Action<string, Modeling3dTextureUploadResult, AndroidJavaObject> UploadResult;
+        private Action<string, Modeling3dTextureUploadResult, JavaObject> UploadResult;
         private Action<string, Modeling3dTextureDownloadResult, AndroidJavaObject> DownloadResult;
         private Action<string, AndroidJavaObject> PreviewResult;
 
         public Modeling3dTextureUploadORDownloadORPreviewListener(Action<string, double, AndroidJavaObject> Progress,
                                                     Action<string, int, string> Error
-                                                    , Action<string, Modeling3dTextureUploadResult, AndroidJavaObject> UploadResult)
+                                                    , Action<string, Modeling3dTextureUploadResult, JavaObject> UploadResult)
         {
             this.Progress = Progress;
             this.Error = Error;
@@ -147,7 +148,7 @@ namespace HmsPlugin
             Error?.Invoke(taskId, errorCode, errorMessage);
         }
 
-        public void onResult(string taskId, Modeling3dTextureUploadResult result, AndroidJavaObject javaObject)
+        public void onResult(string taskId, Modeling3dTextureUploadResult result, JavaObject javaObject)
         {
             UploadResult?.Invoke(taskId, result, javaObject);
         }
@@ -162,10 +163,9 @@ namespace HmsPlugin
             PreviewResult?.Invoke(taskId, javaObject);
         }
 
-        public void onUploadProgress(string taskId, double progress, AndroidJavaObject javaObject)
+        public void onUploadProgress(string taskId, double progress, JavaObject javaObject)
         {
-            Progress?.Invoke(taskId, progress, javaObject);
+           // Progress?.Invoke(taskId, progress, javaObject);
         }
-        
     }
 }

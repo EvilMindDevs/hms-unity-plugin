@@ -482,7 +482,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &226796066
 RectTransform:
   m_ObjectHideFlags: 0
@@ -547,7 +547,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 226796068}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 298829229}
+        m_TargetAssemblyTypeName: TaskListDisplay, HuaweiMobileServices.Core
+        m_MethodName: DownloadTask
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &226796068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -597,6 +609,7 @@ GameObject:
   - component: {fileID: 298829226}
   - component: {fileID: 298829228}
   - component: {fileID: 298829227}
+  - component: {fileID: 298829229}
   m_Layer: 5
   m_Name: TaskList
   m_TagString: Untagged
@@ -665,6 +678,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 298829225}
   m_CullTransparentMesh: 1
+--- !u!114 &298829229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 298829225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa179a0ae9214b44298e348efe22a5e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: {fileID: 0}
+  Status: {fileID: 0}
+  Image: {fileID: 0}
+  RawImage: {fileID: 0}
+  PreviewButton: {fileID: 0}
+  DownloadButton: {fileID: 0}
+  HasDownloaded: {fileID: 0}
+  TaskId: 
 --- !u!1 &468504793
 GameObject:
   m_ObjectHideFlags: 0
@@ -2332,6 +2365,7 @@ MonoBehaviour:
   progressBar: {fileID: 96863837}
   taskList: {fileID: 298829225}
   taskItemPrefab: {fileID: 2656953792847694861, guid: 0edb0819f17eceb4ea8171d58ef163e9, type: 3}
+  API: adsdsasadsadsad
 --- !u!1 &1316421800
 GameObject:
   m_ObjectHideFlags: 0
@@ -2388,7 +2422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1339655658
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3523,7 +3557,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1841041448
 RectTransform:
   m_ObjectHideFlags: 0

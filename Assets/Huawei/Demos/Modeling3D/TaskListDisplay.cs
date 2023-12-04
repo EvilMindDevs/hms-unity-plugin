@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using HmsPlugin;
 using HuaweiMobileServices.Modeling3D.ObjReconstructSdk.Cloud;
@@ -25,16 +24,6 @@ public class TaskListDisplay : MonoBehaviour, IPointerClickHandler
     #endregion
 
     #region Methods
-    // Start is called before the first frame update
-    void Start()
-    {
-        Debug.Log(TAG + "Start");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
     public void DeleteTask()
     {
@@ -76,7 +65,6 @@ public class TaskListDisplay : MonoBehaviour, IPointerClickHandler
         {
             var result = UpdateTaskStatus(task, modeling3dDemoManager);
         }
-
     }
     private Modeling3dReconstructQueryResult UpdateTaskStatus(Modeling3dDTO task, Modeling3dDemoManager modeling3dDemoManager)
     {

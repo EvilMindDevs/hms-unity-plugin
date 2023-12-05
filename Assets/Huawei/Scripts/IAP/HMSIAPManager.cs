@@ -26,7 +26,8 @@ namespace HmsPlugin
         public Action<HMSException> OnConsumePurchaseFailure { get; set; }
 
         public Action<PurchaseResultInfo> OnBuyProductSuccess { get; set; }
-        public Action<PurchaseResultInfo> OnBuyProductFailure { get; set; }
+        public Action<int> OnBuyProductFailure { get; set; }
+        public Action<PurchaseResultInfo> OnBuyProductFailurePurchaseResultInfo { get; set; }
 
         public Action<OwnedPurchasesResult> OnObtainOwnedPurchasesSuccess { get; set; }
         public Action<HMSException> OnObtainOwnedPurchasesFailure { get; set; }
@@ -489,6 +490,8 @@ namespace HmsPlugin
 
                         if(consume)
                             ConsumePurchase(purchaseResultInfo.InAppPurchaseData);
+                        else
+                            Debug.LogWarning($"[{Tag}]: Consume is false. Please aware of the situation. You should consume the product by your own. ProductID: {purchaseIntentReq.ProductId}");
                         /*if (sandboxState.SandboxUser)
                         {
                             if (isConsumable || isNonConsumable)
@@ -500,7 +503,6 @@ namespace HmsPlugin
                         {
                             ConsumePurchase(purchaseResultInfo.InAppPurchaseData);
                         }*/
-
                     }
                     else
                     {
@@ -591,7 +593,8 @@ namespace HmsPlugin
                                 Debug.LogError($"[{Tag}]: BuyProduct failed. ReturnCode: " + purchaseResultInfo.ReturnCode + ", ErrorMsg: " + purchaseResultInfo.ErrMsg);
                                 break;
                         }
-                        OnBuyProductFailure?.Invoke(purchaseResultInfo);
+                        OnBuyProductFailure?.Invoke(purchaseResultInfo.ReturnCode);
+                        OnBuyProductFailurePurchaseResultInfo?.Invoke(purchaseResultInfo);
                     }
 
                 }, (exception) =>

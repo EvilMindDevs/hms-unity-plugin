@@ -18,7 +18,7 @@ namespace HmsPlugin
 
         private Foldout _productsFoldout = new Foldout("Product List");
 
-        private Toggle.Toggle _initializeOnStartToggle;
+        private Toggle.Toggle _initializeOnStartToggle, _consumeOnInitToggle;
 
         private IAPProductManipulator _productManipulator;
 
@@ -28,6 +28,8 @@ namespace HmsPlugin
             _productListSettings = HMSIAPProductListSettings.Instance.Settings;
             _productManipulator = new IAPProductManipulator(_productListSettings);
             _initializeOnStartToggle = new Toggle.Toggle("Initialize On Start*", HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.InitializeOnStart), OnInitializeOnStartToggle).SetTooltip("Obtains product info in Start function.");
+            _consumeOnInitToggle = new Toggle.Toggle("Consume OnInitialize*", HMSIAPKitSettings.Instance.Settings.GetBool(HMSIAPKitSettings.ConsumptionOwnedItemsOnInitialize), OnConsumeToggle)
+                .SetTooltip("Consumes product you did not consumed when initializing IAP.\nIt is recomended that disable this and create your own logic for consumption.");
 
             _productManipulator.OnRefreshRequired += OnIAPProductChanged;
             OnIAPProductChanged();
@@ -37,6 +39,10 @@ namespace HmsPlugin
         private void OnInitializeOnStartToggle(bool value)
         {
             HMSIAPKitSettings.Instance.Settings.SetBool(HMSIAPKitSettings.InitializeOnStart, value);
+        }
+        private void OnConsumeToggle(bool value)
+        {
+            HMSIAPKitSettings.Instance.Settings.SetBool(HMSIAPKitSettings.ConsumptionOwnedItemsOnInitialize, value);
         }
 
         ~HMSIAPSettingsDrawer()
@@ -83,6 +89,7 @@ namespace HmsPlugin
             AddDrawer(new HorizontalLine());
             AddDrawer(new HorizontalSequenceDrawer(new HorizontalLine(), new Label.Label("Utilities").SetBold(true), new HorizontalLine()));
             AddDrawer(_initializeOnStartToggle);
+            AddDrawer(_consumeOnInitToggle);
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Import Consumables from Google IAP CSV"), new Button.Button("Import", ImportFromGoogle).SetWidth(100)));
             AddDrawer(new HorizontalLine());
         }

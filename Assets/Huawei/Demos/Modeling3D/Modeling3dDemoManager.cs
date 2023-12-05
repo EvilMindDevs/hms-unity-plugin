@@ -10,7 +10,6 @@ using UnityEngine;
 using UnityEngine.Android;
 using UnityEngine.UI;
 
-
 public class Modeling3dDemoManager : MonoBehaviour
 {
     ///It is necessary to add permissions in the Android manifest. Assets\Huawei\Plugins\Android\HMSUnityModelingKit.plugin\AndroidManifest.xml
@@ -24,7 +23,6 @@ public class Modeling3dDemoManager : MonoBehaviour
     };
 
     //Getting apikey in agconnect json file.
-    private const string YOUR_API_KEY = "";
     private const string TASK_LIST_PREFS_KEY = "3dTaskList";
     private const string TAG = "[HMS] Modeling3dDemoManager ";
 
@@ -38,7 +36,7 @@ public class Modeling3dDemoManager : MonoBehaviour
     [SerializeField] private GameObject taskList;
     [SerializeField] private GameObject taskItemPrefab;
     #endregion
-    /// TODO: This singleton can be written as a generic class to extend MonoBehavior. It saves code repetition and is available in every demo manager.r.
+    /// TODO: This singleton can be written as a generic class to extend MonoBehavior. It saves code repetition and is available in every demo manager.
     #region Singleton
 
     public static Modeling3dDemoManager Instance { get; private set; }
@@ -74,10 +72,8 @@ public class Modeling3dDemoManager : MonoBehaviour
         HMSModeling3dKitManager.Instance.OnResultDownload = OnResultDownload;
         //HMSModeling3dKitManager.Instance.OnResultPreview = OnResultPreview;
 
-        Debug.Log(TAG + "LogIn By API key");
-
-        HMSModeling3dKitManager.Instance.AuthWithApiKey(YOUR_API_KEY);
-
+        string APIKEY = HMSModelingKitSettings.Instance.Settings.Get(HMSModelingKitSettings.ModelingKeyAPI);
+        HMSModeling3dKitManager.Instance.AuthWithApiKey(APIKEY);
     }
     public void OnUploadProgress(string taskId, double progress, AndroidJavaObject obj) {
         progressBar.current = Mathf.RoundToInt((float)progress);
@@ -93,7 +89,6 @@ public class Modeling3dDemoManager : MonoBehaviour
             modeling3dTaskEntity.Update(data);
             PlayerPrefs.SetString("currentTaskId", taskId);
         });
-
     }
     public void OnResultUpload(string taskId, Modeling3dReconstructUploadResult result, AndroidJavaObject obj)
     {
@@ -111,9 +106,9 @@ public class Modeling3dDemoManager : MonoBehaviour
                 data.Type = 1;
                 modeling3dTaskEntity.Update(data);
                 PlayerPrefs.SetString("currentTaskId", taskId);
+                PlayerPrefs.Save();
                 AndroidToast.MakeText("Upload Complated. Open Task List and Check It.").Show();
                 progressBar.gameObject.SetActive(false);
-
             });
         }
         else
@@ -127,17 +122,18 @@ public class Modeling3dDemoManager : MonoBehaviour
     public void OnDownloadProgress(string taskId, double progress, AndroidJavaObject obj)
     {
         progressBar.current = Mathf.RoundToInt((float)progress);
-
+        Debug.Log($"{TAG} OnDownloadProgress Android Obj: {obj?.GetRawObject()} and TaskId: {taskId} and Result: {progress}");
         HMSDispatcher.Invoke(() =>
         {
+            var taskListItem = taskItemPrefab.GetComponent<TaskListDisplay>();
             var data = new Modeling3dDTO();
-            var currentTaskId = PlayerPrefs.GetString("currentTaskId");
+            var currentTaskId = taskListItem.TaskId;
+            Debug.Log($"{TAG} OnDownloadProgress TaskId: {currentTaskId}");
             data = modeling3dTaskEntity.Find(currentTaskId);
             data.TaskId = taskId;
             data.Status = $"DownloadProgress";
             data.Type = 2;
             modeling3dTaskEntity.Update(data);
-            PlayerPrefs.SetString("currentTaskId", taskId);
         });
     }
     public void OnResultDownload(string taskId, Modeling3dReconstructDownloadResult result, AndroidJavaObject obj)
@@ -158,7 +154,6 @@ public class Modeling3dDemoManager : MonoBehaviour
                 PlayerPrefs.SetString("currentTaskId", taskId);
                 AndroidToast.MakeText($"Download Complated.\n Download Path: {currentDownloadFilePath}").Show();
                 progressBar.gameObject.SetActive(false);
-
             });
         }
         else
@@ -168,7 +163,6 @@ public class Modeling3dDemoManager : MonoBehaviour
                 AndroidToast.MakeText("Download Not Complated").Show();
             });
         }
-
     }
     public void OnResultPreview(string taskId, AndroidJavaObject obj)
     {
@@ -185,7 +179,6 @@ public class Modeling3dDemoManager : MonoBehaviour
             modeling3dTaskEntity.Update(data);
             PlayerPrefs.SetString("currentTaskId", taskId);
             AndroidToast.MakeText("Preview Complated").Show();
-
         });
     }
     private bool ArePermissionsGranted(string[] permissions)
@@ -201,9 +194,9 @@ public class Modeling3dDemoManager : MonoBehaviour
     }
     public void UploadFile()
     {
+        AndroidToast.MakeText("Number of Input Images:20 to 200 (at least 50 recommended.)").Show();
         AndroidFolderPicker.mOnSuccessListener = OnUploadSuccessFolderPicker;
         AndroidFolderPicker.OpenFolderPicker();
-
     }
     public void OnUploadSuccessFolderPicker(AndroidIntent androidIntent)
     {
@@ -215,11 +208,9 @@ public class Modeling3dDemoManager : MonoBehaviour
         progressBar.current = 0;
         HMSModeling3dKitManager.Instance.UploadFile(settings, currentUploadFilePath);
         AndroidToast.MakeText("Start Uploading...").Show();
-
     }
     public void DownloadFile(string TaskId, string ModelFormat = null, int? TextureMode = null)
     {
-        PlayerPrefs.SetString("currentTaskId", TaskId);
         this.modelFormat = ModelFormat;
         this.textureMode = TextureMode;
         AndroidFolderPicker.mOnSuccessListener = OnDownloadSuccessFolderPicker;
@@ -237,7 +228,6 @@ public class Modeling3dDemoManager : MonoBehaviour
         progressBar.current = 0;
         HMSModeling3dKitManager.Instance.DownloadFile(config, PlayerPrefs.GetString("currentTaskId"), currentDownloadFilePath);
         AndroidToast.MakeText("Start Downloading...\n Please Back to Main Menu.").Show();
-
     }
     public void PreviewFile(string TaskId, int? TextureMode = null)
     {
@@ -250,8 +240,6 @@ public class Modeling3dDemoManager : MonoBehaviour
 
         HMSModeling3dKitManager.Instance.PreviewFile(config, TaskId);
         AndroidToast.MakeText("Start Previewing...").Show();
-
-
     }
     public Modeling3dReconstructQueryResult QueryTask(string taskId = null)
     {
@@ -259,7 +247,7 @@ public class Modeling3dDemoManager : MonoBehaviour
         {
             taskId = PlayerPrefs.GetString("currentTaskId");
         }
-        Debug.Log($"Current TaskId {taskId}");
+        Debug.Log($"{TAG} Current TaskId {taskId}");
         return HMSModeling3dKitManager.Instance.QueryTask(taskId);
     }
     public void Create3DCaptureImage()
@@ -296,7 +284,6 @@ public class Modeling3dDemoManager : MonoBehaviour
                 Invoke("CancelOperationWait", 5);
             });
         }
-
     }
     private void CancelOperationWait()
     {
@@ -322,11 +309,10 @@ public class Modeling3dDemoManager : MonoBehaviour
         var noDataText = FindObjectsOfType<Text>().FirstOrDefault(t => t.name == "NoDataText");
         var taskListData = modeling3dTaskEntity.GetAll();
         Debug.LogFormat(TAG + "PlayerPrefsJsonDatabase Count {0}", taskListData.Count);
-        noDataText.gameObject.SetActive(taskListData.Count == 0 ? true : false);
+        noDataText?.gameObject.SetActive(taskListData.Count == 0 ? true : false);
 
         DestoryChildrenByType(taskListItemParentObj, typeof(TaskListDisplay));
         CreateTaskListItem(taskListData, taskListItem, taskListItemParentObj);
-
     }
     private void CreateTaskListItem(List<Modeling3dDTO> taskListData, TaskListDisplay taskListItem, GameObject taskListItemParentObj){
         foreach (var task in taskListData)
@@ -342,7 +328,7 @@ public class Modeling3dDemoManager : MonoBehaviour
                 taskListItem.RawImage.texture = texture;
             }
             taskListItem.HasDownloaded.gameObject.SetActive(!string.IsNullOrWhiteSpace(task.DownloadFilePath));
-            var successCondition = task.Status.Contains("3") && task.Status.Contains("success");
+            var successCondition = task.Status.Contains("3") && task.Status.Contains("Success");
             taskListItem.PreviewButton.gameObject.SetActive(successCondition);
             taskListItem.DownloadButton.gameObject.SetActive(successCondition);
 
@@ -357,7 +343,6 @@ public class Modeling3dDemoManager : MonoBehaviour
                 obj.transform.SetSiblingIndex(lastChild.GetSiblingIndex() + 1);
                 obj.transform.SetPositionAndRotation(new Vector3(lastChild.position.x, lastChild.position.y - 150, lastChild.position.z), lastChild.rotation);
             }
-            
         }
     }
     private void DestoryChildrenByType(GameObject parent, Type type)
@@ -378,7 +363,7 @@ public class Modeling3dDemoManager : MonoBehaviour
         {
             taskId = PlayerPrefs.GetString("currentTaskId");
         }
-        Debug.Log($"Current TaskId {taskId}");
+        Debug.Log($"{TAG} Current TaskId {taskId}");
         HMSModeling3dKitManager.Instance.DeleteTask(taskId);
     }
 

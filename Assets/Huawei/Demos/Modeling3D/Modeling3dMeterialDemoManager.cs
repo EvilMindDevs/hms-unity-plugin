@@ -49,7 +49,8 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
         {
             RequestUserPermissions(REQUIRED_PERMISSIONS);
         }
-        HMSModeling3dKitManager.Instance.AuthWithApiKey(HMSModelingKitSettings.ModelingKeyAPI);
+        string APIKEY = HMSModelingKitSettings.Instance.Settings.Get(HMSModelingKitSettings.ModelingKeyAPI);
+        HMSModeling3dKitManager.Instance.AuthWithApiKey(APIKEY);
         settings = HMSModeling3dKitManager.Instance.Create3dTextureEngine();
         HMSModeling3dKitManager.Instance.OnResult3dTextureUpload += OnMaterialUploadResult;
         HMSModeling3dKitManager.Instance.OnUploadProgress += OnUploadProgress;
@@ -134,31 +135,8 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
         Debug.Log($"{TAG} QueryTask Current TaskId {TASKID}");
         //HMSModeling3dKitManager.Instance.QueryTaskRestrictStatusModeling3dTexture(TASKID);
         Modeling3dTextureQueryResult result = HMSModeling3dKitManager.Instance.QueryTaskModeling3dTexture(TASKID);
-        IdentifyStatus(result.Status);
-    }
-    private void IdentifyStatus(int status) 
-    {
-        switch (status) 
-        {
-            case ((int)HMSModeling3dKitManager.ProgressStatus.INITED):
-                AndroidToast.MakeText("TaskID:" + TASKID + "\nTask initialization is complete.").Show();
-                break;
-            case ((int)HMSModeling3dKitManager.ProgressStatus.UPLOAD_COMPLETED):
-                AndroidToast.MakeText("TaskID:" + TASKID + "\nFile upload is complete.").Show();
-                break;
-            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_START):
-                AndroidToast.MakeText("TaskID:" + TASKID + "\nA material generation task starts.").Show();
-                break;
-            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_COMPLETED):
-                AndroidToast.MakeText("TaskID:" + TASKID + "\nA material generation task is complete.").Show();
-                break;
-            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_FAILED):
-                AndroidToast.MakeText("TaskID:" + TASKID + "\nA material generation task fails.").Show();
-                break;
-            default:
-                AndroidToast.MakeText("TaskID:" + TASKID + "\n Status:"+status+" Unknown status.").Show();
-                break;
-        }
+        AndroidToast.MakeText("TaskID:" + TASKID + "\n Status:" + result.Status +" "+ HMSModeling3dKitManager.Instance.IdentifyProgressStatus(result.Status)).Show();
+        
     }
     #endregion
 

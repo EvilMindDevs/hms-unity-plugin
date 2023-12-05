@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HmsPlugin;
 using HuaweiMobileServices.Modeling3D.ObjReconstructSdk.Cloud;
@@ -43,7 +44,14 @@ public class TaskListDisplay : MonoBehaviour, IPointerClickHandler
     public void DownloadTask()
     {
         var modeling3dDemoManager = FindObjectOfType<Modeling3dDemoManager>();
-        modeling3dDemoManager.DownloadFile(TaskId);
+        Debug.Log("[HMS] tasklist TaskId:" + TaskId);
+        if (TaskId != null && TaskId !="")
+            modeling3dDemoManager.DownloadFile(TaskId);
+        else 
+        {
+            modeling3dDemoManager.DownloadFile(PlayerPrefs.GetString("currentTaskId"));
+        }
+            
     }
     public void RefreshAllTaskAndOpenList()
     {
@@ -71,7 +79,7 @@ public class TaskListDisplay : MonoBehaviour, IPointerClickHandler
         var queryResult = modeling3dDemoManager.QueryTask(task.TaskId);
         if (queryResult != null)
         {
-            task.Status = $"Status: {queryResult.Status} Code: {queryResult.RetCode} \n Message: {queryResult.RetMessage}";
+            task.Status = $"Status: {queryResult.Status} - Code: {queryResult.RetCode} \n{HMSModeling3dKitManager.Instance.IdentifyProgressStatus(queryResult.Status)}\nMessage: {queryResult.RetMessage}";
             if (!string.IsNullOrWhiteSpace(queryResult.ReconstructFailMessage))
                 task.Status += $" \n FailMessage: {queryResult.ReconstructFailMessage}";
             modeling3dTaskEntity.Update(task);
@@ -84,6 +92,10 @@ public class TaskListDisplay : MonoBehaviour, IPointerClickHandler
     {
         GUIUtility.systemCopyBuffer = TaskId;
         AndroidToast.MakeText($"Copy to Clipboard TaskId: {TaskId}").Show();
+        if(TaskId!=null && TaskId != "") 
+        {
+            PlayerPrefs.SetString("currentTaskId", TaskId);
+        }
     }
     #endregion
 }

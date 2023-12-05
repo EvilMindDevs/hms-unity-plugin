@@ -72,7 +72,8 @@ public class Modeling3dDemoManager : MonoBehaviour
         HMSModeling3dKitManager.Instance.OnResultDownload = OnResultDownload;
         //HMSModeling3dKitManager.Instance.OnResultPreview = OnResultPreview;
 
-        HMSModeling3dKitManager.Instance.AuthWithApiKey(HMSModelingKitSettings.ModelingKeyAPI);
+        string APIKEY = HMSModelingKitSettings.Instance.Settings.Get(HMSModelingKitSettings.ModelingKeyAPI);
+        HMSModeling3dKitManager.Instance.AuthWithApiKey(APIKEY);
     }
     public void OnUploadProgress(string taskId, double progress, AndroidJavaObject obj) {
         progressBar.current = Mathf.RoundToInt((float)progress);
@@ -121,17 +122,18 @@ public class Modeling3dDemoManager : MonoBehaviour
     public void OnDownloadProgress(string taskId, double progress, AndroidJavaObject obj)
     {
         progressBar.current = Mathf.RoundToInt((float)progress);
-
+        Debug.Log($"{TAG} OnDownloadProgress Android Obj: {obj?.GetRawObject()} and TaskId: {taskId} and Result: {progress}");
         HMSDispatcher.Invoke(() =>
         {
+            var taskListItem = taskItemPrefab.GetComponent<TaskListDisplay>();
             var data = new Modeling3dDTO();
-            var currentTaskId = PlayerPrefs.GetString("currentTaskId","null");
+            var currentTaskId = taskListItem.TaskId;
+            Debug.Log($"{TAG} OnDownloadProgress TaskId: {currentTaskId}");
             data = modeling3dTaskEntity.Find(currentTaskId);
             data.TaskId = taskId;
             data.Status = $"DownloadProgress";
             data.Type = 2;
             modeling3dTaskEntity.Update(data);
-            PlayerPrefs.SetString("currentTaskId", taskId);
         });
     }
     public void OnResultDownload(string taskId, Modeling3dReconstructDownloadResult result, AndroidJavaObject obj)
@@ -209,7 +211,6 @@ public class Modeling3dDemoManager : MonoBehaviour
     }
     public void DownloadFile(string TaskId, string ModelFormat = null, int? TextureMode = null)
     {
-        PlayerPrefs.SetString("currentTaskId", TaskId);
         this.modelFormat = ModelFormat;
         this.textureMode = TextureMode;
         AndroidFolderPicker.mOnSuccessListener = OnDownloadSuccessFolderPicker;
@@ -308,7 +309,7 @@ public class Modeling3dDemoManager : MonoBehaviour
         var noDataText = FindObjectsOfType<Text>().FirstOrDefault(t => t.name == "NoDataText");
         var taskListData = modeling3dTaskEntity.GetAll();
         Debug.LogFormat(TAG + "PlayerPrefsJsonDatabase Count {0}", taskListData.Count);
-        noDataText.gameObject.SetActive(taskListData.Count == 0 ? true : false);
+        noDataText?.gameObject.SetActive(taskListData.Count == 0 ? true : false);
 
         DestoryChildrenByType(taskListItemParentObj, typeof(TaskListDisplay));
         CreateTaskListItem(taskListData, taskListItem, taskListItemParentObj);

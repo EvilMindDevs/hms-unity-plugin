@@ -125,8 +125,19 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         Debug.Log(TAG + " Return TaskId: " + initTaskId);
         PlayerPrefs.SetString("currentTaskId", initTaskId);
 
-        var taskName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + initTaskId.Substring(initTaskId.Length - 4);
-        Debug.Log($"{TAG}{taskName}");
+        var taskName = "";
+
+        try 
+        {
+            taskName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + initTaskId.Substring(initTaskId.Length - 4);
+            Debug.Log($"{TAG}{taskName}");
+        }
+        catch(Exception e) 
+        {
+            //TODO: You can add here FAQ link what is APIKEY how we can get it and use it
+            Debug.LogError(TAG + " UploadFile exception:" + e+ " \n**********\nHint: If exception is NullReferenceException check your APIKey is valid.\n********\n");
+            return;
+        }
 
         OnUploadProgress += (taskId, progress, obj) =>
         {
@@ -501,6 +512,25 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         int result = modeling3DTextureEngine.SyncGenerateTexture(imagePath, downloadPath, setting);
 
         return result;
+    }
+
+    public string IdentifyProgressStatus(int status)
+    {
+        switch (status)
+        {
+            case ((int)HMSModeling3dKitManager.ProgressStatus.INITED):
+                return "Task initialization is complete.";
+            case ((int)HMSModeling3dKitManager.ProgressStatus.UPLOAD_COMPLETED):
+                return "File upload is complete.";
+            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_START):
+                return "A material generation task starts.";
+            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_COMPLETED):
+                return "A material generation task is complete.";
+            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_FAILED):
+                return "A material generation task fails.";
+            default:
+                return "Unknown status.";
+        }
     }
     #endregion
 

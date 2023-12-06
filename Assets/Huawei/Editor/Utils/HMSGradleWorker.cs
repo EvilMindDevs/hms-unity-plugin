@@ -58,7 +58,8 @@ namespace HmsPlugin
                         "com.huawei.hms:arenginesdk:3.7.0.3",
                         "com.google.ar:core:1.30.0"
                     }
-                }
+                },
+                {HMSLibrariesDrawer.HMSCoreInstalledEnabled, new [] {"com.huawei.hms:hmscoreinstaller:6.6.0.300"}}
             };
         }
 
@@ -139,27 +140,51 @@ namespace HmsPlugin
             stringBuilder.AppendLine("}");
             #endregion
             stringBuilder.AppendLine("android {");
-            stringBuilder.AppendLine("packagingOptions {");
-            stringBuilder.AppendLine("pickFirst \"okhttp3/internal/publicsuffix/publicsuffixes.gz\"");
-            stringBuilder.AppendLine("pickFirst \"**/*.so\"");
-            stringBuilder.AppendLine("}");
+            stringBuilder.AppendLine("\tpackagingOptions {");
+            stringBuilder.AppendLine("\t\tpickFirst \"okhttp3/internal/publicsuffix/publicsuffixes.gz\"");
+            stringBuilder.AppendLine("\t\tpickFirst \"**/*.so\"");
+            stringBuilder.AppendLine("\t}");
             stringBuilder.AppendLine("}");
 
             File.WriteAllText(path, stringBuilder.ToString());
         }
         private void BaseProjectGradleFile()
         {
-            using (var file = File.CreateText(Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle"))
+            // Combine paths to get the full file path
+            string filePath = Path.Combine(Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle");
+
+            // Initiate a new StringBuilder object for efficient string concatenations
+            StringBuilder sb = new StringBuilder();
+
+            // Construct the contents of the gradle file using AppendLine and AppendFormat methods
+            sb.AppendLine("allprojects {");
+            sb.AppendLine("\tbuildscript {");
+            sb.AppendLine("\t\trepositories {");
+
+            // Use placeholder '{}' and RepoUrl constant
+            // Template for adding a Maven repository
+            sb.AppendFormat("\t\t\tmaven {{ url '{0}' }}\n", "https://developer.huawei.com/repo/");
+
+            sb.AppendLine("\t\t}");  // End of repositories
+            sb.AppendLine("\t\tdependencies {");
+
+            // Add the classpath dependency for Huawei's AGC
+            sb.AppendFormat("\t\t\t{0}\n", AddClasspath("com.huawei.agconnect:agcp:1.6.1.300"));
+
+            sb.AppendLine("\t\t}");  // End of dependencies
+            sb.AppendLine("\t}");    // End of buildscript
+            sb.AppendLine("\trepositories {");
+
+            // Repeat repository definition for allprojects
+            sb.AppendFormat("\t\tmaven {{ url '{0}' }}\n", "https://developer.huawei.com/repo/");
+
+            sb.AppendLine("\t}");    // End of repositories
+            sb.AppendLine("}");      // End of allprojects
+
+            // Now we write the constructed string content to the gradle file
+            using (var file = File.CreateText(filePath))
             {
-                file.Write("allprojects {\n\t");
-                file.Write("buildscript {\n\t\t");
-                file.Write("repositories {\n\t\t\t");
-                file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t\t}\n\n\t\t");
-                file.Write("dependencies {\n\t\t\t");
-                file.Write(AddClasspath("com.huawei.agconnect:agcp:1.6.1.300"));
-                file.Write("\n\t\t}\n\t}\n\n\t");
-                file.Write("repositories {\n\t\t");
-                file.Write("maven { url 'https://developer.huawei.com/repo/' }\n\t}\n}\n\n");
+                file.Write(sb.ToString());
             }
         }
 
@@ -186,10 +211,9 @@ namespace HmsPlugin
             }
             CreateGradleFiles(gradle.ToArray());
         }
-
         private string[] CoreGradles()
         {
-            return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300", "com.huawei.hms:hmscoreinstaller:6.6.0.300" };
+            return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300"};
         }
 
         public void OnPreprocessBuild(BuildReport report)

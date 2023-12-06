@@ -13,7 +13,6 @@ using System.Collections;
 
 public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManager>
 {
-
     private readonly string TAG = "[HMS] HMSModeling3dKitManager ";
     private const string TASK_LIST_PREFS_KEY = "3dTaskList";
 
@@ -30,7 +29,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
     public Action<string, Modeling3dReconstructUploadResult, AndroidJavaObject> OnResultUpload;
     public Action<string, AndroidJavaObject> OnResultPreview;
     public Action<string, Modeling3dTextureDownloadResult, AndroidJavaObject> OnResult3dTextureDownload;
-    public Action<string, Modeling3dTextureUploadResult, AndroidJavaObject> OnResult3dTextureUpload;
+    public Action<string, Modeling3dTextureUploadResult, JavaObject> OnResult3dTextureUpload;
     public Action<string, AndroidJavaObject> OnResult3dTexturePreview;
     public Action OnResultCaptureImage;
     public Action<int, string> OnErrorCaptureImage;
@@ -53,16 +52,12 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         {
             reconstructApplication = ReconstructApplication.GetInstance();
             modeling3DReconstructEngine = Modeling3dReconstructEngine.GetInstance();
-            Debug.Log(TAG + "Init: " + reconstructApplication);
-            
+            Debug.Log(TAG + "Init: " + reconstructApplication);   
         }
         catch (System.Exception ex)
         {
-
             Debug.LogError(TAG + ex.Message);
         }
-
-
     }
     public void AuthWithAccessToken(string accessToken)
     {
@@ -130,8 +125,19 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         Debug.Log(TAG + " Return TaskId: " + initTaskId);
         PlayerPrefs.SetString("currentTaskId", initTaskId);
 
-        var taskName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + initTaskId.Substring(initTaskId.Length - 4);
-        Debug.Log($"{TAG}{taskName}");
+        var taskName = "";
+
+        try 
+        {
+            taskName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + initTaskId.Substring(initTaskId.Length - 4);
+            Debug.Log($"{TAG}{taskName}");
+        }
+        catch(Exception e) 
+        {
+            //TODO: You can add here FAQ link what is APIKEY how we can get it and use it
+            Debug.LogError(TAG + " UploadFile exception:" + e+ " \n**********\nHint: If exception is NullReferenceException check your APIKey is valid.\n********\n");
+            return;
+        }
 
         OnUploadProgress += (taskId, progress, obj) =>
         {
@@ -162,7 +168,10 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         string uploadsPath =  Application.persistentDataPath;
         if(!string.IsNullOrWhiteSpace(path))
         {
-            uploadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
+            if (!File.Exists(path))
+                uploadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
+            else
+                uploadsPath = path;
         }
         Debug.Log(TAG + "Enviroment " + uploadsPath);
 
@@ -349,11 +358,9 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
     public Modeling3dTextureSetting Create3dTextureEngine()
     {
         modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
-
         var settings = new Modeling3dTextureSetting.Factory().SetTextureMode(Modeling3dTextureConstants.AlgorithmMode.AI).Create();
 
         Debug.LogFormat(TAG + "Create3dTextureEngine settings texture mode: {0}", settings.TextureMode);
-        
 
         return settings;
     }
@@ -365,7 +372,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         return modeling3DTextureInitResult;
     }
-    public string AsyncUploadFile(Modeling3dTextureSetting setting, string uploadPath)
+    public string AsyncUploadFile(Modeling3dTextureSetting setting, string path)
     {
         var modeling3DTextureInitResult = InitTask(setting);
 
@@ -383,14 +390,31 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         OnResult3dTextureUpload += (taskId, result, obj) =>
         {
-            Debug.Log(TAG + "OnResult taskId:" + result.TaskId + " result:" + result);
+            Debug.Log(TAG + "OnResult taskId:"+ result.TaskId + " result:" + result);
         };
 
-        var listener = new Modeling3dTextureUploadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnUploadProgress, OnError, OnResult3dTextureUpload));
+        Modeling3dTextureUploadListener listener = new Modeling3dTextureUploadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnUploadProgress, OnError, OnResult3dTextureUpload));
+
+#if UNITY_2019_3_OR_NEWER
+        modeling3DTextureEngine ??= Modeling3dTextureEngine.GetInstance();
+#elif UNITY_2018_1_OR_NEWER
+        if (modeling3DTextureEngine == null)
+        {
+            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+        }
+#endif
 
         modeling3DTextureEngine.SetTextureUploadListener(listener);
 
-        string uploadsPath = uploadPath ?? Application.persistentDataPath;
+        string uploadsPath = Application.persistentDataPath;
+        if (!string.IsNullOrWhiteSpace(path))
+        {
+            if (!File.Exists(path))
+                uploadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
+            else
+                uploadsPath = path;
+        }
+
         Debug.LogFormat(TAG + "AsyncUploadFile uploadPath: {0}", uploadsPath);
 
         modeling3DTextureEngine.AsyncUploadFile(taskID, uploadsPath);
@@ -415,16 +439,28 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         {
             Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + result);
         };
-        string downloadsPath = savePath ?? Application.persistentDataPath;
 
-        var listener = new Modeling3dTextureDownloadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTextureDownload));
+        string downloadsPath = Application.persistentDataPath;
+        if (!string.IsNullOrWhiteSpace(savePath))
+        {
+            downloadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + savePath.Split(':').Last();
+        }
+        Debug.LogFormat(TAG + "AsyncDownloadFile taskId: {0} savePath: {1}", taskID, downloadsPath);
+
+        Modeling3dTextureDownloadListener listener = new Modeling3dTextureDownloadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTextureDownload));
+
+#if UNITY_2019_3_OR_NEWER
+        modeling3DTextureEngine ??= Modeling3dTextureEngine.GetInstance();
+#elif UNITY_2018_1_OR_NEWER
+        if (modeling3DTextureEngine == null)
+        {
+            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+        }
+#endif
 
         modeling3DTextureEngine.SetTextureDownloadListener(listener);
 
         modeling3DTextureEngine.AsyncDownloadTexture(taskID, downloadsPath);
-
-        Debug.LogFormat(TAG + "AsyncDownloadFile taskId: {0} savePath: {1}", taskID, downloadsPath);
-
     }
     public void PreviewFile3dTexture(string taskID)
     {
@@ -443,24 +479,35 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
             Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + obj);
         };
 
-        var listener = new Modeling3dTexturePreviewListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTexturePreview));
+        Modeling3dTexturePreviewListener listener = new Modeling3dTexturePreviewListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTexturePreview));
 
+#if UNITY_2019_3_OR_NEWER
+        modeling3DTextureEngine ??= Modeling3dTextureEngine.GetInstance();
+#elif UNITY_2018_1_OR_NEWER
+        if (modeling3DTextureEngine == null)
+        {
+            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+        }
+#endif
+
+        modeling3DTextureEngine.PreviewTexture(taskID, listener);
     }
     public Modeling3dTextureQueryResult QueryTaskModeling3dTexture(string taskId)
     {
-        var texture3dTaskUtils = Modeling3dTextureTaskUtils.GetInstance();
+        Modeling3dTextureTaskUtils texture3dTaskUtils = Modeling3dTextureTaskUtils.GetInstance();
 
-        var result = texture3dTaskUtils.QueryTask(taskId);
+        Modeling3dTextureQueryResult result = texture3dTaskUtils.QueryTask(taskId);
 
         Debug.Log(TAG + " Modeling3dTexture QueryTask result status:" + result.Status + " taskId:" + result.TaskId + " RedCode:" + result.RetCode + " RedMessage:" + result.RetMsg);
 
         return result;
     }
-    public void DeleteTaskModeling3dTexture(string taskId)
+    public int DeleteTaskModeling3dTexture(string taskId)
     {
-        Modeling3dTextureTaskUtils.GetInstance().DeleteTask(taskId);
+        var result = Modeling3dTextureTaskUtils.GetInstance().DeleteTask(taskId);
 
         Debug.Log(TAG + string.Format("Modeling3dTexture Task Deleted {0}", taskId));
+        return result;
     }
     public int QueryTaskRestrictStatusModeling3dTexture(string taskId)
     {
@@ -481,10 +528,52 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         Call the synchronous API to obtain the generated texture maps in real time.*/
     public int SyncGenerateTexture(string imagePath, string downloadPath, Modeling3dTextureSetting setting)
     {
+#if UNITY_2019_3_OR_NEWER
+        modeling3DTextureEngine ??= Modeling3dTextureEngine.GetInstance();
+#elif UNITY_2018_1_OR_NEWER
+        if (modeling3DTextureEngine == null)
+        {
+            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+        }
+#endif
+
         int result = modeling3DTextureEngine.SyncGenerateTexture(imagePath, downloadPath, setting);
 
         return result;
     }
+
+    public string IdentifyProgressStatus(int status)
+    {
+        switch (status)
+        {
+            case ((int)HMSModeling3dKitManager.ProgressStatus.INITED):
+                return "Task initialization is complete.";
+            case ((int)HMSModeling3dKitManager.ProgressStatus.UPLOAD_COMPLETED):
+                return "File upload is complete.";
+            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_START):
+                return "A material generation task starts.";
+            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_COMPLETED):
+                return "A material generation task is complete.";
+            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_FAILED):
+                return "A material generation task fails.";
+            default:
+                return "Unknown status.";
+        }
+    }
     #endregion
+
+    public enum ProgressStatus 
+    {
+        INITED,
+        UPLOAD_COMPLETED,
+        TEXTURE_START,
+        TEXTURE_COMPLETED,
+        TEXTURE_FAILED
+    }
+    public enum RestrictStatus 
+    {
+        UNRESTRICT,
+        RESTRICT
+    }
 }
 

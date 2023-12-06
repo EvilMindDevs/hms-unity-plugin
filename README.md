@@ -42,7 +42,7 @@ This plugin supports:
 **Make sure to download the corresponding unity package for the Unity version you are using from the release section**
 
 For more information, please refer to the [documentation](https://evilminddevs.gitbook.io/hms-unity-plugin/).
-<br />Is there something we can help with? You can join our [discord](https://discord.io/hmsunityplugin) channel.
+<br />Is there something we can help with? You can join our [discord](https://discord.gg/gAyryuM9Gd) channel.
 
 ## Downloading the plugins
 

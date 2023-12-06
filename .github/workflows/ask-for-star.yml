@@ -1,0 +1,28 @@
+name: Add comment to solved and closed issues
+
+on:
+  issues:
+    types: [closed]
+    labels:
+      - solved
+
+jobs:
+  add-comment:
+    permissions: write-all
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Add comment to issue
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          comment-id: ${{ github.event.comment.id }}
+          repository: EvilMindDevs/hms-unity-plugin
+          body: |
+            Thank you for using our repository! We're glad we could help solve your issue. If you found our repository helpful, please consider giving us a star ⭐ on GitHub: https://github.com/EvilMindDevs/hms-unity-plugin
+
+            Your support helps us continue to improve our repository and provide valuable resources for others.

@@ -723,13 +723,30 @@ namespace HmsPlugin
             void IConsentUpdateListener.OnFail(string desc)
             {
                 Debug.LogError("[HMS] AdsKitManager CONSENT OnFail " + desc);
-                mAdsManager.ConsentOnFail?.Invoke(desc);
+                
+                if(mAdsManager != null)
+                {
+                    mAdsManager.ConsentOnFail?.Invoke(desc);
+                }
+                else
+                {
+                    Debug.LogWarning("[HMS] Make sure to call RequestConsentUpdate First");
+                }
+                
             }
 
             void IConsentUpdateListener.OnSuccess(ConsentStatus consentStatus, bool isNeedConsent, IList<AdProvider> adProviders)
             {
                 Debug.Log($"[HMS] HMSAdsKitManager CONSENT OnSuccess consentStatus:{consentStatus} isNeedConsent:{isNeedConsent} adProviders listSize:{adProviders.Count}");
-                mAdsManager.ConsentOnSuccess?.Invoke(consentStatus, isNeedConsent, adProviders);
+                if (mAdsManager != null)
+                {
+                    mAdsManager.ConsentOnSuccess?.Invoke(consentStatus, isNeedConsent, adProviders);
+                }
+                else
+                {
+                    Debug.LogWarning("[HMS] Make sure to call RequestConsentUpdate First");
+                }
+                
             }
         }
         public Action<string> ConsentOnFail { get; set; }

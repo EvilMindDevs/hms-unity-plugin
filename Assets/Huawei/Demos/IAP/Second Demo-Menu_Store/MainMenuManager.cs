@@ -7,7 +7,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/*  This demo scene has been created to show how to use IAP and Account kit in multiple scenes.
+/*  You can find detailed explanation with medium article: https://medium.com/huawei-developers/guide-to-using-and-understanding-huawei-inapppurchases-demo-scene-in-unity-e41626d5b47a
+*   This demo scene has been created to show how to use IAP and Account kit in multiple scenes.
 *   Here are the steps to use this demo.
 *       1. Complete the quick start steps. https://evilminddevs.gitbook.io/hms-unity-plugin/getting-started/quick-start
 *       2. Enable Account kit - IAP from kit settings. https://evilminddevs.gitbook.io/hms-unity-plugin/getting-started/quick-start/connect-your-game-with-the-hms-kit-managers

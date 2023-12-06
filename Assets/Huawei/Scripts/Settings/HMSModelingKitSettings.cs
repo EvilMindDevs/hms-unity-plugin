@@ -1,30 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace HmsPlugin
 {
-    public class HMSIAPKitSettings : HMSEditorSingleton<HMSIAPKitSettings>
+    public class HMSModelingKitSettings : HMSEditorSingleton<HMSModelingKitSettings>
     {
-        private const string SettingsFilename = "HMSIAPKitSettings";
-        public const string InitializeOnStart = "InitializeOnStart";
-        public const string ConsumptionOwnedItemsOnInitialize = "ConsumptionOwnedItemsOnInitialize";
+        private const string SettingsFilename = "HMSModelingKitSettings";
+        public const string ModelingKeyAPI = "ModelingKeyAPI";
+
         private SettingsScriptableObject loadedSettings;
 
         private HMSSettings _settings;
         public HMSSettings Settings => _settings;
 
-        public HMSIAPKitSettings()
+        public HMSModelingKitSettings()
         {
             loadedSettings = ScriptableHelper.Load<SettingsScriptableObject>(SettingsFilename, "Assets/Huawei/Settings/Resources");
+
             if (loadedSettings == null)
             {
-                throw new NullReferenceException("Failed to load the " + SettingsFilename +". Please restart Unity Editor");
+                throw new NullReferenceException("Failed to load the " + SettingsFilename + ". Please restart Unity Editor");
             }
             _settings = loadedSettings.settings;
+
             _settings.OnDictionaryChanged += _settings_OnDictionaryChanged;
         }
 

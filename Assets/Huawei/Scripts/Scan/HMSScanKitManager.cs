@@ -1,3 +1,4 @@
+using HmsPlugin;
 using HuaweiMobileServices.Scan;
 using HuaweiMobileServices.Utils;
 
@@ -21,15 +22,11 @@ public class HMSScanKitManager : HMSManagerSingleton<HMSScanKitManager>
     {
         READ_EXTERNAL_STORAGE = 1,
         CAMERA = 2,
-
-        
     }
 
     public HMSScanKitManager()
     {
-        if (!HMSDispatcher.InstanceExists)
-            HMSDispatcher.CreateDispatcher();
-        HMSDispatcher.InvokeAsync(OnAwake);
+        HMSManagerStart.Start(OnAwake, TAG);
     }
 
     private void OnAwake()

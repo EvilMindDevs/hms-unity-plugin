@@ -5,21 +5,18 @@ using HuaweiMobileServices.Utils;
 using UnityEngine;
 using UnityEngine.Android;
 using HuaweiMobileServices.Location.Location;
+using HmsPlugin;
 
 public class HMSLocationManager : HMSManagerSingleton<HMSLocationManager>
 {
-    private static String TAG = "HMSLocationManager";
+    private const string TAG = "HMSLocationManager";
 
     public Action<LocationResult> onLocationResult;
     public Action<LocationAvailability> onLocationAvailability;
 
     public HMSLocationManager()
     {
-        Debug.Log($"{TAG} HMSAdsKitManager Constructor");
-        if (!HMSDispatcher.InstanceExists)
-            HMSDispatcher.CreateDispatcher();
-        HMSDispatcher.InvokeAsync(OnAwake);
-        HMSDispatcher.InvokeAsync(OnStart);
+        HMSManagerStart.Start(OnAwake,OnStart,TAG);
     }
 
     private void OnAwake()

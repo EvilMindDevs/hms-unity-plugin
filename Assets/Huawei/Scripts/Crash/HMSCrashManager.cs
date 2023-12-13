@@ -1,5 +1,5 @@
-﻿using HuaweiMobileServices.Crash;
-using HuaweiMobileServices.Utils;
+﻿using HmsPlugin;
+using HuaweiMobileServices.Crash;
 using UnityEngine;
 using UnityEngine.Diagnostics;
 
@@ -11,15 +11,12 @@ public class HMSCrashManager : HMSManagerSingleton<HMSCrashManager>
 
     public HMSCrashManager()
     {
-        Debug.Log($"{TAG}Constructor");
-        if (!HMSDispatcher.InstanceExists)
-            HMSDispatcher.CreateDispatcher();
-        HMSDispatcher.InvokeAsync(OnAwake);
+        HMSManagerStart.Start(OnAwake, TAG);
     }
 
     private void OnAwake()
     {
-        Debug.Log($"[HMS]: Crash OnAwake - Initialized");
+        Debug.Log($"{TAG}: Crash OnAwake - Initialized");
         agConnectCrash = AGConnectCrash.GetInstance();
     }
 

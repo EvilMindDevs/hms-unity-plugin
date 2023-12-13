@@ -10,6 +10,7 @@ namespace HmsPlugin
 {
     public class HMSGameServiceManager : HMSManagerSingleton<HMSGameServiceManager>, ICheckUpdateCallback
     {
+        private const string TAG = "[HMS] HMSGameServiceManager";
         public Action<Player> OnGetPlayerInfoSuccess { get; set; }
         public Action<HMSException> OnGetPlayerInfoFailure { get; set; }
         public Action<string> OnSubmitPlayerEventSuccess { get; set; }
@@ -36,10 +37,7 @@ namespace HmsPlugin
 
         public HMSGameServiceManager()
         {
-            Debug.Log($"[HMS] : HMSGameServiceManager Constructor");
-            if (!HMSDispatcher.InstanceExists)
-                HMSDispatcher.CreateDispatcher();
-            HMSDispatcher.InvokeAsync(OnAwake);
+            HMSManagerStart.Start(OnAwake,TAG);
         }
 
         private void OnAwake()
@@ -48,12 +46,12 @@ namespace HmsPlugin
             if (HMSGameServiceSettings.Instance.Settings.GetBool(HMSGameServiceSettings.InitializeOnStart))
                 Init();
             else
-                Debug.LogWarning("[HMS] initOnStart is disable for GameService. Are you getting init first error? Call HMSGameServiceManager.Instance.Init() by yourself.");
+                Debug.LogWarning($"{TAG} initOnStart is disable for GameService. Are you getting init first error? Call HMSGameServiceManager.Instance.Init() by yourself.");
         }
 
         public void Init()
         {
-            Debug.Log("HMS GAMES init");
+            Debug.Log($"{TAG}: HMS GAMES init");
             authService = HMSAccountKitManager.Instance.GetGameAuthService();
             authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).CreateParams();
 
@@ -63,10 +61,11 @@ namespace HmsPlugin
                 archivesClient = HMSSaveGameManager.Instance.GetArchivesClient();
                 InitJosApps(result);
                 SignInSuccess?.Invoke(result);
+                Debug.Log($"{TAG} HMS GAMES: SilentSignIn Success");
 
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("HMS GAMES: The app has not been authorized");
+                Debug.LogError($"{TAG} HMS GAMES: The app has not been authorized");
                 authService.StartSignIn((auth) => { InitJosApps(auth); SignInSuccess?.Invoke(auth); }, (exc) => SignInFailure?.Invoke(exc));
                 InitGameManagers();
             });
@@ -76,12 +75,12 @@ namespace HmsPlugin
         {
             var appParams = new AppParams(authParams);
             HMSAccountKitManager.Instance.HuaweiId = result;
-            Debug.Log("HMS GAMES: Setted app");
+            Debug.Log($"{TAG} HMS GAMES: Setted app");
             IJosAppsClient josAppsClient = JosApps.GetJosAppsClient();
-            Debug.Log("HMS GAMES: jossClient");
+            Debug.Log($"{TAG} HMS GAMES: jossClient");
             josAppsClient.Init(appParams);
 
-            Debug.Log("HMS GAMES: jossClient init");
+            Debug.Log($"{TAG} HMS GAMES: jossClient init");
             InitGameManagers();
         }
 
@@ -108,7 +107,7 @@ namespace HmsPlugin
             }
             else
             {
-                Debug.LogError("[HMSGameManager] CheckAppUpdate AppUpdateClient is null.");
+                Debug.LogError($"{TAG} CheckAppUpdate AppUpdateClient is null.");
             }
         }
 
@@ -117,7 +116,7 @@ namespace HmsPlugin
             if (buoyClient != null)
                 buoyClient.ShowFloatWindow();
             else
-                Debug.LogError("[HMSGameManager] ShowFloatWindow BuoyClient is null.");
+                Debug.LogError($"{TAG} ShowFloatWindow BuoyClient is null.");
         }
 
         public void HideFloatWindow()
@@ -125,7 +124,7 @@ namespace HmsPlugin
             if (buoyClient != null)
                 buoyClient.HideFloatWindow();
             else
-                Debug.LogError("[HMSGameManager] HideFloatWindow BuoyClient is null.");
+                Debug.LogError($"{TAG} HideFloatWindow BuoyClient is null.");
         }
 
         public void GetPlayerInfo()
@@ -135,19 +134,19 @@ namespace HmsPlugin
                 ITask<Player> task = playersClient.CurrentPlayer;
                 task.AddOnSuccessListener((result) =>
                 {
-                    Debug.Log("[HMSGameManager] GetPlayerInfo Success");
+                    Debug.Log($"{TAG} GetPlayerInfo Success");
                     OnGetPlayerInfoSuccess?.Invoke(result);
 
                 }).AddOnFailureListener((exception) =>
                 {
-                    Debug.LogError("[HMSGameManager]: GetPlayerInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                    Debug.LogError($"{TAG}: GetPlayerInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                     OnGetPlayerInfoFailure?.Invoke(exception);
                 });
             }
             else 
             {
-                Debug.LogError("[HMSGameManager]: GetPlayerInfo failed. HMSAccountKitManager.Instance.HuaweiId is null");
-                OnGetPlayerInfoFailure?.Invoke(new HMSException("GetPlayerInfo failed. HMSAccountKitManager.Instance.HuaweiId is null"));
+                Debug.LogError($"{TAG}: GetPlayerInfo failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                OnGetPlayerInfoFailure?.Invoke(new HMSException($"{TAG}: GetPlayerInfo failed. HMSAccountKitManager.Instance.HuaweiId is null"));
             }
         }
 
@@ -158,18 +157,18 @@ namespace HmsPlugin
                 var task = playersClient.SubmitPlayerEvent(playerId, eventId, eventType);
                 task.AddOnSuccessListener((result) =>
                 {
-                    Debug.Log("[HMSGameManager] SubmitPlayerEvent Success");
+                    Debug.Log($"{TAG} SubmitPlayerEvent Success");
                     OnSubmitPlayerEventSuccess?.Invoke(result);
                 }).AddOnFailureListener((exception) =>
                 {
-                    Debug.LogError("[HMSGameManager]: SubmitPlayerEvent failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                    Debug.LogError($"{TAG}: SubmitPlayerEvent failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                     OnSubmitPlayerEventFailure?.Invoke(exception);
                 });
             }
             else
             {
-                Debug.LogError("[HMSGameManager]: SubmitPlayerEvent failed. HMSAccountKitManager.Instance.HuaweiId is null");
-                OnGetPlayerInfoFailure?.Invoke(new HMSException("SubmitPlayerEvent failed. HMSAccountKitManager.Instance.HuaweiId is null"));
+                Debug.LogError($"{TAG}: SubmitPlayerEvent failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                OnGetPlayerInfoFailure?.Invoke(new HMSException($"{TAG}: SubmitPlayerEvent failed. HMSAccountKitManager.Instance.HuaweiId is null"));
             }
         }
 
@@ -180,17 +179,17 @@ namespace HmsPlugin
                 var task = playersClient.GetPlayerExtraInfo(transactionId);
                 task.AddOnSuccessListener((result) =>
                 {
-                    Debug.Log("[HMSGameManager] GetPlayerExtraInfo Success");
+                    Debug.Log($"{TAG}: GetPlayerExtraInfo Success");
                     OnGetPlayerExtraInfoSuccess?.Invoke(result);
                 }).AddOnFailureListener((exception) =>
                 {
-                    Debug.LogError("[HMSGameManager]: GetPlayerExtraInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                    Debug.LogError($"{TAG}: GetPlayerExtraInfo failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                     OnGetPlayerExtraInfoFailure?.Invoke(exception);
                 });
             }
             else
             {
-                Debug.LogError("[HMSGameManager]: GetPlayerExtraInfo failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                Debug.LogError($"{TAG}: GetPlayerExtraInfo failed. HMSAccountKitManager.Instance.HuaweiId is null");
                 OnGetPlayerInfoFailure?.Invoke(new HMSException("GetPlayerExtraInfo failed. HMSAccountKitManager.Instance.HuaweiId is null"));
             }
         }
@@ -202,17 +201,17 @@ namespace HmsPlugin
                 var task = playersClient.UserPlayState;
                 task.AddOnSuccessListener((result) =>
                 {
-                    Debug.Log("[HMSGameManager] GetUserPlayState Success");
+                    Debug.Log($"{TAG}: GetUserPlayState Success");
                     OnGetUserPlayStateSuccess?.Invoke(result);
                 }).AddOnFailureListener((exception) =>
                 {
-                    Debug.LogError("[HMSGameManager]: GetUserPlayState failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                    Debug.LogError($"{TAG}: GetUserPlayState failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                     OnGetUserPlayStateFailure?.Invoke(exception);
                 });
             }
             else
             {
-                Debug.LogError("[HMSGameManager]: GetUserPlayState failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                Debug.LogError($"{TAG}: GetUserPlayState failed. HMSAccountKitManager.Instance.HuaweiId is null");
                 OnGetUserPlayStateFailure?.Invoke(new HMSException("GetUserPlayState failed. HMSAccountKitManager.Instance.HuaweiId is null"));
             }
         }
@@ -224,17 +223,17 @@ namespace HmsPlugin
                 var task = playersClient.IsAllowContinuePlayGames;
                 task.AddOnSuccessListener((result) =>
                 {
-                    Debug.Log("[HMSGameManager] IsAllowContinuePlayGames Success");
+                    Debug.Log($"{TAG}: IsAllowContinuePlayGames Success");
                     OnIsAllowContinuePlayGamesSuccess?.Invoke(result);
                 }).AddOnFailureListener((exception) =>
                 {
-                    Debug.LogError("[HMSGameManager]: IsAllowContinuePlayGames failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                    Debug.LogError($"{TAG}: IsAllowContinuePlayGames failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
                     OnIsAllowContinuePlayGamesFailure?.Invoke(exception);
                 });
             }
             else
             {
-                Debug.LogError("[HMSGameManager]: IsAllowContinuePlayGames failed. HMSAccountKitManager.Instance.HuaweiId is null");
+                Debug.LogError($"{TAG}: IsAllowContinuePlayGames failed. HMSAccountKitManager.Instance.HuaweiId is null");
                 OnIsAllowContinuePlayGamesFailure?.Invoke(new HMSException("IsAllowContinuePlayGames failed. HMSAccountKitManager.Instance.HuaweiId is null"));
             }
         }
@@ -258,22 +257,22 @@ namespace HmsPlugin
             AppUpdateRtnCode _rtnCode = (AppUpdateRtnCode)Enum.Parse(typeof(AppUpdateRtnCode), rtnCode.ToString());
             AppUpdateButtonStatus _buttonStatus = (AppUpdateButtonStatus)Enum.Parse(typeof(AppUpdateButtonStatus), buttonStatus.ToString());
 
-            Debug.Log("[HMSGameManager] OnUpdateInfo, status: " + _statusCode + ", rtnCode: " + _rtnCode + ", rtnMessage: " + rtnMessage + ", buttonStatus: " + _buttonStatus + ", isExit: " + isExit);
+            Debug.Log($"{TAG} OnUpdateInfo, status: " + _statusCode + ", rtnCode: " + _rtnCode + ", rtnMessage: " + rtnMessage + ", buttonStatus: " + _buttonStatus + ", isExit: " + isExit);
         }
 
         public void OnMarketInstallInfo(AndroidIntent intent)
         {
-            Debug.Log("[HMSGameManager] OnMarketInstallInfo Called");
+            Debug.Log($"{TAG}: OnMarketInstallInfo Called");
         }
 
         public void OnMarketStoreError(int responseCode)
         {
-            Debug.LogError($"[HMSGameManager] OnMarketStoreError. Response Code:{responseCode}");
+            Debug.LogError($"{TAG} OnMarketStoreError. Response Code:{responseCode}");
         }
 
         public void OnUpdateStoreError(int responseCode)
         {
-            Debug.LogError($"[HMSGameManager] OnUpdateStoreError. Response Code:{responseCode}");
+            Debug.LogError($"{TAG} OnUpdateStoreError. Response Code:{responseCode}");
         }
 
         public class OnAppUpdateInfoRes

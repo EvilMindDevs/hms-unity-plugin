@@ -1,7 +1,4 @@
-﻿using HuaweiMobileServices.Base;
-using HuaweiMobileServices.Drive;
-using HuaweiMobileServices.Game;
-using HuaweiMobileServices.Id;
+﻿using HuaweiMobileServices.Drive;
 using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
@@ -18,9 +15,7 @@ namespace HmsPlugin
 
         public HMSDriveKitManager()
         {
-            if (!HMSDispatcher.InstanceExists)
-                HMSDispatcher.CreateDispatcher();
-            HMSDispatcher.InvokeAsync(OnAwake);
+            HMSManagerStart.Start(OnAwake, TAG);
         }       
 
         private void OnAwake()

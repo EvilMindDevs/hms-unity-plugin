@@ -1,28 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using HuaweiMobileServices.Analystics;
 using HuaweiMobileServices.Utils;
-using System;
-using System.Threading.Tasks;
-using System.Threading;
+using HmsPlugin;
 
 public class HMSAnalyticsKitManager : HMSManagerSingleton<HMSAnalyticsKitManager>
 {
+    private readonly string TAG = "[HMS] : HMSAnalyticsKitManager";
     private HiAnalyticsInstance hiAnalyticsInstance;
     private AndroidJavaObject activity;
 
     public HMSAnalyticsKitManager()
     {
-        Debug.Log($"[HMS] : HMSAnalyticsKitManager Constructor");
-        if (!HMSDispatcher.InstanceExists)
-            HMSDispatcher.CreateDispatcher();
-        HMSDispatcher.InvokeAsync(InitilizeAnalyticsInstane);
+        HMSManagerStart.Start(TAG, true, InitializeAnalyticsInstant);
     }
 
-    void InitilizeAnalyticsInstane()
+    void InitializeAnalyticsInstant()
     {
-        Debug.Log("HMSAnalyticsKitManager: InitilizeAnalyticsInstane");
+        Debug.Log($"{TAG} InitializeAnalyticsInstant");
         AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
 
@@ -46,7 +41,7 @@ public class HMSAnalyticsKitManager : HMSManagerSingleton<HMSAnalyticsKitManager
     {
         Bundle bundleUnity = new Bundle();
         bundleUnity.PutString(key, value);
-        Debug.Log($"[HMS] : Analytics Kits Event Id:{eventID} Key:{key} Value:{value}");
+        Debug.Log($"{TAG} : Analytics Kits Event Id:{eventID} Key:{key} Value:{value}");
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
@@ -76,10 +71,9 @@ public class HMSAnalyticsKitManager : HMSManagerSingleton<HMSAnalyticsKitManager
                 bundleUnity.PutBoolean(item.Key, (bool)item.Value);
             }
         }
-
-        Debug.Log($"[HMS] : Analytics Kits Event Id:{eventID}");
+        Debug.Log($"{TAG} : Analytics Kits Event Id:{eventID}");
         foreach (var item in values)
-            Debug.Log($"[HMS] : Analytics Kits Key: {item.Key}, Value: {item.Value}");
+            Debug.Log($"{TAG} : Analytics Kits Key: {item.Key}, Value: {item.Value}");
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 
@@ -95,7 +89,7 @@ public class HMSAnalyticsKitManager : HMSManagerSingleton<HMSAnalyticsKitManager
     {
         Bundle bundleUnity = new Bundle();
         bundleUnity.PutInt(key, value);
-        Debug.Log($"[HMS] : Analytics Kits Event Id:{eventID} Key:{key} Value:{value}");
+        Debug.Log($"{TAG} : Analytics Kits Event Id:{eventID} Key:{key} Value:{value}");
         hiAnalyticsInstance.OnEvent(eventID, bundleUnity);
     }
 

@@ -38,9 +38,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
     public HMSModeling3dKitManager()
     {
-        if (!HMSDispatcher.InstanceExists)
-            HMSDispatcher.CreateDispatcher();
-        HMSDispatcher.InvokeAsync(OnAwake);
+       HMSManagerStart.Start(OnAwake,TAG);
     }
     private void OnAwake()
     {
@@ -54,7 +52,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
             modeling3DReconstructEngine = Modeling3dReconstructEngine.GetInstance();
             Debug.Log(TAG + "Init: " + reconstructApplication);   
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Debug.LogError(TAG + ex.Message);
         }
@@ -78,17 +76,8 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         var modeling3dSettings = factory.SetReconstructMode((int)ReconstructMode)
                                             .SetTextureMode((int)TextureMode)
                                             .SetFaceLevel((int)FaceLevel)
-                                            .Create();
-
-        Debug.Log(TAG + "Modelling Settings " + "FaceLevel:" +modeling3dSettings.FaceLevel + 
-                                                    " TaskType:" + modeling3dSettings.FaceLevel + 
-                                                        " TextureMode:" + modeling3dSettings.TextureMode + 
-                                                            " ReconstuctMode:" + modeling3dSettings.ReconstructMode + 
-                                                                " TaskId:" + modeling3dSettings.TaskId);
-
-
-        
-
+                                            .Create();                                 
+        Debug.Log($"{TAG} Modelling Settings FaceLevel: {modeling3dSettings.FaceLevel}, TaskType: {modeling3dSettings.FaceLevel}, TextureMode: {modeling3dSettings.TextureMode}, ReconstructMode: {modeling3dSettings.ReconstructMode}, TaskId: {modeling3dSettings.TaskId}");
         return modeling3dSettings;
     }
     private void SetDefaultParameters(ref int? ReconstructMode, ref int? TextureMode, ref int? FaceLevel)
@@ -112,7 +101,10 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
     {
         var modeling3DReconstructInitResult = modeling3DReconstructEngine.InitTask(setting);
 
-        modeling3DReconstructInitResult.GetType().GetProperties().ToList().ForEach(x => Debug.Log(TAG + "Modelling Init Result " + x.Name + ":" + x.GetValue(modeling3DReconstructInitResult)));
+        foreach (var property in modeling3DReconstructInitResult.GetType().GetProperties())
+        {
+            Debug.Log($"{TAG} Modelling Init Result {property.Name}: {property.GetValue(modeling3DReconstructInitResult)}");
+        }
 
         return modeling3DReconstructInitResult;
     }

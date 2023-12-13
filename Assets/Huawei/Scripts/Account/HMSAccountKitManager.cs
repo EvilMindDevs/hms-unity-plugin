@@ -11,6 +11,8 @@ namespace HmsPlugin
 {
     public class HMSAccountKitManager : HMSManagerSingleton<HMSAccountKitManager>
     {
+        private const string TAG = "[HMS] HMSAccountKitManager";
+
         private static AccountAuthService DefaultAuthService
         {
             get
@@ -37,7 +39,6 @@ namespace HmsPlugin
                 return result;
             }
         }
-
         private static AccountAuthService DefaultDriveAuthService
         {
             get
@@ -63,14 +64,12 @@ namespace HmsPlugin
 
         public HMSAccountKitManager()
         {
-            if (!HMSDispatcher.InstanceExists)
-                HMSDispatcher.CreateDispatcher();
-            HMSDispatcher.InvokeAsync(OnAwake);
+            HMSManagerStart.Start(OnAwake, TAG);
         }       
 
         private void OnAwake()
         {
-            Debug.Log("[HMSAccountManager]: AuthService OnAwake");
+            Debug.Log($"{TAG}: AuthService OnAwake");
             authService = DefaultAuthService;
         }
 
@@ -82,7 +81,7 @@ namespace HmsPlugin
 
         public void SignIn()
         {
-            Debug.Log("[HMSAccountManager]: Sign in " + authService);
+            Debug.Log($"{TAG}: Sign in " + authService);
             authService.StartSignIn((authId) =>
             {
                 HuaweiId = authId;
@@ -91,14 +90,13 @@ namespace HmsPlugin
             }, (error) =>
             {
                 HuaweiId = null;
-                Debug.LogError("[HMSAccountManager]: Sign in failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
-
+                Debug.LogError($"{TAG}: Sign in failed. CauseMessage: {error.WrappedCauseMessage}, ExceptionMessage: {error.WrappedExceptionMessage}");
                 //Invoke the GMS Login when the HMS Core APK not installed Example
                         if (error.ErrorCode == AvailableCode.USER_ALREADY_KNOWS_SERVICE_UNAVAILABLE || 
                             error.ErrorCode == AvailableCode.CURRENT_SHOWING_SERVICE_UNAVAILABLE ||
                             error.ErrorCode == CommonCode.ErrorCode.CLIENT_API_INVALID) 
                         {
-                             Debug.LogError("[HMSAccountManager]: Sign in failed. HMS Core APK not installed");
+                             Debug.LogError($"{TAG}: Sign in failed. HMS Core APK not installed");
                              //GMS.signIn ... call GMS interface
                         }
 
@@ -116,7 +114,7 @@ namespace HmsPlugin
             }, (error) =>
             {
                 HuaweiId = null;
-                Debug.LogError("[HMSAccountManager]: Sign in Drive failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+                Debug.LogError($"{TAG}: Sign in Drive failed. CauseMessage: {error.WrappedCauseMessage}, ExceptionMessage: {error.WrappedExceptionMessage}");                
                 OnSignInFailed?.Invoke(error);
             });
         }
@@ -146,7 +144,7 @@ namespace HmsPlugin
             }).AddOnFailureListener((exception) =>
             {
                 HuaweiId = null;
-                Debug.LogError("[HMSAccountManager]: Silent Sign in failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                Debug.LogError($"{TAG}: Silent Sign in failed. CauseMessage: {exception.WrappedCauseMessage}, ExceptionMessage: {exception.WrappedExceptionMessage}");               
                 OnSignInFailed?.Invoke(exception);
             });
         }
@@ -162,10 +160,10 @@ namespace HmsPlugin
             ITask<HuaweiMobileServices.Utils.Void> taskAuthHuaweiId = authService.CancelAuthorization();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>
             {
-                Debug.Log("[HMSAccountManager]: CancelAuthorization onSuccess ");
+                Debug.Log($"{TAG}: CancelAuthorization onSuccess ");
             }).AddOnFailureListener((exception) =>
             {
-                Debug.LogError("[HMSAccountManager]: Cancel Authorization failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+                Debug.LogError($"{TAG}: Cancel Authorization failed. CauseMessage: {exception.WrappedCauseMessage}, ExceptionMessage: {exception.WrappedExceptionMessage}");                
                 OnSignInFailed?.Invoke(exception);
             });
         }
@@ -175,16 +173,16 @@ namespace HmsPlugin
         {
             AccountAuthParams authParams = new AccountAuthParamsHelper().SetEmail().CreateParams();
             AccountAuthService authService = AccountAuthManager.GetService(authParams);
-            Debug.Log("[HMSAccountManager]: Independent Sign in ");
+            Debug.Log($"{TAG}: Independent Sign in ");
             authService.StartIndependentSignIn(accessToken,
             (success) =>
             {
-                Debug.LogWarning("[HMSAccountManager]: Independent Sign in Success. Auth Code: " + success.AuthorizationCode);
+                Debug.LogWarning($"{TAG}: Independent Sign in Success. Auth Code: {success.AuthorizationCode}");                
                 OnIndependentSignInSuccess?.Invoke(success);
             },
             (error) =>
             {
-                Debug.LogError("[HMSAccountManager]: Independent Sign in failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+                Debug.LogError($"{TAG}: Independent Sign in failed. CauseMessage: {error.WrappedCauseMessage}, ExceptionMessage: {error.WrappedExceptionMessage}");                
                 OnIndependentSignInFailed?.Invoke(error);
             });
         }

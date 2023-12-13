@@ -112,11 +112,7 @@ public class HMSKeyToolWindow : EditorWindow
         if ((evt.type == EventType.DragUpdated || evt.type == EventType.DragPerform) && dropArea.Contains(evt.mousePosition))
         {
             DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-#if UNITY_2019_3_OR_NEWER
-            if (evt is { type: EventType.DragPerform or EventType.DragUpdated })
-#elif UNITY_2018_1_OR_NEWER
             if (evt.type == EventType.DragPerform || evt.type == EventType.DragUpdated)
-#endif
             {
                 DragDropOperations();
             }
@@ -178,12 +174,7 @@ public class HMSKeyToolWindow : EditorWindow
         {
             string output = process.StandardOutput.ReadToEnd();
             string errorOutput = process.StandardError.ReadToEnd();
-#if UNITY_2019_3_OR_NEWER
-            var errorCheck = errorOutput.Contains("error", StringComparison.InvariantCultureIgnoreCase) || output.Contains("error", StringComparison.InvariantCultureIgnoreCase);
-#elif UNITY_2018_1_OR_NEWER
             var errorCheck = errorOutput.ToLower().Contains("error") || output.ToLower().Contains("error");
-#endif
-
             process.WaitForExit();
 
             if (errorCheck)

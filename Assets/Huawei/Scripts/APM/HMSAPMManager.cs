@@ -1,5 +1,5 @@
+using HmsPlugin;
 using HuaweiMobileServices.APM;
-using HuaweiMobileServices.Utils;
 
 using UnityEngine;
 
@@ -9,9 +9,7 @@ public class HMSAPMManager : HMSManagerSingleton<HMSAPMManager>
 
     public HMSAPMManager()
     {
-        if (!HMSDispatcher.InstanceExists)
-            HMSDispatcher.CreateDispatcher();
-        HMSDispatcher.InvokeAsync(OnAwake);
+       HMSManagerStart.Start(OnAwake, TAG);
     }
 
     private void OnAwake()

@@ -7,8 +7,8 @@ namespace HmsPlugin
 {
     public class HMSExceptionHandler : HMSManagerSingleton<HMSExceptionHandler>
     {
-        public bool FileLogEnabled {get; set;}
-        private const string FILE_LOG_PATH = "Assets/Huawei/Logs/HMSExceptionLog.txt";
+        public bool LogApiEnabled {get; set;} = true;
+        private const string API_LOG_URL = "YOUR_API_SEND_LOG_URL";
         private const string TAG = "[HMSException]";
         private readonly Dictionary<string, string> _exceptionToFaqURL = new Dictionary<string, string>();
 
@@ -40,17 +40,10 @@ namespace HmsPlugin
             if (exceptionEntry.Key == null) return;
 
             Debug.LogError($"{TAG}: FAQ: {exceptionEntry.Value}");
-
-            if (FileLogEnabled)
-            {
-                //if folder does not exist, create it
-                if (!System.IO.Directory.Exists("Assets/Huawei/Logs"))
-                {
-                    System.IO.Directory.CreateDirectory("Assets/Huawei/Logs");
-                }
-                System.IO.File.AppendAllText(FILE_LOG_PATH, $"{TAG}: {logString}\n{stackTrace}\n faq: {exceptionEntry.Value}\n\n");
+            if (LogApiEnabled)
+            {   
+                ///TODO: Send log to your api
             }
-
         }
         private void RegisterExceptions()
         {

@@ -12,7 +12,7 @@ namespace HmsPlugin
     {
         private const string Tag = "HMSIAPManager";
 
-        private readonly HMSException IAP_NOT_AVAILABLE = new HMSException("[HMSIAPManager] IAP not available", "IAP not available", "IAP not available") { };
+        private readonly HMSException IAP_NOT_AVAILABLE = new HMSException($"{Tag} IAP not available", "IAP not available", "IAP not available") { };
 
         #region Delegates
 
@@ -92,13 +92,7 @@ namespace HmsPlugin
 
         public HMSIAPManager()
         {
-
-            if (!HMSDispatcher.InstanceExists)
-            {
-                HMSDispatcher.CreateDispatcher();
-            }
-
-            HMSDispatcher.InvokeAsync(InitControlOfIAP);
+            HMSManagerStart.Start(Tag, true, InitControlOfIAP);
         }
 
         private void InitControlOfIAP()

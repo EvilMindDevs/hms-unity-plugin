@@ -11,6 +11,7 @@ namespace HmsPlugin
 {
     public class HMSPushKitManager : HMSManagerSingleton<HMSPushKitManager>, IPushListener
     {
+        public const string TAG = "[HMS] PushKitManager";
         public Action<string> OnTokenSuccess { get; set; }
         public Action<Exception> OnTokenFailure { get; set; }
         public Action<string, Bundle> OnTokenBundleSuccess { get; set; }
@@ -26,15 +27,12 @@ namespace HmsPlugin
 
         public HMSPushKitManager()
         {
-            Debug.Log($"[HMS] : HMSPushKitManager Constructor");
-            if (!HMSDispatcher.InstanceExists)
-                HMSDispatcher.CreateDispatcher();
-            HMSDispatcher.InvokeAsync(OnAwake);
+            HMSManagerStart.Start(OnAwake,TAG);
         }
 
         private void OnAwake()
         {
-            Debug.Log($"[HMS] : HMSPushKitManager OnAwake");
+            Debug.Log($"{TAG}: OnAwake");
             PushManager.Listener = this;
             notificationDataOnStart = PushManager.NotificationDataOnStart;
         }
@@ -51,7 +49,7 @@ namespace HmsPlugin
             });
 
             var token = PushManager.Token;
-            Debug.Log($"[HMS] Push token from GetToken is {token}");
+            Debug.Log($"{TAG}: Push token from GetToken is {token}");
             if (token != null)
             {
                 OnTokenSuccess?.Invoke(token);
@@ -60,7 +58,7 @@ namespace HmsPlugin
 
         public void OnNewToken(string token)
         {
-            Debug.Log($"[HMS] Push token from OnNewToken is {token}");
+            Debug.Log($"{TAG}: Push token from OnNewToken is {token}");
             if (token != null)
             {
                 OnTokenSuccess?.Invoke(token);
@@ -69,16 +67,16 @@ namespace HmsPlugin
 
         public void OnTokenError(Exception e)
         {
-            Debug.Log("Error asking for Push token");
-            Debug.Log(e.StackTrace);
+            Debug.LogError($"{TAG}: Error asking for Push token");
+            Debug.LogError(e.StackTrace);
             OnTokenFailure?.Invoke(e);
         }
 
         // This method only gets triggered if Data Message is sent by Push Kit Server/AGC.
         public void OnMessageReceived(RemoteMessage remoteMessage)
         {
-            Debug.Log("[HMSPushKit] Data Message received");
-            Debug.Log("Data: " + remoteMessage.Data);
+            Debug.Log($"{TAG}: Data Message received");
+            Debug.Log($"{TAG}: Data: " + remoteMessage.Data);
             OnMessageReceivedSuccess?.Invoke(remoteMessage);
         }
 
@@ -110,11 +108,11 @@ namespace HmsPlugin
         {
             HmsMessaging.GetInstance().TurnOnPush().AddOnSuccessListener((type) =>
             {
-                Debug.Log("[HMSPlugin]: TurnOnPush Complete");
+                Debug.Log($"{TAG}: TurnOnPush Complete");
 
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMSPlugin]: TurnOnPush Failed" + exception.Message);
+                Debug.LogError($"{TAG}: TurnOnPush Failed" + exception.Message);
 
             });
         }
@@ -122,11 +120,11 @@ namespace HmsPlugin
         {
             HmsMessaging.GetInstance().TurnOffPush().AddOnSuccessListener((type) =>
             {
-                Debug.Log("[HMSPlugin]: TurnOffPush Complete");
+                Debug.Log($"{TAG}: TurnOffPush Complete");
 
             }).AddOnFailureListener((exception) =>
             {
-                Debug.Log("[HMSPlugin]: TurnOffPush Failed" + exception.Message);
+                Debug.LogError($"{TAG}: TurnOffPush Failed" + exception.Message);
 
             });
         }

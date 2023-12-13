@@ -11,18 +11,16 @@ using HmsPlugin;
 
 public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager>
 {
-    string TAG = "HMSRemoteConfig Manager";
+    const string TAG = "[HMS] RemoteConfigManager";
 
-    public Action<ConfigValues> OnFecthSuccess { get; set; }
-    public Action<HMSException> OnFecthFailure { get; set; }
+    public Action<ConfigValues> OnFetchSuccess { get; set; }
+    public Action<HMSException> OnFetchFailure { get; set; }
 
     IAGConnectConfig agc = null;
 
     public HMSRemoteConfigManager()
     {
-        if (!HMSDispatcher.InstanceExists)
-            HMSDispatcher.CreateDispatcher();
-        HMSDispatcher.InvokeAsync(OnAwake);
+        HMSManagerStart.Start(OnAwake, TAG);
     }
 
     private void OnAwake()
@@ -40,35 +38,35 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
                 }
             }
         }
-        Debug.Log($"[{TAG}]: Start() ");
+        Debug.Log($"{TAG}: Start() ");
     }
 
     //getInstance() Obtains an instance of AGConnectConfig.
     public void GetInstance()
     {
         if (agc == null) agc = AGConnectConfig.GetInstance();
-        Debug.Log($"[{TAG}]: GetInstance() {agc}");
+        Debug.Log($"{TAG}: GetInstance() {agc}");
     }
 
     //applyDefault(int resId) Sets a default value for a parameter.
     public void ApplyDefault(Dictionary<string, object> dictionary)
     {
         if (agc != null) agc.ApplyDefault(dictionary);
-        Debug.Log($"[{TAG}]: applyDefault with Dictionary");
+        Debug.Log($"{TAG}: applyDefault with Dictionary");
     }
 
     //applyDefault(Map<String, Object> map) Sets a default value for a parameter. This path must be in Resources folder.
     public void ApplyDefault(string xmlPath)
     {
         if (agc != null) agc.ApplyDefault(xmlPath);
-        Debug.Log($"[{TAG}]: applyDefault({xmlPath})");
+        Debug.Log($"{TAG}: applyDefault({xmlPath})");
     }
 
     //apply(ConfigValues values) Applies parameter values.
     public void Apply(ConfigValues configValues)
     {
         if (agc != null) agc.Apply(configValues);
-        Debug.Log($"[{TAG}]: apply");
+        Debug.Log($"{TAG}: apply");
     }
 
     //fetch() Fetches latest parameter values from Remote Configuration at the default 
@@ -78,13 +76,13 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
         ITask<ConfigValues> x = agc.Fetch();
         x.AddOnSuccessListener((configValues) =>
         {
-            Debug.Log("[HMSRemoteConfigManager] Fetch success.");
-            OnFecthSuccess?.Invoke(configValues);
+            Debug.Log($"{TAG}: Fetch success.");
+            OnFetchSuccess?.Invoke(configValues);
         });
         x.AddOnFailureListener((exception) =>
         {
-            Debug.LogError("[HMSRemoteConfigManager]: Fetch failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
-            OnFecthFailure?.Invoke(exception);
+            Debug.LogError($"{TAG}: Fetch failed. CauseMessage: " + exception.WrappedCauseMessage + ", ExceptionMessage: " + exception.WrappedExceptionMessage);
+            OnFetchFailure?.Invoke(exception);
         });
     }
 
@@ -95,11 +93,11 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
         ITask<ConfigValues> x = agc.Fetch(intervalSeconds);
         x.AddOnSuccessListener((configValues) =>
         {
-            OnFecthSuccess?.Invoke(configValues);
+            OnFetchSuccess?.Invoke(configValues);
         });
         x.AddOnFailureListener((exception) =>
         {
-            OnFecthFailure?.Invoke(exception);
+            OnFetchFailure?.Invoke(exception);
         });
     }
 
@@ -137,7 +135,7 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
     public void ClearAll()
     {
         if (agc != null) agc.ClearAll();
-        Debug.Log($"[{TAG}]: clearAll()");
+        Debug.Log($"{TAG}: clearAll()");
     }
 
     //setDeveloperMode(boolean isDeveloperMode) Enables the developer mode, in which the number 
@@ -146,7 +144,7 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
     public void SetDeveloperMode(Boolean val)
     {
         if (agc != null) agc.DeveloperMode = val;
-        Debug.Log($"[{TAG}]: setDeveloperMode({val})");
+        Debug.Log($"{TAG}: setDeveloperMode({val})");
     }
 
     //Returns the value for a key.

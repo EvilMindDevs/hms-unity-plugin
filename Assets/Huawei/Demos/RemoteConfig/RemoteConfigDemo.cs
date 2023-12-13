@@ -44,8 +44,8 @@ public class RemoteConfigDemo : MonoBehaviour
     {
         Debug.Log(TAG + " Fetch");
 
-        HMSRemoteConfigManager.Instance.OnFecthSuccess = OnFecthSuccess;
-        HMSRemoteConfigManager.Instance.OnFecthFailure = OnFecthFailure;
+        HMSRemoteConfigManager.Instance.OnFetchSuccess = OnFecthSuccess;
+        HMSRemoteConfigManager.Instance.OnFetchFailure = OnFecthFailure;
         HMSRemoteConfigManager.Instance.Fetch();
     }
 

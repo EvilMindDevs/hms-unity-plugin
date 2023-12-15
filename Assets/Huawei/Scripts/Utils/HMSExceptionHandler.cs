@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,72 +7,114 @@ namespace HmsPlugin
 {
     public class HMSExceptionHandler : HMSManagerSingleton<HMSExceptionHandler>
     {
-        public bool LogApiEnabled {get; set;} = true;
-        private const string API_LOG_URL = "YOUR_API_SEND_LOG_URL";
+        private const string FAQ_BASE_URL = "https://evilminddevs.gitbook.io/hms-unity-plugin_";
         private const string TAG = "[HMSException]";
         private readonly Dictionary<string, string> _exceptionToFaqURL = new Dictionary<string, string>();
-
+        private enum ExceptionName
+        {
+            QuickStartUrl,
+            Faq6003Error,
+            Faq6004Error,
+            FaqAds0Error,
+            FaqAds2Error,
+            FaqAds3Error,
+            Faq7018Error
+        }
         private static class ExceptionLog
         {
-            public const string QUICK_START_URL = "https://evilminddevs.gitbook.io/hms-unity-plugin_/getting-started/quick-start";
-            public const string FAQ_6003_ERROR = "https://evilminddevs.gitbook.io/hms-unity-plugin_/support/faq#what-should-i-do-if-a-6003-error-occurs";
-            public const string FAQ_ADS_ERROR_2 = "https://evilminddevs.gitbook.io/hms-unity-plugin_/support/faq#why-i-am-getting-2-network_error-while-using-a-ds-kit";
-            public const string FAQ_ADS_ERROR_3 = "https://evilminddevs.gitbook.io/hms-unity-plugin_/support/faq#why-i-am-getting-3-no_ad-error-while-using-a-ds-kit";
+            /// TODO: If there is too many urls or exceptions, we can move this to a separate file(maybe json). Than we can load it from there.
+            public static Dictionary<ExceptionName, string> Urls = new Dictionary<ExceptionName, string>
+            {
+                { ExceptionName.QuickStartUrl , GetUrl("/getting-started/quick-start") },
+                { ExceptionName.Faq6003Error, GetUrl("/support/faq#what-should-i-do-if-a-6003-error-occurs") },
+                { ExceptionName.Faq6004Error, GetUrl("/support/faq#why-is-result-code-6004-returned") },
+                { ExceptionName.FaqAds0Error, GetUrl("/support/faq#why-i-am-getting-0-inner-error-while-using-a-ds-kit") },
+                { ExceptionName.FaqAds2Error, GetUrl("/support/faq#why-i-am-getting-2-network_error-while-using-a-ds-kit") },
+                { ExceptionName.FaqAds3Error, GetUrl("/support/faq#why-i-am-getting-3-no_ad-error-while-using-a-ds-kit") },
+                { ExceptionName.Faq7018Error, GetUrl("/support/faq#why-i-am-getting-the-7018-game_state_not_init-error") }
+            };
+            private static string GetUrl(string path) => $"{FAQ_BASE_URL}{path}";
         }
-
         public HMSExceptionHandler()
         {
             RegisterExceptions();
-            Application.logMessageReceived += HandleLog;
+            Application.logMessageReceivedThreaded += HandleLog;
         }
         ~HMSExceptionHandler()
         {
-            Application.logMessageReceived -= HandleLog;
+            Application.logMessageReceivedThreaded -= HandleLog;
         }
         private void HandleLog(string logString, string stackTrace, LogType type)
         {
             if (!(type == LogType.Exception || type == LogType.Error)) return;
-            
-            var exceptionEntry = _exceptionToFaqURL.FirstOrDefault(entry => 
-                                                                logString.Contains(entry.Key, System.StringComparison.InvariantCultureIgnoreCase)||  
-                                                                stackTrace.Contains(entry.Key, System.StringComparison.InvariantCultureIgnoreCase));
+
+            var exceptionEntry = _exceptionToFaqURL.FirstOrDefault(entry =>
+            {
+                var comparisonType = StringComparison.InvariantCultureIgnoreCase;
+                return logString.IndexOf(entry.Key, comparisonType) >= 0 ||
+                       stackTrace.IndexOf(entry.Key, comparisonType) >= 0;
+            });
 
             if (exceptionEntry.Key == null) return;
 
-            Debug.LogError($"{TAG}: FAQ: {exceptionEntry.Value}");
-            if (LogApiEnabled)
-            {   
-                ///TODO: Send log to your api
-            }
+            Debug.LogError($"{TAG}: FAQ => {exceptionEntry.Value}");
+        } 
+        public void HandleLogForListener(string logString, string stackTrace, LogType type)
+        {
+            HandleLog(logString, stackTrace, type);
+            Application.logMessageReceivedThreaded -= HandleLog;
+            Debug.LogError($"{logString} {stackTrace}");
+            Application.logMessageReceivedThreaded += HandleLog;
         }
+        
+        #region Register Exceptions
         private void RegisterExceptions()
         {
             RegisterCommonExceptions();
             RegisterAccountExceptions();
             RegisterAdsExceptions();
+            RegisterGameServiceExceptions();
         }
-
         private void RegisterCommonExceptions()
         {
-            string commonError = "This below error is caused by that you try to run plugin on Editor. Please you switch to android platform and try on your android device again. Please check {0} for more information.";
-            _exceptionToFaqURL.Add("UnityEngine._AndroidJNIHelper.GetSignature", string.Format(commonError, ExceptionLog.QUICK_START_URL));
-            _exceptionToFaqURL.Add("SpecificException2", string.Format(commonError, ExceptionLog.QUICK_START_URL));
+            AddException("UnityEngine._AndroidJNIHelper.GetSignature",
+                         CreateMessage("This below error is caused by that you try to run plugin on Editor. Please you switch to android platform and try on your android device again. Please check {0} for more information.", ExceptionName.QuickStartUrl));
+
+            AddException("6004", CreateMessage("Did you enable any service? Please check {0} for more information.", ExceptionName.Faq6004Error));
         }
         private void RegisterAccountExceptions()
         {
-            string accountError = "The below 6003 error is caused by inconsistent certificate fingerprint configurations. Please check {0} for more information.";
-            _exceptionToFaqURL.Add("6003", string.Format(accountError, ExceptionLog.FAQ_6003_ERROR));
+            AddException("6003", CreateMessage("The below 6003 error is caused by inconsistent certificate fingerprint configurations. Please check {0} for more information.", ExceptionName.Faq6003Error));
         }
         private void RegisterAdsExceptions()
         {
             string adsError2 = "This below error is caused Are you testing with no HMS Core installed device(non-Huawei)? Please check {0} for more information.";
-            _exceptionToFaqURL.Add("reason:2", string.Format(adsError2, ExceptionLog.FAQ_ADS_ERROR_2));
-            _exceptionToFaqURL.Add("error $2", string.Format(adsError2, ExceptionLog.FAQ_ADS_ERROR_2));
-            _exceptionToFaqURL.Add("Error Code: 2", string.Format(adsError2, ExceptionLog.FAQ_ADS_ERROR_2));
+            AddException("reason:2", CreateMessage(adsError2, ExceptionName.FaqAds2Error));
+            AddException("error $2", CreateMessage(adsError2, ExceptionName.FaqAds2Error));
+            AddException("Error Code: 2", CreateMessage(adsError2, ExceptionName.FaqAds2Error));
 
-            string adsError3 = "This below error is caused The ad request is sent successfully, but the server returns a response indicating no available ad assets. Please check {0} for more information.";
-            _exceptionToFaqURL.Add("Error Code: 3", string.Format(adsError3, ExceptionLog.FAQ_ADS_ERROR_3));
+            AddException("SplashAdLoadFailed. Error Code: 3", CreateMessage("This below error is caused The ad request is sent successfully, but the server returns a response indicating no available ad assets. Please check {0} for more information.", ExceptionName.FaqAds3Error));
+            
+            AddException("Error Code: 0", CreateMessage("Why I am getting 0 - INNER error while using Ads kit?. Please check {0} for more information.", ExceptionName.FaqAds0Error));
+
         }
-
+        private void RegisterGameServiceExceptions()
+        {
+            AddException("7018", CreateMessage("Why I am getting the 7018 GAME_STATE_NOT_INIT error? Please check {0} for more information.", ExceptionName.Faq7018Error));
+        }
+        
+        // Register other exceptions in a similar way...
+        #endregion
+        
+        #region Helper Methods
+        private void AddException(string key, string message)
+        {
+            _exceptionToFaqURL.Add(key, message);
+        }
+        private string CreateMessage(string template, ExceptionName link)
+        {
+            return string.Format(template, ExceptionLog.Urls[link]);
+        }
+        #endregion
     }
 }

@@ -51,6 +51,7 @@ namespace HmsPlugin
         public void onError(string taskId, int errorCode, string errorMessage)
         {
             Error?.Invoke(taskId, errorCode, errorMessage);
+            HMSExceptionHandler.Instance.HandleLogForListener($"Modeling3dCaptureImageListener onError: {errorCode} {taskId}", string.Empty, LogType.Error);
         }
 
         public void onResult(string taskId, Modeling3dReconstructUploadResult result, AndroidJavaObject javaObject)
@@ -79,8 +80,6 @@ namespace HmsPlugin
         private Action<int> Progress;
         private Action<int, string> Error;
         private Action Result;
-
-
         public Modeling3dCaptureImageListener(Action<int> Progress,
                                                     Action<int, string> Error,
                                                      Action Result)
@@ -91,7 +90,8 @@ namespace HmsPlugin
         }
         public void onError(int errorCode, string message)
         {
-            Error?.Invoke(errorCode, message); ;
+            Error?.Invoke(errorCode, message);
+            HMSExceptionHandler.Instance.HandleLogForListener($"Modeling3dCaptureImageListener onError: {errorCode} {message}", string.Empty, LogType.Error);
         }
 
         public void onProgress(int progress)
@@ -146,6 +146,7 @@ namespace HmsPlugin
         public void onError(string taskId, int errorCode, string errorMessage)
         {
             Error?.Invoke(taskId, errorCode, errorMessage);
+            HMSExceptionHandler.Instance.HandleLogForListener($"Modeling3dCaptureImageListener onError: {errorCode} {taskId}", string.Empty, LogType.Error);
         }
 
         public void onResult(string taskId, Modeling3dTextureUploadResult result, JavaObject javaObject)

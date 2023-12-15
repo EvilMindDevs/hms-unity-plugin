@@ -3,7 +3,6 @@
 using HuaweiMobileServices.Ads;
 using HuaweiMobileServices.Ads.InstallReferrer;
 using HuaweiMobileServices.Utils;
-
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -302,7 +301,7 @@ namespace HmsPlugin
 
         private void BannerAdStatusListener_mOnAdFailed(object sender, AdLoadErrorCodeEventArgs e)
         {
-            Debug.LogError(TAG + "BannerAdLoadFailed. Error Code: " + e.ErrorCode);
+            Debug.LogError($"{TAG} BannerAdLoadFailed. Error Code: " + e.ErrorCode);
             OnBannerFailedToLoadEvent?.Invoke();
         }
 
@@ -414,7 +413,7 @@ namespace HmsPlugin
 
             public void OnAdFailed(int reason)
             {
-                Debug.LogError($"{TAG} OnInterstitialAdFailed reason:" + reason);
+                HMSExceptionHandler.Instance.HandleLogForListener($"{TAG} OnInterstitialAdFailed with error ${reason}", string.Empty, LogType.Error);
                 mAdsManager.OnInterstitialAdFailed?.Invoke(reason);
             }
 
@@ -508,7 +507,6 @@ namespace HmsPlugin
         private class RewardAdListener : IRewardAdListener
         {
             private const string TAG = "[HMS] HMSAdsKitManager";
-
             private readonly HMSAdsKitManager mAdsManager;
 
             public RewardAdListener(HMSAdsKitManager adsManager)
@@ -530,7 +528,7 @@ namespace HmsPlugin
 
             public void OnRewardAdFailedToLoad(int errorCode)
             {
-                Debug.LogError($"{TAG} Rewarded ad loading failed with error ${errorCode}");
+                HMSExceptionHandler.Instance.HandleLogForListener($"{TAG} OnRewardAdFailedToLoad with error ${errorCode}", string.Empty, LogType.Error);
                 mAdsManager.OnRewardedAdFailedToLoad?.Invoke(errorCode);
             }
 
@@ -640,7 +638,7 @@ namespace HmsPlugin
 
         private void SplashAdStatusListener_OnAdFailedToLoad(int errorCode)
         {
-            Debug.LogError($"{TAG} SplashAdLoadFailed. Error Code: " + errorCode);
+            HMSExceptionHandler.Instance.HandleLogForListener($"{TAG} SplashAdLoadFailed. Error Code: " + errorCode, string.Empty, LogType.Error);
             OnSplashAdFailedToLoad?.Invoke(errorCode);
         }
 
@@ -722,7 +720,7 @@ namespace HmsPlugin
             }
             void IConsentUpdateListener.OnFail(string desc)
             {
-                Debug.LogError($"{TAG} AdsKitManager CONSENT OnFail " + desc);
+                HMSExceptionHandler.Instance.HandleLogForListener($"{TAG} AdsKitManager CONSENT OnFail " + desc, string.Empty, LogType.Error);
 
                 if (mAdsManager != null)
                 {

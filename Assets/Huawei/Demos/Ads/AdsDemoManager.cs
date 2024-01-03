@@ -32,16 +32,17 @@ public class AdsDemoManager : MonoBehaviour
 
     private void Start()
     {
-        HMSAdsKitManager.Instance.OnRewarded = OnRewarded;
-        HMSAdsKitManager.Instance.OnInterstitialAdClosed = OnInterstitialAdClosed;
-
-        HMSAdsKitManager.Instance.ConsentOnFail = OnConsentFail;
-        HMSAdsKitManager.Instance.ConsentOnSuccess = OnConsentSuccess;
+        HMSAdsKitManager.Instance = new HMSAdsKitManager(hasPurchasedNoAds: false)
+        {
+            OnRewarded = OnRewarded,
+            OnInterstitialAdClosed = OnInterstitialAdClosed,
+            ConsentOnFail = OnConsentFail,
+            ConsentOnSuccess = OnConsentSuccess
+        };
         HMSAdsKitManager.Instance.RequestConsentUpdate();
 
         //testAdStatusToggle = GameObject.FindGameObjectWithTag("Toggle").GetComponent<Toggle>();
         //testAdStatusToggle.isOn = HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds);
-        
 
         #region SetNonPersonalizedAd , SetRequestLocation
 
@@ -59,7 +60,6 @@ public class AdsDemoManager : MonoBehaviour
         Debug.Log($"{TAG}Consent: {requestOptions.Consent}");
 
         #endregion
-
     }
 
     private void OnConsentSuccess(ConsentStatus consentStatus, bool isNeedConsent, IList<AdProvider> adProviders)

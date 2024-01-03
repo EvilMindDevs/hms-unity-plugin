@@ -1,14 +1,11 @@
 ﻿using HuaweiConstants;
-
 using HuaweiMobileServices.Ads;
 using HuaweiMobileServices.Ads.InstallReferrer;
 using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
 using UnityEngine;
-
 using static HuaweiConstants.UnityBannerAdPositionCode;
 using static HuaweiMobileServices.Ads.SplashAd;
 
@@ -34,11 +31,13 @@ namespace HmsPlugin
 
         private bool isInitialized;
 
+        private InstallReferrerClient installReferrerClient;
+
         public Action<ReferrerDetails> InstallReferrerSuccess { get; set; }
         public Action<InstallReferrerResponse> InstallReferrerFail { get; set; }
         public Action InstallReferrerDisconnect { get; set; }
 
-        InstallReferrerClient installReferrerClient;
+        public bool hasPurchasedNoAds = false;
 
         public HMSAdsKitManager()
         {
@@ -46,18 +45,29 @@ namespace HmsPlugin
             HMSManagerStart.Start(OnAwake, OnStart, TAG);
         }
 
+        public HMSAdsKitManager(bool hasPurchasedNoAds)
+        {
+            adsKitSettings = HMSAdsKitSettings.Instance.Settings;
+            this.hasPurchasedNoAds = hasPurchasedNoAds;
+            HMSManagerStart.Start(OnAwake, () => { OnStart(hasPurchasedNoAds);}, TAG);
+        }
+
         private void OnAwake()
         {
             Debug.Log($"{TAG} OnAwake");
             Init();
-            if (adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd))
-                LoadSplashAd();
         }
 
         private void OnStart()
         {
             Debug.Log($"{TAG} OnStart");
             LoadAdsWhenInternetIsAvailable();
+        }
+
+        private void OnStart(bool hasPurchasedNoAds = false)
+        {
+            Debug.Log($"{TAG} OnStart");
+            LoadAdsWhenInternetIsAvailable(hasPurchasedNoAds);
         }
 
         private void Init()
@@ -68,19 +78,21 @@ namespace HmsPlugin
             adsKitSettings = HMSAdsKitSettings.Instance.Settings;
         }
 
-        private async void LoadAdsWhenInternetIsAvailable()
+        private async void LoadAdsWhenInternetIsAvailable(bool hasPurchasedNoAds = false)
         {
             while (Application.internetReachability == NetworkReachability.NotReachable)
                 await Task.Delay(TimeSpan.FromSeconds(0.5));
 
             Debug.Log($"{TAG} Loading Ads");
-            LoadAllAds();
+            LoadAllAds(hasPurchasedNoAds);
         }
 
         public void LoadAllAds(bool hasPurchasedNoAds = false)
         {
             if (!hasPurchasedNoAds)
             {
+                if (adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd))
+                    LoadSplashAd();
                 UnityBannerAdPositionCodeType _adPositionCodeType = UnityBannerAdPositionCodeType.POSITION_BOTTOM;
                 UnityBannerAdSizeType _adSizeType = UnityBannerAdSizeType.BANNER_SIZE_360_57;
 

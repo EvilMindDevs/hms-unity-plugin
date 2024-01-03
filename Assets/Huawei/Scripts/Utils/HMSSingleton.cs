@@ -42,9 +42,10 @@ public class HMSEditorSingleton<T> where T : new()
         }
     }
 }
+
 public class HMSManagerSingleton<T> where T : new()
 {
-    private static readonly Lazy<T> _instance = new Lazy<T>(() => new T());
+    private static Lazy<T> _instance = new Lazy<T>(() => new T());
 
     public static T Instance
     {
@@ -52,5 +53,6 @@ public class HMSManagerSingleton<T> where T : new()
         {
             return _instance.Value;
         }
+        set => _instance = new Lazy<T>(() => value);
     }
 }

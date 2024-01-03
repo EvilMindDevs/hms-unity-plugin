@@ -20,7 +20,7 @@ internal class HMSPluginUpdater
         {
             if (SessionState.GetBool(sessionState, false)) return;
             SessionState.SetBool(sessionState, true);
-            HMSEditorUtils.HandleAssemblyDefinitions(HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
+            HMSEditorUtils.UpdateAssemblyDefinitions(HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
         }
 
         Task.Delay(2000).ContinueWith(t =>

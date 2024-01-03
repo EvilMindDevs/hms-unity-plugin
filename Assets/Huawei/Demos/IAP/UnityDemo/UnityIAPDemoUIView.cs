@@ -1,5 +1,3 @@
-
-
 using UnityEngine;
 
 #if UNITY_PURCHASING

@@ -69,7 +69,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
     {
         if (!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true))
         {
-            HMSEditorUtils.HandleAssemblyDefinitions(false);
+            HMSEditorUtils.UpdateAssemblyDefinitions(false);
             return;
         }
 

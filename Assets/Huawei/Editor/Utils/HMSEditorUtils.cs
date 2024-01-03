@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,18 +8,19 @@ namespace HmsPlugin
 {
     public static class HMSEditorUtils
     {
-        public static void HandleAssemblyDefinitions(bool enable, bool refreshAssets = true)
+        public static void UpdateAssemblyDefinitions(bool enable, bool refreshAssets = true)
         {
-            string huaweiMobileServicesCorePath = Application.dataPath + "/Huawei/HuaweiMobileServices.Core.asmdef";
-            var huaweiMobileServicesCore = JsonUtility.FromJson<AssemblyDefinitionInfo>(File.ReadAllText(huaweiMobileServicesCorePath));
-
-            if (huaweiMobileServicesCore != null)
+            string coreAssemblyPath = Path.Combine(Application.dataPath, "Huawei", "HuaweiMobileServices.Core.asmdef");
+            string jsonContent = File.ReadAllText(coreAssemblyPath);
+            var coreAssemblyDefinition = JsonUtility.FromJson<AssemblyDefinitionInfo>(jsonContent);
+            if (coreAssemblyDefinition != null)
             {
-                huaweiMobileServicesCore.includePlatforms = enable ? new List<string> { "Editor", "Android" } : new List<string> { "Editor" };
-                File.WriteAllText(huaweiMobileServicesCorePath, JsonUtility.ToJson(huaweiMobileServicesCore, true));
+                coreAssemblyDefinition.includePlatforms = enable ? new List<string> { "Editor", "Android" } : new List<string> { "Editor" };
+                string updatedJsonContent = JsonUtility.ToJson(coreAssemblyDefinition, true);
+                File.WriteAllText(coreAssemblyPath, updatedJsonContent);
             }
-            if (refreshAssets)
-                AssetDatabase.Refresh();
+
+            if (refreshAssets) AssetDatabase.Refresh();
         }
 
         public static void SetHMSPlugin(bool status, bool enableToggle, bool refreshAssets = true)
@@ -55,9 +53,9 @@ namespace HmsPlugin
             if (refreshAssets)
                 AssetDatabase.Refresh();
         }
-
+        
         [Serializable]
-        private class AssemblyDefinitionInfo
+        public class AssemblyDefinitionInfo
         {
             public string name;
             public List<string> references;
@@ -68,9 +66,19 @@ namespace HmsPlugin
             public List<string> precompiledReferences;
             public bool autoReferenced;
             public List<string> defineConstraints;
-            public List<string> versionDefines;
+            public List<VersionDefine> versionDefines;
             public bool noEngineReferences;
         }
+        [Serializable]
+
+        public class VersionDefine
+        {
+            public string name;
+            public string expression;
+            public string define;
+        }
+
+
 
         [UnityEditor.Callbacks.DidReloadScripts]
         public static void CheckOldFiles()

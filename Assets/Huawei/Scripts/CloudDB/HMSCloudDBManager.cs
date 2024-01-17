@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.AuthService;
+using HuaweiMobileServices.AuthService;
 using HuaweiMobileServices.CloudDB;
 using HuaweiMobileServices.Common;
 using HuaweiMobileServices.Utils;

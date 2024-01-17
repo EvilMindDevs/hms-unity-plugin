@@ -1,13 +1,9 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 
 using HuaweiMobileServices.AuthService;
-using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;

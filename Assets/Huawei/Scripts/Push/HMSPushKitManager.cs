@@ -1,11 +1,9 @@
-﻿using HuaweiMobileServices.Base;
+using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Push;
 using HuaweiMobileServices.Utils;
 using System;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace HmsPlugin
 {
@@ -27,7 +25,7 @@ namespace HmsPlugin
 
         public HMSPushKitManager()
         {
-            HMSManagerStart.Start(OnAwake,TAG);
+            HMSManagerStart.Start(OnAwake, TAG);
         }
 
         private void OnAwake()
@@ -37,7 +35,7 @@ namespace HmsPlugin
             notificationDataOnStart = PushManager.NotificationDataOnStart;
         }
 
-        public void Init() 
+        public void Init()
         {
             if (notificationDataOnStart.NotifyId != -1)
             {

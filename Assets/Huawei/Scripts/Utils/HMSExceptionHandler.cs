@@ -58,7 +58,7 @@ namespace HmsPlugin
             if (exceptionEntry.Key == null) return;
 
             Debug.LogError($"{TAG}: FAQ => {exceptionEntry.Value}");
-        } 
+        }
         public void HandleLogForListener(string logString, string stackTrace, LogType type)
         {
             HandleLog(logString, stackTrace, type);
@@ -66,7 +66,7 @@ namespace HmsPlugin
             Debug.LogError($"{logString} {stackTrace}");
             Application.logMessageReceivedThreaded += HandleLog;
         }
-        
+
         #region Register Exceptions
         private void RegisterExceptions()
         {
@@ -94,7 +94,7 @@ namespace HmsPlugin
             AddException("Error Code: 2", CreateMessage(adsError2, ExceptionName.FaqAds2Error));
 
             AddException("SplashAdLoadFailed. Error Code: 3", CreateMessage("This below error is caused The ad request is sent successfully, but the server returns a response indicating no available ad assets. Please check {0} for more information.", ExceptionName.FaqAds3Error));
-            
+
             AddException("Error Code: 0", CreateMessage("Why I am getting 0 - INNER error while using Ads kit?. Please check {0} for more information.", ExceptionName.FaqAds0Error));
 
         }
@@ -102,10 +102,10 @@ namespace HmsPlugin
         {
             AddException("7018", CreateMessage("Why I am getting the 7018 GAME_STATE_NOT_INIT error? Please check {0} for more information.", ExceptionName.Faq7018Error));
         }
-        
+
         // Register other exceptions in a similar way...
         #endregion
-        
+
         #region Helper Methods
         private void AddException(string key, string message)
         {

@@ -1,12 +1,3 @@
-﻿using HmsPlugin;
-
-using HuaweiMobileServices.IAP;
-using HuaweiMobileServices.Utils;
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
 using UnityEngine;
 
 #if UNITY_PURCHASING

@@ -16,7 +16,7 @@ public class HMSLocationManager : HMSManagerSingleton<HMSLocationManager>
 
     public HMSLocationManager()
     {
-        HMSManagerStart.Start(OnAwake,OnStart,TAG);
+        HMSManagerStart.Start(OnAwake, OnStart, TAG);
     }
 
     private void OnAwake()

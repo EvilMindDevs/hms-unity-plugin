@@ -1,12 +1,9 @@
-﻿using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
 using HuaweiMobileServices.RemoteConfig;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Utils;
-using System.Xml.Linq;
-using System.Xml;
 using HmsPlugin;
 
 public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager>
@@ -69,7 +66,7 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
         Debug.Log($"{TAG}: apply");
     }
 
-    //fetch() Fetches latest parameter values from Remote Configuration at the default 
+    //fetch() Fetches latest parameter values from Remote Configuration at the default
     //interval of 12 hours. If the method is called within an interval, cached data is returned.
     public void Fetch()
     {
@@ -86,7 +83,7 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
         });
     }
 
-    //fetch(long intervalSeconds) Fetches latest parameter values from Remote Configuration at 
+    //fetch(long intervalSeconds) Fetches latest parameter values from Remote Configuration at
     //a customized interval. If the method is called within an interval, cached data is returned.
     public void Fetch(long intervalSeconds)
     {
@@ -101,7 +98,7 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
         });
     }
 
-    //getMergedAll() Returns all values obtained after the combination of the default values and 
+    //getMergedAll() Returns all values obtained after the combination of the default values and
     //values in Remote Configuration.
     public Dictionary<string, object> GetMergedAll()
     {
@@ -130,7 +127,7 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
         return source;
     }
 
-    //clearAll() Clears all cached data, including the data fetched from Remote Configuration and 
+    //clearAll() Clears all cached data, including the data fetched from Remote Configuration and
     //the default values passed.
     public void ClearAll()
     {
@@ -138,8 +135,8 @@ public class HMSRemoteConfigManager : HMSManagerSingleton<HMSRemoteConfigManager
         Debug.Log($"{TAG}: clearAll()");
     }
 
-    //setDeveloperMode(boolean isDeveloperMode) Enables the developer mode, in which the number 
-    //of times that the client obtains data from Remote Configuration is not limited, and traffic 
+    //setDeveloperMode(boolean isDeveloperMode) Enables the developer mode, in which the number
+    //of times that the client obtains data from Remote Configuration is not limited, and traffic
     //control is still performed over the cloud.
     public void SetDeveloperMode(Boolean val)
     {

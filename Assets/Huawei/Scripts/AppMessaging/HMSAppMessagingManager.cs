@@ -1,4 +1,4 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 using HuaweiMobileServices.AppMessaging;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;

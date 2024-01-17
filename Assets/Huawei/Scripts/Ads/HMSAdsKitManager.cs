@@ -1,4 +1,4 @@
-﻿using HuaweiConstants;
+using HuaweiConstants;
 using HuaweiMobileServices.Ads;
 using HuaweiMobileServices.Ads.InstallReferrer;
 using HuaweiMobileServices.Utils;
@@ -49,7 +49,7 @@ namespace HmsPlugin
         {
             adsKitSettings = HMSAdsKitSettings.Instance.Settings;
             this.hasPurchasedNoAds = hasPurchasedNoAds;
-            HMSManagerStart.Start(OnAwake, () => { OnStart(hasPurchasedNoAds);}, TAG);
+            HMSManagerStart.Start(OnAwake, () => { OnStart(hasPurchasedNoAds); }, TAG);
         }
 
         private void OnAwake()

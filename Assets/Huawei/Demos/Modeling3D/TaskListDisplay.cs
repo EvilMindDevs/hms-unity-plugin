@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using HmsPlugin;
 using HuaweiMobileServices.Modeling3D.ObjReconstructSdk.Cloud;
@@ -45,13 +44,13 @@ public class TaskListDisplay : MonoBehaviour, IPointerClickHandler
     {
         var modeling3dDemoManager = FindObjectOfType<Modeling3dDemoManager>();
         Debug.Log("[HMS] tasklist TaskId:" + TaskId);
-        if (TaskId != null && TaskId !="")
+        if (TaskId != null && TaskId != "")
             modeling3dDemoManager.DownloadFile(TaskId);
-        else 
+        else
         {
             modeling3dDemoManager.DownloadFile(PlayerPrefs.GetString("currentTaskId"));
         }
-            
+
     }
     public void RefreshAllTaskAndOpenList()
     {
@@ -92,7 +91,7 @@ public class TaskListDisplay : MonoBehaviour, IPointerClickHandler
     {
         GUIUtility.systemCopyBuffer = TaskId;
         AndroidToast.MakeText($"Copy to Clipboard TaskId: {TaskId}").Show();
-        if(TaskId!=null && TaskId != "") 
+        if (TaskId != null && TaskId != "")
         {
             PlayerPrefs.SetString("currentTaskId", TaskId);
         }

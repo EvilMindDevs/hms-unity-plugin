@@ -3,10 +3,6 @@ using UnityEngine;
 #if UNITY_PURCHASING
 using UnityEngine.Purchasing;
 #endif
-using UnityEngine.UI;
-
-
-
 
 public class UnityIAPDemoUIView : MonoBehaviour
 {

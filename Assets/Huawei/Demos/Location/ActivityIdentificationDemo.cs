@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.Location;
+using HuaweiMobileServices.Location;
 using HuaweiMobileServices.Location.Activity;
 using HuaweiMobileServices.Utils;
 using UnityEngine;
@@ -43,7 +43,7 @@ namespace Huawei.Demos.Location
             {
                 Debug.Log($"{TAG} ActivityIdentification OnReceive success");
                 isIntentUsed = true;
-                
+
                 var activityIdentificationResponse = ActivityIdentificationResponse.GetDataFromIntent(intent);
 
                 if (activityIdentificationResponse != null)

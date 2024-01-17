@@ -32,7 +32,7 @@ public class GeofenceDemo : MonoBehaviour
         HMSLocationManager.Instance.RequestFineLocationPermission();
         HMSLocationManager.Instance.RequestCoarseLocationPermission();
         HMSLocationManager.Instance.RequestBackgroundLocationPermissions();
-        
+
         GeofenceReceiver.Instance.onReceive += OnReceive;
         HMSLocationManager.Instance.onLocationResult += OnLocationResult;
         GeofenceReceiver.Instance.SetGeofenceBroadcastListener();
@@ -64,7 +64,7 @@ public class GeofenceDemo : MonoBehaviour
     private void OnLocationResult(LocationResult locationResult)
     {
         Debug.Log($"{TAG} OnLocationResult success");
-        
+
         var location = locationResult.GetLastLocation();
         latitude = location.GetLatitude();
         longitude = location.GetLongitude();
@@ -152,7 +152,7 @@ public class GeofenceDemo : MonoBehaviour
         geofenceService.CreateGeofenceList(geofenceRequest, pendingIntent)
             .AddOnSuccessListener(type =>
             {
-                resultText.text= "GeofenceList Successfully Created ";
+                resultText.text = "GeofenceList Successfully Created ";
                 Debug.Log($"{TAG} CreateGeofenceList Successful");
             })
             .AddOnFailureListener(exception =>
@@ -167,7 +167,7 @@ public class GeofenceDemo : MonoBehaviour
         geofenceService.DeleteGeofenceList(pendingIntent)
             .AddOnSuccessListener(type =>
             {
-                resultText.text= "GeofenceList Successfully Deleted ";
+                resultText.text = "GeofenceList Successfully Deleted ";
                 Debug.Log($"{TAG} DeleteGeofenceList Successful");
             })
             .AddOnFailureListener(exception =>

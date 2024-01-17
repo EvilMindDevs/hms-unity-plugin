@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.APM;
+using HuaweiMobileServices.APM;
 
 using UnityEngine;
 

@@ -22,7 +22,7 @@ public class Modeling3dDTO
         {
             return TaskId == (obj as Modeling3dDTO).TaskId;
         }
-        if(obj is string)
+        if (obj is string)
         {
             return TaskId == (string)obj;
         }

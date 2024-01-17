@@ -1,7 +1,5 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 
-using HuaweiMobileServices.Base;
-using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Push;
 using HuaweiMobileServices.Utils;
 

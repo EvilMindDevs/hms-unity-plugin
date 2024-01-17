@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using HuaweiMobileServices.Location;
 using HuaweiMobileServices.Location.Geofences;
 using HuaweiMobileServices.Utils;

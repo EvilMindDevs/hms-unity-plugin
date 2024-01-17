@@ -1,4 +1,4 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 
 using HuaweiMobileServices.AuthService;
 using HuaweiMobileServices.CloudDB;

@@ -9,7 +9,7 @@ public class HMSAPMManager : HMSManagerSingleton<HMSAPMManager>
 
     public HMSAPMManager()
     {
-       HMSManagerStart.Start(OnAwake, TAG);
+        HMSManagerStart.Start(OnAwake, TAG);
     }
 
     private void OnAwake()

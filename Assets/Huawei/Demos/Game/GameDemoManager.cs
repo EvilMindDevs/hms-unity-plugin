@@ -1,12 +1,8 @@
-﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using HuaweiMobileServices;
 using HuaweiMobileServices.Game;
-using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Utils;
-using System;
 using HmsPlugin;
 using UnityEngine.UI;
 
@@ -160,7 +156,7 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnIsAllowContinuePlayGamesSuccess(bool isAllow)
     {
-        Debug.Log(TAG + "IsAllowContinuePlayGames SUCCESS. isAllow:"+ isAllow);
+        Debug.Log(TAG + "IsAllowContinuePlayGames SUCCESS. isAllow:" + isAllow);
     }
 
     private void OnGetUserPlayStateSuccess(int state)

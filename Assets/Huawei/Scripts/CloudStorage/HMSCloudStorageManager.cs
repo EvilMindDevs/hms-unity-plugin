@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.Base;
+using HuaweiMobileServices.Base;
 using HuaweiMobileServices.CloudStorage;
 using HuaweiMobileServices.Utils;
 

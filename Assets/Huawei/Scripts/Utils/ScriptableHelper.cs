@@ -1,5 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +10,7 @@ public static class ScriptableHelper
 #if UNITY_EDITOR
         EditorUtility.SetDirty(scriptableObject);
 
-        // Note: we do not call AssetDatabase.SaveAssets() because it takes too long on bigger projects 
+        // Note: we do not call AssetDatabase.SaveAssets() because it takes too long on bigger projects
         // And SetDirty should be enough to live between play mode changes & reopening Unity
 #endif
     }

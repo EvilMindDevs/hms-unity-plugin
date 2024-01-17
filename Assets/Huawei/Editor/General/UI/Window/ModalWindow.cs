@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using HmsPlugin.Extensions;
+using System;
 using UnityEditor;
 using UnityEngine;
 

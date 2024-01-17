@@ -1,12 +1,11 @@
-﻿using System;
+using HmsPlugin;
+using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
-using HmsPlugin;
-using System.IO;
-using System.Threading.Tasks;
 
 internal class HMSPluginUpdater
 {
@@ -52,9 +51,9 @@ public class HMSPluginUpdateRequest : MonoBehaviour
         yield return request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
-         var requestError =
-            request.result == UnityWebRequest.Result.ProtocolError ||
-            request.result == UnityWebRequest.Result.ConnectionError;
+        var requestError =
+           request.result == UnityWebRequest.Result.ProtocolError ||
+           request.result == UnityWebRequest.Result.ConnectionError;
 #else
         bool requestError =
            request.isNetworkError ||
@@ -119,7 +118,7 @@ public class HMSPluginUpdateRequest : MonoBehaviour
                     latestVersion = tempVer;
                 }
             }
-            catch 
+            catch
             {
                 //Debug.LogError("Version parse error!"+ list.tags[i].name.RemoveAfter('-').Replace("v", ""));
             }

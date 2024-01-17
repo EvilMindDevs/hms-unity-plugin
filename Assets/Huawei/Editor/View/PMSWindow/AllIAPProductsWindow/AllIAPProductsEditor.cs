@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -86,7 +84,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             }
             else
             {
-                Debug.LogError($"[HMS PMSAPI] Querying product failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
+                Debug.LogError($"[HMS PMSAPI] Querying product failed. Error Code: {responseJson.error.errorCode}, Error Message: {responseJson.error.errorMsg}.");
             }
         }
 

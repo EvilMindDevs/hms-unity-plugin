@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -34,7 +31,7 @@ namespace HmsPlugin.Label
         {
             if (_text != null || _guiContent != null)
             {
-                Draw(_text, _tooltip,_guiContent);
+                Draw(_text, _tooltip, _guiContent);
             }
         }
 
@@ -119,7 +116,7 @@ namespace HmsPlugin.Label
             if (_fontSize.HasValue)
                 _style.fontSize = _fontSize.Value;
 
-            if (guiContent != null) 
+            if (guiContent != null)
             {
                 GUILayout.Label(guiContent, _style);
             }

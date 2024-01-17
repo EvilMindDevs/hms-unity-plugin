@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -189,7 +189,7 @@ public class HMSWebRequestBehaviour : MonoBehaviour
         {
             yield return asyncOp;
         }
-        
+
 #if UNITY_2020_1_OR_NEWER
         var requestError =
            request.result == UnityWebRequest.Result.ProtocolError ||
@@ -234,9 +234,9 @@ public class HMSWebRequestBehaviour : MonoBehaviour
             yield return request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
-         var requestError =
-            request.result == UnityWebRequest.Result.ProtocolError ||
-            request.result == UnityWebRequest.Result.ConnectionError;
+            var requestError =
+               request.result == UnityWebRequest.Result.ProtocolError ||
+               request.result == UnityWebRequest.Result.ConnectionError;
 #else
             bool requestError =
                request.isNetworkError ||
@@ -278,9 +278,9 @@ public class HMSWebRequestBehaviour : MonoBehaviour
             yield return request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
-         var requestError =
-            request.result == UnityWebRequest.Result.ProtocolError ||
-            request.result == UnityWebRequest.Result.ConnectionError;
+            var requestError =
+               request.result == UnityWebRequest.Result.ProtocolError ||
+               request.result == UnityWebRequest.Result.ConnectionError;
 #else
             bool requestError =
                request.isNetworkError ||
@@ -320,9 +320,9 @@ public class HMSWebRequestBehaviour : MonoBehaviour
             yield return request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
-         var requestError =
-            request.result == UnityWebRequest.Result.ProtocolError ||
-            request.result == UnityWebRequest.Result.ConnectionError;
+            var requestError =
+               request.result == UnityWebRequest.Result.ProtocolError ||
+               request.result == UnityWebRequest.Result.ConnectionError;
 #else
             bool requestError =
                request.isNetworkError ||
@@ -354,9 +354,9 @@ public class HMSWebRequestBehaviour : MonoBehaviour
             yield return request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
-         var requestError =
-            request.result == UnityWebRequest.Result.ProtocolError ||
-            request.result == UnityWebRequest.Result.ConnectionError;
+            var requestError =
+               request.result == UnityWebRequest.Result.ProtocolError ||
+               request.result == UnityWebRequest.Result.ConnectionError;
 #else
             bool requestError =
                request.isNetworkError ||

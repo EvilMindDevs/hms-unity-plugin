@@ -1,5 +1,4 @@
-﻿using System;
-using HmsPlugin.Extensions;
+using System;
 using UnityEngine;
 
 namespace HmsPlugin.Button

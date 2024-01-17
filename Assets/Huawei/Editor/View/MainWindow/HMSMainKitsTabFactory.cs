@@ -1,18 +1,10 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 using HmsPlugin.Button;
 using HmsPlugin.Label;
-using HmsPlugin.TextField;
-using HmsPlugin.Toggle;
-
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using UnityEditor;
-
 using UnityEngine;
 
 internal class HMSMainKitsTabFactory
@@ -87,7 +79,7 @@ internal class HMSMainKitsTabFactory
                     new HorizontalSequenceDrawer(new Spacer(), cloudStorageToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), crashToggleEditor, new Spacer()),
                     new HorizontalSequenceDrawer(new Spacer(), remoteConfigToggleEditor, new Spacer())
-                    
+
                 )
             ));
         //tab.AddDrawer(new HorizontalLine());

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -53,7 +53,7 @@ namespace HmsPlugin
             if (refreshAssets)
                 AssetDatabase.Refresh();
         }
-        
+
         [Serializable]
         public class AssemblyDefinitionInfo
         {

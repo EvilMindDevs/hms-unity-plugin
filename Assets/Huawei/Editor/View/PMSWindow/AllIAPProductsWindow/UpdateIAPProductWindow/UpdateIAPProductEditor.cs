@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -48,7 +47,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             subGroupPeriodLabel = new Label.Label("Sub Period:");
             subGroupValueLabel = new Label.Label();
             statusToggle = new Toggle.Toggle("Status(Active/Inactive):", product.status == "active" ? true : false);
-            
+
             var currentLanguage = supportedLanguages.FirstOrDefault(c => c.Value == product.defaultLocale);
             int localeIndex = supportedLanguages.Keys.ToList().IndexOf(currentLanguage.Key);
             defaultLocaleDropdown = new Dropdown.StringDropdown(supportedLanguages.Keys.ToArray(), localeIndex, "Default Language", OnLanguageSelected);
@@ -158,7 +157,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             }
             else
             {
-                Debug.LogError($"[HMS PMSAPI] Product update failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
+                Debug.LogError($"[HMS PMSAPI] Product update failed. Error Code: {responseJson.error.errorCode}, Error Message: {responseJson.error.errorMsg}.");
             }
         }
 
@@ -192,7 +191,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             }
             else
             {
-                Debug.LogError($"[HMS PMSAPI] GetSubGroups failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
+                Debug.LogError($"[HMS PMSAPI] GetSubGroups failed. Error Code: {responseJson.error.errorCode}, Error Message: {responseJson.error.errorMsg}.");
             }
         }
 

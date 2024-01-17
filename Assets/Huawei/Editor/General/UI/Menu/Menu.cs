@@ -1,5 +1,4 @@
-﻿using HmsPlugin.Collections;
-using HmsPlugin.Extensions;
+using HmsPlugin.Collections;
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -26,7 +25,7 @@ namespace HmsPlugin
         public void Draw()
         {
             var area = EditorGUILayout.GetControlRect(true, 0f); // this is a hack to get a rect, specify 0 height to not add extra padding
-            
+
             for (var index = 0; index < _options.Count; index++)
             {
                 var line = new Rect(0, index * SingleHeight(), area.width - 2, EditorGUIUtility.singleLineHeight);
@@ -40,7 +39,7 @@ namespace HmsPlugin
                 }
             }
             GUILayout.Space(EditorGUIUtility.singleLineHeight * _options.Count + EditorGUIUtility.standardVerticalSpacing * 2);
-            
+
         }
 
         private static float SingleHeight()

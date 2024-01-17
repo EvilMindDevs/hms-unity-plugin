@@ -1,4 +1,4 @@
-﻿using HmsPlugin.Button;
+using HmsPlugin.Button;
 using HmsPlugin.Label;
 using System;
 using System.Collections.Generic;

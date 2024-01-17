@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace HmsPlugin
 {
     public class HelpBoxEnablingApp : IDrawer
@@ -23,4 +19,4 @@ namespace HmsPlugin
             }
         }
     }
-} 
+}

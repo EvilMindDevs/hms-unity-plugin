@@ -1,9 +1,5 @@
-﻿using HmsPlugin.List;
-using System;
+using HmsPlugin.List;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace HmsPlugin.ConnectAPI.PMSAPI
@@ -27,9 +23,9 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private IDrawer CreateList(AllIAPProductsEditor.Product item)
         {
-            return new HorizontalSequenceDrawer(new Space(20), new Label.Label(item.productNo), new Spacer(), 
-                (item.status == "delete") ? 
-                new Button.ButtonWithData<AllIAPProductsEditor.Product>("Deleted", OnDeletedItemClick, item).SetWidth(60).SetBGColor(Color.red) : 
+            return new HorizontalSequenceDrawer(new Space(20), new Label.Label(item.productNo), new Spacer(),
+                (item.status == "delete") ?
+                new Button.ButtonWithData<AllIAPProductsEditor.Product>("Deleted", OnDeletedItemClick, item).SetWidth(60).SetBGColor(Color.red) :
                 new Button.ButtonWithData<AllIAPProductsEditor.Product>("Edit", OnEditItemClick, item).SetWidth(60).SetBGColor(Color.yellow)); ;
         }
 

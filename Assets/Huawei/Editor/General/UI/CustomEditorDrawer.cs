@@ -1,4 +1,4 @@
-﻿namespace HmsPlugin
+namespace HmsPlugin
 {
     public class CustomEditorDrawer : UnityEditor.Editor
     {

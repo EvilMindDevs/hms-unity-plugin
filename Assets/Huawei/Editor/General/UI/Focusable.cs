@@ -1,4 +1,4 @@
-﻿using HmsPlugin.TextField;
+using HmsPlugin.TextField;
 using UnityEditor;
 using UnityEngine;
 

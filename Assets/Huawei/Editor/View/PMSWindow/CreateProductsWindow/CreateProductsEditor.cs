@@ -1,10 +1,7 @@
-﻿using HmsPlugin.Window;
-using OfficeOpenXml;
+using HmsPlugin.Window;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -59,7 +56,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             }
             else
             {
-                Debug.LogError($"[HMS PMSAPI]: Batch Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
+                Debug.LogError($"[HMS PMSAPI]: Batch Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: {responseJson.error.errorMsg}.");
                 if (responseJson.failedNumber > 0 && responseJson.resultInfo.Count > 0)
                 {
                     Debug.LogError("[HMS PMS API]: Several products could not be created and they are listed below.");

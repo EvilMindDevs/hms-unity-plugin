@@ -1,0 +1,24 @@
+{
+    // C# and .NET related settings
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-dotnettools.csharp",
+    "dotnet.preferCSharpExtension": true,
+    "csharp.format.enable": true,
+    "omnisharp.enableEditorConfigSupport": true,
+    // Editor related settings
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": true,
+    "editor.guides.indentation": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    },
+    // Git related settings
+    "git.autofetch": true,
+    // JSON related settings
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    }
+}

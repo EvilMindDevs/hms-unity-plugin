@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.csdevkit",
+    "EditorConfig.EditorConfig",
+    "aaron-bond.better-comments",
+    "streetsidesoftware.code-spell-checker",
+    "usernamehw.errorlens",
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "donjayamanne.git-extension-pack",
+    "ms-dotnettools.csharp",
+    "GitHub.vscode-pull-request-github",
+    "ms-dotnettools.vscodeintellicode-csharp"
+  ]
+}

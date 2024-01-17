@@ -1,11 +1,8 @@
-﻿using HmsPlugin.List;
-using System;
+using HmsPlugin.List;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -128,14 +125,14 @@ namespace HmsPlugin
                     file.WriteLine("public class HMSIAPConstants\n{");
                     for (int i = 0; i < _productListSettings.Keys.Count(); i++)
                     {
-                        if (char.IsDigit(Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "")[0])) 
+                        if (char.IsDigit(Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "")[0]))
                         {
                             //Given identifier starts with numeric 
-                            file.WriteLine($"\tpublic const string _{Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "") } = \"{_productListSettings.Keys.ElementAt(i).Replace("\"", "")}\";");
+                            file.WriteLine($"\tpublic const string _{Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "")} = \"{_productListSettings.Keys.ElementAt(i).Replace("\"", "")}\";");
                         }
-                        else 
+                        else
                         {
-                            file.WriteLine($"\tpublic const string {Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "") } = \"{_productListSettings.Keys.ElementAt(i).Replace("\"", "")}\";");
+                            file.WriteLine($"\tpublic const string {Regex.Replace(_productListSettings.Keys.ElementAt(i).Replace(" ", ""), @"[^0-9a-zA-Z_]+", "")} = \"{_productListSettings.Keys.ElementAt(i).Replace("\"", "")}\";");
                         }
                     }
                     file.WriteLine("}");

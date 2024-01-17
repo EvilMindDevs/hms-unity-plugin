@@ -1,4 +1,4 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 using HmsPlugin.PublishingAPI;
 
 internal class HMSPublishingAPITabFactory

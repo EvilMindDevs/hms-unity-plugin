@@ -2,7 +2,6 @@ using HmsPlugin;
 using HmsPlugin.Window;
 
 using UnityEditor;
-
 using UnityEngine;
 
 public class QueryingAppInformationWindow : HMSEditorWindow

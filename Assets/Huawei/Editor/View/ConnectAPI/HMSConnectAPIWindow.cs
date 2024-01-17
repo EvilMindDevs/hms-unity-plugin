@@ -1,10 +1,5 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 using HmsPlugin.Window;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 
 public class HMSConnectAPIWindow : HMSEditorWindow

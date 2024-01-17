@@ -1,13 +1,10 @@
-﻿using HmsPlugin.Dropdown;
+using HmsPlugin.Dropdown;
 using HmsPlugin.Image;
 using HmsPlugin.TextField;
-
 using HuaweiConstants;
 
 using System;
-
 using UnityEditor;
-
 using UnityEngine;
 
 using static HuaweiConstants.UnityBannerAdPositionCode;

@@ -1,5 +1,4 @@
-﻿using System;
-using HmsPlugin.Extensions;
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -52,8 +51,8 @@ namespace HmsPlugin.TextField
         public void ClearInput()
         {
             _text = "";
-            
-            if(OnValueChanged != null)
+
+            if (OnValueChanged != null)
                 OnValueChanged.DynamicInvoke(_text);
         }
 

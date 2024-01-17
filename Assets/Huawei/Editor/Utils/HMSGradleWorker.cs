@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -117,10 +117,10 @@ namespace HmsPlugin
                 file.Write("}\n\n");
             }
 #endif
-/* TODO:
-#elif UNITY_2022_1_OR_NEWER
-//Gradle 7+ and classpath 'com.huawei.agconnect:agcp:1.8.0.300' 
-*/
+            /* TODO:
+            #elif UNITY_2022_1_OR_NEWER
+            //Gradle 7+ and classpath 'com.huawei.agconnect:agcp:1.8.0.300'
+            */
         }
 
         private void CreateLauncherGradleFile(string[] gradleConfigs)
@@ -213,7 +213,7 @@ namespace HmsPlugin
         }
         private string[] CoreGradles()
         {
-            return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300"};
+            return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300" };
         }
 
         public void OnPreprocessBuild(BuildReport report)

@@ -1,4 +1,4 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 using System.IO;
 using System.Text;
 using UnityEditor;
@@ -12,7 +12,7 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
     public int callbackOrder => 1;
     private const string MINGRADLEVERSION = "3.5.4";
     private const string agconnect_agcp = "classpath 'com.huawei.agconnect:agcp:1.6.1.300'";
-    private const string build_gradle = "classpath 'com.android.tools.build:gradle:"+ MINGRADLEVERSION + "'";
+    private const string build_gradle = "classpath 'com.android.tools.build:gradle:" + MINGRADLEVERSION + "'";
 
     private void GradleVersionFixer(string gradleFileAsString, string path)
     {
@@ -44,24 +44,24 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
             File.WriteAllText(Directory.GetParent(path).FullName + "/settings.gradle", currentSettingsgradle.Replace("mavenCentral()", "mavenCentral()\n\t\tmaven { url 'https://developer.huawei.com/repo/' }"));
 
 #else
-    string gradleRowPattern = @".*gradle:(\d\.?)+";
-    string gradleVersionPattern = @"(\d\.?)+";
-    Version gradleMinVersion = Version.Parse(MINGRADLEVERSION);
+        string gradleRowPattern = @".*gradle:(\d\.?)+";
+        string gradleVersionPattern = @"(\d\.?)+";
+        Version gradleMinVersion = Version.Parse(MINGRADLEVERSION);
 
-    Match gradleRowMatch = Regex.Match(gradleFileAsString, gradleRowPattern);
-    Match gradleVersionMatch = Regex.Match(gradleRowMatch.Value, gradleVersionPattern);
-    Version gradleVersion = Version.Parse(gradleVersionMatch.Value);
-    // if users gradle version is lesser than our minimum version.
-    if (gradleVersion.CompareTo(gradleMinVersion) < 0)
-    {
-        gradleFileAsString = gradleFileAsString.Replace(gradleVersion.ToString(), gradleMinVersion.ToString());
+        Match gradleRowMatch = Regex.Match(gradleFileAsString, gradleRowPattern);
+        Match gradleVersionMatch = Regex.Match(gradleRowMatch.Value, gradleVersionPattern);
+        Version gradleVersion = Version.Parse(gradleVersionMatch.Value);
+        // if users gradle version is lesser than our minimum version.
+        if (gradleVersion.CompareTo(gradleMinVersion) < 0)
+        {
+            gradleFileAsString = gradleFileAsString.Replace(gradleVersion.ToString(), gradleMinVersion.ToString());
 
 #if UNITY_2019_3_OR_NEWER
-                File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", gradleFileAsString);
+            File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", gradleFileAsString);
 #elif UNITY_2018_1_OR_NEWER
                 File.WriteAllText(path + "/build.gradle", gradleFileAsString);
 #endif
-    }
+        }
 #endif
     }
 

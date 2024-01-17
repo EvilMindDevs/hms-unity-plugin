@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System;
-using UnityEngine.Networking;
+using UnityEngine;
 
 namespace HmsPlugin.ConnectAPI
 {

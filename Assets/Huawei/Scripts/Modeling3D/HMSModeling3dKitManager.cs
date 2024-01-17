@@ -38,7 +38,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
     public HMSModeling3dKitManager()
     {
-       HMSManagerStart.Start(OnAwake,TAG);
+        HMSManagerStart.Start(OnAwake, TAG);
     }
     private void OnAwake()
     {
@@ -50,7 +50,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         {
             reconstructApplication = ReconstructApplication.GetInstance();
             modeling3DReconstructEngine = Modeling3dReconstructEngine.GetInstance();
-            Debug.Log(TAG + "Init: " + reconstructApplication);   
+            Debug.Log(TAG + "Init: " + reconstructApplication);
         }
         catch (Exception ex)
         {
@@ -67,7 +67,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
     }
 
     #region Modeling3dReconstruct Part
-    public Modeling3dReconstructSetting Create3DReconstructionEngine(int? ReconstructMode = null, int? TextureMode = null, int? FaceLevel = null )
+    public Modeling3dReconstructSetting Create3DReconstructionEngine(int? ReconstructMode = null, int? TextureMode = null, int? FaceLevel = null)
     {
         Modeling3dReconstructSetting.Factory factory = new Modeling3dReconstructSetting.Factory();
         SetDefaultParameters(ref ReconstructMode, ref TextureMode, ref FaceLevel);
@@ -76,13 +76,13 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         var modeling3dSettings = factory.SetReconstructMode((int)ReconstructMode)
                                             .SetTextureMode((int)TextureMode)
                                             .SetFaceLevel((int)FaceLevel)
-                                            .Create();                                 
+                                            .Create();
         Debug.Log($"{TAG} Modelling Settings FaceLevel: {modeling3dSettings.FaceLevel}, TaskType: {modeling3dSettings.FaceLevel}, TextureMode: {modeling3dSettings.TextureMode}, ReconstructMode: {modeling3dSettings.ReconstructMode}, TaskId: {modeling3dSettings.TaskId}");
         return modeling3dSettings;
     }
     private void SetDefaultParameters(ref int? ReconstructMode, ref int? TextureMode, ref int? FaceLevel)
     {
-        if(ReconstructMode == null) 
+        if (ReconstructMode == null)
         {
             ReconstructMode = Modeling3dReconstructConstants.ReconstructMode.PICTURE;
         }
@@ -119,15 +119,15 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         var taskName = "";
 
-        try 
+        try
         {
             taskName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + initTaskId.Substring(initTaskId.Length - 4);
             Debug.Log($"{TAG}{taskName}");
         }
-        catch(Exception e) 
+        catch (Exception e)
         {
             //TODO: You can add here FAQ link what is APIKEY how we can get it and use it
-            Debug.LogError(TAG + " UploadFile exception:" + e+ " \n**********\nHint: If exception is NullReferenceException check your APIKey is valid.\n********\n");
+            Debug.LogError(TAG + " UploadFile exception:" + e + " \n**********\nHint: If exception is NullReferenceException check your APIKey is valid.\n********\n");
             return;
         }
 
@@ -157,8 +157,8 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         modeling3DReconstructEngine.SetReconstructUploadListener(listener);
 
-        string uploadsPath =  Application.persistentDataPath;
-        if(!string.IsNullOrWhiteSpace(path))
+        string uploadsPath = Application.persistentDataPath;
+        if (!string.IsNullOrWhiteSpace(path))
         {
             if (!File.Exists(path))
                 uploadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
@@ -235,7 +235,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         var listener = new Modeling3dReconstructDownloadListener(new Modeling3dReconstructUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResultDownload));
 
-        modeling3DReconstructEngine.SetReconstructDownloadListener(listener);        
+        modeling3DReconstructEngine.SetReconstructDownloadListener(listener);
 
         modeling3DReconstructEngine.DownloadModelWithConfig(taskID, downloadsPath, config);
 
@@ -271,7 +271,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         Debug.Log(TAG + "QueryTask result status:" + result.Status + " taskId:" + result.TaskId + " RedCode:" + result.RetCode + " RedMessage:" + result.RetMessage + " RedConstMessage:" + result?.ReconstructFailMessage);
 
         Debug.Log(TAG + "QueryTask Restrict Status: " + restrictStatus);
-        
+
         return result;
 
     }
@@ -382,7 +382,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         OnResult3dTextureUpload += (taskId, result, obj) =>
         {
-            Debug.Log(TAG + "OnResult taskId:"+ result.TaskId + " result:" + result);
+            Debug.Log(TAG + "OnResult taskId:" + result.TaskId + " result:" + result);
         };
 
         Modeling3dTextureUploadListener listener = new Modeling3dTextureUploadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnUploadProgress, OnError, OnResult3dTextureUpload));
@@ -526,7 +526,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
     }
     #endregion
 
-    public enum ProgressStatus 
+    public enum ProgressStatus
     {
         INITED,
         UPLOAD_COMPLETED,
@@ -534,7 +534,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         TEXTURE_COMPLETED,
         TEXTURE_FAILED
     }
-    public enum RestrictStatus 
+    public enum RestrictStatus
     {
         UNRESTRICT,
         RESTRICT

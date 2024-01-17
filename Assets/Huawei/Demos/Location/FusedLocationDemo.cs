@@ -9,7 +9,7 @@ namespace Huawei.Demos.Location
 {
     public class FusedLocationDemo : MonoBehaviour
     {
-        private static String TAG = "FusedLocationDemo";
+        private static string TAG = "FusedLocationDemo";
 
         private LocationRequest locationRequest;
         private FusedLocationProviderClient fusedLocationProviderClient;
@@ -60,10 +60,10 @@ namespace Huawei.Demos.Location
                         locationSettingsResponse.GetLocationSettingsStates();
                     StringBuilder stringBuilder = new StringBuilder();
 
-                    // Check whether the location function is enabled. 
+                    // Check whether the location function is enabled.
                     stringBuilder.Append(",\nisLocationUsable=").Append(locationSettingsStates.IsLocationUsable());
 
-                    // Check whether HMS Core (APK) is available. 
+                    // Check whether HMS Core (APK) is available.
                     stringBuilder.Append(",\nisHMSLocationUsable=")
                         .Append(locationSettingsStates.IsHMSLocationUsable());
 

@@ -19,7 +19,7 @@ using UnityEngine.UI;
 *           c. Product ID: removeAds - Type: non-consumable
 *           d. Product ID: premium   - Type: subscription (1 week)
 *       5. Add these products to IAP tab. Unity > Huawei > Kit Settings > IAP. Then click create constant classes
-*       
+*
 *       Have a question? You can ask by creating an issue in our project on Github or via our discord channel.
 */
 
@@ -32,7 +32,7 @@ public class MainMenuManager : MonoBehaviour
     Text userTxt, coinTxt;
     void Start()
     {
-        Screen.orientation = ScreenOrientation.Landscape;
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
 
         playBtn = GameObject.Find("Play").GetComponent<Button>();
         storeBtn = GameObject.Find("Store").GetComponent<Button>();
@@ -42,7 +42,7 @@ public class MainMenuManager : MonoBehaviour
 
         coinTxt.text = "Coin: " + PlayerPrefs.GetInt("Coin", 0);
 
-//Note: Enable Store button when InitializeIAPSuccess
+        //Note: Enable Store button when InitializeIAPSuccess
         storeBtn.enabled = false;
 
         playBtn.onClick.AddListener(delegate { ClickListener(CLICKENUM.ELSE); });
@@ -51,18 +51,18 @@ public class MainMenuManager : MonoBehaviour
 
         HMSAccountKitManager.Instance.OnSignInSuccess = SignInSuccess;
         HMSAccountKitManager.Instance.OnSignInFailed = SignInFailed;
-//If the user is already logged in to the AppGallery store, it is possible to log in without disturbing the user with silent login.
-//But if not, the 2002 error can be return.
-//Also check for IsSignedIn. This will prevent your user from logging in again and again when they return to the main menu.
+        //If the user is already logged in to the AppGallery store, it is possible to log in without disturbing the user with silent login.
+        //But if not, the 2002 error can be return.
+        //Also check for IsSignedIn. This will prevent your user from logging in again and again when they return to the main menu.
         if (HMSAccountKitManager.Instance.IsSignedIn)
             SignInSuccess(HMSAccountKitManager.Instance.HuaweiId);
         else
             HMSAccountKitManager.Instance.SilentSignIn();
 
         //When user back to mainMenu, this can work for subscriptions & non_consumable products.
-        if (HMSIAPManager.Instance.isIapAvailable()) 
+        if (HMSIAPManager.Instance.isIapAvailable())
         {
-            if (HMSIAPManager.Instance.isUserOwnThisProduct("premium")) 
+            if (HMSIAPManager.Instance.isUserOwnThisProduct("premium"))
             {
                 //unlock premium features
                 AndroidToast.MakeText("You are premium now.").Show();
@@ -74,7 +74,7 @@ public class MainMenuManager : MonoBehaviour
     private void SignInFailed(HMSException exception)
     {
         Debug.LogError($"{TAG}User SignInFailed. HMSException:{exception}");
-        if(exception.ErrorCode == 2002)
+        if (exception.ErrorCode == 2002)
             HMSAccountKitManager.Instance.SignIn();
     }
 
@@ -84,9 +84,9 @@ public class MainMenuManager : MonoBehaviour
         signinBtn.onClick.RemoveAllListeners();
         signinBtn.onClick.AddListener(delegate { ClickListener(CLICKENUM.SIGNOUT); });
         signinBtn.gameObject.GetComponentInChildren<Text>().text = "Logout";
-        userTxt.text = "Welcome back\n"+ authAccount.DisplayName;
+        userTxt.text = "Welcome back\n" + authAccount.DisplayName;
 
-//Init IAP after OnSignInSuccess
+        //Init IAP after OnSignInSuccess
         InitIAP();
     }
     private void InitIAP()
@@ -94,12 +94,12 @@ public class MainMenuManager : MonoBehaviour
         HMSIAPManager.Instance.OnInitializeIAPSuccess = OnInitializeIAPSuccess;
         HMSIAPManager.Instance.OnObtainOwnedPurchasesSuccess = OnObtainOwnedPurchasesSuccess;
 
-//I don't need productInfos such as price, name, etc. in this scene. If you need productsInfos, you can remove comment from following code.
+        //I don't need productInfos such as price, name, etc. in this scene. If you need productsInfos, you can remove comment from following code.
         //HMSIAPManager.Instance.OnObtainProductInfoSuccess = OnObtainProductInfoSuccess;
 
-/*
-* Important: To use this demo please uncheck Init on start box in IAP tab. (Unity>Huawei>Kit Settings>IAP) The line below does the same.
-*/
+        /*
+        * Important: To use this demo please uncheck Init on start box in IAP tab. (Unity>Huawei>Kit Settings>IAP) The line below does the same.
+        */
         HMSIAPManager.Instance.InitializeIAP();
     }
 
@@ -110,7 +110,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnInitializeIAPSuccess()
     {
-//Enable Store button after Init success
+        //Enable Store button after Init success
         storeBtn.enabled = true;
         Debug.Log($"{TAG}OnInitializeIAPSuccess");
     }
@@ -118,7 +118,7 @@ public class MainMenuManager : MonoBehaviour
     private void OnObtainOwnedPurchasesSuccess(OwnedPurchasesResult result)
     {
         Debug.Log($"{TAG}OnObtainOwnedPurchasesSuccess:{result.ItemList.Count}");
-        foreach(InAppPurchaseData product in result.InAppPurchaseDataList) 
+        foreach (InAppPurchaseData product in result.InAppPurchaseDataList)
         {
             //ConsumptionState:
             //    0: not consumed
@@ -130,17 +130,17 @@ public class MainMenuManager : MonoBehaviour
             // https://developer.huawei.com/consumer/en/doc/development/HMSCore-References/inapppurchasedata-0000001050137635#section1031573764815
             if (product.ConsumptionState == 0 && product.Kind == 0)
             {
-// not consumed means that there was a problem in the presentation of the product after the purchase process and the product could not be consumed.
-// This part is mandatory for consumable products.
+                // not consumed means that there was a problem in the presentation of the product after the purchase process and the product could not be consumed.
+                // This part is mandatory for consumable products.
                 ConsumeProduct(product);
             }
-            if(product.ProductId == "removeAds") 
+            if (product.ProductId == "removeAds")
             {
                 //removeAds
                 AndroidToast.MakeText("You have removeAds.").Show();
                 Debug.Log($"{TAG}OnObtainOwnedPurchasesSuccess. You have removeAds.");
             }
-            else if(product.ProductId == "premium") 
+            else if (product.ProductId == "premium")
             {
                 //unlock premium features
                 AndroidToast.MakeText("You are premium now.").Show();
@@ -152,14 +152,14 @@ public class MainMenuManager : MonoBehaviour
     private void ConsumeProduct(InAppPurchaseData product)
     {
         Debug.Log($"{TAG} ConsumeProduct product:{product.ProductId}");
-//Product not consumed so it did not given to your user. Make sure they receive the product.
-        if (product.ProductId == "coin100") 
+        //Product not consumed so it did not given to your user. Make sure they receive the product.
+        if (product.ProductId == "coin100")
         {
             int coin = PlayerPrefs.GetInt("Coin", 0) + 100;
             coinTxt.text = "Coin: " + coin;
             PlayerPrefs.SetInt("Coin", coin);
         }
-//Then consume non consumed product.
+        //Then consume non consumed product.
         HMSIAPManager.Instance.ConsumePurchase(product);
     }
 
@@ -177,7 +177,7 @@ public class MainMenuManager : MonoBehaviour
             signinBtn.onClick.RemoveAllListeners();
             signinBtn.onClick.AddListener(delegate { ClickListener(CLICKENUM.SIGNIN); });
 
-//Disable store function after signout.
+            //Disable store function after signout.
             storeBtn.enabled = false;
         }
         else if (enumValue == CLICKENUM.STORE)
@@ -190,7 +190,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    enum CLICKENUM 
+    enum CLICKENUM
     {
         SIGNIN,
         SIGNOUT,

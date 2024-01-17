@@ -1,4 +1,4 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 
 using HuaweiMobileServices.Nearby;
 using HuaweiMobileServices.Nearby.Discovery;
@@ -14,7 +14,7 @@ public class NearbyDemoManager : MonoBehaviour
     private HMSNearbyServiceManager nearbyManager;
     private NearbyManagerListener nearbyManagerListener;
 
-    private static readonly String scanInfo = "testInfo", remoteEndpointId = "RemoteEndpointId", transmittingMessage = "Receive Success",
+    private static readonly string scanInfo = "testInfo", remoteEndpointId = "RemoteEndpointId", transmittingMessage = "Receive Success",
           myNameStr = "MyNameTest", mEndpointName = "testName", mFileServiceId = "testID";
 
     public Action<string> OnDisconnected { get; set; }
@@ -50,10 +50,10 @@ public class NearbyDemoManager : MonoBehaviour
     {
         nearbyManager = HMSNearbyServiceManager.Instance;
         ApplyForFineLocationPermission();
-        InitilizeValues();
+        InitializeValues();
     }
 
-    void InitilizeValues()
+    void InitializeValues()
     {
         nearbyManager.scanInfo = scanInfo;
         nearbyManager.remoteEndpointId = remoteEndpointId;

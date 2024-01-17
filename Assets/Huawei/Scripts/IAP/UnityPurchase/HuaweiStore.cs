@@ -1,4 +1,4 @@
-﻿ #if UNITY_PURCHASING
+#if UNITY_PURCHASING
 
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace HmsPlugin
 {
     public class HuaweiStore : IStore
     {
-        
+
         private static HuaweiStore _currentInstance;
         public static string PurchaseTokenOfLastPurchase = null;
         private IStoreCallback _storeEvents;
@@ -58,10 +58,10 @@ namespace HmsPlugin
             _iapClient = Iap.GetIapClient();
             Debug.Log("[HuaweiStore] IAP Client Created");
             var moduleInitTask = _iapClient.EnvReady;
-            moduleInitTask.AddOnSuccessListener(ClientinitSuccess).AddOnFailureListener(ClientInitFailed);
+            moduleInitTask.AddOnSuccessListener(ClientInitSuccess).AddOnFailureListener(ClientInitFailed);
         }
 
-        public void ClientinitSuccess(EnvReadyResult result)
+        public void ClientInitSuccess(EnvReadyResult result)
         {
             Debug.Log("[HuaweiStore] IAP Client Success");
             lock (_locker)
@@ -170,7 +170,7 @@ namespace HmsPlugin
         {
             CreateOwnedPurchaseRequest(PriceType.IN_APP_NONCONSUMABLE, LoadOwnedSubscriptions);
         }
-        
+
         public void LoadOwnedSubscriptions()
         {
             CreateOwnedPurchaseRequest(PriceType.IN_APP_SUBSCRIPTION, ProductsLoaded);

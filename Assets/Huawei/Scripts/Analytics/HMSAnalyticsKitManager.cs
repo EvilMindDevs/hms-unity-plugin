@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using HuaweiMobileServices.Analystics;
 using HuaweiMobileServices.Utils;
@@ -29,7 +29,7 @@ public class HMSAnalyticsKitManager : HMSManagerSingleton<HMSAnalyticsKitManager
         }));
     }
 
-    public void SendEventWithBundle(string eventID, string key, string value) 
+    public void SendEventWithBundle(string eventID, string key, string value)
     {
         activity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
         {

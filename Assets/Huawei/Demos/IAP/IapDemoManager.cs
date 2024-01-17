@@ -1,4 +1,4 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 
 using HuaweiMobileServices.IAP;
 using HuaweiMobileServices.Utils;
@@ -56,7 +56,7 @@ public class IapDemoManager : MonoBehaviour
     void Awake()
     {
         Singleton();
-        Screen.orientation = ScreenOrientation.Landscape;
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
     }
 
     void Start()

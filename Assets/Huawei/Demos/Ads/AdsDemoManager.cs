@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using HmsPlugin;
 using HuaweiMobileServices.Ads;
@@ -128,7 +128,7 @@ public class AdsDemoManager : MonoBehaviour
 
     public void SetTestAdStatus()
     {
-       // HMSAdsKitManager.Instance.SetTestAdStatus(testAdStatusToggle.isOn);
+        // HMSAdsKitManager.Instance.SetTestAdStatus(testAdStatusToggle.isOn);
         HMSAdsKitManager.Instance.SetTestAdStatus(HMSAdsKitSettings.Instance.Settings.GetBool(HMSAdsKitSettings.UseTestAds));
         HMSAdsKitManager.Instance.DestroyBannerAd();
         HMSAdsKitManager.Instance.LoadAllAds();

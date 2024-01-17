@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.Base;
+using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Drive;
 using HuaweiMobileServices.Game;
 using HuaweiMobileServices.Id;
@@ -65,7 +65,7 @@ namespace HmsPlugin
         public HMSAccountKitManager()
         {
             HMSManagerStart.Start(OnAwake, TAG);
-        }       
+        }
 
         private void OnAwake()
         {
@@ -92,13 +92,13 @@ namespace HmsPlugin
                 HuaweiId = null;
                 Debug.LogError($"{TAG}: Sign in failed. CauseMessage: {error.WrappedCauseMessage}, ExceptionMessage: {error.WrappedExceptionMessage}");
                 //Invoke the GMS Login when the HMS Core APK not installed Example
-                        if (error.ErrorCode == AvailableCode.USER_ALREADY_KNOWS_SERVICE_UNAVAILABLE || 
-                            error.ErrorCode == AvailableCode.CURRENT_SHOWING_SERVICE_UNAVAILABLE ||
-                            error.ErrorCode == CommonCode.ErrorCode.CLIENT_API_INVALID) 
-                        {
-                             Debug.LogError($"{TAG}: Sign in failed. HMS Core APK not installed");
-                             //GMS.signIn ... call GMS interface
-                        }
+                if (error.ErrorCode == AvailableCode.USER_ALREADY_KNOWS_SERVICE_UNAVAILABLE ||
+                    error.ErrorCode == AvailableCode.CURRENT_SHOWING_SERVICE_UNAVAILABLE ||
+                    error.ErrorCode == CommonCode.ErrorCode.CLIENT_API_INVALID)
+                {
+                    Debug.LogError($"{TAG}: Sign in failed. HMS Core APK not installed");
+                    //GMS.signIn ... call GMS interface
+                }
 
                 OnSignInFailed?.Invoke(error);
             });
@@ -114,7 +114,7 @@ namespace HmsPlugin
             }, (error) =>
             {
                 HuaweiId = null;
-                Debug.LogError($"{TAG}: Sign in Drive failed. CauseMessage: {error.WrappedCauseMessage}, ExceptionMessage: {error.WrappedExceptionMessage}");                
+                Debug.LogError($"{TAG}: Sign in Drive failed. CauseMessage: {error.WrappedCauseMessage}, ExceptionMessage: {error.WrappedExceptionMessage}");
                 OnSignInFailed?.Invoke(error);
             });
         }
@@ -144,7 +144,7 @@ namespace HmsPlugin
             }).AddOnFailureListener((exception) =>
             {
                 HuaweiId = null;
-                Debug.LogError($"{TAG}: Silent Sign in failed. CauseMessage: {exception.WrappedCauseMessage}, ExceptionMessage: {exception.WrappedExceptionMessage}");               
+                Debug.LogError($"{TAG}: Silent Sign in failed. CauseMessage: {exception.WrappedCauseMessage}, ExceptionMessage: {exception.WrappedExceptionMessage}");
                 OnSignInFailed?.Invoke(exception);
             });
         }
@@ -163,7 +163,7 @@ namespace HmsPlugin
                 Debug.Log($"{TAG}: CancelAuthorization onSuccess ");
             }).AddOnFailureListener((exception) =>
             {
-                Debug.LogError($"{TAG}: Cancel Authorization failed. CauseMessage: {exception.WrappedCauseMessage}, ExceptionMessage: {exception.WrappedExceptionMessage}");                
+                Debug.LogError($"{TAG}: Cancel Authorization failed. CauseMessage: {exception.WrappedCauseMessage}, ExceptionMessage: {exception.WrappedExceptionMessage}");
                 OnSignInFailed?.Invoke(exception);
             });
         }
@@ -177,12 +177,12 @@ namespace HmsPlugin
             authService.StartIndependentSignIn(accessToken,
             (success) =>
             {
-                Debug.LogWarning($"{TAG}: Independent Sign in Success. Auth Code: {success.AuthorizationCode}");                
+                Debug.LogWarning($"{TAG}: Independent Sign in Success. Auth Code: {success.AuthorizationCode}");
                 OnIndependentSignInSuccess?.Invoke(success);
             },
             (error) =>
             {
-                Debug.LogError($"{TAG}: Independent Sign in failed. CauseMessage: {error.WrappedCauseMessage}, ExceptionMessage: {error.WrappedExceptionMessage}");                
+                Debug.LogError($"{TAG}: Independent Sign in failed. CauseMessage: {error.WrappedCauseMessage}, ExceptionMessage: {error.WrappedExceptionMessage}");
                 OnIndependentSignInFailed?.Invoke(error);
             });
         }

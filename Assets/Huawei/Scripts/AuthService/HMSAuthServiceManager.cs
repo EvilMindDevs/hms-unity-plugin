@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.AuthService;
+using HuaweiMobileServices.AuthService;
 using HuaweiMobileServices.Utils;
 using System;
 using UnityEngine;
@@ -82,10 +82,12 @@ namespace HmsPlugin
         {
             if (_AGConnectAuth == null) return;
             _AGConnectAuth.CreateUser(emailUser)
-                .AddOnSuccessListener(signInResult => {
+                .AddOnSuccessListener(signInResult =>
+                {
                     OnCreateUserSuccess?.Invoke(signInResult);
                 })
-                .AddOnFailureListener(error => {
+                .AddOnFailureListener(error =>
+                {
                     Debug.LogError($"{TAG}: Create User failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnCreateUserFailed?.Invoke(error);
                 });
@@ -96,10 +98,12 @@ namespace HmsPlugin
             if (_AGConnectAuth == null) return;
 
             _AGConnectAuth.CreateUser(phoneUser)
-                .AddOnSuccessListener(signInResult => {
+                .AddOnSuccessListener(signInResult =>
+                {
                     OnCreateUserSuccess?.Invoke(signInResult);
                 })
-                .AddOnFailureListener(error => {
+                .AddOnFailureListener(error =>
+                {
                     Debug.LogError($"{TAG}: Create User failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnCreateUserFailed?.Invoke(error);
                 });
@@ -109,10 +113,12 @@ namespace HmsPlugin
         {
             if (_AGConnectAuth == null) return;
             _AGConnectAuth.ResetPassword(email, newPassword, verifyCode)
-                .AddOnSuccessListener(Void => {
+                .AddOnSuccessListener(Void =>
+                {
                     OnResetPasswordSuccess?.Invoke(true);
                 })
-                .AddOnFailureListener(error => {
+                .AddOnFailureListener(error =>
+                {
                     Debug.LogError($"{TAG}: Reset Password failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnResetPasswordFailed?.Invoke(error);
                 });
@@ -122,10 +128,12 @@ namespace HmsPlugin
         {
             if (_AGConnectAuth == null) return;
             _AGConnectAuth.ResetPassword(countryCode, phoneNumber, newPassword, verifyCode)
-                .AddOnSuccessListener(Void => {
+                .AddOnSuccessListener(Void =>
+                {
                     OnResetPasswordSuccess?.Invoke(true);
                 })
-                .AddOnFailureListener(error => {
+                .AddOnFailureListener(error =>
+                {
                     Debug.LogError($"{TAG}: Reset Password failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnResetPasswordFailed?.Invoke(error);
                 });

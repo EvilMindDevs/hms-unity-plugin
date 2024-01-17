@@ -13,7 +13,7 @@ using UnityEngine.UI;
 public class Modeling3dDemoManager : MonoBehaviour
 {
     ///It is necessary to add permissions in the Android manifest. Assets\Huawei\Plugins\Android\HMSUnityModelingKit.plugin\AndroidManifest.xml
-    #region Definations
+    #region Definitions
     private static readonly string[] REQUIRED_PERMISSIONS = new string[]{
         Permission.Camera,
         "android.permission.INTERNET",
@@ -75,7 +75,8 @@ public class Modeling3dDemoManager : MonoBehaviour
         string APIKEY = HMSModelingKitSettings.Instance.Settings.Get(HMSModelingKitSettings.ModelingKeyAPI);
         HMSModeling3dKitManager.Instance.AuthWithApiKey(APIKEY);
     }
-    public void OnUploadProgress(string taskId, double progress, AndroidJavaObject obj) {
+    public void OnUploadProgress(string taskId, double progress, AndroidJavaObject obj)
+    {
         progressBar.current = Mathf.RoundToInt((float)progress);
 
         HMSDispatcher.Invoke(() =>
@@ -93,7 +94,7 @@ public class Modeling3dDemoManager : MonoBehaviour
     public void OnResultUpload(string taskId, Modeling3dReconstructUploadResult result, AndroidJavaObject obj)
     {
         Debug.Log($"{TAG} Upload Result Android Obj: {obj?.GetRawObject()} and TaskId: {taskId} and Result: {result}");
-        if(result.Complate == true)
+        if (result.Complate == true)
         {
             HMSDispatcher.Invoke(() =>
             {
@@ -101,13 +102,13 @@ public class Modeling3dDemoManager : MonoBehaviour
                 var currentTaskId = PlayerPrefs.GetString("currentTaskId");
                 data = modeling3dTaskEntity.Find(currentTaskId);
                 data.TaskId = taskId;
-                data.Status = $"Complated: {result.Complate}";
+                data.Status = $"Completed: {result.Complate}";
                 data.UploadFilePath = currentUploadFilePath;
                 data.Type = 1;
                 modeling3dTaskEntity.Update(data);
                 PlayerPrefs.SetString("currentTaskId", taskId);
                 PlayerPrefs.Save();
-                AndroidToast.MakeText("Upload Complated. Open Task List and Check It.").Show();
+                AndroidToast.MakeText("Upload Completed. Open Task List and Check It.").Show();
                 progressBar.gameObject.SetActive(false);
             });
         }
@@ -115,7 +116,7 @@ public class Modeling3dDemoManager : MonoBehaviour
         {
             HMSDispatcher.Invoke(() =>
             {
-                AndroidToast.MakeText("Upload Not Complated").Show();
+                AndroidToast.MakeText("Upload Not Completed").Show();
             });
         }
     }
@@ -147,12 +148,12 @@ public class Modeling3dDemoManager : MonoBehaviour
                 var currentTaskId = PlayerPrefs.GetString("currentTaskId");
                 data = modeling3dTaskEntity.Find(currentTaskId);
                 data.TaskId = taskId;
-                data.Status = $"Complated: {result.Complete}";
+                data.Status = $"Completed: {result.Complete}";
                 data.Type = 2;
                 data.DownloadFilePath = currentDownloadFilePath;
                 modeling3dTaskEntity.Update(data);
                 PlayerPrefs.SetString("currentTaskId", taskId);
-                AndroidToast.MakeText($"Download Complated.\n Download Path: {currentDownloadFilePath}").Show();
+                AndroidToast.MakeText($"Download Completed.\n Download Path: {currentDownloadFilePath}").Show();
                 progressBar.gameObject.SetActive(false);
             });
         }
@@ -160,7 +161,7 @@ public class Modeling3dDemoManager : MonoBehaviour
         {
             HMSDispatcher.Invoke(() =>
             {
-                AndroidToast.MakeText("Download Not Complated").Show();
+                AndroidToast.MakeText("Download Not Completed").Show();
             });
         }
     }
@@ -262,22 +263,23 @@ public class Modeling3dDemoManager : MonoBehaviour
         var modeling3D = modeling3dTaskEntity.Find(PlayerPrefs.GetString("currentTaskId"));
         var result = 1;
 
-        if (modeling3D.Type == 1) {
+        if (modeling3D.Type == 1)
+        {
             result = HMSModeling3dKitManager.Instance.CancelUpload3dReconstruct(modeling3D.TaskId);
 
         }
-        else if(modeling3D.Type == 2)
+        else if (modeling3D.Type == 2)
         {
             result = HMSModeling3dKitManager.Instance.CancelDownload3dReconstruct(modeling3D.TaskId);
         }
 
         if (result == 1)
         {
-            Debug.LogError(TAG + "Cancel failed"); 
+            Debug.LogError(TAG + "Cancel failed");
         }
         else
         {
-            Debug.Log(TAG+"Canceled successfully");
+            Debug.Log(TAG + "Canceled successfully");
             progressBar.progressType = "Cancelling";
             HMSDispatcher.Invoke(() =>
             {
@@ -314,13 +316,15 @@ public class Modeling3dDemoManager : MonoBehaviour
         DestoryChildrenByType(taskListItemParentObj, typeof(TaskListDisplay));
         CreateTaskListItem(taskListData, taskListItem, taskListItemParentObj);
     }
-    private void CreateTaskListItem(List<Modeling3dDTO> taskListData, TaskListDisplay taskListItem, GameObject taskListItemParentObj){
+    private void CreateTaskListItem(List<Modeling3dDTO> taskListData, TaskListDisplay taskListItem, GameObject taskListItemParentObj)
+    {
         foreach (var task in taskListData)
         {
             taskListItem.Name.text = $"{task.TaskId} \n {task.Name}";
             taskListItem.Status.text = task.Status;
             taskListItem.Image.color = Color.white;
-            if(!string.IsNullOrWhiteSpace(task.CoverImagePath)){
+            if (!string.IsNullOrWhiteSpace(task.CoverImagePath))
+            {
                 taskListItem.RawImage.gameObject.SetActive(true);
                 byte[] bytes = File.ReadAllBytes(task.CoverImagePath);
                 Texture2D texture = new Texture2D(100, 100);

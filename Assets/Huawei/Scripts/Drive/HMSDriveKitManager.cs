@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.Drive;
+using HuaweiMobileServices.Drive;
 using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace HmsPlugin
         public HMSDriveKitManager()
         {
             HMSManagerStart.Start(OnAwake, TAG);
-        }       
+        }
 
         private void OnAwake()
         {
@@ -59,7 +59,7 @@ namespace HmsPlugin
             return file;
         }
 
-        public void CreateFolder(string folderName = "testDir") 
+        public void CreateFolder(string folderName = "testDir")
         {
             // Create a folder.
             File dir = new File().SetFileName(folderName)
@@ -71,13 +71,13 @@ namespace HmsPlugin
         {
             List<Comment> commentArrayList = new List<Comment>();
 
-            if (fileId == "") 
+            if (fileId == "")
             {
-                if(recentlyCreatedFile != null) 
+                if (recentlyCreatedFile != null)
                 {
                     fileId = recentlyCreatedFile.GetId();// Use recently created file's ID
                 }
-                else 
+                else
                 {
                     return commentArrayList;
                 }
@@ -128,7 +128,7 @@ namespace HmsPlugin
                     return comment;
                 }
             }
-            
+
             try
             {
                 Comment content = new Comment();
@@ -152,7 +152,7 @@ namespace HmsPlugin
                 FileList list = drive.files().list().Execute();
                 string nextCursor = list.GetNextCursor();
                 Debug.Log(TAG + "ListFile nextCursor string.IsNullOrEmpty(nextCursor):" + string.IsNullOrEmpty(nextCursor));
-                while (!string.IsNullOrEmpty(nextCursor)) 
+                while (!string.IsNullOrEmpty(nextCursor))
                 {
                     nextCursor = list.GetNextCursor();
                 }

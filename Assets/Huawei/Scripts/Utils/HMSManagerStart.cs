@@ -2,10 +2,12 @@ using System;
 using HuaweiMobileServices.Utils;
 using UnityEngine;
 
-namespace HmsPlugin {
+namespace HmsPlugin
+{
     public class HMSManagerStart
     {
-        public static void Start(string TAG, bool useDispatcher = true, Action CustomAction = null){
+        public static void Start(string TAG, bool useDispatcher = true, Action CustomAction = null)
+        {
             Debug.Log($"{TAG} Constructor");
             var exceptionHandler = HMSExceptionHandler.Instance;
 

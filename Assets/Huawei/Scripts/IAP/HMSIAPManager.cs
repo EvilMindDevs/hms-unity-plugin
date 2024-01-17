@@ -1,4 +1,4 @@
-﻿using HuaweiConstants;
+using HuaweiConstants;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.IAP;
 using HuaweiMobileServices.Utils;
@@ -57,10 +57,10 @@ namespace HmsPlugin
 
         private List<ProductInfo> productInfoList = new List<ProductInfo>();
 
-        public List<ProductInfo> GetProductsList() 
+        public List<ProductInfo> GetProductsList()
         {
             if (productInfoList.Count == 0)
-                    Debug.LogWarning($"[{Tag}]: GetProductsList: productInfoList is empty.");
+                Debug.LogWarning($"[{Tag}]: GetProductsList: productInfoList is empty.");
 
             return productInfoList;
         }
@@ -485,7 +485,7 @@ namespace HmsPlugin
 
                         OnBuyProductSuccess.Invoke(purchaseResultInfo);
 
-                        if(consume)
+                        if (consume)
                             ConsumePurchase(purchaseResultInfo.InAppPurchaseData);
                         else
                             Debug.LogWarning($"[{Tag}]: Consume is false. Please aware of the situation. You should consume the product by your own. ProductID: {purchaseIntentReq.ProductId}");
@@ -656,12 +656,12 @@ namespace HmsPlugin
             return productInfoList.Find(productInfo => productInfo.ProductId == productID);
         }
 
-        public bool isUserOwnThisProduct(string productID) 
+        public bool isUserOwnThisProduct(string productID)
         {
             return ownedProductList.Exists(c => c.ProductId == productID);
         }
 
-        public bool isIapAvailable() 
+        public bool isIapAvailable()
         {
             return (iapAvailable != null) ? (bool)iapAvailable : false;
         }

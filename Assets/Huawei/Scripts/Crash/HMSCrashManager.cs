@@ -1,4 +1,4 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 using HuaweiMobileServices.Crash;
 using UnityEngine;
 using UnityEngine.Diagnostics;

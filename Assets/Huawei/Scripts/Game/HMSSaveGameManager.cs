@@ -1,15 +1,10 @@
-﻿using HuaweiMobileServices.Base;
+using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Game;
-using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace HmsPlugin
 {
@@ -230,7 +225,7 @@ namespace HmsPlugin
 
                 }).AddOnFailureListener((exception) =>
                 {
-                    Debug.LogError("[HMS:] AndroidBitmap put it UI failed exception"+ exception.Message);
+                    Debug.LogError("[HMS:] AndroidBitmap put it UI failed exception" + exception.Message);
                 });
             }
         }

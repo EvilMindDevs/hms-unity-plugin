@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.Base;
+using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Game;
 using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
@@ -37,7 +37,7 @@ namespace HmsPlugin
 
         public HMSGameServiceManager()
         {
-            HMSManagerStart.Start(OnAwake,TAG);
+            HMSManagerStart.Start(OnAwake, TAG);
         }
 
         private void OnAwake()
@@ -143,7 +143,7 @@ namespace HmsPlugin
                     OnGetPlayerInfoFailure?.Invoke(exception);
                 });
             }
-            else 
+            else
             {
                 Debug.LogError($"{TAG}: GetPlayerInfo failed. HMSAccountKitManager.Instance.HuaweiId is null");
                 OnGetPlayerInfoFailure?.Invoke(new HMSException($"{TAG}: GetPlayerInfo failed. HMSAccountKitManager.Instance.HuaweiId is null"));

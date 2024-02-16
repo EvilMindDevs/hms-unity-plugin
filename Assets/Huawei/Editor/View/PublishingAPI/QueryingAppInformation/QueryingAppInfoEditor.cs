@@ -207,7 +207,7 @@ namespace HmsPlugin.PublishingAPI
 
             if (responseJson.ret.code == 0)
             {
-                Debug.Log($"[HMS ConnectAPI] GetUploadURL Succeed. Trying to upload the package now...");
+                Debug.Log("[HMS ConnectAPI] GetUploadURL Succeed. Trying to upload the package now...");
                 UploadAnAppPackage(filePath, responseJson.uploadUrl, responseJson.authCode);
                 EditorUtility.ClearProgressBar();
             }

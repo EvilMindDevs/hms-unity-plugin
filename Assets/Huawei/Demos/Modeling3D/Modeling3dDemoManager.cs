@@ -85,7 +85,7 @@ public class Modeling3dDemoManager : MonoBehaviour
             var currentTaskId = PlayerPrefs.GetString("currentTaskId");
             data = modeling3dTaskEntity.Find(currentTaskId);
             data.TaskId = taskId;
-            data.Status = $"UploadProgress";
+            data.Status = "UploadProgress";
             data.Type = 1;
             modeling3dTaskEntity.Update(data);
             PlayerPrefs.SetString("currentTaskId", taskId);
@@ -132,7 +132,7 @@ public class Modeling3dDemoManager : MonoBehaviour
             Debug.Log($"{TAG} OnDownloadProgress TaskId: {currentTaskId}");
             data = modeling3dTaskEntity.Find(currentTaskId);
             data.TaskId = taskId;
-            data.Status = $"DownloadProgress";
+            data.Status = "DownloadProgress";
             data.Type = 2;
             modeling3dTaskEntity.Update(data);
         });
@@ -175,7 +175,7 @@ public class Modeling3dDemoManager : MonoBehaviour
             var currentTaskId = PlayerPrefs.GetString("currentTaskId");
             data = modeling3dTaskEntity.Find(currentTaskId);
             data.TaskId = taskId;
-            data.Status = $"Previewed";
+            data.Status = "Previewed";
             data.Type = 3;
             modeling3dTaskEntity.Update(data);
             PlayerPrefs.SetString("currentTaskId", taskId);

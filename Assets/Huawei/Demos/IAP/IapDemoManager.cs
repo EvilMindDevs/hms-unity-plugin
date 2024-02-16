@@ -69,7 +69,7 @@ public class IapDemoManager : MonoBehaviour
 
     public void InitializeIAP()
     {
-        Debug.Log($"InitializeIAP");
+        Debug.Log("InitializeIAP");
 
         HMSIAPManager.Instance.InitializeIAP();
     }
@@ -111,7 +111,7 @@ public class IapDemoManager : MonoBehaviour
 
     public void PurchaseProduct(string productID)
     {
-        Debug.Log($"PurchaseProduct");
+        Debug.Log("PurchaseProduct");
 
         HMSIAPManager.Instance.PurchaseProduct(productID);
     }
@@ -120,7 +120,7 @@ public class IapDemoManager : MonoBehaviour
 
     private void OnBuyProductSuccess(PurchaseResultInfo obj)
     {
-        Debug.Log($"OnBuyProductSuccess");
+        Debug.Log("OnBuyProductSuccess");
 
         if (obj.InAppPurchaseData.ProductId == "removeads")
         {

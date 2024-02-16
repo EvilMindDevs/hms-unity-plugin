@@ -342,7 +342,7 @@ namespace HmsPlugin
             catch (Exception ex)
             {
                 EditorUtility.DisplayDialog("HMSAdsKit Splash Image Error", ex.Message, "Ok");
-                throw ex;
+                throw;
             }
         }
 

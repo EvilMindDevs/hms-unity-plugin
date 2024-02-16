@@ -90,8 +90,9 @@ public class TaskListDisplay : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         GUIUtility.systemCopyBuffer = TaskId;
-        AndroidToast.MakeText($"Copy to Clipboard TaskId: {TaskId}").Show();
-        if (TaskId != null && TaskId != "")
+        AndroidToast.MakeText($"Copied to Clipboard: TaskId {TaskId}").Show();
+
+        if (!string.IsNullOrEmpty(TaskId))
         {
             PlayerPrefs.SetString("currentTaskId", TaskId);
         }

@@ -67,7 +67,7 @@ public class PushDemoManager : MonoBehaviour
     public void OnNewToken(string token)
     {
         Debug.Log($"[HMS] Push token from OnNewToken is {token}");
-        if (token != "")
+        if (!string.IsNullOrWhiteSpace(token))
         {
             pushToken = token;
             tokenText.text = "Push Token: " + pushToken;
@@ -92,7 +92,7 @@ public class PushDemoManager : MonoBehaviour
     public void OnNewToken(string token, Bundle bundle)
     {
         Debug.Log($"[HMS] Push token from OnNewToken is {token}");
-        if (token != "")
+        if (!string.IsNullOrWhiteSpace(token))
         {
             pushToken = token;
             tokenText.text = "Push Token: " + pushToken;

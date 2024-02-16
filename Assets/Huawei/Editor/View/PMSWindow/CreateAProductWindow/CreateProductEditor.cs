@@ -146,22 +146,22 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private bool CheckParameters()
         {
-            if (productNoTextField.GetCurrentText() == "")
+            if (string.IsNullOrWhiteSpace(productNoTextField.GetCurrentText()))
             {
                 EditorUtility.DisplayDialog("Missing Parameters!", "Product id can not be empty.", "Ok");
                 return false;
             }
-            else if (productNameTextField.GetCurrentText() == "")
+            else if (string.IsNullOrWhiteSpace(productNameTextField.GetCurrentText()))
             {
                 EditorUtility.DisplayDialog("Missing Parameters!", "Product name can not be empty.", "Ok");
                 return false;
             }
-            else if (descriptionTextField.GetCurrentText() == "")
+            else if (string.IsNullOrWhiteSpace(descriptionTextField.GetCurrentText()))
             {
                 EditorUtility.DisplayDialog("Missing Parameters!", "Product description can not be empty.", "Ok");
                 return false;
             }
-            else if (defaultPriceTextField.GetCurrentText() == "" || !double.TryParse(defaultPriceTextField.GetCurrentText(), out _))
+            else if (string.IsNullOrWhiteSpace(defaultPriceTextField.GetCurrentText()) || !double.TryParse(defaultPriceTextField.GetCurrentText(), out _))
             {
                 EditorUtility.DisplayDialog("Wrong Parameter!", "Please check your price parameter.", "Ok");
                 return false;
@@ -172,11 +172,11 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 EditorUtility.DisplayDialog("Missing Parameter!", "Please select your subgroup.", "Ok");
                 return false;
             }
-            else if (languagesFoldout.GetLanguages().Count > 0)
+            if (languagesFoldout.GetLanguages().Count > 0)
             {
                 foreach (var item in languagesFoldout.GetLanguages())
                 {
-                    if (item.Desc == "" || item.Name == "")
+                    if (string.IsNullOrWhiteSpace(item.Desc) || string.IsNullOrWhiteSpace(item.Name)) 
                     {
                         EditorUtility.DisplayDialog("Missing Parameter!", "Please check your language parameters.", "Ok");
                         return false;

@@ -71,7 +71,7 @@ namespace HmsPlugin
         {
             List<Comment> commentArrayList = new List<Comment>();
 
-            if (fileId == "")
+            if (string.IsNullOrWhiteSpace(fileId)) 
             {
                 if (recentlyCreatedFile != null)
                 {
@@ -117,7 +117,7 @@ namespace HmsPlugin
         {
             Comment comment = null;
 
-            if (fileId == "")
+            if (string.IsNullOrWhiteSpace(fileId))
             {
                 if (recentlyCreatedFile != null)
                 {
@@ -168,7 +168,7 @@ namespace HmsPlugin
         public File GetFile(string fileId = "")
         {
             File file = null;
-            if (fileId == "")
+            if (string.IsNullOrWhiteSpace(fileId))
             {
                 if (recentlyCreatedFile != null)
                 {

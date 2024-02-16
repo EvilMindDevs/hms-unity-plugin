@@ -24,11 +24,11 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(new HorizontalLine());
             AddDrawer(jsonField);
             AddDrawer(new Space(10));
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Products", OnCreateProductsClick).SetBGColor(Color.green).SetWidth(300), new Spacer()));
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Products", async () => await OnCreateProductsClickAsync()).SetBGColor(Color.green).SetWidth(300), new Spacer()));
             AddDrawer(new Spacer());
         }
 
-        private async void OnCreateProductsClick()
+        private async Task OnCreateProductsClickAsync()
         {
             if (EditorUtility.DisplayDialog("Are you sure?", "Please make sure all of the parameters are correct.\n\nDo you want to submit?", "Submit", "Cancel"))
             {
@@ -56,7 +56,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             }
             else
             {
-                Debug.LogError($"[HMS PMSAPI]: Batch Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: {responseJson.error.errorMsg}.");
+                Debug.LogError($"[HMS PMS API]: Batch Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
                 if (responseJson.failedNumber > 0 && responseJson.resultInfo.Count > 0)
                 {
                     Debug.LogError("[HMS PMS API]: Several products could not be created and they are listed below.");

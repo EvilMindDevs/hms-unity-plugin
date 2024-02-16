@@ -61,13 +61,12 @@ namespace HmsPlugin
         private void OnStart()
         {
             Debug.Log($"{TAG} OnStart");
-            LoadAdsWhenInternetIsAvailable();
         }
 
         private void OnStart(bool hasPurchasedNoAds = false)
         {
             Debug.Log($"{TAG} OnStart");
-            LoadAdsWhenInternetIsAvailable(hasPurchasedNoAds);
+            _ = LoadAdsWhenInternetIsAvailableAsync(hasPurchasedNoAds);
         }
 
         private void Init()
@@ -78,15 +77,20 @@ namespace HmsPlugin
             adsKitSettings = HMSAdsKitSettings.Instance.Settings;
         }
 
-        private async void LoadAdsWhenInternetIsAvailable(bool hasPurchasedNoAds = false)
+        private async Task LoadAdsWhenInternetIsAvailableAsync(bool hasPurchasedNoAds = false)
         {
-            while (Application.internetReachability == NetworkReachability.NotReachable)
-                await Task.Delay(TimeSpan.FromSeconds(0.5));
-
+            await WaitForInternetConnectionAsync();
             Debug.Log($"{TAG} Loading Ads");
             LoadAllAds(hasPurchasedNoAds);
         }
 
+        private async Task WaitForInternetConnectionAsync()
+        {
+            while (Application.internetReachability == NetworkReachability.NotReachable)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1));
+            }
+        }
         public void LoadAllAds(bool hasPurchasedNoAds = false)
         {
             if (!hasPurchasedNoAds)

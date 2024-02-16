@@ -47,30 +47,40 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(new Space(5));
             AddDrawer(countryDropdown);
             AddDrawer(new Space(10));
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Query", OnQueryButtonClick).SetBGColor(Color.green).SetWidth(200), new Spacer()));
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Query", async () => await OnQueryButtonClickAsync()).SetBGColor(Color.green).SetWidth(200), new Spacer()));
             AddDrawer(new HorizontalLine());
         }
 
-        private async void OnQueryButtonClick()
+        private async Task OnQueryButtonClickAsync()
         {
-            var req = new SearchProductsReq();
-            req.productName = productNameTextField.GetCurrentText();
-            req.productNo = productNoTextField.GetCurrentText();
-            req.purchaseType = purchaseTypes[selectedPurchaseType].ToLower();
-            req.pageNum = pageNum;
-            req.pageSize = pageSize;
-            req.requestId = new GUID().ToString();
-            req.status = GetStatus();
-            req.country = selectedCountry.Region;
-
+            // Create a new SearchProductsReq object and populate its properties
+            var searchRequest = new SearchProductsReq
+            {
+                productName = productNameTextField.GetCurrentText(),
+                productNo = productNoTextField.GetCurrentText(),
+                purchaseType = purchaseTypes[selectedPurchaseType].ToLower(),
+                pageNum = pageNum,
+                pageSize = pageSize,
+                requestId = new GUID().ToString(),
+                status = GetStatus(),
+                country = selectedCountry.Region
+            };
 
             var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/list", JsonUtility.ToJson(req), new Dictionary<string, string>()
+
+            var headers = new Dictionary<string, string>
             {
-                {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
-                {"Authorization","Bearer " + token},
-                {"appId",HMSEditorUtils.GetAGConnectConfig().client.app_id}
-            }, OnQueryResponse);
+                {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID)},
+                {"Authorization", "Bearer " + token},
+                {"appId", HMSEditorUtils.GetAGConnectConfig().client.app_id}
+            };
+            
+            HMSWebRequestHelper.Instance.PostRequest(
+                "https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product/list",
+                JsonUtility.ToJson(searchRequest),
+                headers,
+                OnQueryResponse
+            );
         }
 
         private void OnQueryResponse(UnityWebRequest response)

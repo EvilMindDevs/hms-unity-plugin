@@ -47,7 +47,7 @@ namespace HmsPlugin.PublishingAPI
             AddDrawer(new HelpBoxEnablingApp());
             AddDrawer(new Space(5));
 
-            RequestAppInfo();
+            _ = RequestAppInfoAsync();
         }
 
         private void onUploadAfterBuildChecked(bool state)
@@ -56,7 +56,7 @@ namespace HmsPlugin.PublishingAPI
         }
 
         [PostProcessBuildAttribute(1)]
-        public async static void AfterBuildNotification(BuildTarget target, string pathToBuiltProject)
+        public async static Task AfterBuildNotificationAsync(BuildTarget target, string pathToBuiltProject)
         {
             if (target == BuildTarget.Android && HMSConnectAPISettings.Instance.Settings.GetBool(HMSConnectAPISettings.UploadAfterBuild))
             {
@@ -103,7 +103,11 @@ namespace HmsPlugin.PublishingAPI
             byte[] fileByte = UnityEngine.Windows.File.ReadAllBytes(Path.Combine("", filePath));
             string contentTypeHeader = "multipart/form-data";
             MultipartFormFileSection file = new MultipartFormFileSection("file", fileByte, fileName, contentTypeHeader);
-            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes, "Uploading The Package", "Uploading Package to URL...");
+            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), 
+                async (response) => await UploadAnAppPackageResAsync(response), 
+                "Uploading The Package", 
+                "Uploading Package to URL..."
+            );
         }
 
         private static void UpdatingAppFileInfoRes(UnityWebRequest response)
@@ -130,39 +134,45 @@ namespace HmsPlugin.PublishingAPI
             }
         }
 
-
-        private static async void UploadAnAppPackageRes(UnityWebRequest response)
+        private static async Task UploadAnAppPackageResAsync(UnityWebRequest response)
         {
             var responseJson = JsonUtility.FromJson<UploadAppPackage>(response.downloadHandler.text);
 
-            if (int.Parse(responseJson.result.resultCode) == 0)
-            {
-                int size = responseJson.result.UploadFileRsp.fileInfoList[0].size;
-                string disposableUrl = responseJson.result.UploadFileRsp.fileInfoList[0].disposableURL;
-                string fileDestUrl = responseJson.result.UploadFileRsp.fileInfoList[0].fileDestUlr;
-
-                UpdateFileInfo fileInfo = new UpdateFileInfo();
-                fileInfo.files = new Files();
-                fileInfo.files.fileName = PlayerSettings.productName + ((UnityEditor.EditorUserBuildSettings.buildAppBundle) ? ".aab" : ".apk");
-                fileInfo.files.fileDestUrl = fileDestUrl;
-                fileInfo.fileType = 5;
-                string jsonValue = JsonUtility.ToJson(fileInfo);
-                string accessToken = await HMSWebUtils.GetAccessTokenAsync();
-
-                HMSWebRequestHelper.Instance.PutRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-file-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
-                    jsonValue, new Dictionary<string, string>()
-                    {
-                        {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID)},
-                        {"Authorization","Bearer " + accessToken}
-                    }, UpdatingAppFileInfoRes);
-                EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to AGC...", 0.3f);
-            }
-            else
+            if (int.Parse(responseJson.result.resultCode) != 0)
             {
                 Debug.LogError($"[HMS ConnectAPI] GetUploadURL failed. Error Code: {responseJson.result.resultCode}.");
+                return;
             }
-        }
 
+            var fileInfo = new UpdateFileInfo
+            {
+                fileType = 5,
+                files = new Files
+                {
+                    fileName = PlayerSettings.productName + (EditorUserBuildSettings.buildAppBundle ? ".aab" : ".apk"),
+                    fileDestUrl = responseJson.result.UploadFileRsp.fileInfoList[0].fileDestUlr
+                }
+            };
+
+            string jsonValue = JsonUtility.ToJson(fileInfo);
+            string accessToken = await HMSWebUtils.GetAccessTokenAsync();
+
+            var headers = new Dictionary<string, string>
+            {
+                {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID)},
+                {"Authorization", "Bearer " + accessToken}
+            };
+
+            HMSWebRequestHelper.Instance.PutRequest(
+                $"https://connect-api.cloud.huawei.com/api/publish/v2/app-file-info?appId={HMSEditorUtils.GetAGConnectConfig().client.app_id}",
+                jsonValue,
+                headers,
+                UpdatingAppFileInfoRes
+            );
+
+            EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to AGC...", 0.3f);
+        }
+        
         private static async Task GetUploadUrl(string filePath)
         {
             string accessToken = await HMSWebUtils.GetAccessTokenAsync();
@@ -179,7 +189,7 @@ namespace HmsPlugin.PublishingAPI
                 });
         }
 
-        private async void RequestAppInfo()
+        private async Task RequestAppInfoAsync()
         {
             string accessToken = await HMSWebUtils.GetAccessTokenAsync();
             HMSWebRequestHelper.Instance.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,

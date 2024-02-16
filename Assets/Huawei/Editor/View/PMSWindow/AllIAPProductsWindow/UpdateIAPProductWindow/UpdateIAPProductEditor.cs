@@ -22,7 +22,6 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private Dropdown.StringDropdown countryDropdown;
         private TextField.TextField defaultPriceTextField;
         private Label.Label currencyLabel;
-        private TextArea.TextArea jsonField;
 
         private string selectedLocale;
         private HMSEditorUtils.CountryInfo selectedCountry;
@@ -88,7 +87,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("Currency:"), new Space(92), currencyLabel));
             AddDrawer(new Space(5));
 
-            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Update Product", OnUpdateProductClick).SetBGColor(Color.green).SetWidth(300), new Spacer()));
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Update Product", async () => await OnUpdateProductClickAsync()).SetBGColor(Color.green).SetWidth(300), new Spacer()));
             if (product.purchaseType == "auto_subscription")
                 _ = RequestSubGroups();
         }
@@ -105,20 +104,23 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             selectedLocale = selectedLanguage.Value;
         }
 
-        private async void OnUpdateProductClick()
+        private async Task OnUpdateProductClickAsync()
         {
-            var productObj = new CreateProductEditor.ProductInfo();
-            productObj.productNo = _product.productNo;
-            productObj.appId = HMSEditorUtils.GetAGConnectConfig().client.app_id;
-            productObj.productName = productNameTextField.GetCurrentText();
-            productObj.purchaseType = _product.purchaseType;
-            productObj.status = statusToggle.IsChecked() ? "active" : "inactive";
-            productObj.currency = currencyLabel.GetText();
-            productObj.country = selectedCountry.Region;
-            productObj.defaultLocale = selectedLocale;
-            productObj.productDesc = descriptionTextField.GetCurrentText();
-            productObj.defaultPrice = (double.Parse(defaultPriceTextField.GetCurrentText()) * 100).ToString();
+            var productObj = new CreateProductEditor.ProductInfo
+            {
+                productNo = _product.productNo,
+                appId = HMSEditorUtils.GetAGConnectConfig().client.app_id,
+                productName = productNameTextField.GetCurrentText(),
+                purchaseType = _product.purchaseType,
+                status = statusToggle.IsChecked() ? "active" : "inactive",
+                currency = currencyLabel.GetText(),
+                country = selectedCountry.Region,
+                defaultLocale = selectedLocale,
+                productDesc = descriptionTextField.GetCurrentText(),
+                defaultPrice = (double.Parse(defaultPriceTextField.GetCurrentText()) * 100).ToString()
+            };
 
+            // If the product is a subscription, set additional properties
             if (_product.purchaseType == "auto_subscription")
             {
                 productObj.subGroupId = _product.groupId;
@@ -126,24 +128,35 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 productObj.subPeriodUnit = _product.periodUnit;
             }
 
-            UpdateProductReqJson req = new UpdateProductReqJson();
-            req.requestId = Guid.NewGuid().ToString();
-            req.resource = productObj;
+            UpdateProductReqJson req = new UpdateProductReqJson
+            {
+                requestId = Guid.NewGuid().ToString(),
+                resource = productObj
+            };
 
+            // Convert the request object to JSON and remove unnecessary fields
             string jsonValue = JsonUtility.ToJson(req, true);
             jsonValue = jsonValue.Replace("\n        \"languages\": [],", "");
             if (_product.purchaseType != "auto_subscription")
+            {
                 jsonValue = jsonValue.Replace(",\n        \"subGroupId\": \"\",\n        \"subPeriod\": 0,\n        \"subPeriodUnit\": \"\"\n    ", "\n    ");
+            }
 
             var token = await HMSWebUtils.GetAccessTokenAsync();
-            HMSWebRequestHelper.Instance.PutRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
+
+            var headers = new Dictionary<string, string>
+            {
+                {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID)},
+                {"Authorization", "Bearer " + token},
+                {"appId", productObj.appId}
+            };
+
+            HMSWebRequestHelper.Instance.PutRequest(
+                "https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
                 jsonValue,
-                new Dictionary<string, string>()
-                {
-                    {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
-                    {"Authorization","Bearer " + token},
-                    {"appId",productObj.appId}
-                }, OnUpdateProductResponse);
+                headers,
+                OnUpdateProductResponse
+            );
         }
 
         private void OnUpdateProductResponse(UnityWebRequest response)

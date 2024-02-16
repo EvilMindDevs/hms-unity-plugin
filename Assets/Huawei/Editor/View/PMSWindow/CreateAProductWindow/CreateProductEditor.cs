@@ -83,7 +83,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             GenerateBottomDrawer(false);
         }
 
-        private async void OnGetButtonClick()
+        private async Task OnGetButtonClickAsync()
         {
             await RequestSubGroups();
         }
@@ -123,7 +123,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             if (isSubscriptionSelected)
             {
                 bottomDrawer.AddDrawer(subPeriodDropdown);
-                bottomDrawer.AddDrawer(new HorizontalSequenceDrawer(subGroupDropdown, new Button.Button("Get", OnGetButtonClick).SetBGColor(Color.yellow).SetWidth(100)));
+                bottomDrawer.AddDrawer(new HorizontalSequenceDrawer(subGroupDropdown, new Button.Button("Get", async () => await OnGetButtonClickAsync()).SetBGColor(Color.yellow).SetWidth(100)));
             }
             bottomDrawer.AddDrawer(statusToggle);
             bottomDrawer.AddDrawer(new Space(5));
@@ -141,10 +141,10 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             bottomDrawer.AddDrawer(new HorizontalLine());
             bottomDrawer.AddDrawer(jsonField);
             bottomDrawer.AddDrawer(new Space(10));
-            bottomDrawer.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Product", OnCreateProductClick).SetWidth(300).SetBGColor(Color.green), new Spacer()));
+            bottomDrawer.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Product", async () => await OnCreateProductClickAsync()).SetWidth(300).SetBGColor(Color.green), new Spacer()));
         }
 
-        private Boolean CheckParameters()
+        private bool CheckParameters()
         {
             if (productNoTextField.GetCurrentText() == "")
             {
@@ -233,33 +233,48 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             jsonField.SetCurrentText(jsonValue);
         }
 
-        private async void OnCreateProductClick()
+        private async Task OnCreateProductClickAsync()
         {
-            if (jsonClass == null)
+            // If jsonClass is null, check parameters and generate jsonClass if parameters are valid
+            if (jsonClass == null && !CheckParameters())
             {
-                if (CheckParameters())
-                {
-                    GenerateJsonClass();
-                }
-                else
-                {
-                    return;
-                }
+                return;
             }
-            if (EditorUtility.DisplayDialog("Are you sure?", "Please make sure all of the parameters are correct.\n\nDo you want to submit?", "Submit", "Cancel"))
-            {
-                var token = await HMSWebUtils.GetAccessTokenAsync();
-                HMSWebRequestHelper.Instance.PostRequest("https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
-                    jsonField.GetCurrentText(),
-                    new Dictionary<string, string>()
-                    {
-                    {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
-                    {"Authorization","Bearer " + token},
-                    {"appId",jsonClass.product.appId}
-                    }, OnCreateProductResponse);
-            }
-        }
 
+            GenerateJsonClass();
+
+            // Confirm submission with the user
+            bool userConfirmed = EditorUtility.DisplayDialog(
+                "Are you sure?",
+                "Please make sure all of the parameters are correct.\n\nDo you want to submit?",
+                "Submit",
+                "Cancel"
+            );
+
+            if (!userConfirmed)
+            {
+                return;
+            }
+
+            // Get access token
+            var token = await HMSWebUtils.GetAccessTokenAsync();
+
+            // Prepare headers for the request
+            var headers = new Dictionary<string, string>
+            {
+                {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID)},
+                {"Authorization", "Bearer " + token},
+                {"appId", jsonClass.product.appId}
+            };
+
+            // Send the request
+            HMSWebRequestHelper.Instance.PostRequest(
+                "https://connect-api.cloud.huawei.com/api/pms/product-price-service/v1/manage/product",
+                jsonField.GetCurrentText(),
+                headers,
+                OnCreateProductResponse
+            );
+        }
         private void OnCreateProductResponse(UnityWebRequest response)
         {
             var responseJson = JsonUtility.FromJson<CreateProductResJson>(response.downloadHandler.text);

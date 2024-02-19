@@ -42,21 +42,20 @@ public class HMSKeyToolWindow : EditorWindow
 
         if (isKeystoreDropped)
         {
-            ShowPasswordField(ref password, "Keystore", ref isExecutable);
+            ShowPasswordField("Keystore", ref password, ref isExecutable);
             if (aliases.Count > 0)
             {
                 ShowAliasSelection();
-                ShowPasswordField(ref aliasPassword, "Alias", ref isExecutable);
+                ShowPasswordField("Alias", ref aliasPassword, ref isExecutable);
             }
             ShowActionButton();
             ShowSHA256Result();
         }
     }
-    private void ShowPasswordField(ref string passwordField, string label, ref bool controlState)
+    private void ShowPasswordField(string label, ref string passwordField, ref bool controlState)
     {
         EditorGUILayout.Space();
-        //GUILayout.Label(label);
-        string enteredPassword = EditorGUILayout.PasswordField(label + " Password", passwordField);
+        string enteredPassword = EditorGUILayout.PasswordField($"{label} Password", passwordField);
 
         if (!string.IsNullOrWhiteSpace(enteredPassword))
         {

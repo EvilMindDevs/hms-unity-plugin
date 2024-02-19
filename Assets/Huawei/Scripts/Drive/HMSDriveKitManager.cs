@@ -133,7 +133,7 @@ namespace HmsPlugin
             {
                 Comment content = new Comment();
                 content.SetDescription("interface test");
-                var date = System.DateTime.Now.Ticks;
+                var date = System.DateTime.UtcNow.Ticks;
                 content.SetCreatedTime(new HuaweiMobileServices.Drive.DateTime(date));
                 comment = drive.comments().create(fileId, content).SetFields("*").Execute();
             }

@@ -42,7 +42,7 @@ public static class HMSWebUtils
             if (!string.IsNullOrEmpty(HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken)))
             {
                 var endDate = new DateTime(HMSConnectAPISettings.Instance.Settings.GetLong(HMSConnectAPISettings.ExpiresInTicks));
-                if (endDate > DateTime.Now && !getNewToken)
+                if (endDate > DateTime.UtcNow && !getNewToken)
                 {
                     return HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.AccessToken);
                 }
@@ -64,7 +64,7 @@ public static class HMSWebUtils
         if (response.ret.code == 0)
         {
             HMSConnectAPISettings.Instance.Settings.Set(HMSConnectAPISettings.AccessToken, response.access_token);
-            HMSConnectAPISettings.Instance.Settings.SetLong(HMSConnectAPISettings.ExpiresInTicks, DateTime.Now.AddSeconds(response.expires_in).Ticks);
+            HMSConnectAPISettings.Instance.Settings.SetLong(HMSConnectAPISettings.ExpiresInTicks, DateTime.UtcNow.AddSeconds(response.expires_in).Ticks);
             return response.access_token;
         }
         else

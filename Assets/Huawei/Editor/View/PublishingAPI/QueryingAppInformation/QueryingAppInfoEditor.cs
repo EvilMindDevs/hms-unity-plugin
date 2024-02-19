@@ -103,9 +103,9 @@ namespace HmsPlugin.PublishingAPI
             byte[] fileByte = UnityEngine.Windows.File.ReadAllBytes(Path.Combine("", filePath));
             string contentTypeHeader = "multipart/form-data";
             MultipartFormFileSection file = new MultipartFormFileSection("file", fileByte, fileName, contentTypeHeader);
-            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), 
-                async (response) => await UploadAnAppPackageResAsync(response), 
-                "Uploading The Package", 
+            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(),
+                async (response) => await UploadAnAppPackageResAsync(response),
+                "Uploading The Package",
                 "Uploading Package to URL..."
             );
         }
@@ -138,7 +138,7 @@ namespace HmsPlugin.PublishingAPI
         {
             var responseJson = JsonUtility.FromJson<UploadAppPackage>(response.downloadHandler.text);
 
-            if (int.Parse(responseJson.result.resultCode) != 0)
+            if (!int.TryParse(responseJson.result.resultCode, out int resultCode) || resultCode != 0)
             {
                 Debug.LogError($"[HMS ConnectAPI] GetUploadURL failed. Error Code: {responseJson.result.resultCode}.");
                 return;
@@ -172,7 +172,7 @@ namespace HmsPlugin.PublishingAPI
 
             EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to AGC...", 0.3f);
         }
-        
+
         private static async Task GetUploadUrl(string filePath)
         {
             string accessToken = await HMSWebUtils.GetAccessTokenAsync();

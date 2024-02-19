@@ -27,7 +27,6 @@ internal class HMSPluginUpdater
             GameObject obj = new GameObject();
             obj.hideFlags = HideFlags.HideAndDontSave;
             request = obj.AddComponent<HMSPluginUpdateRequest>();
-
             request.StartRequest(ignoreSession);
         }, TaskScheduler.FromCurrentSynchronizationContext());
     }
@@ -75,56 +74,68 @@ public class HMSPluginUpdateRequest : MonoBehaviour
         }
 
         var json = JsonUtility.FromJson<TagList>("{\"tags\":" + request.downloadHandler.text + "}");
-        string latestVersionString = FindtheLatestVersion(json);
+        string latestVersionString = FindTheLatestVersion(json);
         string currentVersionString = File.ReadAllText(Application.dataPath + "/Huawei/VERSION");
 
-        if (Int64.Parse(latestVersionString.Replace(".", "0").PadRight(8, '0')) > Int64.Parse(currentVersionString.Replace(".", "0").PadRight(8, '0')))
-        {
-            string updateMessage = "A new version of the HMS Unity Plugin (" + latestVersionString + ") is available. You are currently using " + currentVersionString;
+        long latestVersion = ConvertVersionToLong(latestVersionString);
+        long currentVersion = ConvertVersionToLong(currentVersionString);
 
-            Debug.LogWarning(updateMessage + "\nYou can check releases page of our github. https://github.com/EvilMindDevs/hms-unity-plugin/releases");
+        if (latestVersion > currentVersion)
+        {
+            string updateMessage = $"A new version of the HMS Unity Plugin ({latestVersionString}) is available. You are currently using {currentVersionString}";
+            Debug.LogWarning($"{updateMessage}\nYou can check releases page of our github. https://github.com/EvilMindDevs/hms-unity-plugin/releases");
 
             if (!ignoreSession)
             {
                 if (SessionState.GetBool(sessionStatePersisted, false)) yield return null;
                 SessionState.SetBool(sessionStatePersisted, true);
-                if (!EditorPrefs.GetBool(sessionStatePersisted + latestVersionString, false))
+                if (!EditorPrefs.GetBool($"{sessionStatePersisted}{latestVersionString}", false))
                     DisplayDialog(latestVersionString, updateMessage);
             }
             else
             {
                 DisplayDialog(latestVersionString, updateMessage);
             }
-
         }
         else if (ignoreSession)
         {
             EditorUtility.DisplayDialog("HMS Unity Plugin", "Your version is up to date", "Ok");
         }
 
+
         DestroyImmediate(gameObject);
     }
 
-    private string FindtheLatestVersion(TagList list)
+    private string FindTheLatestVersion(TagList list)
     {
-        var latestVersion = "0.0.0";
-        for (int i = 0; i < list.tags.Length; i++)
+        string latestVersion = "0.0.0";
+
+        foreach (var tag in list.tags)
         {
-            try
+            string tempVer = tag.name.RemoveAfter('-').Replace("v", "");
+
+            if (ConvertVersionToLong(latestVersion) < ConvertVersionToLong(tempVer))
             {
-                string tempVer = list.tags[i].name.RemoveAfter('-').Replace("v", "");
-                if (Int64.Parse(latestVersion.Replace(".", "0").PadRight(8, '0')) < Int64.Parse(tempVer.Replace(".", "0").PadRight(8, '0')))
-                {
-                    latestVersion = tempVer;
-                }
-            }
-            catch
-            {
-                //Debug.LogError("Version parse error!"+ list.tags[i].name.RemoveAfter('-').Replace("v", ""));
+                latestVersion = tempVer;
             }
         }
 
         return latestVersion;
+    }
+
+    // Helper method to convert version string to long
+    private long ConvertVersionToLong(string versionString)
+    {
+        if (long.TryParse(versionString.Replace(".", "0").PadRight(8, '0'), out long version))
+        {
+            return version;
+        }
+        else
+        {
+            // Handle the case where the version string could not be parsed to a long
+            // This could be setting a default value, logging an error, etc.
+            return 0;
+        }
     }
 
     private static void DisplayDialog(string latestVersionString, string updateMessage)

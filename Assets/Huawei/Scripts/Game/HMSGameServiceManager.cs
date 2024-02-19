@@ -253,7 +253,6 @@ namespace HmsPlugin
                 OnIsAllowContinuePlayGamesFailure?.Invoke(new HMSException("IsAllowContinuePlayGames failed. HMSAccountKitManager.Instance.HuaweiId is null"));
             }
         }
-
         public void OnUpdateInfo(AndroidIntent intent)
         {
             int status = intent.GetIntExtra("status");
@@ -269,13 +268,21 @@ namespace HmsPlugin
             }
             OnAppUpdateInfo?.Invoke(new OnAppUpdateInfoRes(status, rtnCode, rtnMessage, isExit, buttonStatus));
 
-            AppUpdateStatusCode _statusCode = (AppUpdateStatusCode)Enum.Parse(typeof(AppUpdateStatusCode), status.ToString());
-            AppUpdateRtnCode _rtnCode = (AppUpdateRtnCode)Enum.Parse(typeof(AppUpdateRtnCode), rtnCode.ToString());
-            AppUpdateButtonStatus _buttonStatus = (AppUpdateButtonStatus)Enum.Parse(typeof(AppUpdateButtonStatus), buttonStatus.ToString());
+            object statusCodeObj = status;
+            object rtnCodeObj = rtnCode;
+            object buttonStatusObj = buttonStatus;
 
-            Debug.Log($"{TAG} OnUpdateInfo, status: " + _statusCode + ", rtnCode: " + _rtnCode + ", rtnMessage: " + rtnMessage + ", buttonStatus: " + _buttonStatus + ", isExit: " + isExit);
+            if (Enum.TryParse(typeof(AppUpdateStatusCode), statusCodeObj.ToString(), out statusCodeObj) &&
+                Enum.TryParse(typeof(AppUpdateRtnCode), rtnCodeObj.ToString(), out rtnCodeObj) &&
+                Enum.TryParse(typeof(AppUpdateButtonStatus), buttonStatusObj.ToString(), out buttonStatusObj))
+            {
+                Debug.Log($"{TAG} OnUpdateInfo, status: {(AppUpdateStatusCode)statusCodeObj}, rtnCode: {(AppUpdateRtnCode)rtnCodeObj}, rtnMessage: {rtnMessage}, buttonStatus: {(AppUpdateButtonStatus)buttonStatusObj}, isExit: {isExit}");
+            }
+            else
+            {
+                Debug.LogError($"{TAG} Failed to parse status, rtnCode, or buttonStatus as their respective enums");
+            }
         }
-
         public void OnMarketInstallInfo(AndroidIntent intent)
         {
             Debug.Log($"{TAG}: OnMarketInstallInfo Called");

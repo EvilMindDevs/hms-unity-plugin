@@ -176,12 +176,12 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             {
                 foreach (var item in languagesFoldout.GetLanguages())
                 {
-                    if (string.IsNullOrWhiteSpace(item.Desc) || string.IsNullOrWhiteSpace(item.Name)) 
+                    if (string.IsNullOrWhiteSpace(item.Desc) || string.IsNullOrWhiteSpace(item.Name))
                     {
                         EditorUtility.DisplayDialog("Missing Parameter!", "Please check your language parameters.", "Ok");
                         return false;
                     }
-                    else if ((item.Language == selectedLocale) && (item.Desc != descriptionTextField.GetCurrentText() || item.Name != productNameTextField.GetCurrentText())) // Extra language can same with default locale language if it has same name and description
+                    else if ((item.Language == selectedLocale) && (item.Desc != descriptionTextField.GetCurrentText() || item.Name != productNameTextField.GetCurrentText())) // Extra language can same with default locale language if it has same name and description 
                     {
                         EditorUtility.DisplayDialog("Wrong Parameter!", "Default LanguageInfo is not the same in languages.", "Ok");
                         return false;
@@ -199,29 +199,11 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
 
         private void GenerateJsonClass()
         {
-            jsonClass = new CreateProductReqJson();
-            jsonClass.requestId = Guid.NewGuid().ToString();
-            jsonClass.product = new ProductInfo();
-            jsonClass.product.productNo = productNoTextField.GetCurrentText();
-            jsonClass.product.appId = HMSEditorUtils.GetAGConnectConfig().client.app_id;
-            jsonClass.product.productName = productNameTextField.GetCurrentText();
-            jsonClass.product.purchaseType = purchaseTypes[selectedPurchaseType].ToLower();
-            jsonClass.product.status = statusToggle.IsChecked() ? "active" : "inactive";
-            jsonClass.product.currency = currencyLabel.GetText();
-            jsonClass.product.country = selectedCountry.Region;
-            jsonClass.product.defaultLocale = selectedLocale;
-            jsonClass.product.productDesc = descriptionTextField.GetCurrentText();
-            jsonClass.product.defaultPrice = (double.Parse(defaultPriceTextField.GetCurrentText()) * 100).ToString();
-
-            if (selectedPurchaseType == 2)
+            jsonClass = new CreateProductReqJson
             {
-                jsonClass.product.subGroupId = subGroupList[selectedSubGroupIndex].groupId;
-                jsonClass.product.subPeriodUnit = subPeriods[selectedSubPeriodIndex].PeriodUnit;
-                jsonClass.product.subPeriod = subPeriods[selectedSubPeriodIndex].Period;
-            }
-
-            if (languagesFoldout.GetLanguages().Count > 0)
-                jsonClass.product.languages = Language.FromProductLanguage(languagesFoldout.GetLanguages());
+                requestId = Guid.NewGuid().ToString(),
+                product = GenerateProductInfo()
+            };
 
             string jsonValue = EditorJsonUtility.ToJson(jsonClass, true);
 
@@ -231,6 +213,45 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 jsonValue = jsonValue.Replace(",\n        \"subGroupId\": \"\",\n        \"subPeriod\": 0,\n        \"subPeriodUnit\": \"\"\n    ", "\n    ");
 
             jsonField.SetCurrentText(jsonValue);
+        }
+
+        private ProductInfo GenerateProductInfo()
+        {
+            var product = new ProductInfo
+            {
+                productNo = productNoTextField.GetCurrentText(),
+                appId = HMSEditorUtils.GetAGConnectConfig().client.app_id,
+                productName = productNameTextField.GetCurrentText(),
+                purchaseType = purchaseTypes[selectedPurchaseType].ToLower(),
+                status = statusToggle.IsChecked() ? "active" : "inactive",
+                currency = currencyLabel.GetText(),
+                country = selectedCountry.Region,
+                defaultLocale = selectedLocale,
+                productDesc = descriptionTextField.GetCurrentText(),
+            };
+
+            if (double.TryParse(defaultPriceTextField.GetCurrentText(), out double defaultPrice))
+            {
+                product.defaultPrice = (defaultPrice * 100).ToString();
+            }
+            else
+            {
+                // Handle the case where the default price could not be parsed to a double
+                // This could be setting a default value, logging an error, etc.
+                product.defaultPrice = "0";
+            }
+
+            if (selectedPurchaseType == 2)
+            {
+                product.subGroupId = subGroupList[selectedSubGroupIndex].groupId;
+                product.subPeriodUnit = subPeriods[selectedSubPeriodIndex].PeriodUnit;
+                product.subPeriod = subPeriods[selectedSubPeriodIndex].Period;
+            }
+
+            if (languagesFoldout.GetLanguages().Count > 0)
+                product.languages = Language.FromProductLanguage(languagesFoldout.GetLanguages());
+
+            return product;
         }
 
         private async Task OnCreateProductClickAsync()

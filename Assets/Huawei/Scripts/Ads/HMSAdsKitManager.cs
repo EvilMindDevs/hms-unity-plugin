@@ -208,30 +208,11 @@ namespace HmsPlugin
 
         public void LoadBannerAd(UnityBannerAdPositionCodeType position, string bannerSize = UnityBannerAdSize.BANNER_SIZE_320_50)
         {
-            if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableBannerAd)) return;
-
-            Debug.Log($"{TAG} Loading Banner Ad.");
-            var bannerAdStatusListener = new AdStatusListener();
-            bannerAdStatusListener.mOnAdLoaded += BannerAdStatusListener_mOnAdLoaded;
-            bannerAdStatusListener.mOnAdClosed += BannerAdStatusListener_mOnAdClosed;
-            bannerAdStatusListener.mOnAdImpression += BannerAdStatusListener_mOnAdImpression;
-            bannerAdStatusListener.mOnAdClicked += BannerAdStatusListener_mOnAdClicked;
-            bannerAdStatusListener.mOnAdOpened += BannerAdStatusListener_mOnAdOpened;
-            bannerAdStatusListener.mOnAdFailed += BannerAdStatusListener_mOnAdFailed;
-
-            bannerView = new BannerAd(bannerAdStatusListener);
-            bannerView.AdId = adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestBannerAdId : adsKitSettings.Get(HMSAdsKitSettings.BannerAdID);
-            bannerView.PositionType = (int)position;
-            bannerView.SizeType = bannerSize;
-            bannerView.AdStatusListener = bannerAdStatusListener;
-            if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.BannerRefreshInterval)))
-                bannerView.BannerRefresh = long.Parse(adsKitSettings.Get(HMSAdsKitSettings.BannerRefreshInterval));
-            _isBannerAdLoaded = false;
-            bannerView.LoadBanner(new AdParam.Builder().Build());
-            if (adsKitSettings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad))
-                bannerView.ShowBanner();
-            else
-                bannerView.HideBanner();
+            LoadBannerAd(
+                adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestBannerAdId : adsKitSettings.Get(HMSAdsKitSettings.BannerAdID),
+                position,
+                bannerSize
+            );
         }
 
         public void LoadBannerAd(string adId, UnityBannerAdPositionCodeType position, string bannerSize = UnityBannerAdSize.BANNER_SIZE_320_50)
@@ -239,6 +220,42 @@ namespace HmsPlugin
             if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableBannerAd)) return;
 
             Debug.Log($"{TAG} Loading Banner Ad.");
+
+            var bannerAdStatusListener = CreateBannerAdStatusListener();
+
+            bannerView = new BannerAd(bannerAdStatusListener)
+            {
+                AdId = adId,
+                PositionType = (int)position,
+                SizeType = bannerSize,
+                AdStatusListener = bannerAdStatusListener
+            };
+
+            string bannerRefreshInterval = adsKitSettings.Get(HMSAdsKitSettings.BannerRefreshInterval);
+            if (long.TryParse(bannerRefreshInterval, out long bannerRefresh))
+            {
+                bannerView.BannerRefresh = bannerRefresh;
+            }
+            else if (!string.IsNullOrEmpty(bannerRefreshInterval))
+            {
+                Debug.Log($"{TAG} Failed to parse BannerRefreshInterval.");
+            }
+
+            _isBannerAdLoaded = false;
+            bannerView.LoadBanner(new AdParam.Builder().Build());
+
+            if (adsKitSettings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad))
+            {
+                bannerView?.ShowBanner();
+            }
+            else
+            {
+                bannerView?.HideBanner();
+            }
+        }
+
+        private AdStatusListener CreateBannerAdStatusListener()
+        {
             var bannerAdStatusListener = new AdStatusListener();
             bannerAdStatusListener.mOnAdLoaded += BannerAdStatusListener_mOnAdLoaded;
             bannerAdStatusListener.mOnAdClosed += BannerAdStatusListener_mOnAdClosed;
@@ -247,19 +264,7 @@ namespace HmsPlugin
             bannerAdStatusListener.mOnAdOpened += BannerAdStatusListener_mOnAdOpened;
             bannerAdStatusListener.mOnAdFailed += BannerAdStatusListener_mOnAdFailed;
 
-            bannerView = new BannerAd(bannerAdStatusListener);
-            bannerView.AdId = adId;
-            bannerView.PositionType = (int)position;
-            bannerView.SizeType = bannerSize;
-            bannerView.AdStatusListener = bannerAdStatusListener;
-            if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.BannerRefreshInterval)))
-                bannerView.BannerRefresh = long.Parse(adsKitSettings.Get(HMSAdsKitSettings.BannerRefreshInterval));
-            _isBannerAdLoaded = false;
-            bannerView.LoadBanner(new AdParam.Builder().Build());
-            if (adsKitSettings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad))
-                bannerView.ShowBanner();
-            else
-                bannerView.HideBanner();
+            return bannerAdStatusListener;
         }
 
         public void ShowBannerAd()
@@ -598,44 +603,37 @@ namespace HmsPlugin
 
         public void LoadSplashAd()
         {
-            if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd)) return;
-            Debug.Log($"{TAG} Loading Splash Ad.");
-            splashView = new SplashAd();
-            splashView.AdId = adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestSplashImageAdId : adsKitSettings.Get(HMSAdsKitSettings.SplashAdID);
-            splashView.Orientation = (SplashAdOrientation)Enum.Parse(typeof(SplashAdOrientation), adsKitSettings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT"));
-            splashView.Title = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashTitle)) ? "Splash Title" : adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
-            splashView.SubText = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)) ? "Splash SubText" : adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
-            if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)))
+            string adId = adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestSplashImageAdId : adsKitSettings.Get(HMSAdsKitSettings.SplashAdID);
+            if (!Enum.TryParse(adsKitSettings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT"), out SplashAdOrientation orientation))
             {
-                Texture2D texture = new Texture2D(28, 28);
-                texture.LoadImage(Convert.FromBase64String(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)));
-                splashView.Icon = texture;
+                orientation = SplashAdOrientation.PORTRAIT;
             }
-            splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(SplashAdStatusListener_OnAdShowed, SplashAdStatusListener_OnAdClicked));
-            splashView.SetSplashAdLoadListener(new SplashAdLoadListener(SplashAdStatusListener_OnAdDismissed, SplashAdStatusListener_OnAdFailedToLoad, SplashAdStatusListener_OnAdLoaded));
-            splashView.LoadAd(new AdParam.Builder().Build());
+            LoadSplashAd(adId, orientation);
         }
 
         public void LoadSplashAd(string adId, SplashAdOrientation orientation)
         {
             if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd)) return;
             Debug.Log($"{TAG} Loading Splash Ad.");
-            splashView = new SplashAd();
-            splashView.AdId = adId;
-            splashView.Orientation = orientation;
-            splashView.Title = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashTitle)) ? "Splash Title" : adsKitSettings.Get(HMSAdsKitSettings.SplashTitle);
-            splashView.SubText = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)) ? "Splash SubText" : adsKitSettings.Get(HMSAdsKitSettings.SplashSubText);
+            splashView = new SplashAd
+            {
+                AdId = adId,
+                Orientation = orientation,
+                Title = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashTitle)) ? "Splash Title" : adsKitSettings.Get(HMSAdsKitSettings.SplashTitle),
+                SubText = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)) ? "Splash SubText" : adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)
+            };
+
             if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)))
             {
                 Texture2D texture = new Texture2D(28, 28);
                 texture.LoadImage(Convert.FromBase64String(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)));
                 splashView.Icon = texture;
             }
+
             splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(SplashAdStatusListener_OnAdShowed, SplashAdStatusListener_OnAdClicked));
             splashView.SetSplashAdLoadListener(new SplashAdLoadListener(SplashAdStatusListener_OnAdDismissed, SplashAdStatusListener_OnAdFailedToLoad, SplashAdStatusListener_OnAdLoaded));
             splashView.LoadAd(new AdParam.Builder().Build());
         }
-
         #endregion
 
         #region LISTENERS

@@ -46,11 +46,19 @@ public class HMSGradleFixer : IPostGenerateGradleAndroidProject
 #else
         string gradleRowPattern = @".*gradle:(\d\.?)+";
         string gradleVersionPattern = @"(\d\.?)+";
-        Version gradleMinVersion = Version.Parse(MINGRADLEVERSION);
+
+        if (!Version.TryParse(MINGRADLEVERSION, out Version gradleMinVersion))
+        {
+            gradleMinVersion = new Version(3, 5, 4);
+        }
 
         Match gradleRowMatch = Regex.Match(gradleFileAsString, gradleRowPattern);
         Match gradleVersionMatch = Regex.Match(gradleRowMatch.Value, gradleVersionPattern);
-        Version gradleVersion = Version.Parse(gradleVersionMatch.Value);
+
+        if (!Version.TryParse(gradleVersionMatch.Value, out Version gradleVersion))
+        {
+            gradleVersion = new Version(3, 5, 4);
+        }
         // if users gradle version is lesser than our minimum version.
         if (gradleVersion.CompareTo(gradleMinVersion) < 0)
         {

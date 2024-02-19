@@ -75,8 +75,18 @@ namespace HmsPlugin
             _bannerAdsRefreshField = new TextFieldWithAccept("Banner Refresh Interval*", _settings.Get(HMSAdsKitSettings.BannerRefreshInterval), "Save", OnBannerRefreshIntervalSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100).AddTooltip("Default is 60 seconds. Value can be between 30 and 120 seconds");
             _enableBannerAdLoadToggle = new Toggle.Toggle("Show Banner on Load*", _settings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad), OnShowBannerOnLoadChanged, false).SetTooltip("Enabling this will make the banner to be shown right after it finishes loading.");
 
-            _bannerAdPositionType = new EnumDropdown((UnityBannerAdPositionCodeType)Enum.Parse(typeof(UnityBannerAdPositionCodeType), _settings.Get(HMSAdsKitSettings.BannerAdPositionType, "POSITION_BOTTOM")), "Banner Ad Position");
-            _BannerAdSizeType = new EnumDropdown((UnityBannerAdSizeType)Enum.Parse(typeof(UnityBannerAdSizeType), _settings.Get(HMSAdsKitSettings.UnityBannerAdSizeType, "BANNER_SIZE_360_57")), "Banner Size Type");
+            if (!Enum.TryParse(_settings.Get(HMSAdsKitSettings.BannerAdPositionType, "POSITION_BOTTOM"), out UnityBannerAdPositionCodeType bannerAdPositionType))
+            {
+                bannerAdPositionType = UnityBannerAdPositionCodeType.POSITION_BOTTOM;
+            }
+            _bannerAdPositionType = new EnumDropdown(bannerAdPositionType, "Banner Ad Position");
+
+            if (!Enum.TryParse(_settings.Get(HMSAdsKitSettings.UnityBannerAdSizeType, "BANNER_SIZE_360_57"), out UnityBannerAdSizeType bannerAdSizeType))
+            {
+                bannerAdSizeType = UnityBannerAdSizeType.BANNER_SIZE_360_57;
+            }
+            _BannerAdSizeType = new EnumDropdown(bannerAdSizeType, "Banner Size Type");
+
             _bannerAdsTextField = new TextFieldWithAccept("Banner Ad ID", _settings.Get(HMSAdsKitSettings.BannerAdID), "Save", OnBannerAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
 
             _bannerAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_BannerAdSizeType, _bannerAdPositionType, _bannerAdsRefreshField, _enableBannerAdLoadToggle)).SetEnabled(!bannerIsActive);
@@ -122,8 +132,11 @@ namespace HmsPlugin
 
             _enableSplashAdsToggle = new Toggle.Toggle("Enable Splash Ads", splashAdsIsActive, OnSplashAdToggleChanged, false);
             _splashAdsIdTextField = new TextFieldWithAccept("Splash Ad ID", _settings.Get(HMSAdsKitSettings.SplashAdID), "Save", OnSplashAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
-            _splashAdOrientation = new EnumDropdown((SplashAdOrientation)Enum.Parse(typeof(SplashAdOrientation), _settings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT")), "Orientation");
-            _splashAdsTitleTextField = new TextFieldWithAccept("Splash Title", _settings.Get(HMSAdsKitSettings.SplashTitle), "Save", OnSplashTitleSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
+            if (!Enum.TryParse(_settings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT"), out SplashAdOrientation splashAdOrientation))
+            {
+                splashAdOrientation = SplashAdOrientation.PORTRAIT;
+            }
+            _splashAdOrientation = new EnumDropdown(splashAdOrientation, "Orientation"); _splashAdsTitleTextField = new TextFieldWithAccept("Splash Title", _settings.Get(HMSAdsKitSettings.SplashTitle), "Save", OnSplashTitleSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashAdsSubTextField = new TextFieldWithAccept("Splash Sub Text", _settings.Get(HMSAdsKitSettings.SplashSubText), "Save", OnSplashSubTextSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashSpriteImage = new SpriteImage(AssetDatabase.LoadAssetAtPath<Sprite>(_settings.Get(HMSAdsKitSettings.SplashImagePath, "")), "Icon*", OnSpriteImageChanged).SetTooltip("Image will be shown as 28x28 pixels");
             _previewButton = new Button.Button("Preview", OnPreviewClick).SetWidth(150).SetBGColor(Color.green);

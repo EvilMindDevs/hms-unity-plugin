@@ -53,8 +53,18 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             var currentCountry = countryInfos.FirstOrDefault(c => c.Region == product.country);
             int countryIndex = countryInfos.IndexOf(currentCountry);
             countryDropdown = new Dropdown.StringDropdown(countryInfos.Select(c => c.Country).ToArray(), countryIndex, "Country", OnCountrySelected);
-            defaultPriceTextField = new TextField.TextField("Price:", (int.Parse(product.price) / 100f).ToString());
             currencyLabel = new Label.Label(product.currency);
+            string priceText = product.price;
+            if (int.TryParse(priceText, out int price))
+            {
+                defaultPriceTextField = new TextField.TextField("Price:", (price / 100f).ToString());
+            }
+            else
+            {
+                // Handle the case where the price could not be parsed to an int
+                // This could be setting a default value, logging an error, etc.
+                defaultPriceTextField = new TextField.TextField("Price:", "0");
+            }
 
             OnCountrySelected(countryIndex);
             OnLanguageSelected(localeIndex);
@@ -117,8 +127,18 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 country = selectedCountry.Region,
                 defaultLocale = selectedLocale,
                 productDesc = descriptionTextField.GetCurrentText(),
-                defaultPrice = (double.Parse(defaultPriceTextField.GetCurrentText()) * 100).ToString()
             };
+
+            if (double.TryParse(defaultPriceTextField.GetCurrentText(), out double defaultPrice))
+            {
+                productObj.defaultPrice = (defaultPrice * 100).ToString();
+            }
+            else
+            {
+                // Handle the case where the default price could not be parsed to a double
+                // This could be setting a default value, logging an error, etc.
+                productObj.defaultPrice = "0";
+            }
 
             // If the product is a subscription, set additional properties
             if (_product.purchaseType == "auto_subscription")

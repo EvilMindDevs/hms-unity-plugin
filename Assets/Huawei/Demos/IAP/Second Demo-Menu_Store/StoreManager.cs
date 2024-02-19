@@ -44,9 +44,16 @@ public class StoreManager : MonoBehaviour
         if (purchaseResultInfo.InAppPurchaseData.ProductId == "coin100")
         {
             AndroidToast.MakeText("You purchased 100 coin.").Show();
-            int coin = int.Parse(coinTxt.text) + 100;
-            coinTxt.text = coin.ToString();
-            PlayerPrefs.SetInt("Coin", coin);
+            if (int.TryParse(coinTxt.text, out int coin))
+            {
+                coin += 100;
+                coinTxt.text = coin.ToString();
+                PlayerPrefs.SetInt("Coin", coin);
+            }
+            else
+            {
+                Debug.LogError($"[{TAG}]: Failed to parse coinTxt.text");
+            }
         }
         /*Other products
          *

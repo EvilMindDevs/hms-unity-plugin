@@ -40,9 +40,16 @@ namespace HmsPlugin
         {
             var returnList = new List<HMSIAPProductEntry>();
 
-            for (int i = 0; i < _settings.Keys.Count(); i++)
+            foreach (var key in _settings.Keys)
             {
-                returnList.Add(new HMSIAPProductEntry(_settings.Keys.ElementAt(i), (HMSIAPProductType)Enum.Parse(typeof(HMSIAPProductType), _settings.Values.ElementAt(i))));
+                if (Enum.TryParse(typeof(HMSIAPProductType), _settings.Get(key), out var productType))
+                {
+                    returnList.Add(new HMSIAPProductEntry(key, (HMSIAPProductType)productType));
+                }
+                else
+                {
+                    Debug.LogError($"{SettingsFilename}: Failed to parse {_settings.Get(key)} as HMSIAPProductType");
+                }
             }
 
             return returnList;

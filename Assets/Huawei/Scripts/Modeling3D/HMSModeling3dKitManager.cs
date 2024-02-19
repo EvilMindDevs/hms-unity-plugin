@@ -510,15 +510,15 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
     {
         switch (status)
         {
-            case ((int)HMSModeling3dKitManager.ProgressStatus.INITED):
+            case (int)ProgressStatus.INITED:
                 return "Task initialization is complete.";
-            case ((int)HMSModeling3dKitManager.ProgressStatus.UPLOAD_COMPLETED):
+            case (int)ProgressStatus.UPLOAD_COMPLETED:
                 return "File upload is complete.";
-            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_START):
+            case (int)ProgressStatus.TEXTURE_START:
                 return "A material generation task starts.";
-            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_COMPLETED):
+            case (int)ProgressStatus.TEXTURE_COMPLETED:
                 return "A material generation task is complete.";
-            case ((int)HMSModeling3dKitManager.ProgressStatus.TEXTURE_FAILED):
+            case (int)ProgressStatus.TEXTURE_FAILED:
                 return "A material generation task fails.";
             default:
                 return "Unknown status.";

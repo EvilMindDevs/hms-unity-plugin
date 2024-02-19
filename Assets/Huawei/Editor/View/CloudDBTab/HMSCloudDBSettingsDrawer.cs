@@ -88,55 +88,45 @@ namespace HmsPlugin
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("\t\tpublic " + GetFieldType(field.fieldType) + " " + field.fieldName.ToPascalCase() + "\n\t\t{");
+            
+            string getter = string.Empty;
+            string setter = string.Empty;
+
             switch (field.fieldType)
             {
                 case "String":
-                    builder.AppendLine("\t\t\tget { return Call<string>(\"get" + field.fieldName.ToPascalCase() + "\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", value); }");
+                case "Text":
+                    getter = "\t\t\tget { return Call<string>(\"get" + field.fieldName.ToPascalCase() + "\"); }";
+                    setter = "\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", value); }";
                     break;
                 case "Boolean":
-                    builder.AppendLine("\t\t\tget { return Call<bool>(\"get" + field.fieldName.ToPascalCase() + "\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", value); }");
+                    getter = "\t\t\tget { return Call<bool>(\"get" + field.fieldName.ToPascalCase() + "\"); }";
+                    setter = "\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", value); }";
                     break;
                 case "Short":
-                    builder.AppendLine("\t\t\tget { return Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<short>(\"shortValue\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"java.lang.Short\", value)); }");
-                    break;
                 case "Byte":
-                    builder.AppendLine("\t\t\tget { return Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<byte>(\"byteValue\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"java.lang.Byte\", value)); }");
-                    break;
                 case "Integer":
-                    builder.AppendLine("\t\t\tget { return Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<int>(\"intValue\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"java.lang.Integer\", value)); }");
-                    break;
                 case "Long":
-                    builder.AppendLine("\t\t\tget { return Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<long>(\"longValue\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"java.lang.Long\", value)); }");
-                    break;
                 case "Float":
-                    builder.AppendLine("\t\t\tget { return Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<float>(\"floatValue\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"java.lang.Float\", value)); }");
-                    break;
                 case "Double":
-                    builder.AppendLine("\t\t\tget { return Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<double>(\"doubleValue\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"java.lang.Double\", value)); }");
+                    getter = "\t\t\tget { return Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<" + field.fieldType.ToLower() + ">(\"" + field.fieldType.ToLower() + "Value\"); }";
+                    setter = "\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"java.lang." + field.fieldType + "\", value)); }";
                     break;
                 case "ByteArray":
-                    builder.AppendLine("\t\t\tget { return Call<byte[]>(\"get" + field.fieldName.ToPascalCase() + "\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", value); }");
-                    break;
-                case "Text":
-                    builder.AppendLine("\t\t\tget { return Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<string>(\"get\"); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"com.huawei.agconnect.cloud.database.Text\", value)); }");
+                    getter = "\t\t\tget { return Call<byte[]>(\"get" + field.fieldName.ToPascalCase() + "\"); }";
+                    setter = "\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", value); }";
                     break;
                 case "Date":
-                    builder.AppendLine("\t\t\tget { return new DateTime(Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<long>(\"getTime\")); }");
-                    builder.AppendLine("\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"java.util.Date\", value.Ticks)); }");
+                    getter = "\t\t\tget { return new DateTime(Call<AndroidJavaObject>(\"get" + field.fieldName.ToPascalCase() + "\").Call<long>(\"getTime\")); }";
+                    setter = "\t\t\tset { Call(\"set" + field.fieldName.ToPascalCase() + "\", new AndroidJavaObject(\"java.util.Date\", value.Ticks)); }";
                     break;
                 default:
+                    // All cases are handled
                     break;
             }
+
+            builder.AppendLine(getter);
+            builder.AppendLine(setter);
             builder.AppendLine("\t\t}");
             return builder.ToString();
         }
@@ -146,6 +136,7 @@ namespace HmsPlugin
             switch (fieldType)
             {
                 case "String":
+                case "Text":
                     return "string";
                 case "Boolean":
                     return "bool";
@@ -163,14 +154,12 @@ namespace HmsPlugin
                     return "double";
                 case "ByteArray":
                     return "byte[]";
-                case "Text":
-                    return "string";
                 case "Date":
                     return "DateTime";
                 default:
-                    break;
+                    // All cases are handled
+                    return string.Empty;
             }
-            return "";
         }
 
         [System.Serializable]

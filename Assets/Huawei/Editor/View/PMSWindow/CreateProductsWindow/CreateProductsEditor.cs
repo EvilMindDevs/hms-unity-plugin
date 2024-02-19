@@ -196,9 +196,9 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 case "3":
                     return "non_consumable";
                 default:
-                    break;
+                    // All cases are handled
+                    return string.Empty;
             }
-            return string.Empty;
         }
 
         //TODO: check if chinese and russian is also supported and add change switch to if clause and type chinese&russian words.
@@ -209,15 +209,14 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 case "week":
                     return "W";
                 case "month":
-                    return "M";
                 case "months":
                     return "M";
                 case "year":
                     return "Y";
                 default:
-                    break;
+                    // All cases are handled
+                    return string.Empty;
             }
-            return string.Empty;
         }
 
         private List<Price> GetPricesFromExcel(string value)

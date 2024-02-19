@@ -402,43 +402,27 @@ namespace HmsPlugin
             switch (settings.format)
             {
                 case TextureImporterFormat.RGB16:
-                    return true;
                 case TextureImporterFormat.RGB24:
-                    return true;
                 case TextureImporterFormat.Alpha8:
-                    return true;
                 case TextureImporterFormat.R16:
-                    return true;
                 case TextureImporterFormat.R8:
-                    return true;
                 case TextureImporterFormat.RG16:
-                    return true;
                 case TextureImporterFormat.ARGB16:
-                    return true;
                 case TextureImporterFormat.RGBA32:
-                    return true;
                 case TextureImporterFormat.ARGB32:
-                    return true;
                 case TextureImporterFormat.RGBA16:
-                    return true;
                 case TextureImporterFormat.RHalf:
-                    return true;
                 case TextureImporterFormat.RGHalf:
-                    return true;
                 case TextureImporterFormat.RGBAHalf:
-                    return true;
                 case TextureImporterFormat.RFloat:
-                    return true;
                 case TextureImporterFormat.RGFloat:
-                    return true;
                 case TextureImporterFormat.RGBAFloat:
-                    return true;
                 case TextureImporterFormat.RGB9E5:
                     return true;
                 default:
-                    break;
+                    // All cases are handled
+                    return false;
             }
-            return false;
         }
     }
 }

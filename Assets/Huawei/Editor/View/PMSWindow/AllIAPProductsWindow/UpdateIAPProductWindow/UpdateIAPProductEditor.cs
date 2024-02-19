@@ -241,9 +241,9 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
                 case "Y":
                     return "Year";
                 default:
-                    break;
+                    // All cases are handled
+                    return string.Empty;
             }
-            return string.Empty;
         }
 
         [Serializable]

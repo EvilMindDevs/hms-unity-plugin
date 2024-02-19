@@ -514,79 +514,36 @@ namespace HmsPlugin
                                 break;
 
                             case OrderStatusCode.ORDER_PRODUCT_OWNED:
+                                if (isSubscription)
                                 {
-                                    if (isSubscription)
-                                    {
-                                        Debug.Log($"[{Tag}]: Subscription - PurchaseResultInfo.ReturnCode: {purchaseResultInfo.ReturnCode}");
-                                        RedirectingtoSubscriptionEditingScreen(productInfo.ProductId);
-                                        return;
-                                    }
-
-                                    Debug.LogError($"[{Tag}]: Product Owned");
+                                    Debug.Log($"[{Tag}]: Subscription - PurchaseResultInfo.ReturnCode: {purchaseResultInfo.ReturnCode}");
+                                    RedirectingtoSubscriptionEditingScreen(productInfo.ProductId);
+                                    return;
                                 }
+
+                                Debug.LogError($"[{Tag}]: Product Owned");
                                 break;
 
                             case OrderStatusCode.ORDER_STATE_PARAM_ERROR:
-                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : ORDER_STATE_PARAM_ERROR");
-                                break;
-
                             case OrderStatusCode.ORDER_STATE_IAP_NOT_ACTIVATED:
-                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : ORDER_STATE_IAP_NOT_ACTIVATED");
-                                break;
-
                             case OrderStatusCode.ORDER_STATE_PRODUCT_INVALID:
-                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : ORDER_STATE_PRODUCT_INVALID");
-                                break;
-
                             case OrderStatusCode.ORDER_STATE_CALLS_FREQUENT:
-                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : ORDER_STATE_CALLS_FREQUENT");
-                                break;
-
                             case OrderStatusCode.ORDER_STATE_NET_ERROR:
-                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : ORDER_STATE_NET_ERROR");
-                                break;
-
                             case OrderStatusCode.ORDER_STATE_PMS_TYPE_NOT_MATCH:
-                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : ORDER_STATE_PMS_TYPE_NOT_MATCH");
-                                break;
-
                             case OrderStatusCode.ORDER_STATE_PRODUCT_COUNTRY_NOT_SUPPORTED:
-                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : ORDER_STATE_PRODUCT_COUNTRY_NOT_SUPPORTED");
-                                break;
-
                             case OrderStatusCode.ORDER_VR_UNINSTALL_ERROR:
-                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : ORDER_VR_UNINSTALL_ERROR");
-                                break;
-
                             case OrderStatusCode.ORDER_HWID_NOT_LOGIN:
-                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : ORDER_HWID_NOT_LOGIN");
-                                break;
-
                             case OrderStatusCode.ORDER_PRODUCT_NOT_OWNED:
-                                Debug.LogError($"[{Tag}] - ReturnCode:  {purchaseResultInfo.ReturnCode} : ORDER_PRODUCT_NOT_OWNED");
-                                break;
-
                             case OrderStatusCode.ORDER_PRODUCT_CONSUMED:
-                                Debug.LogError($"[{Tag}] - ReturnCode:  {purchaseResultInfo.ReturnCode} : ORDER_PRODUCT_CONSUMED");
-                                break;
-
                             case OrderStatusCode.ORDER_ACCOUNT_AREA_NOT_SUPPORTED:
-                                Debug.LogError($"[{Tag}] - ReturnCode:  {purchaseResultInfo.ReturnCode} : ORDER_ACCOUNT_AREA_NOT_SUPPORTED");
-                                break;
-
                             case OrderStatusCode.ORDER_NOT_ACCEPT_AGREEMENT:
-                                Debug.LogError($"[{Tag}] - ReturnCode:  {purchaseResultInfo.ReturnCode} : ORDER_NOT_ACCEPT_AGREEMENT");
-                                break;
-
                             case OrderStatusCode.ORDER_HIGH_RISK_OPERATIONS:
-                                Debug.LogError($"[{Tag}] - ReturnCode: {purchaseResultInfo.ReturnCode}: ORDER_HIGH_RISK_OPERATIONS");
-                                break;
-
                             case OrderStatusCode.ORDER_STATE_PENDING:
-                                Debug.LogError($"[{Tag}] - ReturnCode: {purchaseResultInfo.ReturnCode}: ORDER_STATE_PENDING");
+                                Debug.LogError($"[{Tag}] - ReturnCode:   {purchaseResultInfo.ReturnCode}  : {Enum.GetName(typeof(OrderStatusCode), purchaseResultInfo.ReturnCode)}");
                                 break;
 
                             default:
+                                // All cases are handled
                                 Debug.LogError($"[{Tag}]: BuyProduct failed. ReturnCode: " + purchaseResultInfo.ReturnCode + ", ErrorMsg: " + purchaseResultInfo.ErrMsg);
                                 break;
                         }

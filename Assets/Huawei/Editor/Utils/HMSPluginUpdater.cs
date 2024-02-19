@@ -147,11 +147,13 @@ public class HMSPluginUpdateRequest : MonoBehaviour
                 EditorPrefs.SetBool(sessionStatePersisted + latestVersionString, true);
                 break;
             case 1:
+                // No action needed
                 break;
             case 2:
                 Application.OpenURL("https://github.com/EvilMindDevs/hms-unity-plugin/releases");
                 break;
             default:
+                // All cases are handled
                 break;
         }
     }

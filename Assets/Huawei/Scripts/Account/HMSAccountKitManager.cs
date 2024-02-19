@@ -79,8 +79,13 @@ namespace HmsPlugin
             return DefaultGameAuthService;
         }
 
-        public void SignIn()
+        public void SignIn(AccountAuthService authservice = null)
         {
+            if(authservice != null) 
+            {
+                this.authService = authservice;
+                Debug.LogWarning($"{TAG}: Sign in: You are overriding authService with:{authservice}");
+            }
             Debug.Log($"{TAG}: Sign in " + authService);
             authService.StartSignIn((authId) =>
             {

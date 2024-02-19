@@ -21,7 +21,7 @@ namespace HmsPlugin
         {
             gradleSettings = new Dictionary<string, string[]>()
             {
-                { AccountToggleEditor.AccountKitEnabled,        new [] { "com.huawei.hms:hwid:6.9.0.301" } },
+                { AccountToggleEditor.AccountKitEnabled,        new [] { "com.huawei.hms:hwid:6.12.0.300" } },
                 { AdsToggleEditor.AdsKitEnabled,                new []
                     {
                         "com.huawei.hms:ads-lite:13.4.61.300",
@@ -32,7 +32,7 @@ namespace HmsPlugin
                 },
                 { AnalyticsToggleEditor.AnalyticsKitEnabled,    new [] { "com.huawei.hms:hianalytics:6.4.1.302" } },
                 { CrashToggleEditor.CrashKitEnabled,            new [] { "com.huawei.agconnect:agconnect-crash:1.8.0.300" } },
-                { GameServiceToggleEditor.GameServiceEnabled,   new [] { "com.huawei.hms:game:6.2.0.301" } },
+                { GameServiceToggleEditor.GameServiceEnabled,   new [] { "com.huawei.hms:game:6.10.0.300" } },
                 { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.4.0.301" } },
                 { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.7.0.300" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new [] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },

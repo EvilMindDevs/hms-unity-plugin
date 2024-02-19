@@ -121,7 +121,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         try
         {
-            taskName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + initTaskId.Substring(initTaskId.Length - 4);
+            taskName = DateTime.UtcNow.ToString("yyyyMMddHHmmss") + "-" + initTaskId.Substring(initTaskId.Length - 4);
             Debug.Log($"{TAG}{taskName}");
         }
         catch (Exception e)
@@ -318,7 +318,7 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         modeling3dCaptureImageEngine.SetCaptureConfig(setting);
 
 
-        string fileSavePath = Application.persistentDataPath + (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond);
+        string fileSavePath = Application.persistentDataPath + (DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond);
 
         OnProgressCaptureImage += (progress) =>
         {

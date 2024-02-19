@@ -24,6 +24,7 @@ namespace HmsPlugin
         public Action<HMSException> OnGetUserPlayStateFailure { get; set; }
         public Action<bool> OnIsAllowContinuePlayGamesSuccess { get; set; }
         public Action<HMSException> OnIsAllowContinuePlayGamesFailure { get; set; }
+        public Action<HuaweiMobileServices.Utils.Void> GameInitSuccess { get; set; }
 
         private AccountAuthService authService;
         private AccountAuthParams authParams;
@@ -49,36 +50,51 @@ namespace HmsPlugin
                 Debug.LogWarning($"{TAG} initOnStart is disable for GameService. Are you getting init first error? Call HMSGameServiceManager.Instance.Init() by yourself.");
         }
 
-        public void Init()
+        public void Init(IAntiAddictionCallback antiAddictionCallback = null, AuthAccount authAccount = null)
         {
             Debug.Log($"{TAG}: HMS GAMES init");
-            authService = HMSAccountKitManager.Instance.GetGameAuthService();
-            authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).CreateParams();
 
+            if (authAccount != null) 
+            {
+                archivesClient = HMSSaveGameManager.Instance.GetArchivesClient();
+                InitJosApps(authAccount, antiAddictionCallback);
+                return;
+            }
+            authService = HMSAccountKitManager.Instance.GetGameAuthService();
             ITask<AuthAccount> taskAuthHuaweiId = authService.SilentSignIn();
             taskAuthHuaweiId.AddOnSuccessListener((result) =>
             {
                 archivesClient = HMSSaveGameManager.Instance.GetArchivesClient();
-                InitJosApps(result);
+                InitJosApps(result, antiAddictionCallback);
                 SignInSuccess?.Invoke(result);
                 Debug.Log($"{TAG} HMS GAMES: SilentSignIn Success");
 
             }).AddOnFailureListener((exception) =>
             {
                 Debug.LogError($"{TAG} HMS GAMES: The app has not been authorized");
-                authService.StartSignIn((auth) => { InitJosApps(auth); SignInSuccess?.Invoke(auth); }, (exc) => SignInFailure?.Invoke(exc));
+                authService.StartSignIn((auth) => { InitJosApps(auth, antiAddictionCallback); SignInSuccess?.Invoke(auth); }, (exc) => SignInFailure?.Invoke(exc));
                 InitGameManagers();
             });
         }
 
-        private void InitJosApps(AuthAccount result)
+        private void InitJosApps(AuthAccount result, IAntiAddictionCallback antiAddictionCallback = null)
         {
-            var appParams = new AppParams(authParams);
+            authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM_GAME).CreateParams();
+
+            AppParams appParams = (antiAddictionCallback != null) 
+                ? new AppParams(authParams, new AntiAddictionCallWrapper(antiAddictionCallback)) 
+                : new AppParams(authParams);
+
             HMSAccountKitManager.Instance.HuaweiId = result;
             Debug.Log($"{TAG} HMS GAMES: Setted app");
             IJosAppsClient josAppsClient = JosApps.GetJosAppsClient();
             Debug.Log($"{TAG} HMS GAMES: jossClient");
-            josAppsClient.Init(appParams);
+            var init = josAppsClient.Init(appParams);
+
+            init.AddOnSuccessListener((aVoid) => 
+            {
+                GameInitSuccess?.Invoke(aVoid);
+            });
 
             Debug.Log($"{TAG} HMS GAMES: jossClient init");
             InitGameManagers();
@@ -131,7 +147,7 @@ namespace HmsPlugin
         {
             if (HMSAccountKitManager.Instance.HuaweiId != null)
             {
-                ITask<Player> task = playersClient.CurrentPlayer;
+                ITask<Player> task = playersClient.GamePlayer;
                 task.AddOnSuccessListener((result) =>
                 {
                     Debug.Log($"{TAG} GetPlayerInfo Success");

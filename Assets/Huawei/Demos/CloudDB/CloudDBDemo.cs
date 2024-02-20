@@ -152,10 +152,13 @@ public class CloudDBDemo : MonoBehaviour
     {
         Debug.Log(TAG + " AddBookInfo");
 
-        BookInfo bookInfo = new BookInfo();
-        bookInfo.Id = 1;
-        bookInfo.BookName = "bookName";
-        bookInfo.Author = "Author 1";
+        var bookInfo = new BookInfo
+        {
+            Id = 1,
+            BookName = "bookName",
+            Author = "Author 1"
+        };
+
         cloudDBManager.ExecuteUpsert(bookInfo);
     }
 
@@ -163,17 +166,11 @@ public class CloudDBDemo : MonoBehaviour
     {
         Debug.Log(TAG + " AddBookInfoList");
 
-        IList<AndroidJavaObject> bookInfoList = new List<AndroidJavaObject>();
-
-        BookInfo bookInfo1 = new BookInfo();
-        bookInfo1.Id = 2;
-        bookInfo1.Author = "Author 2";
-        bookInfoList.Add(bookInfo1.GetObj());
-
-        BookInfo bookInfo2 = new BookInfo();
-        bookInfo2.Id = 3;
-        bookInfo2.Author = "Author 3";
-        bookInfoList.Add(bookInfo2.GetObj());
+        var bookInfoList = new List<AndroidJavaObject>
+        {
+            new BookInfo { Id = 2, Author = "Author 2" }.GetObj(),
+            new BookInfo { Id = 3, Author = "Author 3" }.GetObj()
+        };
 
         cloudDBManager.ExecuteUpsert(bookInfoList);
     }
@@ -182,11 +179,14 @@ public class CloudDBDemo : MonoBehaviour
     {
         Debug.Log(TAG + " UpdateBookInfo");
 
-        BookInfo bookInfo = new BookInfo();
-        bookInfo.Id = 1;
-        bookInfo.BookName = "bookName";
-        bookInfo.Author = "Author 1";
-        bookInfo.Price = 300;
+        var bookInfo = new BookInfo
+        {
+            Id = 1,
+            BookName = "bookName",
+            Author = "Author 1",
+            Price = 300
+        };
+
         cloudDBManager.ExecuteUpsert(bookInfo);
     }
 
@@ -194,8 +194,8 @@ public class CloudDBDemo : MonoBehaviour
     {
         Debug.Log(TAG + " DeleteBookInfo");
 
-        BookInfo bookInfo = new BookInfo();
-        bookInfo.Id = 1;
+        var bookInfo = new BookInfo { Id = 1 };
+
         cloudDBManager.ExecuteDelete(bookInfo);
     }
 
@@ -203,17 +203,11 @@ public class CloudDBDemo : MonoBehaviour
     {
         Debug.Log(TAG + " DeleteBookInfoList");
 
-        IList<AndroidJavaObject> bookInfoList = new List<AndroidJavaObject>();
-
-        BookInfo bookInfo1 = new BookInfo();
-        bookInfo1.Id = 2;
-        bookInfo1.Author = "Author 2";
-        bookInfoList.Add(bookInfo1.GetObj());
-
-        BookInfo bookInfo2 = new BookInfo();
-        bookInfo2.Id = 3;
-        bookInfo2.Author = "Author 3";
-        bookInfoList.Add(bookInfo2.GetObj());
+        var bookInfoList = new List<AndroidJavaObject>
+        {
+            new BookInfo { Id = 2, Author = "Author 2" }.GetObj(),
+            new BookInfo { Id = 3, Author = "Author 3" }.GetObj()
+        };
 
         cloudDBManager.ExecuteDelete(bookInfoList);
     }

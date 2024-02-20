@@ -56,7 +56,7 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
             }
             else
             {
-                Debug.LogError($"[HMS PMS API]: Batch Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: { responseJson.error.errorMsg }.");
+                Debug.LogError($"[HMS PMS API]: Batch Product creation failed. Error Code: {responseJson.error.errorCode}, Error Message: {responseJson.error.errorMsg}.");
                 if (responseJson.failedNumber > 0 && responseJson.resultInfo.Count > 0)
                 {
                     Debug.LogError("[HMS PMS API]: Several products could not be created and they are listed below.");
@@ -108,65 +108,79 @@ namespace HmsPlugin.ConnectAPI.PMSAPI
         private List<ProductImportInfo> ParseExcelToJson(string[,] array)
         {
             var returnList = new List<ProductImportInfo>();
+            var supportedCountries = HMSEditorUtils.SupportedCountries();
+
             for (int i = 2; i < array.GetLength(0); i++)
             {
-                var product = new ProductImportInfo();
-                product.defaultPriceInfo = new DefaultProductPriceInfo();
-
-                var supportedCountry = HMSEditorUtils.SupportedCountries().FirstOrDefault(c => c.Locale == array[i, 2].Split('|')[0]);
+                var productDetails = array[i, 2].ToString().Split('|');
+                var supportedCountry = supportedCountries.FirstOrDefault(c => c.Locale == productDetails[0]);
                 var prices = GetPricesFromExcel(array[i, 3].ToString());
 
-                product.productNo = array[i, 0].ToString();
-                product.status = array[i, 6].ToString() == "3" ? "inactive" : "active";
-                product.productName = array[i, 2].ToString().Split('|')[1];
-                product.productDesc = array[i, 2].ToString().Split('|')[2];
-                product.purchaseType = GetProductType(array[i, 1]);
+                var product = new ProductImportInfo
+                {
+                    defaultPriceInfo = new DefaultProductPriceInfo(),
+                    productNo = array[i, 0].ToString(),
+                    status = array[i, 6].ToString() == "3" ? "inactive" : "active",
+                    productName = productDetails[1],
+                    productDesc = productDetails[2],
+                    purchaseType = GetProductType(array[i, 1]),
+                    defaultLocale = productDetails[0],
+                    languages = GetLanguagesFromExcel(array[i, 2]),
+                    prices = prices
+                };
+
                 product.defaultPriceInfo.country = supportedCountry.Country;
                 product.defaultPriceInfo.currency = supportedCountry.Currency;
                 product.defaultPriceInfo.price = prices.Find(f => f.country == supportedCountry.Region).price;
-                product.defaultLocale = array[i, 2].ToString().Split('|')[0];
-                product.languages = GetLanguagesFromExcel(array[i, 2]);
-                product.prices = prices;
+
                 if (!string.IsNullOrEmpty(array[i, 4]))
                 {
+                    var subDetails = array[i, 4].Split(' ');
                     product.subGroupId = array[i, 5];
-                    product.subPeriod = array[i, 4].Split(' ')[0];
-                    product.subPeriodUnit = GetSubPeriodUnit(array[i, 4].Split(' ')[1]);
+                    product.subPeriod = subDetails[0];
+                    product.subPeriodUnit = GetSubPeriodUnit(subDetails[1]);
                 }
 
                 returnList.Add(product);
             }
             return returnList;
         }
-
         private List<ProductImportInfo> ParseExcelToJson(List<Dictionary<string, object>> dict)
         {
             var returnList = new List<ProductImportInfo>();
+            var supportedCountries = HMSEditorUtils.SupportedCountries();
+
             for (int i = 39; i < dict.Count; i++)
             {
                 var pair = dict.ElementAt(i);
-                var product = new ProductImportInfo();
-                product.defaultPriceInfo = new DefaultProductPriceInfo();
-
-                var supportedCountry = HMSEditorUtils.SupportedCountries().FirstOrDefault(c => c.Locale == pair["Locale Title Description"].ToString().Split('|')[0]);
+                var productDetails = pair["Locale Title Description"].ToString().Split('|');
+                var supportedCountry = supportedCountries.FirstOrDefault(c => c.Locale == productDetails[0]);
                 var prices = GetPricesFromExcel(pair["Price"].ToString());
 
-                product.productNo = pair["ProductId"].ToString();
-                product.status = pair["Status"].ToString() == "3" ? "inactive" : "active";
-                product.productName = pair["Locale Title Description"].ToString().Split('|')[1];
-                product.productDesc = pair["Locale Title Description"].ToString().Split('|')[2];
-                product.purchaseType = GetProductType(pair["ProductType"].ToString());
-                product.defaultPriceInfo.country = supportedCountry.Country;
-                product.defaultPriceInfo.currency = supportedCountry.Currency;
-                product.defaultPriceInfo.price = prices.Find(f => f.country == supportedCountry.Region).price;
-                product.defaultLocale = pair["Locale Title Description"].ToString().Split('|')[0];
-                product.languages = GetLanguagesFromExcel(pair["Locale Title Description"].ToString());
-                product.prices = prices;
-                product.subGroupId = pair["Subgroup ID"].ToString();
+                var product = new ProductImportInfo
+                {
+                    defaultPriceInfo = new DefaultProductPriceInfo
+                    {
+                        country = supportedCountry.Country,
+                        currency = supportedCountry.Currency,
+                        price = prices.Find(f => f.country == supportedCountry.Region).price
+                    },
+                    productNo = pair["ProductId"].ToString(),
+                    status = pair["Status"].ToString() == "3" ? "inactive" : "active",
+                    productName = productDetails[1],
+                    productDesc = productDetails[2],
+                    purchaseType = GetProductType(pair["ProductType"].ToString()),
+                    defaultLocale = productDetails[0],
+                    languages = GetLanguagesFromExcel(pair["Locale Title Description"].ToString()),
+                    prices = prices,
+                    subGroupId = pair["Subgroup ID"].ToString()
+                };
+
                 if (!string.IsNullOrEmpty(pair["SubPeriod"].ToString()))
                 {
-                    product.subPeriod = pair["SubPeriod"].ToString().Split(' ')[0];
-                    product.subPeriodUnit = GetSubPeriodUnit(pair["SubPeriod"].ToString().Split(' ')[1]);
+                    var subPeriodDetails = pair["SubPeriod"].ToString().Split(' ');
+                    product.subPeriod = subPeriodDetails[0];
+                    product.subPeriodUnit = GetSubPeriodUnit(subPeriodDetails[1]);
                 }
 
                 returnList.Add(product);

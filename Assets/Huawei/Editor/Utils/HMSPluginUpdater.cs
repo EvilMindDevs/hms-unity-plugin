@@ -15,20 +15,26 @@ internal class HMSPluginUpdater
 
     internal static void Request(bool ignoreSession = false)
     {
-        if (!ignoreSession)
+        if (!ignoreSession && SessionState.GetBool(sessionState, false))
         {
-            if (SessionState.GetBool(sessionState, false)) return;
-            SessionState.SetBool(sessionState, true);
-            HMSEditorUtils.UpdateAssemblyDefinitions(HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
+            return;
         }
 
-        Task.Delay(2000).ContinueWith(t =>
+        SessionState.SetBool(sessionState, true);
+        HMSEditorUtils.UpdateAssemblyDefinitions(HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
+
+        Task.Delay(2000).ContinueWith(t => StartUpdateRequest(ignoreSession), TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    private static void StartUpdateRequest(bool ignoreSession)
+    {
+        var obj = new GameObject("HMSPluginUpdateRequest")
         {
-            GameObject obj = new GameObject();
-            obj.hideFlags = HideFlags.HideAndDontSave;
-            request = obj.AddComponent<HMSPluginUpdateRequest>();
-            request.StartRequest(ignoreSession);
-        }, TaskScheduler.FromCurrentSynchronizationContext());
+            hideFlags = HideFlags.HideAndDontSave
+        };
+
+        request = obj.AddComponent<HMSPluginUpdateRequest>();
+        request.StartRequest(ignoreSession);
     }
 }
 

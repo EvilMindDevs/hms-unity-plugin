@@ -74,7 +74,7 @@ namespace HmsPlugin
 
         private void CreateRemoteConfigConstants()
         {
-            if (_defaultValueSettings.Keys.Count() > 0)
+            if (_defaultValueSettings.Keys.Any())
             {
                 using (var file = File.CreateText(Application.dataPath + "/Huawei/Scripts/Utils/HMSRemoteConfigConstants.cs"))
                 {

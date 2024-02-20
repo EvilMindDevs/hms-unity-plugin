@@ -39,7 +39,7 @@ namespace HmsPlugin.List
 
         public void Draw()
         {
-            if (_listDrawer.Count() == 0 && _emptyDrawer != null)
+            if (!_listDrawer.Any() && _emptyDrawer != null)
             {
                 _emptyDrawer.Draw();
             }

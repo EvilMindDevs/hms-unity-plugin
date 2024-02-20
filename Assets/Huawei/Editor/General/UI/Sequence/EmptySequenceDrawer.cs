@@ -20,7 +20,7 @@ namespace HmsPlugin
 
         public void Draw()
         {
-            if (_sequenceDrawer.Count() > 0)
+            if (_sequenceDrawer.Any())
             {
                 _sequenceDrawer.Draw();
             }

@@ -48,6 +48,11 @@ namespace HmsPlugin
             return _drawers.Count;
         }
 
+        public bool Any()
+        {
+            return _drawers.Any();
+        }
+
         public IList<T> FindByType<T>() where T : class, IDrawer
         {
             List<T> found = new List<T>();

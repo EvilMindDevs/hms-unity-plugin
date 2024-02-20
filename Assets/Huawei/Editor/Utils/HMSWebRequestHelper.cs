@@ -19,9 +19,9 @@ internal class HMSWebRequestHelper
             {
                 _instance = new HMSWebRequestHelper();
             }
-            if (persistedObj == null || behaviour == null)
+            if (persistedObj == null || behavior == null)
             {
-                _instance.CheckPersistentcy();
+                _instance.CheckPersistency();
             }
 
             return _instance;
@@ -29,12 +29,12 @@ internal class HMSWebRequestHelper
     }
 
     private static GameObject persistedObj;
-    private static HMSWebRequestBehaviour behaviour;
+    private static HMSWebRequestBehaviour behavior;
 
-    public void CheckPersistentcy()
+    public void CheckPersistency()
     {
         var objs = GameObject.FindObjectsOfType<HMSWebRequestBehaviour>();
-        if (objs != null && objs.Count() > 0)
+        if (objs != null && objs.Any())
         {
             foreach (var item in objs)
             {
@@ -43,40 +43,40 @@ internal class HMSWebRequestHelper
         }
         persistedObj = new GameObject("[HMSWebRequestHelper]");
         persistedObj.hideFlags = HideFlags.HideAndDontSave;
-        behaviour = persistedObj.AddComponent<HMSWebRequestBehaviour>();
+        behavior = persistedObj.AddComponent<HMSWebRequestBehaviour>();
     }
 
     internal void PostRequest(string url, string bodyJsonString, Action<UnityWebRequest> callback)
     {
-        behaviour.Post(url, bodyJsonString, callback);
+        behavior.Post(url, bodyJsonString, callback);
     }
 
     internal async Task<UnityWebRequest> PostRequest(string url, string bodyJsonString)
     {
-        return await behaviour.PostAsync(url, bodyJsonString);
+        return await behavior.PostAsync(url, bodyJsonString);
     }
 
     internal void PostRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
-        behaviour.Post(url, bodyJsonString, requestHeaders, callback);
+        behavior.Post(url, bodyJsonString, requestHeaders, callback);
     }
 
     internal void GetRequest(string url, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
-        behaviour.Get(url, requestHeaders, callback);
+        behavior.Get(url, requestHeaders, callback);
     }
     internal void PostFormRequest(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback, string progressBarTitle = null, string progressBarDesc = null)
     {
-        behaviour.PostFormData(url, file, authCode, fileCount, parseType, callback, progressBarTitle, progressBarDesc);
+        behavior.PostFormData(url, file, authCode, fileCount, parseType, callback, progressBarTitle, progressBarDesc);
     }
     internal void PutRequest(string url, string bodyJsonString, Dictionary<string, string> requestHeaders, Action<UnityWebRequest> callback)
     {
-        behaviour.Put(url, bodyJsonString, requestHeaders, callback);
+        behavior.Put(url, bodyJsonString, requestHeaders, callback);
     }
 
     internal void GetFile(string url, string path, Action<bool> result = null)
     {
-        behaviour.GetFile(url, path, result);
+        behavior.GetFile(url, path, result);
     }
 }
 

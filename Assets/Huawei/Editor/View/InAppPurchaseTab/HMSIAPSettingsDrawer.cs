@@ -118,7 +118,7 @@ namespace HmsPlugin
 
         private void CreateIAPConstants()
         {
-            if (_productListSettings.Keys.Count() > 0)
+            if (_productListSettings.Keys.Any())
             {
                 using (var file = File.CreateText(Application.dataPath + "/Huawei/Scripts/Utils/HMSIAPConstants.cs"))
                 {

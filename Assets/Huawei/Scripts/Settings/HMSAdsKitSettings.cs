@@ -35,7 +35,7 @@ namespace HmsPlugin
 
             if (loadedSettings == null)
             {
-                throw new NullReferenceException("Failed to load the " + SettingsFilename + ". Please restart Unity Editor");
+                throw new InvalidOperationException($"Failed to load the {SettingsFilename}. Please restart Unity Editor");
             }
             _settings = loadedSettings.settings;
 

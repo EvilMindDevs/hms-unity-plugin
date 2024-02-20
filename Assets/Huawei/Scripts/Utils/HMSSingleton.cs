@@ -47,10 +47,7 @@ public class HMSManagerSingleton<T> where T : new()
 
     public static T Instance
     {
-        get
-        {
-            return _instance.Value;
-        }
+        get => _instance.Value;
         set => _instance = new Lazy<T>(() => value);
     }
 }

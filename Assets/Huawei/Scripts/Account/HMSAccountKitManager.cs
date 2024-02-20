@@ -58,8 +58,7 @@ namespace HmsPlugin
         public Action<HMSException> OnSignInFailed { get; set; }
         public Action<AuthAccount> OnIndependentSignInSuccess { get; set; }
         public Action<HMSException> OnIndependentSignInFailed { get; set; }
-        public bool IsSignedIn { get { return HuaweiId != null; } }
-
+        public bool IsSignedIn => HuaweiId != null;
         private AccountAuthService authService;
 
         public HMSAccountKitManager()

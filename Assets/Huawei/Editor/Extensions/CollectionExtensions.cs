@@ -4,8 +4,6 @@ using UnityEngine;
 
 namespace HmsPlugin.Collections
 {
-    // A way to have readonly list interfaces
-    // while at the same time supporting older .net until it is no longer available
     public class ImmutableList<T> : IReadOnlyList<T>, IReadOnlyCollection<T>
     {
         private readonly IList<T> _list;
@@ -16,47 +14,23 @@ namespace HmsPlugin.Collections
             _list = list;
         }
 
-        public static ImmutableList<T> Empty()
-        {
-            return new ImmutableList<T>(new List<T>());
-        }
+        public static ImmutableList<T> Empty => new ImmutableList<T>(new List<T>());
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
+        public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => _list.GetEnumerator();
 
-        public int Count
-        {
-            get { return _list.Count; }
-        }
+        public int Count => _list.Count;
 
-        public T this[int index]
-        {
-            get { return _list[index]; }
-        }
+        public T this[int index] => _list[index];
 
-        public static implicit operator ImmutableList<T>(List<T> l)
-        {
-            return new ImmutableList<T>(l);
-        }
+        public static implicit operator ImmutableList<T>(List<T> l) => new ImmutableList<T>(l);
     }
 
     public static class ImmutableExtensions
     {
-        public static IReadOnlyCollection<T> ToReadonlyCollection<T>(this IList<T> list)
-        {
-            return new ImmutableList<T>(list);
-        }
+        public static IReadOnlyCollection<T> ToReadonlyCollection<T>(this IList<T> list) => new ImmutableList<T>(list);
 
-        public static IReadOnlyList<T> ToReadonlyList<T>(this IList<T> list)
-        {
-            return new ImmutableList<T>(list);
-        }
+        public static IReadOnlyList<T> ToReadonlyList<T>(this IList<T> list) => new ImmutableList<T>(list);
     }
 }

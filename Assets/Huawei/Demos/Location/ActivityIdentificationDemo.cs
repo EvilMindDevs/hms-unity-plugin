@@ -1,4 +1,4 @@
-using HuaweiMobileServices.Location;
+﻿using HuaweiMobileServices.Location;
 using HuaweiMobileServices.Location.Activity;
 using HuaweiMobileServices.Utils;
 using UnityEngine;
@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Text;
 using Huawei.Scripts.Location;
+using HmsPlugin;
 
 namespace Huawei.Demos.Location
 {
@@ -103,7 +104,7 @@ namespace Huawei.Demos.Location
             ActivityConversionInfo activityConversionInfoStillEnter = new ActivityConversionInfo(
                 ActivityIdentificationData.STILL, ActivityConversionInfo.ENTER_ACTIVITY_CONVERSION);
 
-            // Create an information object for switching from the activity state to the static state. 
+            // Create an information object for switching from the activity state to the static state.
             ActivityConversionInfo activityConversionInfoStillExit = new ActivityConversionInfo(
                 ActivityIdentificationData.FOOT, ActivityConversionInfo.EXIT_ACTIVITY_CONVERSION);
             List<ActivityConversionInfo> activityConversionInfos = new List<ActivityConversionInfo>();

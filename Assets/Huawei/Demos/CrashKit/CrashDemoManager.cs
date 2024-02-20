@@ -1,4 +1,5 @@
 
+using HmsPlugin;
 using UnityEngine;
 
 public class CrashDemoManager : MonoBehaviour

@@ -1,47 +1,50 @@
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using System;
 using System.IO;
 
-public static class HMSExcelHelper
+namespace HmsPlugin
 {
-    public static string[,] ReadExcel(string path)
+    public static class HMSExcelHelper
     {
-        string[,] result = null;
-
-        using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
+        public static string[,] ReadExcel(string path)
         {
-            ExcelWorksheet sheet = package.Workbook.Worksheets[1];
-            result = ToStringArray(sheet.Cells.Value);
+            string[,] result = null;
 
-        }
-        return result;
-    }
-
-    private static string[,] ToStringArray(object arg)
-    {
-        string[,] result = null;
-
-        if (arg is Array)
-        {
-            int rank = ((Array)arg).Rank;
-            if (rank == 2)
+            using (ExcelPackage package = new ExcelPackage(new FileInfo(path)))
             {
-                int columnCount = ((Array)arg).GetLength(1) - 1;
-                int rowCount = ((Array)arg).GetLength(0);
-                result = new string[rowCount, columnCount];
+                ExcelWorksheet sheet = package.Workbook.Worksheets[1];
+                result = ToStringArray(sheet.Cells.Value);
 
-                for (int i = 0; i < rowCount; i++)
+            }
+            return result;
+        }
+
+        private static string[,] ToStringArray(object arg)
+        {
+            string[,] result = null;
+
+            if (arg is Array)
+            {
+                int rank = ((Array)arg).Rank;
+                if (rank == 2)
                 {
-                    for (int j = 0; j < columnCount; j++)
+                    int columnCount = ((Array)arg).GetLength(1) - 1;
+                    int rowCount = ((Array)arg).GetLength(0);
+                    result = new string[rowCount, columnCount];
+
+                    for (int i = 0; i < rowCount; i++)
                     {
-                        var value = ((Array)arg).GetValue(i, j);
-                        if (value != null)
-                            result[i, j] = value.ToString();
+                        for (int j = 0; j < columnCount; j++)
+                        {
+                            var value = ((Array)arg).GetValue(i, j);
+                            if (value != null)
+                                result[i, j] = value.ToString();
+                        }
                     }
                 }
             }
-        }
 
-        return result;
+            return result;
+        }
     }
 }

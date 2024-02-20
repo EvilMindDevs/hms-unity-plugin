@@ -1,58 +1,60 @@
-using HmsPlugin;
-using HuaweiMobileServices.AppMessaging;
+﻿using HuaweiMobileServices.AppMessaging;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Id;
 using System;
 using UnityEngine;
 
-public class HMSAppMessagingManager : HMSManagerSingleton<HMSAppMessagingManager>
+namespace HmsPlugin
 {
-    private const string TAG = "[HMS] HMSAppMessagingManager";
-    public Action<AppMessage> OnMessageClicked { get; set; }
-    public Action<AppMessage> OnMessageDisplay { get; set; }
-    public Action<AppMessage, DismissType> OnMessageDismiss { get; set; }
-    public Action<AAIDResult> AAIDResultAction { get; set; }
-
-    public HMSAppMessagingManager()
+    public class HMSAppMessagingManager : HMSManagerSingleton<HMSAppMessagingManager>
     {
-        HMSManagerStart.Start(OnAwake, TAG);
-    }
+        private const string TAG = "[HMS] HMSAppMessagingManager";
+        public Action<AppMessage> OnMessageClicked { get; set; }
+        public Action<AppMessage> OnMessageDisplay { get; set; }
+        public Action<AppMessage, DismissType> OnMessageDismiss { get; set; }
+        public Action<AAIDResult> AAIDResultAction { get; set; }
 
-    private void OnAwake()
-    {
-        Debug.Log($"{TAG}: OnAwake");
-        HmsInstanceId inst = HmsInstanceId.GetInstance();
-        ITask<AAIDResult> idResult = inst.AAID;
-        idResult.AddOnSuccessListener((result) =>
+        public HMSAppMessagingManager()
         {
-            AAIDResult AAIDResult = result;
-            Debug.Log($"{TAG}: result.Id");
-            AAIDResultAction?.Invoke(result);
-        }).AddOnFailureListener((exception) =>
+            HMSManagerStart.Start(OnAwake, TAG);
+        }
+
+        private void OnAwake()
         {
-            Debug.LogError($"{TAG}: exception.Message");
-        });
-        OnMessageClicked = OnMessageClickFunction;
-        OnMessageDisplay = OnMessageDisplayFunction;
-        OnMessageDismiss = OnMessageDismissFunction;
-        AGConnectAppMessaging appMessaging = AGConnectAppMessaging.Instance;
-        appMessaging.AddOnClickListener(OnMessageClicked);
-        appMessaging.AddOnDisplayListener(OnMessageDisplay);
-        appMessaging.AddOnDismissListener(OnMessageDismiss);
-        appMessaging.SetForceFetch();
-    }
-    private void OnMessageClickFunction(AppMessage obj)
-    {
-        Debug.Log($"{TAG} OnMessageClickFunction");
-    }
-    private void OnMessageDisplayFunction(AppMessage obj)
-    {
-        Debug.Log($"{TAG} OnMessageDisplayFunction" + obj.MessageType);
+            Debug.Log($"{TAG}: OnAwake");
+            HmsInstanceId inst = HmsInstanceId.GetInstance();
+            ITask<AAIDResult> idResult = inst.AAID;
+            idResult.AddOnSuccessListener((result) =>
+            {
+                AAIDResult AAIDResult = result;
+                Debug.Log($"{TAG}: result.Id");
+                AAIDResultAction?.Invoke(result);
+            }).AddOnFailureListener((exception) =>
+            {
+                Debug.LogError($"{TAG}: exception.Message");
+            });
+            OnMessageClicked = OnMessageClickFunction;
+            OnMessageDisplay = OnMessageDisplayFunction;
+            OnMessageDismiss = OnMessageDismissFunction;
+            AGConnectAppMessaging appMessaging = AGConnectAppMessaging.Instance;
+            appMessaging.AddOnClickListener(OnMessageClicked);
+            appMessaging.AddOnDisplayListener(OnMessageDisplay);
+            appMessaging.AddOnDismissListener(OnMessageDismiss);
+            appMessaging.SetForceFetch();
+        }
+        private void OnMessageClickFunction(AppMessage obj)
+        {
+            Debug.Log($"{TAG} OnMessageClickFunction");
+        }
+        private void OnMessageDisplayFunction(AppMessage obj)
+        {
+            Debug.Log($"{TAG} OnMessageDisplayFunction" + obj.MessageType);
+        }
+
+        private void OnMessageDismissFunction(AppMessage obj, DismissType dismissType)
+        {
+            Debug.Log($"{TAG} OnMessageDismissFunction" + obj.MessageType);
+        }
     }
 
-    private void OnMessageDismissFunction(AppMessage obj, DismissType dismissType)
-    {
-        Debug.Log($"{TAG} OnMessageDismissFunction" + obj.MessageType);
-    }
 }
-

@@ -1,13 +1,15 @@
-using HmsPlugin;
-using HmsPlugin.PublishingAPI;
+﻿using HmsPlugin.PublishingAPI;
 
-internal class HMSPublishingAPITabFactory
+namespace HmsPlugin
 {
-    public static TabView CreateQueryingAppInformationTab(TabBar tabBar)
+    internal class HMSPublishingAPITabFactory
     {
-        var tab = new TabView("Query App Information");
-        tabBar.AddTab(tab);
-        tab.AddDrawer(new QueryingAppInfoEditor());
-        return tab;
+        public static TabView CreateQueryingAppInformationTab(TabBar tabBar)
+        {
+            var tab = new TabView("Query App Information");
+            tabBar.AddTab(tab);
+            tab.AddDrawer(new QueryingAppInfoEditor());
+            return tab;
+        }
     }
 }

@@ -1,29 +1,30 @@
-using HmsPlugin;
-using HmsPlugin.Button;
+﻿using HmsPlugin.Button;
 using HmsPlugin.ConnectAPI;
-using HmsPlugin.Label;
 using System.IO;
 using UnityEngine;
 
-internal class HMSConnectAPITabFactory
+namespace HmsPlugin
 {
-    private static string versionInfo = "";
-
-    static HMSConnectAPITabFactory()
+    internal class HMSConnectAPITabFactory
     {
-        versionInfo = File.ReadAllText(Application.dataPath + "/Huawei/VERSION");
-    }
+        private static string versionInfo = "";
 
-    public static TabView CreateConnectAPITab(TabBar tabBar)
-    {
-        var tab = new TabView("Connect API");
-        tabBar.AddTab(tab);
+        static HMSConnectAPITabFactory()
+        {
+            versionInfo = File.ReadAllText(Application.dataPath + "/Huawei/VERSION");
+        }
 
-        tab.AddDrawer(new HorizontalLine());
-        tab.AddDrawer(new TokenObtainerEditor());
-        tab.AddDrawer(new HorizontalLine());
-        tab.AddDrawer(new Spacer());
-        tab.AddDrawer(new Clickable(new Label("HMS Unity Plugin v" + versionInfo).SetBold(true), () => { Application.OpenURL("https://github.com/EvilMindDevs/hms-unity-plugin/"); }));
-        return tab;
+        public static TabView CreateConnectAPITab(TabBar tabBar)
+        {
+            var tab = new TabView("Connect API");
+            tabBar.AddTab(tab);
+
+            tab.AddDrawer(new HorizontalLine());
+            tab.AddDrawer(new TokenObtainerEditor());
+            tab.AddDrawer(new HorizontalLine());
+            tab.AddDrawer(new Spacer());
+            tab.AddDrawer(new Clickable(new Label.Label("HMS Unity Plugin v" + versionInfo).SetBold(true), () => { Application.OpenURL("https://github.com/EvilMindDevs/hms-unity-plugin/"); }));
+            return tab;
+        }
     }
 }

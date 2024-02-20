@@ -387,7 +387,10 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         Modeling3dTextureUploadListener listener = new Modeling3dTextureUploadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnUploadProgress, OnError, OnResult3dTextureUpload));
 
-        modeling3DTextureEngine ??= Modeling3dTextureEngine.GetInstance();
+        if (modeling3DTextureEngine == null)
+        {
+            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+        }
 
         modeling3DTextureEngine.SetTextureUploadListener(listener);
 
@@ -434,7 +437,10 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         Modeling3dTextureDownloadListener listener = new Modeling3dTextureDownloadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTextureDownload));
 
-        modeling3DTextureEngine ??= Modeling3dTextureEngine.GetInstance();
+        if (modeling3DTextureEngine == null)
+        {
+            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+        }
 
         modeling3DTextureEngine.SetTextureDownloadListener(listener);
 
@@ -459,7 +465,10 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
 
         Modeling3dTexturePreviewListener listener = new Modeling3dTexturePreviewListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTexturePreview));
 
-        modeling3DTextureEngine ??= Modeling3dTextureEngine.GetInstance();
+        if (modeling3DTextureEngine == null)
+        {
+            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+        }
 
         modeling3DTextureEngine.PreviewTexture(taskID, listener);
     }
@@ -499,7 +508,10 @@ public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManag
         Call the synchronous API to obtain the generated texture maps in real time.*/
     public int SyncGenerateTexture(string imagePath, string downloadPath, Modeling3dTextureSetting setting)
     {
-        modeling3DTextureEngine ??= Modeling3dTextureEngine.GetInstance();
+        if (modeling3DTextureEngine == null)
+        {
+            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+        }
 
         int result = modeling3DTextureEngine.SyncGenerateTexture(imagePath, downloadPath, setting);
 

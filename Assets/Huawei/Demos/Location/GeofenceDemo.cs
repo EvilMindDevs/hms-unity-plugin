@@ -8,6 +8,7 @@ using System.Text;
 using Huawei.Scripts.Location;
 using HuaweiMobileServices.Location;
 using HuaweiMobileServices.Location.Location;
+using HmsPlugin;
 
 public class GeofenceDemo : MonoBehaviour
 {

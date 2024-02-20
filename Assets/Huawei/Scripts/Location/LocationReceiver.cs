@@ -1,4 +1,5 @@
 using System;
+using HmsPlugin;
 using HuaweiMobileServices.Location;
 using HuaweiMobileServices.Utils;
 using UnityEngine;

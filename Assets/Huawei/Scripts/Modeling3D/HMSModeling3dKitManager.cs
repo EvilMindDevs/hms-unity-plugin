@@ -1,7 +1,6 @@
 using UnityEngine;
 using System;
 using System.Linq;
-using HmsPlugin;
 using HuaweiMobileServices.Utils;
 using HuaweiMobileServices.Modeling3D.ObjReconstructSdk;
 using HuaweiMobileServices.Modeling3D.ObjReconstructSdk.Cloud;
@@ -11,545 +10,548 @@ using HuaweiMobileServices.Modeling3D.MeterialGenerateSdk;
 using System.IO;
 using System.Collections;
 
-public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManager>
+namespace HmsPlugin
 {
-    private readonly string TAG = "[HMS] HMSModeling3dKitManager ";
-    private const string TASK_LIST_PREFS_KEY = "3dTaskList";
-
-    private readonly PlayerPrefsJsonDatabase<Modeling3dDTO> modeling3dTaskEntity = new PlayerPrefsJsonDatabase<Modeling3dDTO>(TASK_LIST_PREFS_KEY);
-
-    private ReconstructApplication reconstructApplication;
-    private Modeling3dReconstructEngine modeling3DReconstructEngine;
-    private Modeling3dTextureEngine modeling3DTextureEngine;
-
-    public Action<string, double, AndroidJavaObject> OnUploadProgress;
-    public Action<string, double, AndroidJavaObject> OnDownloadProgress;
-    public Action<string, int, string> OnError;
-    public Action<string, Modeling3dReconstructDownloadResult, AndroidJavaObject> OnResultDownload;
-    public Action<string, Modeling3dReconstructUploadResult, AndroidJavaObject> OnResultUpload;
-    public Action<string, AndroidJavaObject> OnResultPreview;
-    public Action<string, Modeling3dTextureDownloadResult, AndroidJavaObject> OnResult3dTextureDownload;
-    public Action<string, Modeling3dTextureUploadResult, JavaObject> OnResult3dTextureUpload;
-    public Action<string, AndroidJavaObject> OnResult3dTexturePreview;
-    public Action OnResultCaptureImage;
-    public Action<int, string> OnErrorCaptureImage;
-    public Action<int> OnProgressCaptureImage;
-
-
-    public HMSModeling3dKitManager()
+    public class HMSModeling3dKitManager : HMSManagerSingleton<HMSModeling3dKitManager>
     {
-        HMSManagerStart.Start(OnAwake, TAG);
-    }
-    private void OnAwake()
-    {
-        Init();
-    }
-    public void Init()
-    {
-        try
+        private readonly string TAG = "[HMS] HMSModeling3dKitManager ";
+        private const string TASK_LIST_PREFS_KEY = "3dTaskList";
+
+        private readonly PlayerPrefsJsonDatabase<Modeling3dDTO> modeling3dTaskEntity = new PlayerPrefsJsonDatabase<Modeling3dDTO>(TASK_LIST_PREFS_KEY);
+
+        private ReconstructApplication reconstructApplication;
+        private Modeling3dReconstructEngine modeling3DReconstructEngine;
+        private Modeling3dTextureEngine modeling3DTextureEngine;
+
+        public Action<string, double, AndroidJavaObject> OnUploadProgress;
+        public Action<string, double, AndroidJavaObject> OnDownloadProgress;
+        public Action<string, int, string> OnError;
+        public Action<string, Modeling3dReconstructDownloadResult, AndroidJavaObject> OnResultDownload;
+        public Action<string, Modeling3dReconstructUploadResult, AndroidJavaObject> OnResultUpload;
+        public Action<string, AndroidJavaObject> OnResultPreview;
+        public Action<string, Modeling3dTextureDownloadResult, AndroidJavaObject> OnResult3dTextureDownload;
+        public Action<string, Modeling3dTextureUploadResult, JavaObject> OnResult3dTextureUpload;
+        public Action<string, AndroidJavaObject> OnResult3dTexturePreview;
+        public Action OnResultCaptureImage;
+        public Action<int, string> OnErrorCaptureImage;
+        public Action<int> OnProgressCaptureImage;
+
+
+        public HMSModeling3dKitManager()
         {
-            reconstructApplication = ReconstructApplication.GetInstance();
-            modeling3DReconstructEngine = Modeling3dReconstructEngine.GetInstance();
-            Debug.Log(TAG + "Init: " + reconstructApplication);
+            HMSManagerStart.Start(OnAwake, TAG);
         }
-        catch (Exception ex)
+        private void OnAwake()
         {
-            Debug.LogError(TAG + ex.Message);
+            Init();
         }
-    }
-    public void AuthWithAccessToken(string accessToken)
-    {
-        reconstructApplication.SetAccessToken(accessToken);
-    }
-    public void AuthWithApiKey(string apiKey)
-    {
-        reconstructApplication.SetApiKey(apiKey);
-    }
-
-    #region Modeling3dReconstruct Part
-    public Modeling3dReconstructSetting Create3DReconstructionEngine(int? ReconstructMode = null, int? TextureMode = null, int? FaceLevel = null)
-    {
-        Modeling3dReconstructSetting.Factory factory = new Modeling3dReconstructSetting.Factory();
-        SetDefaultParameters(ref ReconstructMode, ref TextureMode, ref FaceLevel);
-
-
-        var modeling3dSettings = factory.SetReconstructMode((int)ReconstructMode)
-                                            .SetTextureMode((int)TextureMode)
-                                            .SetFaceLevel((int)FaceLevel)
-                                            .Create();
-        Debug.Log($"{TAG} Modelling Settings FaceLevel: {modeling3dSettings.FaceLevel}, TaskType: {modeling3dSettings.FaceLevel}, TextureMode: {modeling3dSettings.TextureMode}, ReconstructMode: {modeling3dSettings.ReconstructMode}, TaskId: {modeling3dSettings.TaskId}");
-        return modeling3dSettings;
-    }
-    private void SetDefaultParameters(ref int? ReconstructMode, ref int? TextureMode, ref int? FaceLevel)
-    {
-        if (ReconstructMode == null)
+        public void Init()
         {
-            ReconstructMode = Modeling3dReconstructConstants.ReconstructMode.PICTURE;
-        }
-
-        if (TextureMode == null)
-        {
-            TextureMode = Modeling3dReconstructConstants.TextureMode.PBR;
-        }
-
-        if (FaceLevel == null)
-        {
-            FaceLevel = Modeling3dReconstructConstants.FaceLevel.HIGH;
-        }
-    }
-    public Modeling3dReconstructInitResult InitTask(Modeling3dReconstructSetting setting)
-    {
-        var modeling3DReconstructInitResult = modeling3DReconstructEngine.InitTask(setting);
-
-        foreach (var property in modeling3DReconstructInitResult.GetType().GetProperties())
-        {
-            Debug.Log($"{TAG} Modelling Init Result {property.Name}: {property.GetValue(modeling3DReconstructInitResult)}");
-        }
-
-        return modeling3DReconstructInitResult;
-    }
-    public void UploadFile(Modeling3dReconstructSetting setting, string path = null)
-    {
-        var modeling3DReconstructInitResult = InitTask(setting);
-
-        string initTaskId = modeling3DReconstructInitResult.TaskId;
-
-        Debug.Log(TAG + " Return TaskId: " + initTaskId);
-        PlayerPrefs.SetString("currentTaskId", initTaskId);
-
-        var taskName = "";
-
-        try
-        {
-            taskName = DateTime.UtcNow.ToString("yyyyMMddHHmmss") + "-" + initTaskId.Substring(initTaskId.Length - 4);
-            Debug.Log($"{TAG}{taskName}");
-        }
-        catch (Exception e)
-        {
-            //TODO: You can add here FAQ link what is APIKEY how we can get it and use it
-            Debug.LogError(TAG + " UploadFile exception:" + e + " \n**********\nHint: If exception is NullReferenceException check your APIKey is valid.\n********\n");
-            return;
-        }
-
-        OnUploadProgress += (taskId, progress, obj) =>
-        {
-            //check prograss is integer or not
-            if (progress % 1 == 0)
-                Debug.Log($"{TAG} OnUploadProgress TaskId: {taskId} and Progress: {progress}");
-        };
-
-        OnError += (taskId, errorCode, errorMessage) =>
-        {
-            Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
-            HMSDispatcher.InvokeAsync(() =>
+            try
             {
-                AndroidToast.MakeText($"{errorMessage} - {errorCode}").Show();
-            });
-        };
-
-        OnResultUpload += (taskId, result, obj) =>
-        {
-            Debug.Log(TAG + "OnResult taskId:" + result.TaskId + " result:" + result);
-
-        };
-
-        var listener = new Modeling3dReconstructUploadListener(new Modeling3dReconstructUploadORDownloadORPreviewListener(OnUploadProgress, OnError, OnResultUpload));
-
-        modeling3DReconstructEngine.SetReconstructUploadListener(listener);
-
-        string uploadsPath = Application.persistentDataPath;
-        if (!string.IsNullOrWhiteSpace(path))
-        {
-            if (!File.Exists(path))
-                uploadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
-            else
-                uploadsPath = path;
-        }
-        Debug.Log(TAG + "Enviroment " + uploadsPath);
-
-
-        //get all files in uploads folder cross platform
-        string file = Directory.GetFiles(uploadsPath).FirstOrDefault();
-
-        Debug.Log(TAG + "UploadFile: " + file);
-
-
-
-        modeling3dTaskEntity.Insert(new Modeling3dDTO()
-        {
-            TaskId = initTaskId,
-            Name = taskName,
-            Status = "Uploading",
-            Type = 1,
-            CoverImagePath = file
-        });
-        RequestPermission();
-        modeling3DReconstructEngine.UploadFile(initTaskId, uploadsPath);
-
-    }
-    public IEnumerator RequestPermission()
-    {
-        if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.ExternalStorageWrite))
-        {
-            UnityEngine.Android.Permission.RequestUserPermission(UnityEngine.Android.Permission.ExternalStorageWrite);
-            while (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.ExternalStorageWrite))
+                reconstructApplication = ReconstructApplication.GetInstance();
+                modeling3DReconstructEngine = Modeling3dReconstructEngine.GetInstance();
+                Debug.Log(TAG + "Init: " + reconstructApplication);
+            }
+            catch (Exception ex)
             {
-                yield return null;
+                Debug.LogError(TAG + ex.Message);
             }
         }
-        Debug.Log("Permission Granted");
-    }
-    public void DownloadFile(Modeling3dReconstructDownloadConfig config, string taskID, string path)
-    {
-        OnDownloadProgress += (taskId, progress, obj) =>
+        public void AuthWithAccessToken(string accessToken)
         {
-            if (progress % 1 == 0)
+            reconstructApplication.SetAccessToken(accessToken);
+        }
+        public void AuthWithApiKey(string apiKey)
+        {
+            reconstructApplication.SetApiKey(apiKey);
+        }
+
+        #region Modeling3dReconstruct Part
+        public Modeling3dReconstructSetting Create3DReconstructionEngine(int? ReconstructMode = null, int? TextureMode = null, int? FaceLevel = null)
+        {
+            Modeling3dReconstructSetting.Factory factory = new Modeling3dReconstructSetting.Factory();
+            SetDefaultParameters(ref ReconstructMode, ref TextureMode, ref FaceLevel);
+
+
+            var modeling3dSettings = factory.SetReconstructMode((int)ReconstructMode)
+                                                .SetTextureMode((int)TextureMode)
+                                                .SetFaceLevel((int)FaceLevel)
+                                                .Create();
+            Debug.Log($"{TAG} Modelling Settings FaceLevel: {modeling3dSettings.FaceLevel}, TaskType: {modeling3dSettings.FaceLevel}, TextureMode: {modeling3dSettings.TextureMode}, ReconstructMode: {modeling3dSettings.ReconstructMode}, TaskId: {modeling3dSettings.TaskId}");
+            return modeling3dSettings;
+        }
+        private void SetDefaultParameters(ref int? ReconstructMode, ref int? TextureMode, ref int? FaceLevel)
+        {
+            if (ReconstructMode == null)
+            {
+                ReconstructMode = Modeling3dReconstructConstants.ReconstructMode.PICTURE;
+            }
+
+            if (TextureMode == null)
+            {
+                TextureMode = Modeling3dReconstructConstants.TextureMode.PBR;
+            }
+
+            if (FaceLevel == null)
+            {
+                FaceLevel = Modeling3dReconstructConstants.FaceLevel.HIGH;
+            }
+        }
+        public Modeling3dReconstructInitResult InitTask(Modeling3dReconstructSetting setting)
+        {
+            var modeling3DReconstructInitResult = modeling3DReconstructEngine.InitTask(setting);
+
+            foreach (var property in modeling3DReconstructInitResult.GetType().GetProperties())
+            {
+                Debug.Log($"{TAG} Modelling Init Result {property.Name}: {property.GetValue(modeling3DReconstructInitResult)}");
+            }
+
+            return modeling3DReconstructInitResult;
+        }
+        public void UploadFile(Modeling3dReconstructSetting setting, string path = null)
+        {
+            var modeling3DReconstructInitResult = InitTask(setting);
+
+            string initTaskId = modeling3DReconstructInitResult.TaskId;
+
+            Debug.Log(TAG + " Return TaskId: " + initTaskId);
+            PlayerPrefs.SetString("currentTaskId", initTaskId);
+
+            var taskName = "";
+
+            try
+            {
+                taskName = DateTime.UtcNow.ToString("yyyyMMddHHmmss") + "-" + initTaskId.Substring(initTaskId.Length - 4);
+                Debug.Log($"{TAG}{taskName}");
+            }
+            catch (Exception e)
+            {
+                //TODO: You can add here FAQ link what is APIKEY how we can get it and use it
+                Debug.LogError(TAG + " UploadFile exception:" + e + " \n**********\nHint: If exception is NullReferenceException check your APIKey is valid.\n********\n");
+                return;
+            }
+
+            OnUploadProgress += (taskId, progress, obj) =>
+            {
+                //check prograss is integer or not
+                if (progress % 1 == 0)
+                    Debug.Log($"{TAG} OnUploadProgress TaskId: {taskId} and Progress: {progress}");
+            };
+
+            OnError += (taskId, errorCode, errorMessage) =>
+            {
+                Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
+                HMSDispatcher.InvokeAsync(() =>
+                {
+                    AndroidToast.MakeText($"{errorMessage} - {errorCode}").Show();
+                });
+            };
+
+            OnResultUpload += (taskId, result, obj) =>
+            {
+                Debug.Log(TAG + "OnResult taskId:" + result.TaskId + " result:" + result);
+
+            };
+
+            var listener = new Modeling3dReconstructUploadListener(new Modeling3dReconstructUploadORDownloadORPreviewListener(OnUploadProgress, OnError, OnResultUpload));
+
+            modeling3DReconstructEngine.SetReconstructUploadListener(listener);
+
+            string uploadsPath = Application.persistentDataPath;
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                if (!File.Exists(path))
+                    uploadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
+                else
+                    uploadsPath = path;
+            }
+            Debug.Log(TAG + "Enviroment " + uploadsPath);
+
+
+            //get all files in uploads folder cross platform
+            string file = Directory.GetFiles(uploadsPath).FirstOrDefault();
+
+            Debug.Log(TAG + "UploadFile: " + file);
+
+
+
+            modeling3dTaskEntity.Insert(new Modeling3dDTO()
+            {
+                TaskId = initTaskId,
+                Name = taskName,
+                Status = "Uploading",
+                Type = 1,
+                CoverImagePath = file
+            });
+            RequestPermission();
+            modeling3DReconstructEngine.UploadFile(initTaskId, uploadsPath);
+
+        }
+        public IEnumerator RequestPermission()
+        {
+            if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.ExternalStorageWrite))
+            {
+                UnityEngine.Android.Permission.RequestUserPermission(UnityEngine.Android.Permission.ExternalStorageWrite);
+                while (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.ExternalStorageWrite))
+                {
+                    yield return null;
+                }
+            }
+            Debug.Log("Permission Granted");
+        }
+        public void DownloadFile(Modeling3dReconstructDownloadConfig config, string taskID, string path)
+        {
+            OnDownloadProgress += (taskId, progress, obj) =>
+            {
+                if (progress % 1 == 0)
+                    Debug.Log(TAG + "OnDownloadProgress taskId:" + taskId + " progress:" + progress);
+            };
+
+            OnError += (taskId, errorCode, errorMessage) =>
+            {
+                Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
+                HMSDispatcher.InvokeAsync(() =>
+                {
+                    AndroidToast.MakeText($"{errorMessage} - {errorCode}").Show();
+                });
+            };
+
+            OnResultDownload += (taskId, result, obj) =>
+            {
+                Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + result);
+            };
+
+            string downloadsPath = path ?? Path.Combine(Application.persistentDataPath, "images");
+
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                downloadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
+            }
+
+            Debug.Log(TAG + "DownloadsPath: " + downloadsPath);
+
+            PlayerPrefs.SetString("currentTaskId", taskID);
+
+
+            var listener = new Modeling3dReconstructDownloadListener(new Modeling3dReconstructUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResultDownload));
+
+            modeling3DReconstructEngine.SetReconstructDownloadListener(listener);
+
+            modeling3DReconstructEngine.DownloadModelWithConfig(taskID, downloadsPath, config);
+
+        }
+        public void PreviewFile(Modeling3dReconstructPreviewConfig config, string taskID)
+        {
+            OnError += (taskId, errorCode, errorMessage) =>
+            {
+                Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
+                HMSDispatcher.InvokeAsync(() =>
+                {
+                    AndroidToast.MakeText($"{errorMessage} - {errorCode}").Show();
+                });
+            };
+
+            OnResultPreview += (taskId, obj) =>
+            {
+                Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + obj);
+            };
+            var listener = new Modeling3dReconstructPreviewListener(new Modeling3dReconstructUploadORDownloadORPreviewListener(OnError, OnResultPreview));
+            PlayerPrefs.SetString("currentTaskId", taskID);
+
+            modeling3DReconstructEngine.PreviewModelWithConfig(taskID, config, listener);
+        }
+        public Modeling3dReconstructQueryResult QueryTask(string taskId)
+        {
+            var reconstructTaskUtils = Modeling3dReconstructTaskUtils.GetInstance();
+
+            var result = reconstructTaskUtils.QueryTask(taskId);
+
+            var restrictStatus = QueryTaskRestrictStatus(taskId);
+
+            Debug.Log(TAG + "QueryTask result status:" + result.Status + " taskId:" + result.TaskId + " RedCode:" + result.RetCode + " RedMessage:" + result.RetMessage + " RedConstMessage:" + result?.ReconstructFailMessage);
+
+            Debug.Log(TAG + "QueryTask Restrict Status: " + restrictStatus);
+
+            return result;
+
+        }
+        public int QueryTaskRestrictStatus(string taskId)
+        {
+            var reconstructTaskUtils = Modeling3dReconstructTaskUtils.GetInstance();
+            var result = reconstructTaskUtils.QueryTaskRestrictStatus(taskId);
+            Debug.LogFormat(TAG + "Query Task Restrict Status: {0}", result);
+            return result;
+
+        }
+        public void DeleteTask(string taskId)
+        {
+            var result = Modeling3dReconstructTaskUtils.GetInstance().DeleteTask(taskId);
+
+            var text = string.Format("Task Deleted {0}. Result: {1}", taskId, result);
+
+            AndroidToast.MakeText(text).Show();
+
+            Debug.Log(TAG + text);
+        }
+        public int CancelUpload3dReconstruct(string taskId)
+        {
+            Debug.LogFormat(TAG + "CancelUpload3dReconstruct taskId: {0}", taskId);
+            var result = modeling3DReconstructEngine.CancelUpload(taskId);
+            return result;
+        }
+        public int CancelDownload3dReconstruct(string taskId)
+        {
+            Debug.LogFormat(TAG + "CancelDownload3dReconstruct taskId: {0}", taskId);
+            var result = modeling3DReconstructEngine.CancelDownload(taskId);
+            return result;
+        }
+        #endregion
+
+        #region Modeling3dCapture Part
+        public void Create3DCaptureImageEngine(AndroidJavaObject context)
+        {
+
+            var modeling3dCaptureImageEngine = Modeling3dCaptureImageEngine.GetInstance();
+
+            var setting = new Modeling3dCaptureSetting.Factory().SetAzimuthNum(30).SetLatitudeNum(3).SetRadius(2).Create();
+
+            modeling3dCaptureImageEngine.SetCaptureConfig(setting);
+
+
+            string fileSavePath = Application.persistentDataPath + (DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond);
+
+            OnProgressCaptureImage += (progress) =>
+            {
+                Debug.Log(TAG + "OnProgressCaptureImage progress:" + progress);
+            };
+
+            OnErrorCaptureImage += (errorCode, errorMessage) =>
+            {
+                Debug.LogError(TAG + "OnError errorCode:" + errorCode + " errorMessage:" + errorMessage);
+            };
+
+            OnResultCaptureImage += () =>
+            {
+                Debug.Log(TAG + "OnResult");
+            };
+
+            var listener = new HuaweiMobileServices.Modeling3D.ModelingCaptureSdk.Modeling3dCaptureImageListener(new HmsPlugin.Modeling3dCaptureImageListener(OnProgressCaptureImage, OnErrorCaptureImage, OnResultCaptureImage));
+
+
+
+            modeling3dCaptureImageEngine.CaptureImage(fileSavePath, context, listener);
+
+            Debug.Log(TAG + "Capture Image");
+
+        }
+        #endregion
+
+        #region MaterialGenerate Part
+        public Modeling3dTextureSetting Create3dTextureEngine()
+        {
+            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+            var settings = new Modeling3dTextureSetting.Factory().SetTextureMode(Modeling3dTextureConstants.AlgorithmMode.AI).Create();
+
+            Debug.LogFormat(TAG + "Create3dTextureEngine settings texture mode: {0}", settings.TextureMode);
+
+            return settings;
+        }
+        public Modeling3dTextureInitResult InitTask(Modeling3dTextureSetting setting)
+        {
+            var modeling3DTextureInitResult = modeling3DTextureEngine.InitTask(setting);
+
+            modeling3DTextureInitResult.GetType().GetProperties().ToList().ForEach(x => Debug.Log(TAG + "Modelling Init Result " + x.Name + ":" + x.GetValue(modeling3DTextureInitResult)));
+
+            return modeling3DTextureInitResult;
+        }
+        public string AsyncUploadFile(Modeling3dTextureSetting setting, string path)
+        {
+            var modeling3DTextureInitResult = InitTask(setting);
+
+            string taskID = modeling3DTextureInitResult.TaskId;
+
+            OnUploadProgress += (taskId, progress, obj) =>
+            {
+                Debug.Log(TAG + "OnUploadProgress taskId:" + taskId + " progress:" + progress);
+            };
+
+            OnError += (taskId, errorCode, errorMessage) =>
+            {
+                Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
+            };
+
+            OnResult3dTextureUpload += (taskId, result, obj) =>
+            {
+                Debug.Log(TAG + "OnResult taskId:" + result.TaskId + " result:" + result);
+            };
+
+            Modeling3dTextureUploadListener listener = new Modeling3dTextureUploadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnUploadProgress, OnError, OnResult3dTextureUpload));
+
+            if (modeling3DTextureEngine == null)
+            {
+                modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+            }
+
+            modeling3DTextureEngine.SetTextureUploadListener(listener);
+
+            string uploadsPath = Application.persistentDataPath;
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                if (!File.Exists(path))
+                    uploadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
+                else
+                    uploadsPath = path;
+            }
+
+            Debug.LogFormat(TAG + "AsyncUploadFile uploadPath: {0}", uploadsPath);
+
+            modeling3DTextureEngine.AsyncUploadFile(taskID, uploadsPath);
+
+            Debug.LogFormat(TAG + "AsyncUploadFile taskId: {0}", taskID);
+
+            return taskID;
+        }
+        public void AsyncDownloadFile(string taskID, string savePath)
+        {
+            OnDownloadProgress += (taskId, progress, obj) =>
+            {
                 Debug.Log(TAG + "OnDownloadProgress taskId:" + taskId + " progress:" + progress);
-        };
+            };
 
-        OnError += (taskId, errorCode, errorMessage) =>
-        {
-            Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
-            HMSDispatcher.InvokeAsync(() =>
+            OnError += (taskId, errorCode, errorMessage) =>
             {
-                AndroidToast.MakeText($"{errorMessage} - {errorCode}").Show();
-            });
-        };
+                Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
+            };
 
-        OnResultDownload += (taskId, result, obj) =>
-        {
-            Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + result);
-        };
-
-        string downloadsPath = path ?? Path.Combine(Application.persistentDataPath, "images");
-
-        if (!string.IsNullOrWhiteSpace(path))
-        {
-            downloadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
-        }
-
-        Debug.Log(TAG + "DownloadsPath: " + downloadsPath);
-
-        PlayerPrefs.SetString("currentTaskId", taskID);
-
-
-        var listener = new Modeling3dReconstructDownloadListener(new Modeling3dReconstructUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResultDownload));
-
-        modeling3DReconstructEngine.SetReconstructDownloadListener(listener);
-
-        modeling3DReconstructEngine.DownloadModelWithConfig(taskID, downloadsPath, config);
-
-    }
-    public void PreviewFile(Modeling3dReconstructPreviewConfig config, string taskID)
-    {
-        OnError += (taskId, errorCode, errorMessage) =>
-        {
-            Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
-            HMSDispatcher.InvokeAsync(() =>
+            OnResultDownload += (taskId, result, obj) =>
             {
-                AndroidToast.MakeText($"{errorMessage} - {errorCode}").Show();
-            });
-        };
+                Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + result);
+            };
 
-        OnResultPreview += (taskId, obj) =>
+            string downloadsPath = Application.persistentDataPath;
+            if (!string.IsNullOrWhiteSpace(savePath))
+            {
+                downloadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + savePath.Split(':').Last();
+            }
+            Debug.LogFormat(TAG + "AsyncDownloadFile taskId: {0} savePath: {1}", taskID, downloadsPath);
+
+            Modeling3dTextureDownloadListener listener = new Modeling3dTextureDownloadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTextureDownload));
+
+            if (modeling3DTextureEngine == null)
+            {
+                modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+            }
+
+            modeling3DTextureEngine.SetTextureDownloadListener(listener);
+
+            modeling3DTextureEngine.AsyncDownloadTexture(taskID, downloadsPath);
+        }
+        public void PreviewFile3dTexture(string taskID)
         {
-            Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + obj);
-        };
-        var listener = new Modeling3dReconstructPreviewListener(new Modeling3dReconstructUploadORDownloadORPreviewListener(OnError, OnResultPreview));
-        PlayerPrefs.SetString("currentTaskId", taskID);
+            OnDownloadProgress += (taskId, progress, obj) =>
+            {
+                Debug.Log(TAG + "OnDownloadProgress taskId:" + taskId + " progress:" + progress);
+            };
 
-        modeling3DReconstructEngine.PreviewModelWithConfig(taskID, config, listener);
-    }
-    public Modeling3dReconstructQueryResult QueryTask(string taskId)
-    {
-        var reconstructTaskUtils = Modeling3dReconstructTaskUtils.GetInstance();
+            OnError += (taskId, errorCode, errorMessage) =>
+            {
+                Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
+            };
 
-        var result = reconstructTaskUtils.QueryTask(taskId);
+            OnResult3dTexturePreview += (taskId, obj) =>
+            {
+                Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + obj);
+            };
 
-        var restrictStatus = QueryTaskRestrictStatus(taskId);
+            Modeling3dTexturePreviewListener listener = new Modeling3dTexturePreviewListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTexturePreview));
 
-        Debug.Log(TAG + "QueryTask result status:" + result.Status + " taskId:" + result.TaskId + " RedCode:" + result.RetCode + " RedMessage:" + result.RetMessage + " RedConstMessage:" + result?.ReconstructFailMessage);
+            if (modeling3DTextureEngine == null)
+            {
+                modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+            }
 
-        Debug.Log(TAG + "QueryTask Restrict Status: " + restrictStatus);
-
-        return result;
-
-    }
-    public int QueryTaskRestrictStatus(string taskId)
-    {
-        var reconstructTaskUtils = Modeling3dReconstructTaskUtils.GetInstance();
-        var result = reconstructTaskUtils.QueryTaskRestrictStatus(taskId);
-        Debug.LogFormat(TAG + "Query Task Restrict Status: {0}", result);
-        return result;
-
-    }
-    public void DeleteTask(string taskId)
-    {
-        var result = Modeling3dReconstructTaskUtils.GetInstance().DeleteTask(taskId);
-
-        var text = string.Format("Task Deleted {0}. Result: {1}", taskId, result);
-
-        AndroidToast.MakeText(text).Show();
-
-        Debug.Log(TAG + text);
-    }
-    public int CancelUpload3dReconstruct(string taskId)
-    {
-        Debug.LogFormat(TAG + "CancelUpload3dReconstruct taskId: {0}", taskId);
-        var result = modeling3DReconstructEngine.CancelUpload(taskId);
-        return result;
-    }
-    public int CancelDownload3dReconstruct(string taskId)
-    {
-        Debug.LogFormat(TAG + "CancelDownload3dReconstruct taskId: {0}", taskId);
-        var result = modeling3DReconstructEngine.CancelDownload(taskId);
-        return result;
-    }
-    #endregion
-
-    #region Modeling3dCapture Part
-    public void Create3DCaptureImageEngine(AndroidJavaObject context)
-    {
-
-        var modeling3dCaptureImageEngine = Modeling3dCaptureImageEngine.GetInstance();
-
-        var setting = new Modeling3dCaptureSetting.Factory().SetAzimuthNum(30).SetLatitudeNum(3).SetRadius(2).Create();
-
-        modeling3dCaptureImageEngine.SetCaptureConfig(setting);
-
-
-        string fileSavePath = Application.persistentDataPath + (DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond);
-
-        OnProgressCaptureImage += (progress) =>
+            modeling3DTextureEngine.PreviewTexture(taskID, listener);
+        }
+        public Modeling3dTextureQueryResult QueryTaskModeling3dTexture(string taskId)
         {
-            Debug.Log(TAG + "OnProgressCaptureImage progress:" + progress);
-        };
+            Modeling3dTextureTaskUtils texture3dTaskUtils = Modeling3dTextureTaskUtils.GetInstance();
 
-        OnErrorCaptureImage += (errorCode, errorMessage) =>
+            Modeling3dTextureQueryResult result = texture3dTaskUtils.QueryTask(taskId);
+
+            Debug.Log(TAG + " Modeling3dTexture QueryTask result status:" + result.Status + " taskId:" + result.TaskId + " RedCode:" + result.RetCode + " RedMessage:" + result.RetMsg);
+
+            return result;
+        }
+        public int DeleteTaskModeling3dTexture(string taskId)
         {
-            Debug.LogError(TAG + "OnError errorCode:" + errorCode + " errorMessage:" + errorMessage);
-        };
+            var result = Modeling3dTextureTaskUtils.GetInstance().DeleteTask(taskId);
 
-        OnResultCaptureImage += () =>
+            Debug.Log(TAG + string.Format("Modeling3dTexture Task Deleted {0}", taskId));
+            return result;
+        }
+        public int QueryTaskRestrictStatusModeling3dTexture(string taskId)
         {
-            Debug.Log(TAG + "OnResult");
-        };
+            var reconstructTaskUtils = Modeling3dTextureTaskUtils.GetInstance();
+            var result = reconstructTaskUtils.QueryTaskRestrictStatus(taskId);
+            Debug.LogFormat(TAG + "Modeling3dTexture Query Task Restrict Status: {0}", result);
+            return result;
 
-        var listener = new HuaweiMobileServices.Modeling3D.ModelingCaptureSdk.Modeling3dCaptureImageListener(new HmsPlugin.Modeling3dCaptureImageListener(OnProgressCaptureImage, OnErrorCaptureImage, OnResultCaptureImage));
-
-
-
-        modeling3dCaptureImageEngine.CaptureImage(fileSavePath, context, listener);
-
-        Debug.Log(TAG + "Capture Image");
-
-    }
-    #endregion
-
-    #region MaterialGenerate Part
-    public Modeling3dTextureSetting Create3dTextureEngine()
-    {
-        modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
-        var settings = new Modeling3dTextureSetting.Factory().SetTextureMode(Modeling3dTextureConstants.AlgorithmMode.AI).Create();
-
-        Debug.LogFormat(TAG + "Create3dTextureEngine settings texture mode: {0}", settings.TextureMode);
-
-        return settings;
-    }
-    public Modeling3dTextureInitResult InitTask(Modeling3dTextureSetting setting)
-    {
-        var modeling3DTextureInitResult = modeling3DTextureEngine.InitTask(setting);
-
-        modeling3DTextureInitResult.GetType().GetProperties().ToList().ForEach(x => Debug.Log(TAG + "Modelling Init Result " + x.Name + ":" + x.GetValue(modeling3DTextureInitResult)));
-
-        return modeling3DTextureInitResult;
-    }
-    public string AsyncUploadFile(Modeling3dTextureSetting setting, string path)
-    {
-        var modeling3DTextureInitResult = InitTask(setting);
-
-        string taskID = modeling3DTextureInitResult.TaskId;
-
-        OnUploadProgress += (taskId, progress, obj) =>
+        }
+        public int SetTaskRestrictStatusModeling3dTexture(string taskId, int restrictStatus)
         {
-            Debug.Log(TAG + "OnUploadProgress taskId:" + taskId + " progress:" + progress);
-        };
-
-        OnError += (taskId, errorCode, errorMessage) =>
+            var reconstructTaskUtils = Modeling3dTextureTaskUtils.GetInstance();
+            var result = reconstructTaskUtils.SetTaskRestrictStatus(taskId, restrictStatus);
+            Debug.LogFormat(TAG + "Modeling3dTexture Set Task Restrict Status: {0}", result);
+            return result;
+        }
+        /* Call the synchronous API, passing the file path of a single image, path for saving the texture map, and configurator.
+            Call the synchronous API to obtain the generated texture maps in real time.*/
+        public int SyncGenerateTexture(string imagePath, string downloadPath, Modeling3dTextureSetting setting)
         {
-            Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
-        };
+            if (modeling3DTextureEngine == null)
+            {
+                modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+            }
 
-        OnResult3dTextureUpload += (taskId, result, obj) =>
-        {
-            Debug.Log(TAG + "OnResult taskId:" + result.TaskId + " result:" + result);
-        };
+            int result = modeling3DTextureEngine.SyncGenerateTexture(imagePath, downloadPath, setting);
 
-        Modeling3dTextureUploadListener listener = new Modeling3dTextureUploadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnUploadProgress, OnError, OnResult3dTextureUpload));
-
-        if (modeling3DTextureEngine == null)
-        {
-            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
+            return result;
         }
 
-        modeling3DTextureEngine.SetTextureUploadListener(listener);
-
-        string uploadsPath = Application.persistentDataPath;
-        if (!string.IsNullOrWhiteSpace(path))
+        public string IdentifyProgressStatus(int status)
         {
-            if (!File.Exists(path))
-                uploadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + path.Split(':').Last();
-            else
-                uploadsPath = path;
+            switch (status)
+            {
+                case (int)ProgressStatus.INITED:
+                    return "Task initialization is complete.";
+                case (int)ProgressStatus.UPLOAD_COMPLETED:
+                    return "File upload is complete.";
+                case (int)ProgressStatus.TEXTURE_START:
+                    return "A material generation task starts.";
+                case (int)ProgressStatus.TEXTURE_COMPLETED:
+                    return "A material generation task is complete.";
+                case (int)ProgressStatus.TEXTURE_FAILED:
+                    return "A material generation task fails.";
+                default:
+                    return "Unknown status.";
+            }
         }
+        #endregion
 
-        Debug.LogFormat(TAG + "AsyncUploadFile uploadPath: {0}", uploadsPath);
-
-        modeling3DTextureEngine.AsyncUploadFile(taskID, uploadsPath);
-
-        Debug.LogFormat(TAG + "AsyncUploadFile taskId: {0}", taskID);
-
-        return taskID;
-    }
-    public void AsyncDownloadFile(string taskID, string savePath)
-    {
-        OnDownloadProgress += (taskId, progress, obj) =>
+        public enum ProgressStatus
         {
-            Debug.Log(TAG + "OnDownloadProgress taskId:" + taskId + " progress:" + progress);
-        };
-
-        OnError += (taskId, errorCode, errorMessage) =>
-        {
-            Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
-        };
-
-        OnResultDownload += (taskId, result, obj) =>
-        {
-            Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + result);
-        };
-
-        string downloadsPath = Application.persistentDataPath;
-        if (!string.IsNullOrWhiteSpace(savePath))
-        {
-            downloadsPath = Application.persistentDataPath.Split('/').Take(4).Aggregate((a, b) => a + "/" + b) + "/" + savePath.Split(':').Last();
+            INITED,
+            UPLOAD_COMPLETED,
+            TEXTURE_START,
+            TEXTURE_COMPLETED,
+            TEXTURE_FAILED
         }
-        Debug.LogFormat(TAG + "AsyncDownloadFile taskId: {0} savePath: {1}", taskID, downloadsPath);
-
-        Modeling3dTextureDownloadListener listener = new Modeling3dTextureDownloadListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTextureDownload));
-
-        if (modeling3DTextureEngine == null)
+        public enum RestrictStatus
         {
-            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
-        }
-
-        modeling3DTextureEngine.SetTextureDownloadListener(listener);
-
-        modeling3DTextureEngine.AsyncDownloadTexture(taskID, downloadsPath);
-    }
-    public void PreviewFile3dTexture(string taskID)
-    {
-        OnDownloadProgress += (taskId, progress, obj) =>
-        {
-            Debug.Log(TAG + "OnDownloadProgress taskId:" + taskId + " progress:" + progress);
-        };
-
-        OnError += (taskId, errorCode, errorMessage) =>
-        {
-            Debug.LogError(TAG + "OnError taskId:" + taskId + " errorCode:" + errorCode + " errorMessage:" + errorMessage);
-        };
-
-        OnResult3dTexturePreview += (taskId, obj) =>
-        {
-            Debug.Log(TAG + "OnResult taskId:" + taskId + " result:" + obj);
-        };
-
-        Modeling3dTexturePreviewListener listener = new Modeling3dTexturePreviewListener(new Modeling3dTextureUploadORDownloadORPreviewListener(OnDownloadProgress, OnError, OnResult3dTexturePreview));
-
-        if (modeling3DTextureEngine == null)
-        {
-            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
-        }
-
-        modeling3DTextureEngine.PreviewTexture(taskID, listener);
-    }
-    public Modeling3dTextureQueryResult QueryTaskModeling3dTexture(string taskId)
-    {
-        Modeling3dTextureTaskUtils texture3dTaskUtils = Modeling3dTextureTaskUtils.GetInstance();
-
-        Modeling3dTextureQueryResult result = texture3dTaskUtils.QueryTask(taskId);
-
-        Debug.Log(TAG + " Modeling3dTexture QueryTask result status:" + result.Status + " taskId:" + result.TaskId + " RedCode:" + result.RetCode + " RedMessage:" + result.RetMsg);
-
-        return result;
-    }
-    public int DeleteTaskModeling3dTexture(string taskId)
-    {
-        var result = Modeling3dTextureTaskUtils.GetInstance().DeleteTask(taskId);
-
-        Debug.Log(TAG + string.Format("Modeling3dTexture Task Deleted {0}", taskId));
-        return result;
-    }
-    public int QueryTaskRestrictStatusModeling3dTexture(string taskId)
-    {
-        var reconstructTaskUtils = Modeling3dTextureTaskUtils.GetInstance();
-        var result = reconstructTaskUtils.QueryTaskRestrictStatus(taskId);
-        Debug.LogFormat(TAG + "Modeling3dTexture Query Task Restrict Status: {0}", result);
-        return result;
-
-    }
-    public int SetTaskRestrictStatusModeling3dTexture(string taskId, int restrictStatus)
-    {
-        var reconstructTaskUtils = Modeling3dTextureTaskUtils.GetInstance();
-        var result = reconstructTaskUtils.SetTaskRestrictStatus(taskId, restrictStatus);
-        Debug.LogFormat(TAG + "Modeling3dTexture Set Task Restrict Status: {0}", result);
-        return result;
-    }
-    /* Call the synchronous API, passing the file path of a single image, path for saving the texture map, and configurator.
-        Call the synchronous API to obtain the generated texture maps in real time.*/
-    public int SyncGenerateTexture(string imagePath, string downloadPath, Modeling3dTextureSetting setting)
-    {
-        if (modeling3DTextureEngine == null)
-        {
-            modeling3DTextureEngine = Modeling3dTextureEngine.GetInstance();
-        }
-
-        int result = modeling3DTextureEngine.SyncGenerateTexture(imagePath, downloadPath, setting);
-
-        return result;
-    }
-
-    public string IdentifyProgressStatus(int status)
-    {
-        switch (status)
-        {
-            case (int)ProgressStatus.INITED:
-                return "Task initialization is complete.";
-            case (int)ProgressStatus.UPLOAD_COMPLETED:
-                return "File upload is complete.";
-            case (int)ProgressStatus.TEXTURE_START:
-                return "A material generation task starts.";
-            case (int)ProgressStatus.TEXTURE_COMPLETED:
-                return "A material generation task is complete.";
-            case (int)ProgressStatus.TEXTURE_FAILED:
-                return "A material generation task fails.";
-            default:
-                return "Unknown status.";
+            UNRESTRICT,
+            RESTRICT
         }
     }
-    #endregion
 
-    public enum ProgressStatus
-    {
-        INITED,
-        UPLOAD_COMPLETED,
-        TEXTURE_START,
-        TEXTURE_COMPLETED,
-        TEXTURE_FAILED
-    }
-    public enum RestrictStatus
-    {
-        UNRESTRICT,
-        RESTRICT
-    }
 }
-

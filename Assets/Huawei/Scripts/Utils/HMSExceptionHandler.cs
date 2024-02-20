@@ -22,8 +22,7 @@ namespace HmsPlugin
         }
         private static class ExceptionLog
         {
-            /// TODO: If there is too many urls or exceptions, we can move this to a separate file(maybe json). Than we can load it from there.
-            public static Dictionary<ExceptionName, string> Urls = new Dictionary<ExceptionName, string>
+            public static Dictionary<ExceptionName, Uri> Urls = new Dictionary<ExceptionName, Uri>
             {
                 { ExceptionName.QuickStartUrl , GetUrl("/getting-started/quick-start") },
                 { ExceptionName.Faq6003Error, GetUrl("/support/faq#what-should-i-do-if-a-6003-error-occurs") },
@@ -33,7 +32,8 @@ namespace HmsPlugin
                 { ExceptionName.FaqAds3Error, GetUrl("/support/faq#why-i-am-getting-3-no_ad-error-while-using-a-ds-kit") },
                 { ExceptionName.Faq7018Error, GetUrl("/support/faq#why-i-am-getting-the-7018-game_state_not_init-error") }
             };
-            private static string GetUrl(string path) => $"{FAQ_BASE_URL}{path}";
+
+            private static Uri GetUrl(string path) => new Uri($"{FAQ_BASE_URL}{path}");
         }
         public HMSExceptionHandler()
         {

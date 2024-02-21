@@ -43,7 +43,7 @@ namespace HmsPlugin
 
             foreach (var key in _settings.Keys)
             {
-                if (Enum.TryParse(typeof(HMSIAPProductType), _settings.Get(key), out var productType))
+                if (Enum.TryParse<HMSIAPProductType>(_settings.Get(key), out var productType))
                 {
                     returnList.Add(new HMSIAPProductEntry(key, (HMSIAPProductType)productType));
                 }

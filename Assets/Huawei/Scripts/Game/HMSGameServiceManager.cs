@@ -268,19 +268,14 @@ namespace HmsPlugin
             }
             OnAppUpdateInfo?.Invoke(new OnAppUpdateInfoRes(status, rtnCode, rtnMessage, isExit, buttonStatus));
 
-            object statusCodeObj = status;
-            object rtnCodeObj = rtnCode;
-            object buttonStatusObj = buttonStatus;
-
-            if (Enum.TryParse(typeof(AppUpdateStatusCode), statusCodeObj.ToString(), out statusCodeObj) &&
-                Enum.TryParse(typeof(AppUpdateRtnCode), rtnCodeObj.ToString(), out rtnCodeObj) &&
-                Enum.TryParse(typeof(AppUpdateButtonStatus), buttonStatusObj.ToString(), out buttonStatusObj))
+            try
             {
-                Debug.Log($"{TAG} OnUpdateInfo, status: {(AppUpdateStatusCode)statusCodeObj}, rtnCode: {(AppUpdateRtnCode)rtnCodeObj}, rtnMessage: {rtnMessage}, buttonStatus: {(AppUpdateButtonStatus)buttonStatusObj}, isExit: {isExit}");
+                Debug.Log($"{TAG} OnUpdateInfo, status: {(AppUpdateStatusCode)status}," +
+                    $" rtnCode: {(AppUpdateRtnCode)rtnCode}, rtnMessage: {rtnMessage}, buttonStatus: {(AppUpdateButtonStatus)buttonStatus}, isExit: {isExit}");
             }
-            else
+            catch(Exception e)
             {
-                Debug.LogError($"{TAG} Failed to parse status, rtnCode, or buttonStatus as their respective enums");
+                Debug.LogError($"{TAG} Failed to parse status, rtnCode, or buttonStatus as their respective enums exception:{e.Message}");
             }
         }
         public void OnMarketInstallInfo(AndroidIntent intent)

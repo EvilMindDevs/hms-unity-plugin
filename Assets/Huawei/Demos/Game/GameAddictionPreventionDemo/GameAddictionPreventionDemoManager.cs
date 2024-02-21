@@ -12,7 +12,7 @@ public class GameAddictionPreventionDemoManager : MonoBehaviour
     private const string TAG = "[HMS] GameAddictionPreventionDemoManager";
 
     [SerializeField]
-    Text display, btn;
+    Text displayText, buttonText;
     void Start()
     {
         //1th Way
@@ -39,14 +39,14 @@ public class GameAddictionPreventionDemoManager : MonoBehaviour
         HMSGameServiceManager.Instance.GameInitSuccess = GameInitSuccess;
         HMSGameServiceManager.Instance.Init();*/
 
-/*
-        //GAME Trial
-        //According to the latest notice issued by National Press and Publication Administration, all online games cannot be provided to users who have not registered in real name in any form(including the guest mode).
-        //If your game uses the guest mode, modification is required.Huawei has disabled the previous game trial mode. If you have enabled the mode, disable it as soon as possible.
-        //The sample code for the previous game trial mode is as follows: 
-        IPlayersClient client = Games.GetPlayersClient();
-        client.SetGameTrialProcess(onTrialTimeout, onCheckRealNameResult);
-*/
+        /*
+                //GAME Trial
+                //According to the latest notice issued by National Press and Publication Administration, all Online games cannot be provided to users who have not registered in real name in any form(including the guest mode).
+                //If your game uses the guest mode, modification is required.Huawei has disabled the previous game trial mode. If you have enabled the mode, disable it as soon as possible.
+                //The sample code for the previous game trial mode is as follows: 
+                IPlayersClient client = Games.GetPlayersClient();
+                client.SetGameTrialProcess(onTrialTimeout, OnCheckRealNameResult);
+        */
     }
     private void OnSignInFailed(HMSException exception)
     {
@@ -54,62 +54,62 @@ public class GameAddictionPreventionDemoManager : MonoBehaviour
         //When a player signs in to your game using a HUAWEI ID, prompt the player to perform identity verification. You do not need to develop an identity verification system.
         //HMSAccountKitManager.Instance.SignIn(HMSAccountKitManager.Instance.GetGameAuthService());
         Debug.LogError($"{TAG} OnSignInFailed:{exception}");
-        display.text = "OnSignInFailed:\n" + exception;
+        displayText.text = "OnSignInFailed:\n" + exception;
     }
     private void OnSignInSuccess(AuthAccount account)
     {
         Debug.Log($"{TAG} OnSignInSuccess:{account.DisplayName}, {account.ServiceCountryCode}");
         HMSGameServiceManager.Instance.GameInitSuccess = GameInitSuccess;
-        HMSGameServiceManager.Instance.Init(new AntiAddictionCallback(onExit), account);
-        btn.text = "SignOut";
+        HMSGameServiceManager.Instance.Init(new AntiAddictionCallback(OnExit), account);
+        buttonText.text = "SignOut";
     }
     private void GameInitSuccess(HuaweiMobileServices.Utils.Void @void)
     {
         Debug.Log($"{TAG} GameInitSuccess");
         ITask<Player> task = Games.GetPlayersClient().GamePlayer;
-        task.AddOnSuccessListener((Player player) => 
+        task.AddOnSuccessListener((Player player) =>
         {
             Debug.Log($"{TAG} task.AddOnSuccessListener:{player.Level}, {player.DisplayName}");
-            display.text = "Welcome: \n" + player.DisplayName;
+            displayText.text = "Welcome: \n" + player.DisplayName;
         });
-        task.AddOnFailureListener((HMSException exception) => 
+        task.AddOnFailureListener((HMSException exception) =>
         {
             Debug.Log($"{TAG} task.AddOnFailureListener:{exception}");
-            display.text = "getGamePlayerFailed:\n" + exception;
+            displayText.text = "getGamePlayerFailed:\n" + exception;
         });
         Debug.Log($"{TAG} end of the GameInitSuccess");
     }
-    public void onSignButtonClick()
+    public void OnSignButtonClick()
     {
-        if(btn.text.Equals("SignIn"))
+        if (buttonText.text.Equals("SignIn"))
             HMSAccountKitManager.Instance.SignIn(HMSAccountKitManager.Instance.GetGameAuthService());
         else
         {
             HMSAccountKitManager.Instance.SignOut();
-            btn.text = "SignIn";
-            display.text = "Please SignIn";
+            buttonText.text = "SignIn";
+            displayText.text = "Please SignIn";
         }
     }
-    public void onShowFloatWindowClicked()
+    public void OnShowFloatWindowClicked()
     {
-        Debug.Log($"{TAG} onShowFloatWindowClicked");
+        Debug.Log($"{TAG} OnShowFloatWindowClicked");
         HMSGameServiceManager.Instance.ShowFloatWindow();
     }
-    private void onExit()
+    private void OnExit()
     {
-        Debug.Log($"{TAG} onExit");
-        display.text = "onExit";
+        Debug.Log($"{TAG} OnExit");
+        displayText.text = "OnExit";
         //Exits game addiction prevention.
         //This method is triggered when a minor's played time exceeds the upper limit.
         //You must implement the game exit function in this method, for example, saving game progress and calling the HUAWEI ID sign-out API.
     }
-    private void onCheckRealNameResult(bool res)
+    private void OnCheckRealNameResult(bool res)
     {
-        Debug.Log($"{TAG} onCheckRealNameResult:{res}");
+        Debug.Log($"{TAG} OnCheckRealNameResult:{res}");
     }
-    private void onTrialTimeout()
+    private void OnTrialTimeout()
     {
-        Debug.Log($"{TAG} onTrialTimeout");
+        Debug.Log($"{TAG} OnTrialTimeout");
     }
 }
 

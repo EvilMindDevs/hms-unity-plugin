@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -169,8 +169,7 @@ namespace HmsPlugin
         {
             yield return PostCoroutine(url, bodyJsonString, null, callback);
         }
-        k
-        k
+
         private IEnumerator PostFormDataCoroutine(string url, MultipartFormFileSection file, string authCode, string fileCount, string parseType, Action<UnityWebRequest> callback, string progressBarTitle = null, string progressBarDesc = null)
         {
             var formData = new List<IMultipartFormSection>

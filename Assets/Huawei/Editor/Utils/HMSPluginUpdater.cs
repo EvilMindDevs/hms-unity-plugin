@@ -13,9 +13,26 @@ namespace HmsPlugin
         public static string sessionState = "hms_checked_update";
 
         static HMSPluginUpdateRequest request;
+        
+        static bool ignorePlatform
+        {
+            get
+            {
+#if UNITY_SWITCH || UNITY_GAMECORE || UNITY_PS4 || UNITY_PS5
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
 
         internal static void Request(bool ignoreSession = false)
         {
+            if (ignorePlatform)
+            {
+                return;
+            }
+            
             if (!ignoreSession && SessionState.GetBool(sessionState, false))
             {
                 return;

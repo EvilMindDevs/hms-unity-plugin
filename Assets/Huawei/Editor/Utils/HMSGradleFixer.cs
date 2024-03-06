@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEditor.Android;
@@ -12,7 +12,7 @@ namespace HmsPlugin
     {
         public int callbackOrder => 1;
         private const string MINGRADLEVERSION = "3.5.4";
-        private const string agconnect_agcp = "classpath 'com.huawei.agconnect:agcp:1.6.1.300'";
+        private const string agconnect_agcp = "classpath 'com.huawei.agconnect:agcp:1.9.1.301'";
         private const string build_gradle = "classpath 'com.android.tools.build:gradle:" + MINGRADLEVERSION + "'";
 
         private void GradleVersionFixer(string gradleFileAsString, string path)

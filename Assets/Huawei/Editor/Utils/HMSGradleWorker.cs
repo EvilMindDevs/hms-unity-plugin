@@ -34,18 +34,18 @@ namespace HmsPlugin
                 { CrashToggleEditor.CrashKitEnabled,            new [] { "com.huawei.agconnect:agconnect-crash:1.8.0.300" } },
                 { GameServiceToggleEditor.GameServiceEnabled,   new [] { "com.huawei.hms:game:6.10.0.300" } },
                 { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.4.0.301" } },
-                { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.7.0.300" } },
+                { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.11.0.300" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new [] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },
                 { CloudDBToggleEditor.CloudDBEnabled,           new [] { "com.huawei.agconnect:agconnect-cloud-database:1.5.5.300" } },
-                { AuthToggleEditor.AuthEnabled,                 new [] { "com.huawei.agconnect:agconnect-auth:1.8.0.300" } },
+                { AuthToggleEditor.AuthEnabled,                 new [] { "com.huawei.agconnect:agconnect-auth:1.9.1.301" } },
                 { NearbyServiceToggleEditor.NearbyServiceEnabled, new [] { "com.huawei.hms:nearby:6.2.0.301" } },
                 { AppMessagingToggleEditor.AppMessagingEnabled, new [] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },
                 { HMSLibrariesDrawer.AppCompatEnabled,          new []{ "com.android.support:appcompat-v7:21.0.0" } },
                 { LocationToggleEditor.LocationEnabled,          new [] { "com.huawei.hms:location:6.4.0.300" } },
                 { ScanKitToggleEditor.ScanKitEnabled,            new [] { "com.huawei.hms:scan:2.6.0.301" } },
-                { AppLinkingToggleEditor.AppLinkingEnabled,      new [] { "com.huawei.agconnect:agconnect-applinking:1.8.0.300" } },
-                { DriveKitToggleEditor.DriveKitEnabled,          new [] { "com.huawei.hms:drive:5.0.0.307" } },
-                { CloudStorageToggleEditor.CloudStorageEnabled,  new [] { "com.huawei.agconnect:agconnect-storage:1.5.0.100" } },
+                { AppLinkingToggleEditor.AppLinkingEnabled,      new [] { "com.huawei.agconnect:agconnect-applinking:1.9.1.301" } },
+                { DriveKitToggleEditor.DriveKitEnabled,          new [] { "com.huawei.hms:drive:5.2.0.300" } },
+                { CloudStorageToggleEditor.CloudStorageEnabled,  new [] { "com.huawei.agconnect:agconnect-storage:1.9.1.301" } },
                 { APMToggleEditor.APMEnabled,                    new [] { "com.huawei.agconnect:agconnect-apms:1.6.1.300" } },
                 { Modeling3dKitToggleEditor.Modeling3dkitEnabled,new []
                     {
@@ -119,7 +119,7 @@ namespace HmsPlugin
 #endif
             /* TODO:
             #elif UNITY_2022_1_OR_NEWER
-            //Gradle 7+ and classpath 'com.huawei.agconnect:agcp:1.8.0.300'
+            //Gradle 7+ and classpath 'com.huawei.agconnect:agcp:1.9.1.301'
             */
         }
 
@@ -169,7 +169,7 @@ namespace HmsPlugin
             sb.AppendLine("\t\tdependencies {");
 
             // Add the classpath dependency for Huawei's AGC
-            sb.AppendFormat("\t\t\t{0}\n", AddClasspath("com.huawei.agconnect:agcp:1.6.1.300"));
+            sb.AppendFormat("\t\t\t{0}\n", AddClasspath("com.huawei.agconnect:agcp:1.9.1.301"));
 
             sb.AppendLine("\t\t}");  // End of dependencies
             sb.AppendLine("\t}");    // End of buildscript

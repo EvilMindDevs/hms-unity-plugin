@@ -24,16 +24,16 @@ namespace HmsPlugin
                 { AccountToggleEditor.AccountKitEnabled,        new [] { "com.huawei.hms:hwid:6.12.0.300" } },
                 { AdsToggleEditor.AdsKitEnabled,                new []
                     {
-                        "com.huawei.hms:ads-lite:13.4.61.300",
-                        "com.huawei.hms:ads-consent:3.4.61.300",
-                        "com.huawei.hms:ads-identifier:3.4.58.301",
-                        "com.huawei.hms:ads-installreferrer:3.4.58.301"
+                        "com.huawei.hms:ads-lite:13.4.69.300",
+                        "com.huawei.hms:ads-consent:3.4.69.300",
+                        "com.huawei.hms:ads-identifier:3.4.62.300",
+                        "com.huawei.hms:ads-installreferrer:3.4.62.300"
                     }
                 },
                 { AnalyticsToggleEditor.AnalyticsKitEnabled,    new [] { "com.huawei.hms:hianalytics:6.4.1.302" } },
                 { CrashToggleEditor.CrashKitEnabled,            new [] { "com.huawei.agconnect:agconnect-crash:1.8.0.300" } },
                 { GameServiceToggleEditor.GameServiceEnabled,   new [] { "com.huawei.hms:game:6.10.0.300" } },
-                { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.4.0.301" } },
+                { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.13.0.300" } },
                 { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.11.0.300" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new [] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },
                 { CloudDBToggleEditor.CloudDBEnabled,           new [] { "com.huawei.agconnect:agconnect-cloud-database:1.5.5.300" } },

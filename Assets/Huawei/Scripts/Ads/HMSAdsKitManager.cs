@@ -511,6 +511,20 @@ namespace HmsPlugin
             }
         }
 
+        public void SetRewardVerifyConfig(RewardVerifyConfig config)
+        {
+            Debug.Log($"{TAG} SetRewardVerifyConfig called");
+            if (rewardedView?.Loaded == true)
+            {
+                Debug.Log($"{TAG} SetRewardVerifyConfig ");
+                rewardedView.SetRewardVerifyConfig(config);
+            }
+            else
+            {
+                Debug.LogError($"{TAG} Rewarded Ad still not loaded");
+            }
+        }
+
         public bool IsRewardedAdLoaded
         {
             get

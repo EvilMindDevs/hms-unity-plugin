@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using HmsPlugin;
 using HuaweiMobileServices.Ads;
+using System;
 
 public class AdsDemoManager : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance = new HMSAdsKitManager(hasPurchasedNoAds: false)
         {
             OnRewarded = OnRewarded,
+            OnRewardedAdLoaded = OnRewardedAdLoaded,
             OnInterstitialAdClosed = OnInterstitialAdClosed,
             ConsentOnFail = OnConsentFail,
             ConsentOnSuccess = OnConsentSuccess
@@ -90,6 +92,12 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance.HideBannerAd();
     }
 
+    public void SetRewardVerifyConfig(RewardVerifyConfig config)
+    {
+        Debug.Log($"{TAG}SetRewardVerifyConfig");
+        HMSAdsKitManager.Instance.SetRewardVerifyConfig(config);
+    }
+
     public void ShowRewardedAd()
     {
         Debug.Log($"{TAG}ShowRewardedAd");
@@ -114,6 +122,16 @@ public class AdsDemoManager : MonoBehaviour
         Debug.Log($"{TAG}ShowSplashVideo!");
 
         HMSAdsKitManager.Instance.LoadSplashAd("testd7c5cewoj6", SplashAd.SplashAdOrientation.PORTRAIT);
+    }
+
+    private void OnRewardedAdLoaded()
+    {
+        Debug.Log($"{TAG}OnRewardedAdLoaded");
+        #region RewardVerifyConfig
+        /*RewardVerifyConfig verifyConfig = new RewardVerifyConfig.Builder().SetData("CUSTOM_DATA").SetUserId("123456").Build();
+        SetRewardVerifyConfig(verifyConfig);
+        Debug.Log($"{TAG}OnRewardedAdLoaded:{verifyConfig.UserId} - {verifyConfig.Data}");*/
+        #endregion
     }
 
     public void OnRewarded(Reward reward)

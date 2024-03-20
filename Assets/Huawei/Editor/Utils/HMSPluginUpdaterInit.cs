@@ -16,5 +16,5 @@ namespace HmsPlugin
             };
         }
     }
-#endif
 }
+#endif

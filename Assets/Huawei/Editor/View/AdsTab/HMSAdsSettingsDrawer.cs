@@ -208,19 +208,14 @@ namespace HmsPlugin
         private void OnSplashSubTextSaveButtonClick()
         {
             _settings.Set(HMSAdsKitSettings.SplashSubText, _splashAdsSubTextField.GetCurrentText());
-            if (_splashAdPreviewObj != null)
-            {
-                _splashAdPreviewObj.RefreshContent();
-            }
+            RefreshSplashAdPreview();
+
         }
 
         private void OnSplashTitleSaveButtonClick()
         {
             _settings.Set(HMSAdsKitSettings.SplashTitle, _splashAdsTitleTextField.GetCurrentText());
-            if (_splashAdPreviewObj != null)
-            {
-                _splashAdPreviewObj.RefreshContent();
-            }
+            RefreshSplashAdPreview();
         }
 
         private void OnSplashAdIDSaveButtonClick()
@@ -347,10 +342,7 @@ namespace HmsPlugin
                 }
                 _settings.Set(HMSAdsKitSettings.SplashImagePath, image != null ? AssetDatabase.GetAssetPath(image.GetInstanceID()) : "");
                 _settings.Set(HMSAdsKitSettings.SplashImageBytes, image != null ? imageAsString : "");
-                if (_splashAdPreviewObj != null)
-                {
-                    _splashAdPreviewObj.RefreshContent();
-                }
+                RefreshSplashAdPreview();
             }
             catch (Exception ex)
             {
@@ -422,6 +414,13 @@ namespace HmsPlugin
                 default:
                     // All cases are handled
                     return false;
+            }
+        }
+        private void RefreshSplashAdPreview()
+        {
+            if (_splashAdPreviewObj != null)
+            {
+                _splashAdPreviewObj.RefreshContent();
             }
         }
     }

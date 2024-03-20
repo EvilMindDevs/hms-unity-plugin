@@ -1,6 +1,7 @@
 using HmsPlugin;
 
 using HuaweiMobileServices.AuthService;
+using HuaweiMobileServices.Base;
 using HuaweiMobileServices.CloudDB;
 using HuaweiMobileServices.Common;
 using HuaweiMobileServices.Id;
@@ -330,4 +331,18 @@ public class CloudDBDemo : MonoBehaviour
         HMSCloudDBManager.Instance.MRegister = HMSCloudDBManager.Instance.MCloudDBZone.SubscribeSnapshot(cloudDBZoneQuery, cloudDBZoneQueryPolicy, OnCloudDBZoneSnapshot, OnCloudDBZoneSnapshotException);
     }
 
+    public void ExecuteServerStatusQuery()
+    {
+        Debug.Log(TAG + " ExecuteServerStatusQuery");
+        ITask<ServerStatus> serverStatusTask = HMSCloudDBManager.Instance.MCloudDBZone.ExecuteServerStatusQuery();
+
+        serverStatusTask.AddOnSuccessListener(serverStatus =>
+        {
+            Debug.Log(TAG + " ExecuteServerStatusQuery serverStatus.ServerTimestamp:" + serverStatus.ServerTimestamp);
+        });
+        serverStatusTask.AddOnFailureListener(e =>
+        {
+            Debug.LogError(TAG + " ExecuteServerStatusQuery AddOnFailureListener:"+e);
+        });
+    }
 }

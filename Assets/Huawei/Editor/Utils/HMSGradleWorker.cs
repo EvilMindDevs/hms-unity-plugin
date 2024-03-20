@@ -36,7 +36,7 @@ namespace HmsPlugin
                 { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.13.0.300" } },
                 { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.11.0.300" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new [] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },
-                { CloudDBToggleEditor.CloudDBEnabled,           new [] { "com.huawei.agconnect:agconnect-cloud-database:1.5.5.300" } },
+                { CloudDBToggleEditor.CloudDBEnabled,           new [] { "com.huawei.agconnect:agconnect-cloud-database:1.9.1.301" } },
                 { AuthToggleEditor.AuthEnabled,                 new [] { "com.huawei.agconnect:agconnect-auth:1.9.1.301" } },
                 { NearbyServiceToggleEditor.NearbyServiceEnabled, new [] { "com.huawei.hms:nearby:6.2.0.301" } },
                 { AppMessagingToggleEditor.AppMessagingEnabled, new [] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },

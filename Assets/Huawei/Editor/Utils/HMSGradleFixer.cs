@@ -12,19 +12,21 @@ namespace HmsPlugin
     {
         public int callbackOrder => 1;
         private const string MINGRADLEVERSION = "3.5.4";
-        private const string agconnect_agcp = "classpath 'com.huawei.agconnect:agcp:1.9.1.301'";
+        //Unity 2022.3 and higher
+        private const string agconnect_agcp_7_2 = "classpath 'com.huawei.agconnect:agcp:1.9.1.301'";
+        //Unity 2019 and lower
         private const string build_gradle = "classpath 'com.android.tools.build:gradle:" + MINGRADLEVERSION + "'";
 
         private void GradleVersionFixer(string gradleFileAsString, string path)
         {
-#if UNITY_2022_2_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
         // Grade 7.2
         string currentBuildgradle = File.ReadAllText(Directory.GetParent(path).FullName + "/build.gradle").Replace("apply from: 'hmsBaseProjectTemplate.gradle'", "");
 
         if (currentBuildgradle.Contains("dependencies")){
             if(!currentBuildgradle.Contains("com.huawei.agconnect:agcp:")){
 
-                string buildscriptdependencies = "buildscript {\n\tdependencies {\n\t\t" + agconnect_agcp + "\n\t}\n}\n";
+                string buildscriptdependencies = "buildscript {\n\tdependencies {\n\t\t" + agconnect_agcp_7_2 + "\n\t}\n}\n";
                 currentBuildgradle = buildscriptdependencies + currentBuildgradle;
                 File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", currentBuildgradle);
             }
@@ -35,7 +37,7 @@ namespace HmsPlugin
                 File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", currentBuildgradle);
             }
         }else{
-            string buildscriptdependencies = "buildscript {\n\tdependencies {\n\t\t" + build_gradle + "\n\t\t" + agconnect_agcp + "\n\t}\n}\n";
+            string buildscriptdependencies = "buildscript {\n\tdependencies {\n\t\t" + build_gradle + "\n\t\t" + agconnect_agcp_7_2 + "\n\t}\n}\n";
             currentBuildgradle = buildscriptdependencies + currentBuildgradle;
             File.WriteAllText(Directory.GetParent(path).FullName + "/build.gradle", currentBuildgradle);
         }

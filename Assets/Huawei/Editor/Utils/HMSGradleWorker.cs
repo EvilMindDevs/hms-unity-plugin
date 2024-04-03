@@ -66,10 +66,14 @@ namespace HmsPlugin
 
         private void CreateGradleFiles(string[] gradleConfigs)
         {
-#if UNITY_2019_3_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
             CreateMainGradleFile(gradleConfigs);
             CreateLauncherGradleFile(gradleConfigs);
-            BaseProjectGradleFile();
+            BaseProjectGradleFile("1.9.1.301");
+#elif UNITY_2019_3_OR_NEWER
+            CreateMainGradleFile(gradleConfigs);
+            CreateLauncherGradleFile(gradleConfigs);
+            BaseProjectGradleFile("1.6.1.300");
 
 #elif UNITY_2018_1_OR_NEWER
             CreateMainGradleFile(gradleConfigs);
@@ -118,7 +122,7 @@ namespace HmsPlugin
             }
 #endif
             /* TODO:
-            #elif UNITY_2022_1_OR_NEWER
+#elif UNITY_2022_1_OR_NEWER
             //Gradle 7+ and classpath 'com.huawei.agconnect:agcp:1.9.1.301'
             */
         }
@@ -130,7 +134,7 @@ namespace HmsPlugin
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("apply plugin: 'com.huawei.agconnect'\n");
 
-            #region Dependencies
+#region Dependencies
 
             stringBuilder.AppendLine("dependencies {");
             for (int i = 0; i < gradleConfigs.Length; i++)
@@ -138,7 +142,7 @@ namespace HmsPlugin
                 stringBuilder.AppendLine($"\t{AddDependency(gradleConfigs[i])}");
             }
             stringBuilder.AppendLine("}");
-            #endregion
+#endregion
             stringBuilder.AppendLine("android {");
             stringBuilder.AppendLine("\tpackagingOptions {");
             stringBuilder.AppendLine("\t\tpickFirst \"okhttp3/internal/publicsuffix/publicsuffixes.gz\"");
@@ -148,7 +152,7 @@ namespace HmsPlugin
 
             File.WriteAllText(path, stringBuilder.ToString());
         }
-        private void BaseProjectGradleFile()
+        private void BaseProjectGradleFile(string agcversion)
         {
             // Combine paths to get the full file path
             string filePath = Path.Combine(Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle");
@@ -169,7 +173,7 @@ namespace HmsPlugin
             sb.AppendLine("\t\tdependencies {");
 
             // Add the classpath dependency for Huawei's AGC
-            sb.AppendFormat("\t\t\t{0}\n", AddClasspath("com.huawei.agconnect:agcp:1.9.1.301"));
+            sb.AppendFormat("\t\t\t{0}\n", AddClasspath("com.huawei.agconnect:agcp:" + agcversion));
 
             sb.AppendLine("\t\t}");  // End of dependencies
             sb.AppendLine("\t}");    // End of buildscript

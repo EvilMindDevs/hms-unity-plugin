@@ -1,6 +1,8 @@
 using HuaweiConstants;
 using HuaweiMobileServices.Ads;
 using HuaweiMobileServices.Ads.InstallReferrer;
+using HuaweiMobileServices.AuthService;
+using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
@@ -14,8 +16,7 @@ namespace HmsPlugin
 
     public class HMSAdsKitManager : HMSManagerSingleton<HMSAdsKitManager>
     {
-        private readonly string TAG = "[HMS] HMSAdsKitManager";
-
+        private const string TAG = "[HMS] HMSAdsKitManager";
         private const string TestBannerAdId = "testw6vs28auh3";
         private const string TestInterstitialAdId = "testb4znbuh3n2";
         private const string TestRewardedAdId = "testx9dtjwj8hp";
@@ -26,41 +27,29 @@ namespace HmsPlugin
         private InterstitialAd interstitialView;
         private RewardAd rewardedView;
         private SplashAd splashView;
-
         private HMSSettings adsKitSettings;
-
         private bool isInitialized;
-
         private InstallReferrerClient installReferrerClient;
 
         public Action<ReferrerDetails> InstallReferrerSuccess { get; set; }
         public Action<InstallReferrerResponse> InstallReferrerFail { get; set; }
         public Action InstallReferrerDisconnect { get; set; }
+        public Action DefaultLoadRewardAd { get; set; }
+        public bool HasPurchasedNoAds { get; private set; }
 
-        public bool hasPurchasedNoAds = false;
-
-        public HMSAdsKitManager()
-        {
-            adsKitSettings = HMSAdsKitSettings.Instance.Settings;
-            HMSManagerStart.Start(OnAwake, OnStart, TAG);
-        }
+        public HMSAdsKitManager() : this(false) { }
 
         public HMSAdsKitManager(bool hasPurchasedNoAds)
         {
+            HasPurchasedNoAds = hasPurchasedNoAds;
             adsKitSettings = HMSAdsKitSettings.Instance.Settings;
-            this.hasPurchasedNoAds = hasPurchasedNoAds;
-            HMSManagerStart.Start(OnAwake, () => { OnStart(hasPurchasedNoAds); }, TAG);
+            HMSManagerStart.Start(OnAwake, () => OnStart(HasPurchasedNoAds), TAG);
         }
 
         private void OnAwake()
         {
             Debug.Log($"{TAG} OnAwake");
-            Init();
-        }
-
-        private void OnStart()
-        {
-            Debug.Log($"{TAG} OnStart");
+            InitializeAdsKit();
         }
 
         private void OnStart(bool hasPurchasedNoAds = false)
@@ -69,12 +58,14 @@ namespace HmsPlugin
             _ = LoadAdsWhenInternetIsAvailableAsync(hasPurchasedNoAds);
         }
 
-        private void Init()
+        private void InitializeAdsKit()
         {
             Debug.Log($"{TAG} Init");
             HwAds.Init();
             isInitialized = true;
-            adsKitSettings = HMSAdsKitSettings.Instance.Settings;
+
+            //If you want select with config you can change this method, also you can active account kit for this method
+            AssignDefaultLoadRewardAd(RewardedAdLoadMethod.Default);
         }
 
         private async Task LoadAdsWhenInternetIsAvailableAsync(bool hasPurchasedNoAds = false)
@@ -91,31 +82,39 @@ namespace HmsPlugin
                 await Task.Delay(TimeSpan.FromSeconds(1));
             }
         }
+
         public void LoadAllAds(bool hasPurchasedNoAds = false)
         {
             if (!hasPurchasedNoAds)
             {
-                if (adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd))
-                    LoadSplashAd();
-                UnityBannerAdPositionCodeType _adPositionCodeType = UnityBannerAdPositionCodeType.POSITION_BOTTOM;
-                UnityBannerAdSizeType _adSizeType = UnityBannerAdSizeType.BANNER_SIZE_360_57;
-
-                if (Enum.TryParse(adsKitSettings.Get(HMSAdsKitSettings.BannerAdPositionType), out UnityBannerAdPositionCodeType adPositionCodeType))
-                    _adPositionCodeType = adPositionCodeType;
-                if (Enum.TryParse(adsKitSettings.Get(HMSAdsKitSettings.UnityBannerAdSizeType), out UnityBannerAdSizeType adSizeType))
-                    _adSizeType = adSizeType;
-
-                LoadBannerAd(_adPositionCodeType, _adSizeType.ToString());
-                LoadInterstitialAd();
+                LoadAds();
             }
-            LoadRewardedAd();
+            DefaultLoadRewardAd?.Invoke();
         }
 
+        private void LoadAds()
+        {
+            if (adsKitSettings.GetBool(HMSAdsKitSettings.EnableSplashAd))
+            {
+                LoadSplashAd();
+            }
+
+            var adPositionCodeType = ParseEnum<UnityBannerAdPositionCodeType>(HMSAdsKitSettings.BannerAdPositionType, UnityBannerAdPositionCodeType.POSITION_BOTTOM);
+            var adSizeType = ParseEnum<UnityBannerAdSizeType>(HMSAdsKitSettings.UnityBannerAdSizeType, UnityBannerAdSizeType.BANNER_SIZE_360_57);
+
+            LoadBannerAd(adPositionCodeType, adSizeType.ToString());
+            LoadInterstitialAd();
+        }
+
+        private T ParseEnum<T>(string key, T defaultValue) where T : struct
+        {
+            return Enum.TryParse(adsKitSettings.Get(key), out T result) ? result : defaultValue;
+        }
 
         public void SetTestAdStatus(bool value)
         {
             adsKitSettings.SetBool(HMSAdsKitSettings.UseTestAds, value);
-            Debug.Log($"{TAG} SetTestAdStatus set to " + value.ToString());
+            Debug.Log($"{TAG} SetTestAdStatus set to " + value);
         }
 
         public void SetTestAd(bool status)
@@ -477,11 +476,12 @@ namespace HmsPlugin
 
         #region REWARDED
 
-        #region PUBLIC METHODS
+        private bool isInitializedRewarded => !isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableRewardedAd);
 
+        #region PUBLIC METHODS
         public void LoadRewardedAd()
         {
-            if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableRewardedAd)) return;
+            if (isInitializedRewarded) return;
             Debug.Log($"{TAG} LoadRewardedAd");
             rewardedView = new RewardAd(adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestRewardedAdId : adsKitSettings.Get(HMSAdsKitSettings.RewardedAdID));
             rewardedView.RewardAdListener = new RewardAdListener(this);
@@ -490,11 +490,24 @@ namespace HmsPlugin
 
         public void LoadRewardedAd(string adId)
         {
-            if (!isInitialized || !adsKitSettings.GetBool(HMSAdsKitSettings.EnableRewardedAd)) return;
-            Debug.Log($"{TAG} LoadRewardedAd");
+            if (isInitializedRewarded) return;
+            Debug.Log($"{TAG} LoadRewardedAd with adId");
             rewardedView = new RewardAd(adId);
             rewardedView.RewardAdListener = new RewardAdListener(this);
             rewardedView.LoadAd(new AdParam.Builder().Build());
+        }
+
+        public void LoadRewardedAd(RewardVerifyConfig config)
+        {
+            if (isInitializedRewarded) return;
+            Debug.Log($"{TAG} LoadRewardedAd with verify config");
+            rewardedView = new RewardAd(adsKitSettings.GetBool(HMSAdsKitSettings.UseTestAds) ? TestRewardedAdId : adsKitSettings.Get(HMSAdsKitSettings.RewardedAdID));
+            rewardedView.SetUserId(config.UserId);
+            rewardedView.SetData(config.Data);
+            SetRewardVerifyConfig(config);
+            rewardedView.RewardAdListener = new RewardAdListener(this);
+            rewardedView.LoadAd(new AdParam.Builder().Build());
+            Debug.Log($"{TAG} LoadRewardedAd. User Id: {config.UserId} Data: {config.Data}");
         }
 
         public void ShowRewardedAd()
@@ -516,7 +529,7 @@ namespace HmsPlugin
             Debug.Log($"{TAG} SetRewardVerifyConfig called");
             if (rewardedView?.Loaded == true)
             {
-                Debug.Log($"{TAG} SetRewardVerifyConfig ");
+                Debug.Log($"{TAG} SetRewardVerifyConfig. User Id: {config.UserId} Data: {config.Data}");
                 rewardedView.SetRewardVerifyConfig(config);
             }
             else
@@ -534,7 +547,99 @@ namespace HmsPlugin
                 return rewardedView.Loaded;
             }
         }
+        public void AssignDefaultLoadRewardAd(RewardedAdLoadMethod type = RewardedAdLoadMethod.Default)
+        {
+            switch (type)
+            {
+                case RewardedAdLoadMethod.Default:
+                    DefaultLoadRewardAd = LoadRewardedAd;
+                    break;
+                case RewardedAdLoadMethod.WithAdId:
+                    var adId = "testx9dtjwj8hp";
+                    DefaultLoadRewardAd = () => LoadRewardedAd(adId);
+                    break;
+                case RewardedAdLoadMethod.WithConfig:
+                    AssignLoadRewardAdWithConfig();
+                    break;
+            }
+        }
+        private void AssignLoadRewardAdWithConfig()
+        {
+            var user = HMSAccountKitManager.Instance.HuaweiId;
+            Debug.Log($"{TAG} GetCurrentUser is null : {user == null}");
+            if (user != null)
+            {
+                SetRewardAdConfig(user.OpenId);
+                return;
+            }
 
+            HMSAccountKitManager.Instance.OnSignInSuccess += OnSignInAccountSilentSuccess;
+            HMSAccountKitManager.Instance.OnSignInFailed += OnSignInAccountSilentFailed;
+
+            HMSAccountKitManager.Instance.SilentSignIn();
+
+        }
+        private void OnSignInAccountSilentSuccess(AuthAccount authHuaweiId)
+        {
+            Debug.Log($"{TAG} SignIn success. AuthHuaweiId: {authHuaweiId?.OpenId}");
+            if (authHuaweiId != null)
+            {
+                SetRewardAdConfig(authHuaweiId.OpenId);
+                return;
+            }
+            else
+            {
+                Debug.LogError($"{TAG} SignIn failed. AuthHuaweiId is null.");
+            }
+        }
+        private void OnSignInAccountSilentFailed(HMSException exception)
+        {
+            Debug.LogError($"{TAG} SignIn failed with exception: {exception.WrappedExceptionMessage}");
+            if (exception.WrappedExceptionMessage.Contains("2002"))
+            {
+                Debug.Log($"{TAG} SilentSignIn failed. User is not signed in. Trying SignIn.");
+                HMSAccountKitManager.Instance.OnSignInSuccess -= OnSignInAccountSilentSuccess;
+                HMSAccountKitManager.Instance.OnSignInFailed -= OnSignInAccountSilentFailed;
+
+                HMSAccountKitManager.Instance.OnSignInSuccess += OnSignInAccountSuccess;
+                HMSAccountKitManager.Instance.OnSignInFailed += OnSignInAccountFailed;
+
+                HMSAccountKitManager.Instance.SignIn();
+            }
+        }
+        private void OnSignInAccountSuccess(AuthAccount authHuaweiId)
+        {
+            Debug.Log($"{TAG} SignIn success. AuthHuaweiId: {authHuaweiId?.OpenId}");
+            if (authHuaweiId != null)
+            {
+                SetRewardAdConfig(authHuaweiId.OpenId);
+                return;
+            }
+            else
+            {
+                Debug.LogError($"{TAG} SignIn failed. AuthHuaweiId is null.");
+            }
+        }
+        private void OnSignInAccountFailed(HMSException exception)
+        {
+            Debug.LogError($"{TAG} SignIn failed with exception: {exception.WrappedExceptionMessage}");
+        }
+        private void SetRewardAdConfig(string userId)
+        {
+            var exampleData = $"{{\"userId\":\"{userId}\", \"date\":\"{DateTime.Now}\"}}";
+            var config = new RewardVerifyConfig.Builder()
+                .SetUserId(userId)
+                .SetData(exampleData)
+                .Build();
+            DefaultLoadRewardAd = () => LoadRewardedAd(config);
+            DefaultLoadRewardAd?.Invoke();
+        }
+        public enum RewardedAdLoadMethod
+        {
+            Default,
+            WithAdId,
+            WithConfig
+        }
         #endregion
 
         #region LISTENERS
@@ -552,7 +657,7 @@ namespace HmsPlugin
             {
                 Debug.Log($"{TAG} OnRewardAdClosed");
                 mAdsManager.OnRewardAdClosed?.Invoke();
-                mAdsManager.LoadRewardedAd();
+                mAdsManager.DefaultLoadRewardAd?.Invoke();
             }
 
             public void OnRewardAdCompleted()

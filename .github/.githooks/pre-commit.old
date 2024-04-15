@@ -1,0 +1,16 @@
+#!/bin/sh
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+protected_branches=("main" "master" "production")
+
+for i in "${protected_branches[@]}"
+do
+    if [ "$branch" = "$i" ]; then
+        echo "You cannot commit to the $i branch. Please create a new branch and make a Pull Request."
+        exit 1
+    fi
+done
+
+exit 0
+
+# Path: .githooks/post-commit

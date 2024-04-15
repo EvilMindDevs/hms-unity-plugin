@@ -1,4 +1,4 @@
-﻿using HmsPlugin.TextField;
+using HmsPlugin.TextField;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,7 +17,7 @@ namespace HmsPlugin
             _drawerToFocus = drawerToFocus;
             _focus = focus;
 
-            _controlName = string.Format("Focusable_" + _uniqueId);
+            _controlName = $"Focusable_{_uniqueId}";
             _uniqueId++;
         }
 

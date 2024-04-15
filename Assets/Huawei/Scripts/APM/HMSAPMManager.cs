@@ -1,34 +1,31 @@
 using HuaweiMobileServices.APM;
-using HuaweiMobileServices.Utils;
 
 using UnityEngine;
-
-public class HMSAPMManager : HMSManagerSingleton<HMSAPMManager>
+namespace HmsPlugin
 {
-    private readonly string TAG = "[HMS] HMSAPMManager";
-
-    public HMSAPMManager()
+    public class HMSAPMManager : HMSManagerSingleton<HMSAPMManager>
     {
-        if (!HMSDispatcher.InstanceExists)
-            HMSDispatcher.CreateDispatcher();
-        HMSDispatcher.InvokeAsync(OnAwake);
+        private readonly string TAG = "[HMS] HMSAPMManager";
+
+        public HMSAPMManager()
+        {
+            HMSManagerStart.Start(OnAwake, TAG);
+        }
+
+        private void OnAwake()
+        {
+            Debug.Log($"[{TAG}]: OnAwake() ");
+        }
+
+        public void EnableCollection(bool state)
+        {
+            APMS.GetInstance().EnableCollection(state);
+        }
+
+        public void EnableAnrMonitor(bool state)
+        {
+            APMS.GetInstance().EnableAnrMonitor(state);
+        }
+
     }
-
-    private void OnAwake()
-    {
-        Debug.Log($"[{TAG}]: OnAwake() ");
-    }
-
-    public void EnableCollection(bool state)
-    {
-        APMS.GetInstance().EnableCollection(state);
-    }
-
-    public void EnableAnrMonitor(bool state)
-    {
-        APMS.GetInstance().EnableAnrMonitor(state);
-    }
-
-
-
 }

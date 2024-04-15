@@ -1,5 +1,3 @@
-﻿using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,6 +46,11 @@ namespace HmsPlugin
         public int Count()
         {
             return _drawers.Count;
+        }
+
+        public bool Any()
+        {
+            return _drawers.Any();
         }
 
         public IList<T> FindByType<T>() where T : class, IDrawer

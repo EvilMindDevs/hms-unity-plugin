@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace HmsPlugin
@@ -21,7 +19,7 @@ namespace HmsPlugin
 
             if (loadedSettings == null)
             {
-                throw new NullReferenceException("Failed to load the " + SettingsFilename + ". Please restart Unity Editor");
+                throw new InvalidOperationException($"Failed to load the {SettingsFilename}. Please restart Unity Editor");
             }
             _settings = loadedSettings.settings;
 
@@ -43,9 +41,16 @@ namespace HmsPlugin
         {
             var returnList = new List<HMSIAPProductEntry>();
 
-            for (int i = 0; i < _settings.Keys.Count(); i++)
+            foreach (var key in _settings.Keys)
             {
-                returnList.Add(new HMSIAPProductEntry(_settings.Keys.ElementAt(i), (HMSIAPProductType)Enum.Parse(typeof(HMSIAPProductType), _settings.Values.ElementAt(i))));
+                if (Enum.TryParse<HMSIAPProductType>(_settings.Get(key), out var productType))
+                {
+                    returnList.Add(new HMSIAPProductEntry(key, (HMSIAPProductType)productType));
+                }
+                else
+                {
+                    Debug.LogError($"{SettingsFilename}: Failed to parse {_settings.Get(key)} as HMSIAPProductType");
+                }
             }
 
             return returnList;

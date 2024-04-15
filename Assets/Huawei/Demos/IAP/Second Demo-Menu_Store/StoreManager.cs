@@ -1,8 +1,6 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 using HuaweiMobileServices.IAP;
 using HuaweiMobileServices.Utils;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,29 +9,29 @@ public class StoreManager : MonoBehaviour
 {
     public GameObject coin100, coin1000, removeAds, premium;
     public Text userTxt, coinTxt;
-    public Button backBtn,editSubs, manageSubs;
+    public Button backBtn, editSubs, manageSubs;
 
     string TAG = "[StoreManager]:";
-    
-    void Start() 
+
+    void Start()
     {
-        Screen.orientation = ScreenOrientation.Landscape;
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
         //Text fields
-        userTxt.text = "Hello, "+HMSAccountKitManager.Instance.HuaweiId.DisplayName;
-        coinTxt.text = PlayerPrefs.GetInt("Coin",0).ToString();
+        userTxt.text = "Hello, " + HMSAccountKitManager.Instance.HuaweiId.DisplayName;
+        coinTxt.text = PlayerPrefs.GetInt("Coin", 0).ToString();
         //Button OnClicks
         backBtn.onClick.AddListener(delegate { SceneManager.LoadScene("Scene0_MainMenu"); });
 
-        editSubs.onClick.AddListener(delegate 
-        { 
+        editSubs.onClick.AddListener(delegate
+        {
             //You can redirect your user to subscription editing screen for your specific Product.
-            HMSIAPManager.Instance.RedirectingtoSubscriptionEditingScreen("premium"); 
+            HMSIAPManager.Instance.RedirectingtoSubscriptionEditingScreen("premium");
         });
 
-        manageSubs.onClick.AddListener(delegate 
+        manageSubs.onClick.AddListener(delegate
         {
             //You can redirect your user to subscriptions management page.
-            HMSIAPManager.Instance.RedirectingtoSubscriptionManagementScreen(); 
+            HMSIAPManager.Instance.RedirectingtoSubscriptionManagementScreen();
         });
 
         HMSIAPManager.Instance.OnBuyProductSuccess = OnBuyProductSuccess;
@@ -43,23 +41,30 @@ public class StoreManager : MonoBehaviour
 
     private void OnBuyProductSuccess(PurchaseResultInfo purchaseResultInfo)
     {
-        if (purchaseResultInfo.InAppPurchaseData.ProductId == "coin100") 
+        if (purchaseResultInfo.InAppPurchaseData.ProductId == "coin100")
         {
             AndroidToast.MakeText("You purchased 100 coin.").Show();
-            int coin = int.Parse(coinTxt.text) + 100;
-            coinTxt.text = coin.ToString();
-            PlayerPrefs.SetInt("Coin", coin);
+            if (int.TryParse(coinTxt.text, out int coin))
+            {
+                coin += 100;
+                coinTxt.text = coin.ToString();
+                PlayerPrefs.SetInt("Coin", coin);
+            }
+            else
+            {
+                Debug.LogError($"[{TAG}]: Failed to parse coinTxt.text");
+            }
         }
         /*Other products
-         * 
+         *
          * ...
-         * 
+         *
          */
         //If you want to disable the buy button by typing you own this product after the purchase is successful, you can change the UI here. (Non-Consumable & Subscription)
-        GameObject panel = (purchaseResultInfo.InAppPurchaseData.ProductId == "removeAds")? removeAds : 
-            (purchaseResultInfo.InAppPurchaseData.ProductId == "premium")? premium : null;
+        GameObject panel = (purchaseResultInfo.InAppPurchaseData.ProductId == "removeAds") ? removeAds :
+            (purchaseResultInfo.InAppPurchaseData.ProductId == "premium") ? premium : null;
 
-        if(panel != null)
+        if (panel != null)
         {
             panel.GetComponentInChildren<Button>().GetComponentInChildren<Text>().text = "You just bought";
             panel.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
@@ -90,7 +95,7 @@ public class StoreManager : MonoBehaviour
     {
         Debug.Log($"[{TAG}]: FillProducts list.count:" + HMSIAPManager.Instance.GetProductsList().Count);
 
-        foreach(ProductInfo pinfo in HMSIAPManager.Instance.GetProductsList()) 
+        foreach (ProductInfo pinfo in HMSIAPManager.Instance.GetProductsList())
         {
             GameObject panel;
             //If you want to create constants, you can use IAP tab from Huawei>Kit Settings>IAP Then fill with your products and click "create constant classes". (Coin100 is an example of using constant class)
@@ -109,18 +114,18 @@ public class StoreManager : MonoBehaviour
             else
                 panel = null;
 
-            if (panel != null) 
+            if (panel != null)
             {
                 foreach (Text textComponent in panel.GetComponentsInChildren<Text>())
                 {
                     if (textComponent.name == "ItemName")
                         textComponent.text = pinfo.ProductName;
-                    else if(textComponent.name == "ItemDesc")
+                    else if (textComponent.name == "ItemDesc")
                         textComponent.text = pinfo.ProductDesc;
                     else if (textComponent.name == "ItemCost")
                         textComponent.text = pinfo.Price;
                 }
-                
+
                 if (HMSIAPManager.Instance.isUserOwnThisProduct(pinfo.ProductId))
                 {
                     panel.GetComponentInChildren<Button>().GetComponentInChildren<Text>().text = "You own this";
@@ -131,7 +136,7 @@ public class StoreManager : MonoBehaviour
                     panel.GetComponentInChildren<Button>().onClick.AddListener(delegate { HMSIAPManager.Instance.PurchaseProduct(pinfo.ProductId); });
                 }
             }
-            else 
+            else
             {
                 Debug.LogWarning($"[{TAG}]: FillProducts panel is null");
             }

@@ -1,9 +1,7 @@
-﻿using HmsPlugin;
+using HmsPlugin;
 
 using HuaweiMobileServices.CloudStorage;
 using HuaweiMobileServices.Utils;
-
-using System;
 
 using UnityEngine;
 using UnityEngine.UI;

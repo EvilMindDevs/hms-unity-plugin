@@ -1,14 +1,3 @@
-﻿
-
-using HmsPlugin;
-
-using HuaweiMobileServices.IAP;
-using HuaweiMobileServices.Utils;
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
 using UnityEngine;
 
 #if UNITY_PURCHASING
@@ -60,7 +49,6 @@ public class UnityIapDemoManager : MonoBehaviour
         Screen.orientation = ScreenOrientation.LandscapeLeft;
     }
 
-
     void Start()
     {
         SignIn();
@@ -72,10 +60,12 @@ public class UnityIapDemoManager : MonoBehaviour
         List<ProductDefinition> list = new List<ProductDefinition>();
 
         var coins100 = new ProductDefinition("coins100", ProductType.Consumable);
+        var coins1000 = new ProductDefinition("coins1000", ProductType.Consumable);
         var removeAds = new ProductDefinition("removeAds", ProductType.NonConsumable);
         var premium = new ProductDefinition("premium", ProductType.Subscription);
 
         list.Add(coins100);
+        list.Add(coins1000);
         list.Add(removeAds);
         list.Add(premium);
 
@@ -84,21 +74,18 @@ public class UnityIapDemoManager : MonoBehaviour
 
         huaweiStore.LoadOwnedConsumables();
         huaweiStore.LoadOwnedNonConsumables();
-        huaweiStore.LoadOwnedSubscribes();
-
-        //huaweiStore.LoadComsumableProducts(list);
-        //huaweiStore.LoadNonComsumableProducts();
-        //huaweiStore.LoadSubscribeProducts();
+        huaweiStore.LoadOwnedSubscriptions();
 
     }
 
     public void BuyProduct(string productID, ProductType productType)
     {
+        Debug.Log($"BuyProduct {productID} , {productType}");
+
         var product = new ProductDefinition(productID, productType);
 
         iStore.Purchase(product, $"payload {productID}");
     }
-
 
     public void OnSetupFailed(InitializationFailureReason reason)
     {
@@ -126,7 +113,7 @@ public class UnityIapDemoManager : MonoBehaviour
     {
         Debug.Log($"storeSpecificId {storeSpecificId} ,receipt {receipt} , transactionIdentifier {transactionIdentifier}");
 
-        var productDefinition = new ProductDefinition(storeSpecificId, storeSpecificId, HuaweiStore.currentProduct.type);
+        var productDefinition = new ProductDefinition(storeSpecificId, storeSpecificId, HuaweiStore.CurrentProduct.type);
         lastPurchaseToken = HuaweiStore.PurchaseTokenOfLastPurchase;
 
         Debug.Log($"lastPurchaseToken {lastPurchaseToken}");
@@ -155,7 +142,10 @@ public class UnityIapDemoManager : MonoBehaviour
 
     }
 
+    public void OnSetupFailed(InitializationFailureReason reason, string message)
+    {
+        Debug.Log($"OnSetupFailed , reason : {reason} , message : {message}");
+    }
 #endif
-
 }
 

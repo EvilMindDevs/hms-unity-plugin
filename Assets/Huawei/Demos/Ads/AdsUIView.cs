@@ -1,5 +1,3 @@
-using HmsPlugin;
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,7 +47,7 @@ public class AdsUIView : MonoBehaviour
     }
 
     #endregion
-   
+
     #region Button Events
 
     private void ButtonClick_ShowInterstitialAd()

@@ -1,4 +1,5 @@
-﻿using HuaweiMobileServices.Scan;
+﻿using HmsPlugin;
+using HuaweiMobileServices.Scan;
 
 using UnityEngine;
 using UnityEngine.UI;

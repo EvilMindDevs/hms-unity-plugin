@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using HmsPlugin;
 using HuaweiMobileServices.Location;
 using HuaweiMobileServices.Utils;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace Huawei.Scripts.Location
     public class LocationReceiver : HMSManagerSingleton<LocationReceiver>
     {
         private static string TAG = "LocationReceiver";
-        
+
         public Action<AndroidIntent> onReceive;
 
         public static bool isListenActivityIdentification;

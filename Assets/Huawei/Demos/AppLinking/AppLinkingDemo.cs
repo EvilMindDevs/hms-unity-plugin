@@ -59,7 +59,7 @@ public class AppLinkingDemo : MonoBehaviour
 
     public void CreateAppLinking()
     {
-        Debug.Log(TAG+"CreateAppLinking");
+        Debug.Log(TAG + "CreateAppLinking");
 
         AppLinking.Builder builder = new AppLinking.Builder();
 
@@ -103,7 +103,7 @@ public class AppLinkingDemo : MonoBehaviour
 
         }).AddOnFailureListener(exception =>
         {
-            Debug.LogError($"[{TAG}]: Failure on BuildShortAppLinking error { exception.WrappedExceptionMessage} cause : {exception.WrappedCauseMessage}");
+            Debug.LogError($"[{TAG}]: Failure on BuildShortAppLinking error {exception.WrappedExceptionMessage} cause : {exception.WrappedCauseMessage}");
         });
     }
 

@@ -1,4 +1,4 @@
-﻿namespace HmsPlugin
+namespace HmsPlugin
 {
     // Helper wrapper class for any Sequence that allows to draw something else when Sequence is empty
     // Draws nothing if nothings was set to draw
@@ -20,7 +20,7 @@
 
         public void Draw()
         {
-            if (_sequenceDrawer.Count() > 0)
+            if (_sequenceDrawer.Any())
             {
                 _sequenceDrawer.Draw();
             }

@@ -1,18 +1,20 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
-
-[InitializeOnLoad]
-public class HMSPluginUpdaterInit : AssetPostprocessor
+namespace HmsPlugin
 {
-    static HMSPluginUpdaterInit()
+    [InitializeOnLoad]
+    public class HMSPluginUpdaterInit : AssetPostprocessor
     {
-        EditorApplication.delayCall += () =>
+        static HMSPluginUpdaterInit()
         {
             EditorApplication.delayCall += () =>
             {
-                EditorApplication.delayCall += () => HMSPluginUpdater.Request();
+                EditorApplication.delayCall += () =>
+                {
+                    EditorApplication.delayCall += () => HMSPluginUpdater.Request();
+                };
             };
-        };
+        }
     }
 }
 #endif

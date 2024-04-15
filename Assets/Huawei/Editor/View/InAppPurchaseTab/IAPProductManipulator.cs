@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace HmsPlugin
@@ -21,14 +19,22 @@ namespace HmsPlugin
 
         private HMSSettings _settings;
         private List<HMSIAPProductEntry> _productList;
-
         public IAPProductManipulator(HMSSettings settings)
         {
             _settings = settings;
             _productList = new List<HMSIAPProductEntry>();
             for (int i = 0; i < _settings.Keys.Count(); i++)
             {
-                _productList.Add(new HMSIAPProductEntry(_settings.Keys.ElementAt(i), (HMSIAPProductType)Enum.Parse(typeof(HMSIAPProductType), _settings.Values.ElementAt(i))));
+                if (Enum.TryParse(_settings.Values.ElementAt(i), out HMSIAPProductType productType))
+                {
+                    _productList.Add(new HMSIAPProductEntry(_settings.Keys.ElementAt(i), productType));
+                }
+                else
+                {
+                    // Handle the case where the value could not be parsed to a HMSIAPProductType
+                    // This could be logging an error, throwing an exception, etc.
+                    Debug.LogError($"Invalid HMSIAPProductType value: {_settings.Values.ElementAt(i)}");
+                }
             }
         }
 

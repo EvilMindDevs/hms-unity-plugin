@@ -1,0 +1,12 @@
+[core]
+	hooksPath = .github/.githooks
+[commit]
+	template = .github/.gitmessages
+[pull]
+	rebase = true
+[alias]
+	co = checkout # exampöe: git co master
+	ci = commit # example: git ci -m "commit message"
+	st = status # example: git st
+	br = branch # example: git br
+	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short # example: git hist

@@ -43,7 +43,7 @@ namespace HmsPlugin
         {
             // Nearby.GetDiscoveryEngine(context).StopScan();
             HuaweiMobileServices.Nearby.Message.GetOption reportPolicy = HuaweiMobileServices.Nearby.Message.GetOption.DEFAULT;
-            Debug.Log("Nearby: Start reportPolicy workes" + reportPolicy);
+            Debug.Log("Nearby: Start reportPolicy works" + reportPolicy);
         }
         public void InitiateConnection(string endpointId, ScanEndpointInfo scanEndpointInfo, IConnectCallBack connectCallBack)
         {

@@ -38,5 +38,5 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            &nbsp;Thank you for reporting this **issue/advice**. <br>We will get back to you as soon as possible. <br>&emsp;&emsp;&emsp;&emsp;Would you like to star our plugin <br>&emsp;&emsp;&emsp;to support us?:sparkles:
+            Thank you for reporting this **issue/advice**. <br><br>We will get back to you as soon as possible. <br>Would you like to star our plugin to support us? :sparkles:
       

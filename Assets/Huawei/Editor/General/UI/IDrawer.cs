@@ -1,4 +1,4 @@
-﻿namespace HmsPlugin
+namespace HmsPlugin
 {
     public interface IDrawer
     {

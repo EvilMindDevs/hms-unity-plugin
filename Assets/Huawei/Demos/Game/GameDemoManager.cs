@@ -1,12 +1,8 @@
-﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using HuaweiMobileServices;
 using HuaweiMobileServices.Game;
-using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Utils;
-using System;
 using HmsPlugin;
 using UnityEngine.UI;
 
@@ -105,16 +101,26 @@ public class GameDemoManager : MonoBehaviour
         Debug.Log(TAG + "CommitGame");
 
         //Example Image Path: give statics path of image on phone
-        string ImagePath = Application.streamingAssetsPath;
-        if (InputFieldDesc.text != null && InputFieldProgress.text != null && InputFieldPlayedTime.text != null)
+        string imagePath = Application.streamingAssetsPath;
+        if (!string.IsNullOrWhiteSpace(InputFieldDesc.text) &&
+            !string.IsNullOrWhiteSpace(InputFieldProgress.text) &&
+            !string.IsNullOrWhiteSpace(InputFieldPlayedTime.text))
         {
             string description = InputFieldDesc.text;
-            long playedTime = long.Parse(InputFieldPlayedTime.text);
-            long progress = long.Parse(InputFieldProgress.text);
-            HMSSaveGameManager.Instance.Commit(description, playedTime, progress, ImagePath, "png");
+            if (long.TryParse(InputFieldPlayedTime.text, out long playedTime) &&
+                long.TryParse(InputFieldProgress.text, out long progress))
+            {
+                HMSSaveGameManager.Instance.Commit(description, playedTime, progress, imagePath, "png");
+            }
+            else
+            {
+                Debug.LogError(TAG + "Failed to parse playedTime or progress");
+            }
         }
         else
+        {
             Debug.Log(TAG + "Fill box");
+        }
     }
 
     private void OnGetPlayerInfoSuccess(Player player)
@@ -160,7 +166,7 @@ public class GameDemoManager : MonoBehaviour
 
     private void OnIsAllowContinuePlayGamesSuccess(bool isAllow)
     {
-        Debug.Log(TAG + "IsAllowContinuePlayGames SUCCESS. isAllow:"+ isAllow);
+        Debug.Log(TAG + "IsAllowContinuePlayGames SUCCESS. isAllow:" + isAllow);
     }
 
     private void OnGetUserPlayStateSuccess(int state)

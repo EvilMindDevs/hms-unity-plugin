@@ -1,7 +1,6 @@
-﻿using HuaweiMobileServices.Id;
+using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
 using UnityEngine;
-using UnityEngine.UI;
 using HmsPlugin;
 using System;
 
@@ -47,21 +46,21 @@ public class AccountDemoManager : MonoBehaviour
 
     public void LogIn()
     {
-        Debug.Log(TAG+"LogIn");
+        Debug.Log(TAG + "LogIn");
 
         HMSAccountKitManager.Instance.SignIn();
     }
 
     public void SilentSignIn()
     {
-        Debug.Log(TAG+"SilentSignIn");
+        Debug.Log(TAG + "SilentSignIn");
 
         HMSAccountKitManager.Instance.SilentSignIn();
     }
 
     public void LogOut()
     {
-        Debug.Log(TAG+"LogOut");
+        Debug.Log(TAG + "LogOut");
 
         HMSAccountKitManager.Instance.SignOut();
 

@@ -355,7 +355,7 @@ namespace HmsPlugin
         {
             using (UnityWebRequest request = new UnityWebRequest(url, "GET"))
             {
-                request.downloadHandler = new DownloadHandlerFile(path, true);
+                request.downloadHandler = new DownloadHandlerFile(path);
                 yield return request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER

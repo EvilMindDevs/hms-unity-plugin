@@ -1,5 +1,5 @@
 # Huawei Mobile Services Plugin for Unity
-[![latestV](https://img.shields.io/github/v/release/EvilMindDevs/hms-unity-plugin?color=E10027&label=Latest%20Version&style=plastic)](https://github.com/EvilMindDevs/hms-unity-plugin/releases)
+[![latestV](https://img.shields.io/badge/LatestRelease_v2.3.7-2018-9146FF?style=plastic&logo=github&logoColor=white)](https://github.com/EvilMindDevs/hms-unity-plugin/releases/tag/v2.3.7-2018)
 <br />
 [![Official Documentation](https://img.shields.io/badge/Documentation-9146FF?style=plastic&logo=gitbook&logoColor=white)](https://evilminddevs.gitbook.io/hms-unity-plugin/)
 <br />

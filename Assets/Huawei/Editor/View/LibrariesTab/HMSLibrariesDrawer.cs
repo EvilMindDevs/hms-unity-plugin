@@ -1,4 +1,4 @@
-﻿namespace HmsPlugin
+namespace HmsPlugin
 {
     public class HMSLibrariesDrawer : VerticalSequenceDrawer
     {
@@ -13,21 +13,21 @@
         public HMSLibrariesDrawer(TabBar tabBar)
         {
             _tabBar = tabBar;
-            if (!HMSMainEditorSettings.Instance.Settings.HasKey(AppCompatEnabled)) 
+            if (!HMSMainEditorSettings.Instance.Settings.HasKey(AppCompatEnabled))
                 HMSMainEditorSettings.Instance.Settings.SetBool(AppCompatEnabled, true);
-            if (!HMSMainEditorSettings.Instance.Settings.HasKey(HMSCoreInstalledEnabled)) 
+            if (!HMSMainEditorSettings.Instance.Settings.HasKey(HMSCoreInstalledEnabled))
                 HMSMainEditorSettings.Instance.Settings.SetBool(HMSCoreInstalledEnabled, true);
             _appSupportToggle = new Toggle.Toggle("App Compat (com.android.support:appcompat-v7:21.0.0)", HMSMainEditorSettings.Instance.Settings.GetBool(AppCompatEnabled, true), OnAppSupportToggleChanged, false).SetLabelWidth(350);
             _hmsCoreInstallToggle = new Toggle.Toggle("HMS Core Installer (com.huawei.hms:hmscoreinstaller:6.6.0.300)", HMSMainEditorSettings.Instance.Settings.GetBool(HMSCoreInstalledEnabled, true), OnHMSCoreInstalledEnabledChanged, false).SetLabelWidth(375);
         }
-        
+
 
         private void OnAppSupportToggleChanged(bool value)
         {
             HMSMainEditorSettings.Instance.Settings.SetBool(AppCompatEnabled, value);
         }
 
-        
+
         private void OnHMSCoreInstalledEnabledChanged(bool value)
         {
             HMSMainEditorSettings.Instance.Settings.SetBool(HMSCoreInstalledEnabled, value);

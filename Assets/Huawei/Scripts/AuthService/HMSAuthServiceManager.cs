@@ -1,16 +1,13 @@
-﻿using HuaweiMobileServices.AuthService;
-using HuaweiMobileServices.Base;
-using HuaweiMobileServices.Id;
+using HuaweiMobileServices.AuthService;
 using HuaweiMobileServices.Utils;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HmsPlugin
 {
     public class HMSAuthServiceManager : HMSManagerSingleton<HMSAuthServiceManager>
     {
+        public const string TAG = "[HMS AuthServiceManager]";
         public Action<SignInResult> OnSignInSuccess { get; set; }
         public Action<HMSException> OnSignInFailed { get; set; }
 
@@ -24,14 +21,12 @@ namespace HmsPlugin
 
         public HMSAuthServiceManager()
         {
-            if (!HMSDispatcher.InstanceExists)
-                HMSDispatcher.CreateDispatcher();
-            HMSDispatcher.InvokeAsync(OnAwake);
+            HMSManagerStart.Start(OnAwake, TAG);
         }
 
         private void OnAwake()
         {
-            Debug.Log("[HMSAuthServiceManager]: AuthService OnAwake");
+            Debug.Log($"{TAG}: AuthService OnAwake");
             _AGConnectAuth = AGConnectAuth.GetInstance();
         }
 
@@ -45,7 +40,7 @@ namespace HmsPlugin
                 })
                 .AddOnFailureListener((error) =>
                 {
-                    Debug.LogError("[HMSAuthServiceManager]: Sign in failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+                    Debug.LogError($"{TAG}: Sign in failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnSignInFailed?.Invoke(error);
                 });
         }
@@ -60,7 +55,7 @@ namespace HmsPlugin
                 })
                 .AddOnFailureListener((error) =>
                 {
-                    Debug.LogError("[HMSAuthServiceManager]: Sign in Anonymously failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+                    Debug.LogError($"{TAG}: Sign in Anonymously failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnSignInFailed?.Invoke(error);
                 });
         }
@@ -87,11 +82,13 @@ namespace HmsPlugin
         {
             if (_AGConnectAuth == null) return;
             _AGConnectAuth.CreateUser(emailUser)
-                .AddOnSuccessListener(signInResult => {
+                .AddOnSuccessListener(signInResult =>
+                {
                     OnCreateUserSuccess?.Invoke(signInResult);
                 })
-                .AddOnFailureListener(error => {
-                    Debug.LogError("[HMSAuthServiceManager]: Create User failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+                .AddOnFailureListener(error =>
+                {
+                    Debug.LogError($"{TAG}: Create User failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnCreateUserFailed?.Invoke(error);
                 });
         }
@@ -101,11 +98,13 @@ namespace HmsPlugin
             if (_AGConnectAuth == null) return;
 
             _AGConnectAuth.CreateUser(phoneUser)
-                .AddOnSuccessListener(signInResult => {
+                .AddOnSuccessListener(signInResult =>
+                {
                     OnCreateUserSuccess?.Invoke(signInResult);
                 })
-                .AddOnFailureListener(error => {
-                    Debug.LogError("[HMSAuthServiceManager]: Create User failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+                .AddOnFailureListener(error =>
+                {
+                    Debug.LogError($"{TAG}: Create User failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnCreateUserFailed?.Invoke(error);
                 });
         }
@@ -114,11 +113,13 @@ namespace HmsPlugin
         {
             if (_AGConnectAuth == null) return;
             _AGConnectAuth.ResetPassword(email, newPassword, verifyCode)
-                .AddOnSuccessListener(Void => {
+                .AddOnSuccessListener(Void =>
+                {
                     OnResetPasswordSuccess?.Invoke(true);
                 })
-                .AddOnFailureListener(error => {
-                    Debug.LogError("[HMSAuthServiceManager]: Reset Password failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+                .AddOnFailureListener(error =>
+                {
+                    Debug.LogError($"{TAG}: Reset Password failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnResetPasswordFailed?.Invoke(error);
                 });
         }
@@ -127,11 +128,13 @@ namespace HmsPlugin
         {
             if (_AGConnectAuth == null) return;
             _AGConnectAuth.ResetPassword(countryCode, phoneNumber, newPassword, verifyCode)
-                .AddOnSuccessListener(Void => {
+                .AddOnSuccessListener(Void =>
+                {
                     OnResetPasswordSuccess?.Invoke(true);
                 })
-                .AddOnFailureListener(error => {
-                    Debug.LogError("[HMSAuthServiceManager]: Reset Password failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
+                .AddOnFailureListener(error =>
+                {
+                    Debug.LogError($"{TAG}: Reset Password failed. CauseMessage: " + error.WrappedCauseMessage + ", ExceptionMessage: " + error.WrappedExceptionMessage);
                     OnResetPasswordFailed?.Invoke(error);
                 });
         }

@@ -1,7 +1,7 @@
-﻿using HuaweiMobileServices.RemoteConfig;
+﻿using HmsPlugin;
+using HuaweiMobileServices.RemoteConfig;
 using HuaweiMobileServices.Utils;
 
-using System;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -44,18 +44,18 @@ public class RemoteConfigDemo : MonoBehaviour
     {
         Debug.Log(TAG + " Fetch");
 
-        HMSRemoteConfigManager.Instance.OnFecthSuccess = OnFecthSuccess;
-        HMSRemoteConfigManager.Instance.OnFecthFailure = OnFecthFailure;
+        HMSRemoteConfigManager.Instance.OnFetchSuccess = OnFetchSuccess;
+        HMSRemoteConfigManager.Instance.OnFetchFailure = OnFetchFailure;
         HMSRemoteConfigManager.Instance.Fetch();
     }
 
-    private void OnFecthSuccess(ConfigValues config)
+    private void OnFetchSuccess(ConfigValues config)
     {
         HMSRemoteConfigManager.Instance.Apply(config);
         Debug.Log($"[{TAG}]: fetch() Success");
     }
 
-    private void OnFecthFailure(HMSException exception)
+    private void OnFetchFailure(HMSException exception)
     {
         Debug.Log($"[{TAG}]: fetch() Failed Error Code => {exception.ErrorCode} Message => {exception.WrappedExceptionMessage}");
     }

@@ -1,0 +1,56 @@
+root = true
+
+## Global ##
+[*]# Matches all files
+# Use UTF-8 encoding
+charset = utf-8
+# Use Unix-style newlines
+end_of_line = lf
+# Insert a final newline
+insert_final_newline = true
+# Trim trailing whitespace
+trim_trailing_whitespace = true
+
+## Indentation and Spacing ##
+[*]
+indent_size = 4
+indent_style = space
+tab_width = 4
+
+[*.cs]
+indent_size = 4
+indent_style = space
+tab_width = 4
+
+[*.{csproj,xml,json}]
+indent_size = 2
+indent_style = space
+tab_width = 2
+
+# Matches C# files
+[*.cs]
+# Use K&R style for brackets
+csharp_new_line_before_open_brace = all
+# Use camelCase for naming
+dotnet_naming_style.camel_case_style.capitalization = camel_case
+# Use PascalCase for naming
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+# Use camelCase for private fields
+dotnet_naming_rule.private_fields_should_be_camel_case.severity = suggestion
+dotnet_naming_rule.private_fields_should_be_camel_case.symbols = private_fields
+dotnet_naming_rule.private_fields_should_be_camel_case.style = camel_case_style
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+# Use PascalCase for public members
+dotnet_naming_rule.public_members_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.public_members_should_be_pascal_case.symbols = public_members
+dotnet_naming_rule.public_members_should_be_pascal_case.style = pascal_case_style
+dotnet_naming_symbols.public_members.applicable_kinds = method, property, event, field
+dotnet_naming_symbols.public_members.applicable_accessibilities = public
+# Use PascalCase for constants
+dotnet_naming_rule.constants_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.constants_should_be_pascal_case.symbols = constants
+dotnet_naming_rule.constants_should_be_pascal_case.style = pascal_case_style
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.applicable_accessibilities = public, internal, protected, private
+dotnet_naming_symbols.constants.required_modifiers = const

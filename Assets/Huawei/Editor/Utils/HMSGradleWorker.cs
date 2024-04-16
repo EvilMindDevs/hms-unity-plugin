@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,31 +21,31 @@ namespace HmsPlugin
         {
             gradleSettings = new Dictionary<string, string[]>()
             {
-                { AccountToggleEditor.AccountKitEnabled,        new [] { "com.huawei.hms:hwid:6.9.0.301" } },
+                { AccountToggleEditor.AccountKitEnabled,        new [] { "com.huawei.hms:hwid:6.12.0.300" } },
                 { AdsToggleEditor.AdsKitEnabled,                new []
                     {
-                        "com.huawei.hms:ads-lite:13.4.61.300",
-                        "com.huawei.hms:ads-consent:3.4.61.300",
-                        "com.huawei.hms:ads-identifier:3.4.58.301",
-                        "com.huawei.hms:ads-installreferrer:3.4.58.301"
+                        "com.huawei.hms:ads-lite:13.4.69.300",
+                        "com.huawei.hms:ads-consent:3.4.69.300",
+                        "com.huawei.hms:ads-identifier:3.4.62.300",
+                        "com.huawei.hms:ads-installreferrer:3.4.62.300"
                     }
                 },
                 { AnalyticsToggleEditor.AnalyticsKitEnabled,    new [] { "com.huawei.hms:hianalytics:6.4.1.302" } },
                 { CrashToggleEditor.CrashKitEnabled,            new [] { "com.huawei.agconnect:agconnect-crash:1.8.0.300" } },
-                { GameServiceToggleEditor.GameServiceEnabled,   new [] { "com.huawei.hms:game:6.2.0.301" } },
-                { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.4.0.301" } },
-                { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.7.0.300" } },
+                { GameServiceToggleEditor.GameServiceEnabled,   new [] { "com.huawei.hms:game:6.10.0.300" } },
+                { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.13.0.300" } },
+                { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.11.0.300" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new [] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },
-                { CloudDBToggleEditor.CloudDBEnabled,           new [] { "com.huawei.agconnect:agconnect-cloud-database:1.5.5.300" } },
-                { AuthToggleEditor.AuthEnabled,                 new [] { "com.huawei.agconnect:agconnect-auth:1.8.0.300" } },
+                { CloudDBToggleEditor.CloudDBEnabled,           new [] { "com.huawei.agconnect:agconnect-cloud-database:1.9.1.301" } },
+                { AuthToggleEditor.AuthEnabled,                 new [] { "com.huawei.agconnect:agconnect-auth:1.9.1.301" } },
                 { NearbyServiceToggleEditor.NearbyServiceEnabled, new [] { "com.huawei.hms:nearby:6.2.0.301" } },
                 { AppMessagingToggleEditor.AppMessagingEnabled, new [] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },
                 { HMSLibrariesDrawer.AppCompatEnabled,          new []{ "com.android.support:appcompat-v7:21.0.0" } },
                 { LocationToggleEditor.LocationEnabled,          new [] { "com.huawei.hms:location:6.4.0.300" } },
                 { ScanKitToggleEditor.ScanKitEnabled,            new [] { "com.huawei.hms:scan:2.6.0.301" } },
-                { AppLinkingToggleEditor.AppLinkingEnabled,      new [] { "com.huawei.agconnect:agconnect-applinking:1.8.0.300" } },
-                { DriveKitToggleEditor.DriveKitEnabled,          new [] { "com.huawei.hms:drive:5.0.0.307" } },
-                { CloudStorageToggleEditor.CloudStorageEnabled,  new [] { "com.huawei.agconnect:agconnect-storage:1.5.0.100" } },
+                { AppLinkingToggleEditor.AppLinkingEnabled,      new [] { "com.huawei.agconnect:agconnect-applinking:1.9.1.301" } },
+                { DriveKitToggleEditor.DriveKitEnabled,          new [] { "com.huawei.hms:drive:5.2.0.300" } },
+                { CloudStorageToggleEditor.CloudStorageEnabled,  new [] { "com.huawei.agconnect:agconnect-storage:1.9.1.301" } },
                 { APMToggleEditor.APMEnabled,                    new [] { "com.huawei.agconnect:agconnect-apms:1.6.1.300" } },
                 { Modeling3dKitToggleEditor.Modeling3dkitEnabled,new []
                     {
@@ -66,10 +66,14 @@ namespace HmsPlugin
 
         private void CreateGradleFiles(string[] gradleConfigs)
         {
-#if UNITY_2019_3_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
             CreateMainGradleFile(gradleConfigs);
             CreateLauncherGradleFile(gradleConfigs);
-            BaseProjectGradleFile();
+            BaseProjectGradleFile("1.9.1.301");
+#elif UNITY_2019_3_OR_NEWER
+            CreateMainGradleFile(gradleConfigs);
+            CreateLauncherGradleFile(gradleConfigs);
+            BaseProjectGradleFile("1.6.1.300");
 
 #elif UNITY_2018_1_OR_NEWER
             CreateMainGradleFile(gradleConfigs);
@@ -117,10 +121,10 @@ namespace HmsPlugin
                 file.Write("}\n\n");
             }
 #endif
-/* TODO:
+            /* TODO:
 #elif UNITY_2022_1_OR_NEWER
-//Gradle 7+ and classpath 'com.huawei.agconnect:agcp:1.8.0.300' 
-*/
+            //Gradle 7+ and classpath 'com.huawei.agconnect:agcp:1.9.1.301'
+            */
         }
 
         private void CreateLauncherGradleFile(string[] gradleConfigs)
@@ -130,7 +134,7 @@ namespace HmsPlugin
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("apply plugin: 'com.huawei.agconnect'\n");
 
-            #region Dependencies
+#region Dependencies
 
             stringBuilder.AppendLine("dependencies {");
             for (int i = 0; i < gradleConfigs.Length; i++)
@@ -138,7 +142,7 @@ namespace HmsPlugin
                 stringBuilder.AppendLine($"\t{AddDependency(gradleConfigs[i])}");
             }
             stringBuilder.AppendLine("}");
-            #endregion
+#endregion
             stringBuilder.AppendLine("android {");
             stringBuilder.AppendLine("\tpackagingOptions {");
             stringBuilder.AppendLine("\t\tpickFirst \"okhttp3/internal/publicsuffix/publicsuffixes.gz\"");
@@ -148,7 +152,7 @@ namespace HmsPlugin
 
             File.WriteAllText(path, stringBuilder.ToString());
         }
-        private void BaseProjectGradleFile()
+        private void BaseProjectGradleFile(string agcversion)
         {
             // Combine paths to get the full file path
             string filePath = Path.Combine(Application.dataPath + "/Huawei/Plugins/Android/hmsBaseProjectTemplate.gradle");
@@ -169,7 +173,7 @@ namespace HmsPlugin
             sb.AppendLine("\t\tdependencies {");
 
             // Add the classpath dependency for Huawei's AGC
-            sb.AppendFormat("\t\t\t{0}\n", AddClasspath("com.huawei.agconnect:agcp:1.6.1.300"));
+            sb.AppendFormat("\t\t\t{0}\n", AddClasspath("com.huawei.agconnect:agcp:" + agcversion));
 
             sb.AppendLine("\t\t}");  // End of dependencies
             sb.AppendLine("\t}");    // End of buildscript
@@ -213,7 +217,7 @@ namespace HmsPlugin
         }
         private string[] CoreGradles()
         {
-            return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300"};
+            return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300" };
         }
 
         public void OnPreprocessBuild(BuildReport report)
@@ -250,7 +254,7 @@ namespace HmsPlugin
             if (appDebugAar != null)
                 appDebugAar.SetCompatibleWithPlatform(BuildTarget.Android, pluginEnabled);
 
-            HMSEditorUtils.HandleAssemblyDefinitions(pluginEnabled);
+            HMSEditorUtils.UpdateAssemblyDefinitions(pluginEnabled);
         }
 
         private void OnBuildError(string condition, string stackTrace, LogType type)
@@ -258,7 +262,7 @@ namespace HmsPlugin
             if (type == LogType.Error)
             {
                 Application.logMessageReceived -= OnBuildError;
-                HMSEditorUtils.HandleAssemblyDefinitions(false, false);
+                HMSEditorUtils.UpdateAssemblyDefinitions(false, false);
             }
         }
     }

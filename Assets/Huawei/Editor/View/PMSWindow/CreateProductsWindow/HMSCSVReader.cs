@@ -1,11 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace HmsPlugin
 {
@@ -30,7 +25,7 @@ namespace HmsPlugin
             {
 
                 var values = Regex.Split(lines[i], SPLIT_RE);
-                if (values.Length == 0 || values[0] == "") continue;
+                if (values.Length == 0 || string.IsNullOrWhiteSpace(values[0])) continue;
 
                 var entry = new Dictionary<string, object>();
                 for (var j = 0; j < header.Length && j < values.Length; j++)

@@ -1,10 +1,7 @@
-﻿using HmsPlugin.List;
-using System;
+using HmsPlugin.List;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -77,7 +74,7 @@ namespace HmsPlugin
 
         private void CreateRemoteConfigConstants()
         {
-            if (_defaultValueSettings.Keys.Count() > 0)
+            if (_defaultValueSettings.Keys.Any())
             {
                 using (var file = File.CreateText(Application.dataPath + "/Huawei/Scripts/Utils/HMSRemoteConfigConstants.cs"))
                 {

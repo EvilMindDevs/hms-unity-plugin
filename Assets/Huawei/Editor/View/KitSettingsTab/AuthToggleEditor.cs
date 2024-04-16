@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
-using UnityEditor.SceneManagement;
-using UnityEngine;
 
 namespace HmsPlugin
 {
@@ -60,7 +53,7 @@ namespace HmsPlugin
 
         public override void DisableToggle()
         {
-           Enabled = false;
+            Enabled = false;
         }
         public override void RemoveToggleTabView(bool removeTabs)
         {

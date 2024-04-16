@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.AuthService;
+using HuaweiMobileServices.AuthService;
 using HuaweiMobileServices.CloudDB;
 using HuaweiMobileServices.Common;
 using HuaweiMobileServices.Utils;
@@ -11,7 +11,7 @@ namespace HmsPlugin
 {
     public class HMSCloudDBManager : HMSManagerSingleton<HMSCloudDBManager>
     {
-        string TAG = "HMSCloudDBManager";
+        private const string TAG = "HMSCloudDBManager";
 
         AGConnectCloudDB mCloudDB = null;
         CloudDBZoneConfig mConfig = null;
@@ -58,6 +58,11 @@ namespace HmsPlugin
 
         public Action<long> OnExecuteCountQuerySuccess { get; set; }
         public Action<HMSException> OnExecuteCountQueryFailed { get; set; }
+
+        public HMSCloudDBManager()
+        {
+            HMSManagerStart.Start(TAG);
+        }
 
         public void Initialize()
         {
@@ -114,7 +119,7 @@ namespace HmsPlugin
                 }).AddOnFailureListener(exception =>
                 {
                     OnOpenCloudDBZone2Failed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDB.OpenCloudDBZone2 error " +
+                    Debug.LogError($"[{TAG}]: mCloudDB.OpenCloudDBZone2 error " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage);
                 });
@@ -168,7 +173,7 @@ namespace HmsPlugin
                 .AddOnFailureListener(exception =>
                 {
                     OnExecuteUpsertFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteUpsert AddOnFailureListener " +
+                    Debug.LogError($"[{TAG}]: mCloudDBZone.ExecuteUpsert AddOnFailureListener " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage + " - ");
                 });
@@ -183,11 +188,12 @@ namespace HmsPlugin
                 .AddOnSuccessListener(result =>
                 {
                     OnExecuteUpsertSuccess?.Invoke(result);
+                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteUpsert AddOnSuccessListener " + result);
                 })
                 .AddOnFailureListener(exception =>
                 {
                     OnExecuteUpsertFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteUpsert AddOnFailureListener " +
+                    Debug.LogError($"[{TAG}]: mCloudDBZone.ExecuteUpsert AddOnFailureListener " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage + " - ");
                 });
@@ -207,7 +213,7 @@ namespace HmsPlugin
                 .AddOnFailureListener(exception =>
                 {
                     OnExecuteDeleteFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteDelete AddOnFailureListener " +
+                    Debug.LogError($"[{TAG}]: mCloudDBZone.ExecuteDelete AddOnFailureListener " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage + " - ");
                 });
@@ -227,7 +233,7 @@ namespace HmsPlugin
                 .AddOnFailureListener(exception =>
                 {
                     OnExecuteDeleteFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteDelete AddOnFailureListener " +
+                    Debug.LogError($"[{TAG}]: mCloudDBZone.ExecuteDelete AddOnFailureListener " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage + " - ");
                 });
@@ -247,7 +253,7 @@ namespace HmsPlugin
                 .AddOnFailureListener(exception =>
                 {
                     OnExecuteCountQueryFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteAverageQuery AddOnFailureListener " +
+                    Debug.LogError($"[{TAG}]: mCloudDBZone.ExecuteAverageQuery AddOnFailureListener " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage + " - ");
                 });
@@ -267,7 +273,7 @@ namespace HmsPlugin
                 .AddOnFailureListener(exception =>
                 {
                     OnExecuteSumQueryFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteSumQuery AddOnFailureListener " +
+                    Debug.LogError($"[{TAG}]: mCloudDBZone.ExecuteSumQuery AddOnFailureListener " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage + " - ");
                 });
@@ -287,7 +293,7 @@ namespace HmsPlugin
                 .AddOnFailureListener(exception =>
                 {
                     OnExecuteMaximumQueryFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteMaximumQuery AddOnFailureListener " +
+                    Debug.LogError($"[{TAG}]: mCloudDBZone.ExecuteMaximumQuery AddOnFailureListener " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage + " - ");
                 });
@@ -307,7 +313,7 @@ namespace HmsPlugin
                 .AddOnFailureListener(exception =>
                 {
                     OnExecuteMinimalQueryFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteMinimalQuery AddOnFailureListener " +
+                    Debug.LogError($"[{TAG}]: mCloudDBZone.ExecuteMinimalQuery AddOnFailureListener " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage + " - ");
                 });
@@ -327,7 +333,7 @@ namespace HmsPlugin
                 .AddOnFailureListener(exception =>
                 {
                     OnExecuteCountQueryFailed?.Invoke(exception);
-                    Debug.Log($"[{TAG}]: mCloudDBZone.ExecuteCountQuery AddOnFailureListener " +
+                    Debug.LogError($"[{TAG}]: mCloudDBZone.ExecuteCountQuery AddOnFailureListener " +
                         exception.WrappedCauseMessage + " - " +
                         exception.WrappedExceptionMessage + " - ");
                 });

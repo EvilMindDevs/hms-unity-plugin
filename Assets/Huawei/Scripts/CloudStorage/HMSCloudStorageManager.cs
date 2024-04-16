@@ -1,9 +1,8 @@
-﻿using HuaweiMobileServices.Base;
+using HuaweiMobileServices.Base;
 using HuaweiMobileServices.CloudStorage;
 using HuaweiMobileServices.Utils;
 
 using System;
-
 using UnityEngine;
 using UnityEngine.Android;
 
@@ -50,10 +49,7 @@ namespace HmsPlugin
 
         public HMSCloudStorageManager()
         {
-            if (!HMSDispatcher.InstanceExists)
-                HMSDispatcher.CreateDispatcher();
-
-            HMSDispatcher.InvokeAsync(InitAGCStorageManagement);
+            HMSManagerStart.Start(TAG, true, InitAGCStorageManagement);
         }
 
         private void InitAGCStorageManagement()

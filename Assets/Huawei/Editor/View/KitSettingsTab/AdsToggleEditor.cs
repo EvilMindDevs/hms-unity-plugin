@@ -1,9 +1,3 @@
-﻿using UnityEngine;
-using UnityEditor;
-using HmsPlugin;
-using System;
-using UnityEditor.SceneManagement;
-
 namespace HmsPlugin
 {
     public class AdsToggleEditor : ToggleEditor, IDrawer

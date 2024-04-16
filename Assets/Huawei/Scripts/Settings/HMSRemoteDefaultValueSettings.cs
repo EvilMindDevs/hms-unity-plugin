@@ -1,9 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace HmsPlugin
 {
@@ -21,7 +18,7 @@ namespace HmsPlugin
 
             if (loadedSettings == null)
             {
-                throw new NullReferenceException("Failed to load the " + SettingsFilename + ". Please restart Unity Editor");
+                throw new InvalidOperationException($"Failed to load the {SettingsFilename}. Please restart Unity Editor");
             }
             _settings = loadedSettings.settings;
 

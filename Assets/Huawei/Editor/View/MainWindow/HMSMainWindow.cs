@@ -1,53 +1,55 @@
 ﻿
-using HmsPlugin;
 using HmsPlugin.Window;
 using UnityEditor;
 
-public class HMSMainWindow : HMSEditorWindow
+namespace HmsPlugin
 {
-    [MenuItem("Huawei/Kit Settings", priority = 1)]
-    public static void ShowWindow()
+    public class HMSMainWindow : HMSEditorWindow
     {
-        GetWindow(typeof(HMSMainWindow), false, "HMS Kit Settings");
-    }
+        [MenuItem("Huawei/Kit Settings", priority = 1)]
+        public static void ShowWindow()
+        {
+            GetWindow(typeof(HMSMainWindow), false, "HMS Kit Settings");
+        }
 
-    [MenuItem("Huawei/Check for Updates", priority = 2)]
-    public static void CheckForUpdates()
-    {
-        HMSPluginUpdater.Request(true);
-    }
+        [MenuItem("Huawei/Check for Updates", priority = 2)]
+        public static void CheckForUpdates()
+        {
+            HMSPluginUpdater.Request(true);
+        }
 
-    [MenuItem("Huawei/Utils/Enable Plugin")]
-    public static void EnablePlugin()
-    {
-        HMSEditorUtils.SetHMSPlugin(true, true);
-    }
+        [MenuItem("Huawei/Utils/Enable Plugin")]
+        public static void EnablePlugin()
+        {
+            HMSEditorUtils.SetHMSPlugin(true, true);
+        }
 
-    [MenuItem("Huawei/Utils/Enable Plugin Without Managers")]
-    public static void EnableWithoutManagers()
-    {
-        HMSEditorUtils.SetHMSPlugin(true, false);
-    }
+        [MenuItem("Huawei/Utils/Enable Plugin Without Managers")]
+        public static void EnableWithoutManagers()
+        {
+            HMSEditorUtils.SetHMSPlugin(true, false);
+        }
 
-    [MenuItem("Huawei/Utils/Disable Plugin")]
-    public static void DisablePlugin()
-    {
-        HMSEditorUtils.SetHMSPlugin(false, false);
-    }
+        [MenuItem("Huawei/Utils/Disable Plugin")]
+        public static void DisablePlugin()
+        {
+            HMSEditorUtils.SetHMSPlugin(false, false);
+        }
 
-    [MenuItem("Huawei/Utils/Key Tool")]
-    public static void KeyTool()
-    {
-       GetWindow(typeof(HMSKeyToolWindow), false, "HMS Key Tool", true);
-    }
+        [MenuItem("Huawei/Utils/Key Tool")]
+        public static void KeyTool()
+        {
+            GetWindow(typeof(HMSKeyToolWindow), false, "HMS Key Tool", true);
+        }
 
-    public override IDrawer CreateDrawer()
-    {
-        var tabBar = new TabBar();
+        public override IDrawer CreateDrawer()
+        {
+            var tabBar = new TabBar();
 
-        HMSMainKitsTabFactory.CreateKitsTab(tabBar);
+            HMSMainKitsTabFactory.CreateKitsTab(tabBar);
 
-        return tabBar;
+            return tabBar;
 
+        }
     }
 }

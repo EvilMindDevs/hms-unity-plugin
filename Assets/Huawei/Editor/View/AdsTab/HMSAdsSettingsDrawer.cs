@@ -1,13 +1,10 @@
-﻿using HmsPlugin.Dropdown;
+using HmsPlugin.Dropdown;
 using HmsPlugin.Image;
 using HmsPlugin.TextField;
-
 using HuaweiConstants;
 
 using System;
-
 using UnityEditor;
-
 using UnityEngine;
 
 using static HuaweiConstants.UnityBannerAdPositionCode;
@@ -78,8 +75,18 @@ namespace HmsPlugin
             _bannerAdsRefreshField = new TextFieldWithAccept("Banner Refresh Interval*", _settings.Get(HMSAdsKitSettings.BannerRefreshInterval), "Save", OnBannerRefreshIntervalSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100).AddTooltip("Default is 60 seconds. Value can be between 30 and 120 seconds");
             _enableBannerAdLoadToggle = new Toggle.Toggle("Show Banner on Load*", _settings.GetBool(HMSAdsKitSettings.ShowBannerOnLoad), OnShowBannerOnLoadChanged, false).SetTooltip("Enabling this will make the banner to be shown right after it finishes loading.");
 
-            _bannerAdPositionType = new EnumDropdown((UnityBannerAdPositionCodeType)Enum.Parse(typeof(UnityBannerAdPositionCodeType), _settings.Get(HMSAdsKitSettings.BannerAdPositionType, "POSITION_BOTTOM")), "Banner Ad Position");
-            _BannerAdSizeType = new EnumDropdown((UnityBannerAdSizeType)Enum.Parse(typeof(UnityBannerAdSizeType), _settings.Get(HMSAdsKitSettings.UnityBannerAdSizeType, "BANNER_SIZE_360_57")), "Banner Size Type");
+            if (!Enum.TryParse(_settings.Get(HMSAdsKitSettings.BannerAdPositionType, "POSITION_BOTTOM"), out UnityBannerAdPositionCodeType bannerAdPositionType))
+            {
+                bannerAdPositionType = UnityBannerAdPositionCodeType.POSITION_BOTTOM;
+            }
+            _bannerAdPositionType = new EnumDropdown(bannerAdPositionType, "Banner Ad Position");
+
+            if (!Enum.TryParse(_settings.Get(HMSAdsKitSettings.UnityBannerAdSizeType, "BANNER_SIZE_360_57"), out UnityBannerAdSizeType bannerAdSizeType))
+            {
+                bannerAdSizeType = UnityBannerAdSizeType.BANNER_SIZE_360_57;
+            }
+            _BannerAdSizeType = new EnumDropdown(bannerAdSizeType, "Banner Size Type");
+
             _bannerAdsTextField = new TextFieldWithAccept("Banner Ad ID", _settings.Get(HMSAdsKitSettings.BannerAdID), "Save", OnBannerAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
 
             _bannerAdsDisabledDrawer = new DisabledDrawer(new VerticalSequenceDrawer(_BannerAdSizeType, _bannerAdPositionType, _bannerAdsRefreshField, _enableBannerAdLoadToggle)).SetEnabled(!bannerIsActive);
@@ -125,8 +132,11 @@ namespace HmsPlugin
 
             _enableSplashAdsToggle = new Toggle.Toggle("Enable Splash Ads", splashAdsIsActive, OnSplashAdToggleChanged, false);
             _splashAdsIdTextField = new TextFieldWithAccept("Splash Ad ID", _settings.Get(HMSAdsKitSettings.SplashAdID), "Save", OnSplashAdIDSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
-            _splashAdOrientation = new EnumDropdown((SplashAdOrientation)Enum.Parse(typeof(SplashAdOrientation), _settings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT")), "Orientation");
-            _splashAdsTitleTextField = new TextFieldWithAccept("Splash Title", _settings.Get(HMSAdsKitSettings.SplashTitle), "Save", OnSplashTitleSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
+            if (!Enum.TryParse(_settings.Get(HMSAdsKitSettings.SplashOrientation, "PORTRAIT"), out SplashAdOrientation splashAdOrientation))
+            {
+                splashAdOrientation = SplashAdOrientation.PORTRAIT;
+            }
+            _splashAdOrientation = new EnumDropdown(splashAdOrientation, "Orientation"); _splashAdsTitleTextField = new TextFieldWithAccept("Splash Title", _settings.Get(HMSAdsKitSettings.SplashTitle), "Save", OnSplashTitleSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashAdsSubTextField = new TextFieldWithAccept("Splash Sub Text", _settings.Get(HMSAdsKitSettings.SplashSubText), "Save", OnSplashSubTextSaveButtonClick).SetLabelWidth(0).SetButtonWidth(100);
             _splashSpriteImage = new SpriteImage(AssetDatabase.LoadAssetAtPath<Sprite>(_settings.Get(HMSAdsKitSettings.SplashImagePath, "")), "Icon*", OnSpriteImageChanged).SetTooltip("Image will be shown as 28x28 pixels");
             _previewButton = new Button.Button("Preview", OnPreviewClick).SetWidth(150).SetBGColor(Color.green);
@@ -198,19 +208,14 @@ namespace HmsPlugin
         private void OnSplashSubTextSaveButtonClick()
         {
             _settings.Set(HMSAdsKitSettings.SplashSubText, _splashAdsSubTextField.GetCurrentText());
-            if (_splashAdPreviewObj != null)
-            {
-                _splashAdPreviewObj.RefreshContent();
-            }
+            RefreshSplashAdPreview();
+
         }
 
         private void OnSplashTitleSaveButtonClick()
         {
             _settings.Set(HMSAdsKitSettings.SplashTitle, _splashAdsTitleTextField.GetCurrentText());
-            if (_splashAdPreviewObj != null)
-            {
-                _splashAdPreviewObj.RefreshContent();
-            }
+            RefreshSplashAdPreview();
         }
 
         private void OnSplashAdIDSaveButtonClick()
@@ -337,15 +342,12 @@ namespace HmsPlugin
                 }
                 _settings.Set(HMSAdsKitSettings.SplashImagePath, image != null ? AssetDatabase.GetAssetPath(image.GetInstanceID()) : "");
                 _settings.Set(HMSAdsKitSettings.SplashImageBytes, image != null ? imageAsString : "");
-                if (_splashAdPreviewObj != null)
-                {
-                    _splashAdPreviewObj.RefreshContent();
-                }
+                RefreshSplashAdPreview();
             }
             catch (Exception ex)
             {
                 EditorUtility.DisplayDialog("HMSAdsKit Splash Image Error", ex.Message, "Ok");
-                throw ex;
+                throw;
             }
         }
 
@@ -392,43 +394,34 @@ namespace HmsPlugin
             switch (settings.format)
             {
                 case TextureImporterFormat.RGB16:
-                    return true;
                 case TextureImporterFormat.RGB24:
-                    return true;
                 case TextureImporterFormat.Alpha8:
-                    return true;
                 case TextureImporterFormat.R16:
-                    return true;
                 case TextureImporterFormat.R8:
-                    return true;
                 case TextureImporterFormat.RG16:
-                    return true;
                 case TextureImporterFormat.ARGB16:
-                    return true;
                 case TextureImporterFormat.RGBA32:
-                    return true;
                 case TextureImporterFormat.ARGB32:
-                    return true;
                 case TextureImporterFormat.RGBA16:
-                    return true;
                 case TextureImporterFormat.RHalf:
-                    return true;
                 case TextureImporterFormat.RGHalf:
-                    return true;
                 case TextureImporterFormat.RGBAHalf:
-                    return true;
                 case TextureImporterFormat.RFloat:
-                    return true;
                 case TextureImporterFormat.RGFloat:
-                    return true;
                 case TextureImporterFormat.RGBAFloat:
-                    return true;
                 case TextureImporterFormat.RGB9E5:
                     return true;
                 default:
-                    break;
+                    // All cases are handled
+                    return false;
             }
-            return false;
+        }
+        private void RefreshSplashAdPreview()
+        {
+            if (_splashAdPreviewObj != null)
+            {
+                _splashAdPreviewObj.RefreshContent();
+            }
         }
     }
 }

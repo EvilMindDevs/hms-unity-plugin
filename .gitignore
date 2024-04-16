@@ -69,3 +69,9 @@ crashlytics-build.properties
 /.idea/
 UserSettings/AndroidLogcatSettings.asset
 UserSettings/QuickSearch.settings
+
+# HMSConfigureGitStandards this only for the plugin developers
+/Assets/Editor/HMSConfigureGitStandards.cs
+/Assets/Editor/HMSConfigureGitStandards.cs.meta
+/Assets/Editor/HMSUnityProjectStart.cs
+/Assets/Editor/HMSUnityProjectStart.cs.meta

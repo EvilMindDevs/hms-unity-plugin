@@ -1,44 +1,40 @@
-﻿using HmsPlugin;
-using HmsPlugin.ConnectAPI.PMSAPI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HmsPlugin.ConnectAPI.PMSAPI;
 
-
-internal class HMSPMSAPITabFactory
+namespace HmsPlugin
 {
-    public static TabView CreateProductTab(TabBar tabBar)
+    internal class HMSPMSAPITabFactory
     {
-        var tab = new TabView("Create a Product");
-        tabBar.AddTab(tab);
-        tab.AddDrawer(new CreateProductEditor());
-        return tab;
+        public static TabView CreateProductTab(TabBar tabBar)
+        {
+            var tab = new TabView("Create a Product");
+            tabBar.AddTab(tab);
+            tab.AddDrawer(new CreateProductEditor());
+            return tab;
+        }
+
+        public static TabView CreateProductsTab(TabBar tabBar)
+        {
+            var tab = new TabView("Create Products");
+            tabBar.AddTab(tab);
+            tab.AddDrawer(new CreateProductsEditor());
+            return tab;
+        }
+
+        public static TabView AllProductsTab(TabBar tabBar)
+        {
+            var tab = new TabView("All Products");
+            tabBar.AddTab(tab);
+            tab.AddDrawer(new AllIAPProductsEditor());
+            return tab;
+        }
+
+        public static TabView UpdateProductTab(TabBar tabBar, AllIAPProductsEditor.Product product)
+        {
+            var tab = new TabView("Update Product");
+            tabBar.AddTab(tab);
+            tab.AddDrawer(new UpdateIAPProductEditor(product));
+            return tab;
+        }
     }
 
-    public static TabView CreateProductsTab(TabBar tabBar)
-    {
-        var tab = new TabView("Create Products");
-        tabBar.AddTab(tab);
-        tab.AddDrawer(new CreateProductsEditor());
-        return tab;
-    }
-
-    public static TabView AllProductsTab(TabBar tabBar)
-    {
-        var tab = new TabView("All Products");
-        tabBar.AddTab(tab);
-        tab.AddDrawer(new AllIAPProductsEditor());
-        return tab;
-    }
-
-    public static TabView UpdateProductTab(TabBar tabBar, AllIAPProductsEditor.Product product)
-    {
-        var tab = new TabView("Update Product");
-        tabBar.AddTab(tab);
-        tab.AddDrawer(new UpdateIAPProductEditor(product));
-        return tab;
-    }
 }
-

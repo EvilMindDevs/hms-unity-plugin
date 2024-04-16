@@ -1,7 +1,4 @@
-﻿using HuaweiMobileServices.Base;
 using HuaweiMobileServices.Drive;
-using HuaweiMobileServices.Game;
-using HuaweiMobileServices.Id;
 using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
@@ -18,10 +15,8 @@ namespace HmsPlugin
 
         public HMSDriveKitManager()
         {
-            if (!HMSDispatcher.InstanceExists)
-                HMSDispatcher.CreateDispatcher();
-            HMSDispatcher.InvokeAsync(OnAwake);
-        }       
+            HMSManagerStart.Start(OnAwake, TAG);
+        }
 
         private void OnAwake()
         {
@@ -64,7 +59,7 @@ namespace HmsPlugin
             return file;
         }
 
-        public void CreateFolder(string folderName = "testDir") 
+        public void CreateFolder(string folderName = "testDir")
         {
             // Create a folder.
             File dir = new File().SetFileName(folderName)
@@ -76,13 +71,13 @@ namespace HmsPlugin
         {
             List<Comment> commentArrayList = new List<Comment>();
 
-            if (fileId == "") 
+            if (string.IsNullOrWhiteSpace(fileId)) 
             {
-                if(recentlyCreatedFile != null) 
+                if (recentlyCreatedFile != null)
                 {
                     fileId = recentlyCreatedFile.GetId();// Use recently created file's ID
                 }
-                else 
+                else
                 {
                     return commentArrayList;
                 }
@@ -122,7 +117,7 @@ namespace HmsPlugin
         {
             Comment comment = null;
 
-            if (fileId == "")
+            if (string.IsNullOrWhiteSpace(fileId))
             {
                 if (recentlyCreatedFile != null)
                 {
@@ -133,12 +128,12 @@ namespace HmsPlugin
                     return comment;
                 }
             }
-            
+
             try
             {
                 Comment content = new Comment();
                 content.SetDescription("interface test");
-                var date = System.DateTime.Now.Ticks;
+                var date = System.DateTime.UtcNow.Ticks;
                 content.SetCreatedTime(new HuaweiMobileServices.Drive.DateTime(date));
                 comment = drive.comments().create(fileId, content).SetFields("*").Execute();
             }
@@ -157,7 +152,7 @@ namespace HmsPlugin
                 FileList list = drive.files().list().Execute();
                 string nextCursor = list.GetNextCursor();
                 Debug.Log(TAG + "ListFile nextCursor string.IsNullOrEmpty(nextCursor):" + string.IsNullOrEmpty(nextCursor));
-                while (!string.IsNullOrEmpty(nextCursor)) 
+                while (!string.IsNullOrEmpty(nextCursor))
                 {
                     nextCursor = list.GetNextCursor();
                 }
@@ -173,7 +168,7 @@ namespace HmsPlugin
         public File GetFile(string fileId = "")
         {
             File file = null;
-            if (fileId == "")
+            if (string.IsNullOrWhiteSpace(fileId))
             {
                 if (recentlyCreatedFile != null)
                 {

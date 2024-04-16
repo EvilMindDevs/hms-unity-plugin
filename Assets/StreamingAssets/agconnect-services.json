@@ -1,12 +1,12 @@
 {
 	"client":{
-		"cp_id":"890034000004105619",
-		"product_id":"9105385871708180467",
-		"client_id":"216523459440673792",
-		"client_secret":"757250B4EDB145465555F3DA1DCED0DE80FEBCC62F1DB54179386D97BE84BFFB",
-		"app_id":"101282883",
-		"package_name":"com.evilmind.huawei",
-		"api_key":"CV6ZZ1VxmIBeluFQcSgu2kMVxZTApK1jXplA26sUDZZ+e553ywArAzLCHSSpnQAnCV2fZP6GY8LoC+lI+80vtUwV0dct"
+		"cp_id":"1",
+		"product_id":"1",
+		"client_id":"1",
+		"client_secret":"1",
+		"app_id":"1",
+		"package_name":"replace.with.your.json_https://evilminddevs.gitbook.io/hms-unity-plugin_/getting-started/quick-start/import-the-plugin-into-your-unity-project#obtaining-the-agconnect-services.json-file",
+		"api_key":"1"
 	},
 	"configuration_version":"1.0"
 }

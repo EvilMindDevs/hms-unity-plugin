@@ -1,10 +1,7 @@
-﻿using HmsPlugin.List;
-using System;
+using HmsPlugin.List;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -74,7 +71,7 @@ namespace HmsPlugin
 
         private void CreateLeaderboardConstants()
         {
-            if (_leaderboardSettings.Keys.Count() > 0)
+            if (_leaderboardSettings.Keys.Any())
             {
                 using (var file = File.CreateText(Application.dataPath + "/Huawei/Scripts/Utils/HMSLeaderboardConstants.cs"))
                 {
@@ -91,7 +88,7 @@ namespace HmsPlugin
 
         private void CreateAchievementsConstants()
         {
-            if (_achievementsSettings.Keys.Count() > 0)
+            if (_achievementsSettings.Keys.Any())
             {
                 using (var file = File.CreateText(Application.dataPath + "/Huawei/Scripts/Utils/HMSAchievementConstants.cs"))
                 {

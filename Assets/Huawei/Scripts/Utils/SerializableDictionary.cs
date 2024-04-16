@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace HmsPlugin
@@ -16,16 +13,9 @@ namespace HmsPlugin
         [SerializeField] private List<TKey> _keys = new List<TKey>();
         [SerializeField] private List<TValue> _values = new List<TValue>();
 
-        public IEnumerable<TKey> Keys
-        {
-            get { return _keys; }
-        }
-
-        public IEnumerable<TValue> Values
-        {
-            get { return _values; }
-        }
-
+        public IEnumerable<TKey> Keys => _keys;
+        public IEnumerable<TValue> Values => _values;
+        
         public virtual void Set(TKey key, TValue value)
         {
             var keyIndex = GetKeyIndex(key);

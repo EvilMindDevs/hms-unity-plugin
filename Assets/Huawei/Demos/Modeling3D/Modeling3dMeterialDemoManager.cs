@@ -64,7 +64,7 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
 
     public void OnLoginFailure(HMSException error)
     {
-        Debug.LogError(TAG + LOGIN_ERROR +"error:" + error);
+        Debug.LogError(TAG + LOGIN_ERROR + "error:" + error);
     }
 
     private bool ArePermissionsGranted(string[] permissions)
@@ -95,7 +95,7 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
     }
     private void OnError(string taskId, int errorCode, string errorMessage)
     {
-        AndroidToast.MakeText("Upload error "+errorMessage).Show();
+        AndroidToast.MakeText("Upload error " + errorMessage).Show();
         Debug.LogError(TAG + "Upload error -- TaskID:" + taskId + " Code:" + errorCode + " msg:" + errorMessage);
     }
     private void OnUploadProgress(string taskId, double progress, AndroidJavaObject obj)
@@ -135,8 +135,8 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
         Debug.Log($"{TAG} QueryTask Current TaskId {TASKID}");
         //HMSModeling3dKitManager.Instance.QueryTaskRestrictStatusModeling3dTexture(TASKID);
         Modeling3dTextureQueryResult result = HMSModeling3dKitManager.Instance.QueryTaskModeling3dTexture(TASKID);
-        AndroidToast.MakeText("TaskID:" + TASKID + "\n Status:" + result.Status +" "+ HMSModeling3dKitManager.Instance.IdentifyProgressStatus(result.Status)).Show();
-        
+        AndroidToast.MakeText("TaskID:" + TASKID + "\n Status:" + result.Status + " " + HMSModeling3dKitManager.Instance.IdentifyProgressStatus(result.Status)).Show();
+
     }
     #endregion
 
@@ -149,7 +149,7 @@ public class Modeling3dMeterialDemoManager : MonoBehaviour
         HMSModeling3dKitManager.Instance.Create3DCaptureImageEngine(context);
     }
 
-    public void MaterialPreview() 
+    public void MaterialPreview()
     {
         Debug.Log($"{TAG} Material preview TaskId:{TASKID}");
         HMSModeling3dKitManager.Instance.PreviewFile3dTexture(TASKID);

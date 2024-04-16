@@ -1,6 +1,5 @@
-﻿using HmsPlugin.Button;
+using HmsPlugin.Button;
 using HmsPlugin.TextField;
-using UnityEditor;
 using UnityEngine;
 
 namespace HmsPlugin
@@ -38,7 +37,7 @@ namespace HmsPlugin
             AddDrawer(new HorizontalSequenceDrawer(new Label.Label("\tNeed help? You can refer to"), new Clickable(new Label.Label("Guides & References").SetBold(true)
                 .SetStyle(style).SetFontSize(10),
                 () => { Application.OpenURL("https://evilminddevs.gitbook.io/hms-unity-plugin_/kits-and-services/3d-modeling-kit/guides-and-references"); })
-                    ,new Label.Label(".")));
+                    , new Label.Label(".")));
         }
     }
 }

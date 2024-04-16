@@ -1,6 +1,4 @@
-﻿using HuaweiMobileServices.AppMessaging;
-using System.Collections;
-using System.Collections.Generic;
+using HuaweiMobileServices.AppMessaging;
 using UnityEngine;
 
 public class AppMessagingDemoManager : MonoBehaviour

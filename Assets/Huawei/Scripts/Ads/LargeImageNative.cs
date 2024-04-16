@@ -1,4 +1,4 @@
-﻿using HuaweiMobileServices.Ads;
+using HuaweiMobileServices.Ads;
 using HuaweiMobileServices.Ads.NativeAd;
 using System;
 using System.Collections;
@@ -31,18 +31,18 @@ public class LargeImageNative : MonoBehaviour
 
     //Call this method with click_catcher
     //You can create multiple click catchers and call this method with them. In this way, you can determine exactly where your user clicks on the ad.
-    public void OnAdClicked(int value = 0) 
+    public void OnAdClicked(int value = 0)
     {
-        if (nativeAd != null) 
+        if (nativeAd != null)
         {
             //if(value == 0) // You can create a customClick logic in here
-            
+
             PerformClick();
         }
-            
+
     }
 
-    public void OnClosedButtonClicked() 
+    public void OnClosedButtonClicked()
     {
         if (nativeAd != null)
             nativeAd.Destroy();
@@ -51,9 +51,9 @@ public class LargeImageNative : MonoBehaviour
     }
 
     //Call this method with Why This Ad button
-    private void GotoWhyThisAdPage() 
+    private void GotoWhyThisAdPage()
     {
-        if(nativeAd != null)
+        if (nativeAd != null)
             nativeAd.GotoWhyThisAdPage();
     }
 
@@ -69,8 +69,8 @@ public class LargeImageNative : MonoBehaviour
             ad_source.text = nativeAd.AdSource;
         else
             ad_source.gameObject.SetActive(false);
-        
-        button_title.text = (nativeAd.CallToAction!=null)? nativeAd.CallToAction : "Open";
+
+        button_title.text = (nativeAd.CallToAction != null) ? nativeAd.CallToAction : "Open";
         ad_call_to_action.onClick.AddListener(delegate { PerformClick(); });
         why_this_ad.onClick.AddListener(delegate { GotoWhyThisAdPage(); });
 
@@ -79,7 +79,7 @@ public class LargeImageNative : MonoBehaviour
         Debug.Log("[HMS] OnNativeAdLoaded completed. Init success.");
     }
 
-    private void PerformClick() 
+    private void PerformClick()
     {
         if (nativeView != null)
             nativeView.PerformClick();
@@ -105,14 +105,14 @@ public class LargeImageNative : MonoBehaviour
         builder.SetNativeAdLoadedListener(new NativeAdLoadedListener(new LargeImageNativeAdLoadedListener(OnNativeAdLoaded)))
             .SetAdListener(new AdStatusListener());
         NativeAdLoader nativeAdLoader = builder.Build();
-       
+
         nativeAdLoader.LoadAd(new AdParam.Builder().Build());
     }
 
     private class LargeImageNativeAdLoadedListener : INativeAdLoadedListener
     {
         Action<NativeAd> OnNativeAdLoaded;
-        public LargeImageNativeAdLoadedListener(Action<NativeAd> OnNativeAdLoaded) 
+        public LargeImageNativeAdLoadedListener(Action<NativeAd> OnNativeAdLoaded)
         {
             this.OnNativeAdLoaded = OnNativeAdLoaded;
         }
@@ -125,7 +125,7 @@ public class LargeImageNative : MonoBehaviour
 
     private class AdStatusListener : IAdListener
     {
-        public AdStatusListener(){}
+        public AdStatusListener() { }
 
         public void OnAdClicked()
         {

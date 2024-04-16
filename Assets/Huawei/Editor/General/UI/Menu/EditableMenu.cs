@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using HmsPlugin.Collections;
-using HmsPlugin.Extensions;
 
 namespace HmsPlugin
 {

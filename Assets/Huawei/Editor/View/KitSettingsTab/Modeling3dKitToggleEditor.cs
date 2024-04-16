@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace HmsPlugin
 {
     public class Modeling3dKitToggleEditor : ToggleEditor, IDrawer

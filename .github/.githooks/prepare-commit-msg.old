@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Define the valid keywords and prefixes
+type_keyword=("Feature" "Fix" "Hotfix" "Docs" "Style" "Refactor" "Perf" "Test" "Chore" "Revert")
+
+# Get the first line of the commit message
+START_LINE=`head -n1 $1`
+SIZE=${#START_LINE}
+
+# Check if the commit message starts with a valid prefix(Jira Key)
+if  [[ $START_LINE == "[HUP-"*"]"* ]]; then
+    prefix_found=true
+else
+    prefix_found=false
+fi
+
+# Check if the commit message starts with a valid keyword
+for keyword in "${type_keyword[@]}"; do
+    if [[ $START_LINE == *"$keyword"* ]]; then
+        keyword_found=true
+        break
+    fi
+done
+
+# Validate the commit message
+if [[ $prefix_found != true ]]; then
+    echo "Jira Key must be written in the commit message."
+    exit 1
+elif [[ $keyword_found != true ]]; then
+    echo "Commit message must include with one of these keywords: ${type_keyword[@]}"
+    exit 1
+elif (( $SIZE < 50 )); then
+    echo "Enter a descriptive commit message. (Min 50 characters)"
+    exit 1
+fi
+
+exit 0

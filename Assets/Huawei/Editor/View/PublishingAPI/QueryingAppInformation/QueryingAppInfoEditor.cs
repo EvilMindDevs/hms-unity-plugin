@@ -1,12 +1,11 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
 using System;
-using UnityEngine.Networking;
-using UnityEditor.Callbacks;
-using UnityEditor;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Threading;
+using UnityEditor;
+using UnityEditor.Callbacks;
+using UnityEngine;
+using UnityEngine.Networking;
 
 namespace HmsPlugin.PublishingAPI
 {
@@ -48,7 +47,7 @@ namespace HmsPlugin.PublishingAPI
             AddDrawer(new HelpBoxEnablingApp());
             AddDrawer(new Space(5));
 
-            RequestAppInfo();
+            _ = RequestAppInfoAsync();
         }
 
         private void onUploadAfterBuildChecked(bool state)
@@ -57,7 +56,7 @@ namespace HmsPlugin.PublishingAPI
         }
 
         [PostProcessBuildAttribute(1)]
-        public async static void AfterBuildNotification(BuildTarget target, string pathToBuiltProject)
+        public async static Task AfterBuildNotificationAsync(BuildTarget target, string pathToBuiltProject)
         {
             if (target == BuildTarget.Android && HMSConnectAPISettings.Instance.Settings.GetBool(HMSConnectAPISettings.UploadAfterBuild))
             {
@@ -71,13 +70,13 @@ namespace HmsPlugin.PublishingAPI
 
         private static bool AskBeforeUploadProcess(string filePath)
         {
-            float bytesToMegabytes= 1024f * 1024f;
+            float bytesToMegabytes = 1024f * 1024f;
             float megabytesToGigabytes = 1024f;
             float fileSize = (new FileInfo(filePath).Length) / bytesToMegabytes;
             bool isPackageAAB = UnityEditor.EditorUserBuildSettings.buildAppBundle;
 
             if (!isPackageAAB && fileSize >= 4 * megabytesToGigabytes ||
-                isPackageAAB && fileSize >= 150 )
+                isPackageAAB && fileSize >= 150)
             {
                 if (isPackageAAB)
                 {
@@ -92,7 +91,7 @@ namespace HmsPlugin.PublishingAPI
                 }
             }
 
-            return EditorUtility.DisplayDialog("Upload After Build?","Are you sure uploading package to AGC after build?\nFile Size: " +
+            return EditorUtility.DisplayDialog("Upload After Build?", "Are you sure uploading package to AGC after build?\nFile Size: " +
                fileSize + " MB", "Ok", "Cancel");
         }
 
@@ -104,7 +103,11 @@ namespace HmsPlugin.PublishingAPI
             byte[] fileByte = UnityEngine.Windows.File.ReadAllBytes(Path.Combine("", filePath));
             string contentTypeHeader = "multipart/form-data";
             MultipartFormFileSection file = new MultipartFormFileSection("file", fileByte, fileName, contentTypeHeader);
-            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(), UploadAnAppPackageRes, "Uploading The Package", "Uploading Package to URL...");
+            HMSWebRequestHelper.Instance.PostFormRequest(uploadUrl, file, authCode, fileCount.ToString(), parseType.ToString(),
+                async (response) => await UploadAnAppPackageResAsync(response),
+                "Uploading The Package",
+                "Uploading Package to URL..."
+            );
         }
 
         private static void UpdatingAppFileInfoRes(UnityWebRequest response)
@@ -131,37 +134,43 @@ namespace HmsPlugin.PublishingAPI
             }
         }
 
-
-        private static async void UploadAnAppPackageRes(UnityWebRequest response)
+        private static async Task UploadAnAppPackageResAsync(UnityWebRequest response)
         {
             var responseJson = JsonUtility.FromJson<UploadAppPackage>(response.downloadHandler.text);
 
-            if (int.Parse(responseJson.result.resultCode) == 0)
-            {
-                int size = responseJson.result.UploadFileRsp.fileInfoList[0].size;
-                string disposableUrl = responseJson.result.UploadFileRsp.fileInfoList[0].disposableURL;
-                string fileDestUrl = responseJson.result.UploadFileRsp.fileInfoList[0].fileDestUlr;
-                
-                UpdateFileInfo fileInfo = new UpdateFileInfo();
-                fileInfo.files = new Files();
-                fileInfo.files.fileName = PlayerSettings.productName + ((UnityEditor.EditorUserBuildSettings.buildAppBundle) ? ".aab" : ".apk");
-                fileInfo.files.fileDestUrl = fileDestUrl;
-                fileInfo.fileType = 5;
-                string jsonValue = JsonUtility.ToJson(fileInfo);
-                string accessToken = await HMSWebUtils.GetAccessTokenAsync();
-
-                HMSWebRequestHelper.Instance.PutRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-file-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
-                    jsonValue, new Dictionary<string, string>()
-                    {
-                        {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID)},
-                        {"Authorization","Bearer " + accessToken}
-                    }, UpdatingAppFileInfoRes);
-                EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to AGC...", 0.3f);
-            }
-            else
+            if (!int.TryParse(responseJson.result.resultCode, out int resultCode) || resultCode != 0)
             {
                 Debug.LogError($"[HMS ConnectAPI] GetUploadURL failed. Error Code: {responseJson.result.resultCode}.");
+                return;
             }
+
+            var fileInfo = new UpdateFileInfo
+            {
+                fileType = 5,
+                files = new Files
+                {
+                    fileName = PlayerSettings.productName + (EditorUserBuildSettings.buildAppBundle ? ".aab" : ".apk"),
+                    fileDestUrl = responseJson.result.UploadFileRsp.fileInfoList[0].fileDestUlr
+                }
+            };
+
+            string jsonValue = JsonUtility.ToJson(fileInfo);
+            string accessToken = await HMSWebUtils.GetAccessTokenAsync();
+
+            var headers = new Dictionary<string, string>
+            {
+                {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID)},
+                {"Authorization", "Bearer " + accessToken}
+            };
+
+            HMSWebRequestHelper.Instance.PutRequest(
+                $"https://connect-api.cloud.huawei.com/api/publish/v2/app-file-info?appId={HMSEditorUtils.GetAGConnectConfig().client.app_id}",
+                jsonValue,
+                headers,
+                UpdatingAppFileInfoRes
+            );
+
+            EditorUtility.DisplayProgressBar("Uploading The Package", "Uploading Package to AGC...", 0.3f);
         }
 
         private static async Task GetUploadUrl(string filePath)
@@ -173,13 +182,14 @@ namespace HmsPlugin.PublishingAPI
                 {
                     {"client_id", HMSConnectAPISettings.Instance.Settings.Get(HMSConnectAPISettings.ClientID) },
                     {"Authorization", "Bearer " + accessToken }
-                }, (res) => {
+                }, (res) =>
+                {
                     EditorUtility.DisplayProgressBar("Uploading The Package", "Getting Upload URL...", 0.3f);
                     onGetUploadUrl(res, filePath);
                 });
         }
 
-        private async void RequestAppInfo()
+        private async Task RequestAppInfoAsync()
         {
             string accessToken = await HMSWebUtils.GetAccessTokenAsync();
             HMSWebRequestHelper.Instance.GetRequest("https://connect-api.cloud.huawei.com/api/publish/v2/app-info?appId=" + HMSEditorUtils.GetAGConnectConfig().client.app_id,
@@ -197,7 +207,7 @@ namespace HmsPlugin.PublishingAPI
 
             if (responseJson.ret.code == 0)
             {
-                Debug.Log($"[HMS ConnectAPI] GetUploadURL Succeed. Trying to upload the package now...");
+                Debug.Log("[HMS ConnectAPI] GetUploadURL Succeed. Trying to upload the package now...");
                 UploadAnAppPackage(filePath, responseJson.uploadUrl, responseJson.authCode);
                 EditorUtility.ClearProgressBar();
             }
@@ -531,6 +541,6 @@ namespace HmsPlugin.PublishingAPI
             categoryLevel.Level3.Add(new KeyValuePair<int, string>(10093, "Nursery rhymes"));
             categoryLevel.Level3.Add(new KeyValuePair<int, string>(10094, "Mom & baby"));
         }
-#endregion
+        #endregion
     }
 }

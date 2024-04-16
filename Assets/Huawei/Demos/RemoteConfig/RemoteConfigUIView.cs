@@ -1,13 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RemoteConfigUIView : MonoBehaviour
 {
-    private Text Txt_countOfVariables;
-
     private Button Btn_fetch;
     private Button Btn_applyDefaultWDictionary;
     private Button Btn_applyDefaultWXML;

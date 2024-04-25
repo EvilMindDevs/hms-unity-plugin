@@ -31,7 +31,7 @@ namespace HmsPlugin
                     }
                 },
                 { AnalyticsToggleEditor.AnalyticsKitEnabled,    new [] { "com.huawei.hms:hianalytics:6.12.0.301" } },
-                { CrashToggleEditor.CrashKitEnabled,            new [] { "com.huawei.agconnect:agconnect-crash:1.8.0.300" } },
+                { CrashToggleEditor.CrashKitEnabled,            new [] { "com.huawei.agconnect:agconnect-crash:1.9.1.301" } },
                 { GameServiceToggleEditor.GameServiceEnabled,   new [] { "com.huawei.hms:game:6.10.0.300" } },
                 { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.13.0.300" } },
                 { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.11.0.300" } },

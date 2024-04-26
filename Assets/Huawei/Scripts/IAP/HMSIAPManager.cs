@@ -4,6 +4,7 @@ using HuaweiMobileServices.IAP;
 using HuaweiMobileServices.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HmsPlugin
@@ -257,7 +258,6 @@ namespace HmsPlugin
 
         private void GetProduct(IList<string> productIdList, PriceType priceType)
         {
-
             if (iapAvailable != true)
             {
                 Debug.Log($"[{Tag}]: IAP not available");
@@ -274,16 +274,18 @@ namespace HmsPlugin
 
             iapClient.ObtainProductInfo(productInfoReq).AddOnSuccessListener((type) =>
             {
+                HashSet<string> productIds = new HashSet<string>(productInfoList.Select(p => p.ProductId));
+                var listProductInfo = type.ProductInfoList.ToList();
 
-                foreach (var productInfo in type.ProductInfoList)
+                foreach (var productInfo in listProductInfo)
                 {
-                    if (!productInfoList.Exists(c => c.ProductId == productInfo.ProductId))
+                    if (!productIds.Contains(productInfo.ProductId))
                     {
                         productInfoList.Add(productInfo);
-                        Debug.Log($"[{Tag}]: Available Product Info - Product Type: {(IAPProductType)priceType.Value} - ProductId: " + productInfo.ProductId + ", ProductName: " + productInfo.ProductName + ", Price: " + productInfo.Price);
+                        productIds.Add(productInfo.ProductId);
+                        Debug.Log($"[{Tag}]: Available Product Info - Product Type: {(IAPProductType)priceType.Value} - ProductId: " + productInfo.ProductId);
                     }
                 }
-
                 OnObtainProductInfoSuccess?.Invoke(new List<ProductInfoResult> { type });
 
             }).AddOnFailureListener((exception) =>

@@ -12,7 +12,6 @@ namespace HmsPlugin
     internal class HMSMainKitsTabFactory
     {
         private static string versionInfo = "";
-
         private static List<ToggleEditor> toggleEditors;
         public static DisabledDrawer _disabledDrawer;
         private static PluginToggleEditor pluginToggleEditor;
@@ -49,6 +48,7 @@ namespace HmsPlugin
             var cloudStorageToggleEditor = new CloudStorageToggleEditor();
             var apmToggleEditor = new APMToggleEditor();
             var modeling3DToggleEditor = new Modeling3dKitToggleEditor(tabBar);
+            var mlKitToggleEditor = new MLKitToggleEditor(tabBar);
 
             tab.AddDrawer(new HorizontalSequenceDrawer(new Spacer(), pluginToggleEditor, new Spacer()));
             tab.AddDrawer(new HorizontalLine());
@@ -70,6 +70,7 @@ namespace HmsPlugin
                         new HorizontalSequenceDrawer(new Spacer(), pushToggleEditor, new Spacer()),
                         new HorizontalSequenceDrawer(new Spacer(), scanToogleEditor, new Spacer()),
                         new HorizontalSequenceDrawer(new Spacer(), modeling3DToggleEditor, new Spacer()),
+                        new HorizontalSequenceDrawer(new Spacer(), mlKitToggleEditor, new Spacer()),
                         new Spacer(),
                         new HorizontalSequenceDrawer(new HorizontalLine()),
                         new HorizontalSequenceDrawer(new Spacer(), new Label.Label("- AppGallery Connect -").SetBold(true), new Spacer()),
@@ -108,6 +109,7 @@ namespace HmsPlugin
             toggleEditors.Add(cloudStorageToggleEditor);
             toggleEditors.Add(apmToggleEditor);
             toggleEditors.Add(modeling3DToggleEditor);
+            toggleEditors.Add(mlKitToggleEditor);
 
             _disabledDrawer.SetEnabled(!HMSPluginSettings.Instance.Settings.GetBool(PluginToggleEditor.PluginEnabled, true));
 

@@ -12,7 +12,7 @@ namespace HmsPlugin
 {
     public class HMSGradleWorker : HMSEditorSingleton<HMSGradleWorker>, IPreprocessBuildWithReport
     {
-        private Dictionary<string, string[]> gradleSettings;
+        private readonly Dictionary<string, string[]> gradleSettings;
         public int callbackOrder => 0;
 
         private string gradleTemplatesPath = EditorApplication.applicationContentsPath + @"/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates";
@@ -36,7 +36,7 @@ namespace HmsPlugin
                 { IAPToggleEditor.IAPKitEnabled,                new [] { "com.huawei.hms:iap:6.13.0.300" } },
                 { PushToggleEditor.PushKitEnabled,              new [] { "com.huawei.hms:push:6.11.0.300" } },
                 { RemoteConfigToggleEditor.RemoteConfigEnabled, new [] { "com.huawei.agconnect:agconnect-remoteconfig:1.6.3.300" } },
-                { CloudDBToggleEditor.CloudDBEnabled,           new [] { "com.huawei.agconnect:agconnect-cloud-database:1.9.1.301" } },
+                { CloudDBToggleEditor.CloudDBEnabled,           new [] { "com.huawei.agconnect:agconnect-cloud-database:1.5.5.300" } },
                 { AuthToggleEditor.AuthEnabled,                 new [] { "com.huawei.agconnect:agconnect-auth:1.9.1.301" } },
                 { NearbyServiceToggleEditor.NearbyServiceEnabled, new [] { "com.huawei.hms:nearby:6.2.0.301" } },
                 { AppMessagingToggleEditor.AppMessagingEnabled, new [] { "com.huawei.agconnect:agconnect-appmessaging:1.6.3.300" } },
@@ -59,11 +59,21 @@ namespace HmsPlugin
                         "com.google.ar:core:1.30.0"
                     }
                 },
+                {MLKitToggleEditor.MLKitEnabled, new[]
+                    {
+                        "com.huawei.hms:ml-computer-agc-inner:3.11.2.300",
+                        // translate
+                        "com.huawei.hms:ml-computer-translate:3.11.0.302",
+                        "com.huawei.hms:ml-computer-translate-model:3.11.0.302",
+                        // text-to-speech
+                        "com.huawei.hms:ml-computer-voice-tts:3.12.0.301",
+                        "com.huawei.hms:ml-computer-voice-tts-model-bee:3.6.0.300",
+                        "com.huawei.hms:ml-computer-voice-tts-model-eagle:3.6.0.300"
+                    }
+                },
                 {HMSLibrariesDrawer.HMSCoreInstalledEnabled, new [] {"com.huawei.hms:hmscoreinstaller:6.6.0.300"}}
             };
         }
-
-
         private void CreateGradleFiles(string[] gradleConfigs)
         {
 #if UNITY_2022_3_OR_NEWER
@@ -80,7 +90,6 @@ namespace HmsPlugin
 #endif
             AssetDatabase.Refresh();
         }
-
         private void CreateMainGradleFile(string[] gradleConfigs)
         {
 #if UNITY_2019_3_OR_NEWER
@@ -126,7 +135,6 @@ namespace HmsPlugin
             //Gradle 7+ and classpath 'com.huawei.agconnect:agcp:1.9.1.301'
             */
         }
-
         private void CreateLauncherGradleFile(string[] gradleConfigs)
         {
             var path = Path.Combine(Application.dataPath, "Huawei/Plugins/Android/hmsLauncherTemplate.gradle");
@@ -134,7 +142,7 @@ namespace HmsPlugin
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("apply plugin: 'com.huawei.agconnect'\n");
 
-#region Dependencies
+            #region Dependencies
 
             stringBuilder.AppendLine("dependencies {");
             for (int i = 0; i < gradleConfigs.Length; i++)
@@ -142,7 +150,7 @@ namespace HmsPlugin
                 stringBuilder.AppendLine($"\t{AddDependency(gradleConfigs[i])}");
             }
             stringBuilder.AppendLine("}");
-#endregion
+            #endregion
             stringBuilder.AppendLine("android {");
             stringBuilder.AppendLine("\tpackagingOptions {");
             stringBuilder.AppendLine("\t\tpickFirst \"okhttp3/internal/publicsuffix/publicsuffixes.gz\"");
@@ -191,17 +199,14 @@ namespace HmsPlugin
                 file.Write(sb.ToString());
             }
         }
-
         private string AddDependency(string name)
         {
             return $"implementation '{name}'\n\t";
         }
-
         private string AddClasspath(string name)
         {
             return $"classpath '{name}'\n\t\t\t";
         }
-
         public void PrepareGradleFile()
         {
             HMSSettings settings = HMSMainEditorSettings.Instance.Settings;
@@ -219,7 +224,6 @@ namespace HmsPlugin
         {
             return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300" };
         }
-
         public void OnPreprocessBuild(BuildReport report)
         {
             Application.logMessageReceived += OnBuildError;
@@ -256,7 +260,6 @@ namespace HmsPlugin
 
             HMSEditorUtils.UpdateAssemblyDefinitions(pluginEnabled);
         }
-
         private void OnBuildError(string condition, string stackTrace, LogType type)
         {
             if (type == LogType.Error)
@@ -267,4 +270,3 @@ namespace HmsPlugin
         }
     }
 }
-

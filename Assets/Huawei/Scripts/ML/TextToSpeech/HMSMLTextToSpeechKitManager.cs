@@ -9,7 +9,7 @@ using HuaweiMobileServices.ML.DownloadModel;
 using HuaweiMobileServices.Utils;
 public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeechKitManager>
 {
-    private const string TAG = "[HMS] HMS MLTextToSpeechKitManager ";
+    private const string TAG = "[HMS] MLTextToSpeechKitManager ";
     public Action<long, long> OnProcessAction;
     private readonly string API_KEY;
     private readonly string OnlineDefaultLanguageCode;
@@ -94,14 +94,17 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
 
     public void Configurations(string ttsMode)
     {
-        Debug.Log(TAG + "-> Configurations");
+        Debug.Log(TAG + "-> Configurations {ttsMode}");
         m_ttsMode = ttsMode;
         mlConfigs = new MLTtsConfig()
             .SetLanguage(ttsMode == MLTtsConstants.TTS_ONLINE_MODE ? OnlineDefaultLanguageCode : OfflineDefaultLanguageCode)
             .SetPerson(ttsMode == MLTtsConstants.TTS_ONLINE_MODE ? OnlineDefaultSpeakerCode : OfflineDefaultSpeakerCode)
-            .SetSpeed(1f)
-            .SetVolume(1f)
             .SetSynthesizeMode(ttsMode);
+
+        if (ttsMode == MLTtsConstants.TTS_ONLINE_MODE)
+        {
+            mlConfigs.SetSpeed(1.0f).SetVolume(1.0f);
+        }
 
         mlTtsEngine = new MLTtsEngine(mlConfigs);
 
@@ -109,14 +112,24 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
 
         mlTtsEngine.SetTtsCallback(listener);
 
-        mlTtsEngine.SetPlayerVolume(20);
+        if (m_ttsMode == MLTtsConstants.TTS_ONLINE_MODE)
+        {
+            mlTtsEngine.SetPlayerVolume(20);
+        }
 
         mlTtsEngine.UpdateConfig(mlConfigs);
+
+        if (m_ttsMode == MLTtsConstants.TTS_OFFLINE_MODE)
+        {
+            OnDeviceModelManager();
+        }
     }
 
     public void SetLanguage(string languageCode)
     {
+        Debug.Log(TAG + "-> SetLanguage: " + languageCode);
         mlConfigs.SetLanguage(languageCode);
+        mlTtsEngine.UpdateConfig(mlConfigs);
     }
 
     public void SetSpeaker(string speakerCode)
@@ -124,7 +137,7 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
         mlConfigs.SetPerson(speakerCode);
         Debug.Log(TAG + "-> SetSpeaker: " + speakerCode);
         var languageCode = LanguageCodes.GetValueOrDefault(speakerCode);
-        mlConfigs.SetLanguage(languageCode);
+        SetLanguage(languageCode);
         mlTtsEngine.UpdateConfig(mlConfigs);
 
         if (m_ttsMode == MLTtsConstants.TTS_OFFLINE_MODE)
@@ -199,10 +212,7 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
             if (!isExist)
             {
                 Debug.Log($"{TAG} -> Model does not exist, downloading {offlineSpeaker}");
-                HMSDispatcher.InvokeAsync(() =>
-                {
-                    DownloadModel(offlineSpeaker);
-                });
+                DownloadModel(offlineSpeaker);
             }
             else
             {
@@ -223,7 +233,7 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
         // Create a download policy configurator. You can set that when any of the following conditions is met, the model can be downloaded: 1. The device is charging; 2. Wi-Fi is connected; 3. The device is idle.
         MLModelDownloadStrategy request = new MLModelDownloadStrategy.Factory().NeedWifi().Create();
         //configuring the download listener
-        var listenerInstance = new MLTextToSpeechDownloadListenerManager
+        var listenerInstance = new MLDownloadListenerManager
         {
             OnProcessAction = OnProcessAction
         };
@@ -233,10 +243,9 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
         mLLocalModelManager.DownloadModel(model, request, listener).AddOnSuccessListener((result) =>
         {
             Debug.Log("Model downloaded successfully");
-            AndroidToast.MakeText("Model downloaded successfully").Show();
+            mlTtsEngine.UpdateConfig(mlConfigs);
         }).AddOnFailureListener((exception) =>
         {
-            AndroidToast.MakeText("Model downloaded failed").Show();
             Debug.Log("Model downloaded failed");
         });
     }

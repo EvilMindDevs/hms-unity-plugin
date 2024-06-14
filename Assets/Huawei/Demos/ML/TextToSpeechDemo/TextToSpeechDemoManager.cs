@@ -5,6 +5,7 @@ using System.Linq;
 using HuaweiMobileServices.ML.TextToSpeech;
 using HuaweiMobileServices.Utils;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TextToSpeechDemoManager : MonoBehaviour
@@ -24,10 +25,11 @@ public class TextToSpeechDemoManager : MonoBehaviour
     [SerializeField] private GameObject m_body;
     [SerializeField] private Text m_progressText;
     [SerializeField] private GameObject m_offlineModeWarning;
-    static object locker = new object();
+    [SerializeField] private Button m_resetButton;
+    [SerializeField] private GameObject m_basePanel;
+    [SerializeField] private GameObject m_textToSpeechPanel;
     private enum TTSMode { ONLINE, OFFLINE }
     private TTSMode m_ttsMode;
-
     private List<MLTtsSpeaker> m_speakers = new List<MLTtsSpeaker>();
     private string[] playModeResources = new string[] { "0-QUEUE_APPEND", "1-QUEUE_FLUSH" };
 
@@ -65,11 +67,6 @@ public class TextToSpeechDemoManager : MonoBehaviour
             OnClickHeaderButton();
             m_ttsMode = TTSMode.OFFLINE;
             HMSMLTextToSpeechKitManager.Instance.OnProcessAction += OnDownloadProgress;
-
-            HMSDispatcher.InvokeAsync(() =>
-            {
-                HMSMLTextToSpeechKitManager.Instance.OnDeviceModelManager();
-            });
 
             m_offlineModeWarning.gameObject.SetActive(true);
         });
@@ -203,7 +200,10 @@ public class TextToSpeechDemoManager : MonoBehaviour
         });
     }
 
-
+    public void ResetComponents()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
     #endregion
 
 }

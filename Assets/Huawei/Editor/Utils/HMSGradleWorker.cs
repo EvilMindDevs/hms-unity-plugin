@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -59,18 +60,7 @@ namespace HmsPlugin
                         "com.google.ar:core:1.30.0"
                     }
                 },
-                {MLKitToggleEditor.MLKitEnabled, new[]
-                    {
-                        "com.huawei.hms:ml-computer-agc-inner:3.11.2.300",
-                        // translate
-                        "com.huawei.hms:ml-computer-translate:3.11.0.302",
-                        "com.huawei.hms:ml-computer-translate-model:3.11.0.302",
-                        // text-to-speech
-                        "com.huawei.hms:ml-computer-voice-tts:3.12.0.301",
-                        "com.huawei.hms:ml-computer-voice-tts-model-bee:3.6.0.300",
-                        "com.huawei.hms:ml-computer-voice-tts-model-eagle:3.6.0.300"
-                    }
-                },
+                {MLKitToggleEditor.MLKitEnabled, GetMLKitModulesGradlePackages()},
                 {HMSLibrariesDrawer.HMSCoreInstalledEnabled, new [] {"com.huawei.hms:hmscoreinstaller:6.6.0.300"}}
             };
         }
@@ -211,19 +201,63 @@ namespace HmsPlugin
         {
             HMSSettings settings = HMSMainEditorSettings.Instance.Settings;
             List<string> gradle = new List<string>(CoreGradles());
-            for (int i = 0; i < settings.Keys.Count(); i++)
+
+            foreach (var key in gradleSettings.Keys)
             {
-                if (settings.Values.ElementAt(i) == true.ToString())
+                if (settings.GetBool(key))
                 {
-                    gradle.AddRange(gradleSettings[settings.Keys.ElementAt(i)]);
+                    gradle.AddRange(gradleSettings[key]);
                 }
             }
+
             CreateGradleFiles(gradle.ToArray());
         }
         private string[] CoreGradles()
         {
             return new string[] { "com.huawei.hms:base:6.6.0.300", "com.huawei.agconnect:agconnect-core:1.6.5.300" };
         }
+        #region ML Kit
+        private string[] GetMLKitModulesGradlePackages()
+        {
+            var IsMLKitEnabled = HMSMainEditorSettings.Instance.Settings.GetBool(MLKitToggleEditor.MLKitEnabled);
+
+            if (!IsMLKitEnabled)
+            {
+                return Array.Empty<string>();
+            }
+
+            var mainPackages = new List<string> { "com.huawei.hms:ml-computer-agc-inner:3.11.2.300" };
+
+
+            AddConditionalPackages(mainPackages);
+
+
+            return mainPackages.ToArray();
+        }
+        private void AddConditionalPackages(List<string> packages)
+        {
+            var settings = HMSMLKitSettings.Instance.Settings;
+
+            if (settings.GetBool(HMSMLKitSettings.EnableTranslateModule))
+            {
+                packages.AddRange(new[]
+                {
+                    "com.huawei.hms:ml-computer-translate:3.11.0.302",
+                    "com.huawei.hms:ml-computer-translate-model:3.11.0.302"
+                });
+            }
+
+            if (settings.GetBool(HMSMLKitSettings.EnableTextToSpeechModule))
+            {
+                packages.AddRange(new[]
+                {
+                    "com.huawei.hms:ml-computer-voice-tts:3.12.0.301",
+                    "com.huawei.hms:ml-computer-voice-tts-model-bee:3.6.0.300",
+                    "com.huawei.hms:ml-computer-voice-tts-model-eagle:3.6.0.300"
+                });
+            }
+        }
+        #endregion
         public void OnPreprocessBuild(BuildReport report)
         {
             Application.logMessageReceived += OnBuildError;

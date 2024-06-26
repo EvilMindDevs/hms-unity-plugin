@@ -1,10 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using HmsPlugin;
+using HuaweiMobileServices.Utils;
 using UnityEngine;
 
 public class MlKitDemoManager : MonoBehaviour
 {
     [SerializeField] private GameObject m_mlKitDemoMenu;
+    private bool IsTranslateModuleEnabled => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTranslateModule);
+    private bool IsTTSEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTextToSpeechModule);
+
     #region Singleton
     public static MlKitDemoManager Instance { get; private set; }
     private void Singleton()
@@ -26,30 +29,31 @@ public class MlKitDemoManager : MonoBehaviour
     {
         Singleton();
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void OpenTranslateDemo(GameObject translateMenu)
     {
+        if (!IsTranslateModuleEnabled)
+        {
+            AndroidToast.MakeText("Translate Module is not enabled").Show();
+            Debug.Log("Translate Module is not enabled");
+            return;
+        }
+
         m_mlKitDemoMenu.SetActive(false);
         translateMenu.SetActive(true);
         Debug.Log($"[{TranslateDemoManager.Instance.enabled}] OpenTranslateDemo");
     }
 
-    public void OpenTextToSpeechDemo(GameObject translateMenu)
+    public void OpenTextToSpeechDemo(GameObject ttsMenu)
     {
+        if (!IsTTSEnable)
+        {
+            AndroidToast.MakeText("Text To Speech Module is not enabled").Show();
+            Debug.Log("Text To Speech Module is not enabled");
+            return;
+        }
         m_mlKitDemoMenu.SetActive(false);
-        translateMenu.SetActive(true);
-        Debug.Log($"[{TextToSpeechDemoManager.Instance.enabled}] OpenTranslateDemo");
+        ttsMenu.SetActive(true);
+        Debug.Log($"[{TextToSpeechDemoManager.Instance.enabled}] OpenTextToSpeechDemo");
 
     }
 

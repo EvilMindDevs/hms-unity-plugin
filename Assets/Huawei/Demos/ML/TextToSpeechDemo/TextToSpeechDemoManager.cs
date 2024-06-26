@@ -171,15 +171,15 @@ public class TextToSpeechDemoManager : MonoBehaviour
         m_speakerDropdown.AddOptions(m_speakers.Select(x => x.Name).ToList());
     }
 
-    public void OnDownloadProgress(long total, long current)
+    public void OnDownloadProgress(long current, long total)
     {
-        var percentage = (current / total);
+        int percentage = (int)((current * 100) / total);
         Debug.Log($"Download Progress: {percentage}/100");
 
         HMSDispatcher.InvokeAsync(() =>
         {
             m_progressText.gameObject.SetActive(true);
-            m_progressText.text = $"Progress: {percentage}/100";
+            m_progressText.text = $"Downloading: {percentage}/100";
 
 
             if (percentage >= 99)

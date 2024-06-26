@@ -50,9 +50,11 @@ namespace HmsPlugin
             AddDrawer(new VerticalSequenceDrawer(
                 new HorizontalSequenceDrawer(new Label.Label("Text To Speech Module").SetBold(true)),
                 new HorizontalSequenceDrawer(new Spacer()),
-                new HorizontalSequenceDrawer(new Label.Label("Text To Speech Module enables you to convert text to speech in 50+ languages."))
+                new HorizontalSequenceDrawer(new Label.Label("Text To Speech Module enables you to convert text to speech."))
+
             ));
-            _enableTextToSpeechToggle = new Toggle.Toggle("Enable Text To Speech Module", textToSpeechIsActive, OnTextToSpeechToggleChanged, false);
+            AddDrawer(new Space(3));
+            _enableTextToSpeechToggle = new Toggle.Toggle("Enable TextToSpeech Module", textToSpeechIsActive, OnTextToSpeechToggleChanged, false).SetLabelWidth(180);
             AddDrawer(_enableTextToSpeechToggle);
             AddDrawer(new HorizontalLine());
         }

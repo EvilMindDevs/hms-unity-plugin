@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using HuaweiMobileServices.ML.TextToSpeech;
-using static HuaweiMobileServices.ML.TextToSpeech.MLTtsCallback;
 using HuaweiMobileServices.Utils;
 using System;
 using UnityEngine;
+using static HuaweiMobileServices.ML.TextToSpeech.MLTtsCallback;
 
 namespace HmsPlugin
 {
@@ -13,7 +12,7 @@ namespace HmsPlugin
         public Action<string> OnAudioAvailableAction;
         public Action<string, MLTtsAudioFragment, int, Tuple<int, int>, Bundle> OnAudioAvailableBundleAction;
         public Action<string, MLTtsError> OnErrorAction;
-        public Action<string, int, AndroidJavaObject> OnEventAction;
+        public Action<string, int, Bundle> OnEventAction;
         public Action<string> OnRangeStartAction;
         public Action<string, MLTtsWarn> OnWarnAction;
         public MLTextToSpeechListenerManager()
@@ -23,18 +22,6 @@ namespace HmsPlugin
         public void OnAudioAvailable(string taskId, MLTtsAudioFragment audioFragment, int offset, Tuple<int, int> keyValuePairs, Bundle bundle)
         {
             Debug.Log($"{TAG} OnAudioAvailable: {taskId}");
-            Debug.Log($"{TAG} AudioFragment AudioFormat: {audioFragment.GetAudioFormat()}");
-            Debug.Log($"{TAG} AudioFragment ChannelInfo: {audioFragment.GetChannelInfo()}");
-            Debug.Log($"{TAG} AudioFragment SampleRateInHz: {audioFragment.GetSampleRateInHz()}");
-            Debug.Log($"{TAG} AudioFragment AudioDatalenght: {audioFragment.GetAudioData().Length}");
-            Debug.Log($"{TAG} AudioFragment SAMPLE_RATE_16K: {MLTtsAudioFragment.SAMPLE_RATE_16K}");
-            Debug.Log($"{TAG} Bundle: {bundle.Size()}");
-            Debug.Log($"{TAG} Offset: {offset}");
-            Debug.Log($"{TAG} Key Value Pairs: {keyValuePairs?.Item1} - {keyValuePairs?.Item2}");
-            foreach (var item in audioFragment.GetAudioData())
-            {
-                Debug.Log($"{TAG} Audio Data: {item}");
-            }
             OnAudioAvailableAction?.Invoke(taskId);
         }
 
@@ -44,7 +31,7 @@ namespace HmsPlugin
             OnErrorAction?.Invoke(taskId, err);
         }
 
-        public void OnEvent(string taskId, int eventId, AndroidJavaObject bundle)
+        public void OnEvent(string taskId, int eventId, Bundle bundle)
         {
             Debug.Log($"{TAG} OnEvent: {taskId}");
             Debug.Log($"{TAG} EventId: {eventId}");
@@ -59,7 +46,6 @@ namespace HmsPlugin
                 //EVENT_PLAY_STOP: Called when playback stops.
                 case 4:
                     Debug.Log($"{TAG} EVENT_PLAY_STOP");
-                    isInterrupted = bundle.Get<bool>(MLTtsConstants.EVENT_PLAY_STOP_INTERRUPTED);
                     break;
                 //EVENT_PLAY_RESUME: Called when playback resumes.
                 case 2:
@@ -85,7 +71,6 @@ namespace HmsPlugin
                 case 7:
                     Debug.Log($"{TAG} EVENT_SYNTHESIS_COMPLETE");
                     // TTS is complete. All synthesized audio streams are passed to the app.
-                    isInterrupted = bundle.Get<bool>(MLTtsConstants.EVENT_SYNTHESIS_INTERRUPTED);
                     break;
                 default:
                     break;

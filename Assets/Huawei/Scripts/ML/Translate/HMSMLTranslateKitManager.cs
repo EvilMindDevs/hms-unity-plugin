@@ -29,16 +29,22 @@ public class HMSMLTranslateKitManager : HMSManagerSingleton<HMSMLTranslateKitMan
     public string SelectedSourceLanguage { get; private set; }
     public string SelectedTargetLanguage { get; private set; }
     private TranslateMode currentTranslateMode;
-
     public enum TranslateMode
     {
         Online = 0,
         Offline = 1
     }
+    private bool IsTranslateModuleEnabled => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTranslateModule);
 
     public HMSMLTranslateKitManager()
     {
+        if (!IsTranslateModuleEnabled)
+        {
+            Debug.Log($"{Tag} -> Translate Module is not enabled");
+            return;
+        }
         apiKey = HMSMLKitSettings.Instance.Settings.Get(HMSMLKitSettings.MLKeyAPI);
+
         HMSManagerStart.Start(OnAwake, Tag);
     }
 

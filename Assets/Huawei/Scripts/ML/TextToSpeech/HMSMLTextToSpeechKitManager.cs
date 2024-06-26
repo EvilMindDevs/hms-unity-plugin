@@ -1,12 +1,11 @@
 using HmsPlugin;
-using HuaweiMobileServices.ML.TextToSpeech;
 using HuaweiMobileServices.ML.Common;
-using UnityEngine;
+using HuaweiMobileServices.ML.DownloadModel;
+using HuaweiMobileServices.ML.TextToSpeech;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HuaweiMobileServices.ML.DownloadModel;
-using HuaweiMobileServices.Utils;
+using UnityEngine;
 public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeechKitManager>
 {
     private const string TAG = "[HMS] MLTextToSpeechKitManager ";
@@ -20,55 +19,22 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
     private string SelectedOfflineLanguageCode;
     private string SelectedOfflineSpeakerCode;
 
-    private Dictionary<string, string> LanguageCodes = new Dictionary<string, string>
-    {
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_EN, MLTtsConstants.TTS_EN_US },     // English
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_EN_2, MLTtsConstants.TTS_EN_US },   // English
-        { MLTtsConstants.TTS_SPEAKER_MALE_EN, MLTtsConstants.TTS_EN_US },       // English
-        { MLTtsConstants.TTS_SPEAKER_MALE_EN_2, MLTtsConstants.TTS_EN_US },     // English
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_TR, MLTtsConstants.TTS_LAN_TR_TR }, // Turkish
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_AR, MLTtsConstants.TTS_LAN_AR_AR }, // Arabic
-        { MLTtsConstants.TTS_SPEAKER_MALE_ZH, MLTtsConstants.TTS_ZH_HANS },     // Chinese
-        { MLTtsConstants.TTS_SPEAKER_MALE_ZH_2, MLTtsConstants.TTS_ZH_HANS },   // Chinese
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_ZH, MLTtsConstants.TTS_ZH_HANS },   // Chinese
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_ZH_2, MLTtsConstants.TTS_ZH_HANS }, // Chinese
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_DE, MLTtsConstants.TTS_LAN_DE_DE }, // German
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_ES, MLTtsConstants.TTS_LAN_ES_ES }, // Spanish
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_FR, MLTtsConstants.TTS_LAN_FR_FR }, // French
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_IT, MLTtsConstants.TTS_LAN_IT_IT }, // Italian
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_MS, MLTtsConstants.TTS_LAN_MS_MS }, // Malay
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_PL, MLTtsConstants.TTS_LAN_PL_PL }, // Polish
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_RU, MLTtsConstants.TTS_LAN_RU_RU }, // Russian
-        { MLTtsConstants.TTS_SPEAKER_FEMALE_TH, MLTtsConstants.TTS_LAN_TH_TH }, // Thai
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_MALE_EAGLE, MLTtsConstants.TTS_EN_US },      // English
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_FEMALE_BEE, MLTtsConstants.TTS_LAN_DE_DE },  // English
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_FEMALE_EAGLE, MLTtsConstants.TTS_EN_US },    // English
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_FEMALE_BOLT, MLTtsConstants.TTS_EN_US },     // English
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_FEMALE_FLY, MLTtsConstants.TTS_EN_US },      // English
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_MALE_BOLT, MLTtsConstants.TTS_EN_US },       // English
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_DE_DE_FEMALE_FLY, MLTtsConstants.TTS_LAN_DE_DE },  // German
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_DE_DE_FEMALE_BEE, MLTtsConstants.TTS_LAN_DE_DE },  // German
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_ES_ES_FEMALE_BEE, MLTtsConstants.TTS_LAN_ES_ES },  // Spanish
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_ES_ES_FEMALE_FLY, MLTtsConstants.TTS_LAN_ES_ES },  // Spanish
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_IT_IT_FEMALE_FLY, MLTtsConstants.TTS_LAN_IT_IT },  // Italian
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_IT_IT_FEMALE_BEE, MLTtsConstants.TTS_LAN_IT_IT },  // Italian
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_FR_FR_FEMALE_BEE, MLTtsConstants.TTS_LAN_FR_FR },  // French
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_FR_FR_FEMALE_FLY, MLTtsConstants.TTS_LAN_FR_FR },  // French
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_RU_RU_FEMALE_FLY, MLTtsConstants.TTS_LAN_RU_RU },  // Russian
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_AR_AR_FEMALE_FLY, MLTtsConstants.TTS_LAN_AR_AR },  // Arabic
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_TH_TH_FEMALE_FLY, MLTtsConstants.TTS_LAN_TH_TH },  // Thai
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_ZH_HANS_FEMALE_BOLT, MLTtsConstants.TTS_ZH_HANS }, // Chinese
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_ZH_HANS_MALE_BOLT, MLTtsConstants.TTS_ZH_HANS },   // Chinese
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_ZH_HANS_FEMALE_EAGLE, MLTtsConstants.TTS_ZH_HANS }, // Chinese
-        { MLTtsConstants.TTS_SPEAKER_OFFLINE_ZH_HANS_MALE_EAGLE, MLTtsConstants.TTS_ZH_HANS }, // Chinese
-    };
+    private Dictionary<string, string> LanguageCodes;
     private MLTtsConfig mlConfigs;
     private MLTtsEngine mlTtsEngine;
     private MLLocalModelManager mLLocalModelManager;
     private int DefaultUserRegion = MLApplication.REGION_DR_GERMAN;
     private string m_ttsMode;
+
+    private bool IsTTSEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTextToSpeechModule);
     public HMSMLTextToSpeechKitManager()
     {
+
+        if (!IsTTSEnable)
+        {
+            Debug.LogError(TAG + "TextToSpeech module is not enabled");
+            return;
+        }
         OnlineDefaultLanguageCode = MLTtsConstants.TTS_EN_US;
         OnlineDefaultSpeakerCode = MLTtsConstants.TTS_SPEAKER_FEMALE_EN;
 
@@ -76,7 +42,7 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
         OfflineDefaultSpeakerCode = MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_FEMALE_BEE;
 
         API_KEY = HMSMLKitSettings.Instance.Settings.Get(HMSMLKitSettings.MLKeyAPI);
-
+        InitLanguageCodes();
         HMSManagerStart.Start(OnAwake, TAG);
     }
     private void OnAwake()
@@ -92,9 +58,55 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
         Debug.Log(TAG + "-> Init");
     }
 
+    private void InitLanguageCodes()
+    {
+        LanguageCodes = new Dictionary<string, string>
+        {
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_EN, MLTtsConstants.TTS_EN_US },     // English
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_EN_2, MLTtsConstants.TTS_EN_US },   // English
+            { MLTtsConstants.TTS_SPEAKER_MALE_EN, MLTtsConstants.TTS_EN_US },       // English
+            { MLTtsConstants.TTS_SPEAKER_MALE_EN_2, MLTtsConstants.TTS_EN_US },     // English
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_TR, MLTtsConstants.TTS_LAN_TR_TR }, // Turkish
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_AR, MLTtsConstants.TTS_LAN_AR_AR }, // Arabic
+            { MLTtsConstants.TTS_SPEAKER_MALE_ZH, MLTtsConstants.TTS_ZH_HANS },     // Chinese
+            { MLTtsConstants.TTS_SPEAKER_MALE_ZH_2, MLTtsConstants.TTS_ZH_HANS },   // Chinese
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_ZH, MLTtsConstants.TTS_ZH_HANS },   // Chinese
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_ZH_2, MLTtsConstants.TTS_ZH_HANS }, // Chinese
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_DE, MLTtsConstants.TTS_LAN_DE_DE }, // German
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_ES, MLTtsConstants.TTS_LAN_ES_ES }, // Spanish
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_FR, MLTtsConstants.TTS_LAN_FR_FR }, // French
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_IT, MLTtsConstants.TTS_LAN_IT_IT }, // Italian
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_MS, MLTtsConstants.TTS_LAN_MS_MS }, // Malay
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_PL, MLTtsConstants.TTS_LAN_PL_PL }, // Polish
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_RU, MLTtsConstants.TTS_LAN_RU_RU }, // Russian
+            { MLTtsConstants.TTS_SPEAKER_FEMALE_TH, MLTtsConstants.TTS_LAN_TH_TH }, // Thai
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_MALE_EAGLE, MLTtsConstants.TTS_EN_US },      // English
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_FEMALE_BEE, MLTtsConstants.TTS_EN_US },  // English
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_FEMALE_EAGLE, MLTtsConstants.TTS_EN_US },    // English
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_FEMALE_BOLT, MLTtsConstants.TTS_EN_US },     // English
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_FEMALE_FLY, MLTtsConstants.TTS_EN_US },      // English
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_EN_US_MALE_BOLT, MLTtsConstants.TTS_EN_US },       // English
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_DE_DE_FEMALE_FLY, MLTtsConstants.TTS_LAN_DE_DE },  // German
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_DE_DE_FEMALE_BEE, MLTtsConstants.TTS_LAN_DE_DE },  // German
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_ES_ES_FEMALE_BEE, MLTtsConstants.TTS_LAN_ES_ES },  // Spanish
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_ES_ES_FEMALE_FLY, MLTtsConstants.TTS_LAN_ES_ES },  // Spanish
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_IT_IT_FEMALE_FLY, MLTtsConstants.TTS_LAN_IT_IT },  // Italian
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_IT_IT_FEMALE_BEE, MLTtsConstants.TTS_LAN_IT_IT },  // Italian
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_FR_FR_FEMALE_BEE, MLTtsConstants.TTS_LAN_FR_FR },  // French
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_FR_FR_FEMALE_FLY, MLTtsConstants.TTS_LAN_FR_FR },  // French
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_RU_RU_FEMALE_FLY, MLTtsConstants.TTS_LAN_RU_RU },  // Russian
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_AR_AR_FEMALE_FLY, MLTtsConstants.TTS_LAN_AR_AR },  // Arabic
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_TH_TH_FEMALE_FLY, MLTtsConstants.TTS_LAN_TH_TH },  // Thai
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_ZH_HANS_FEMALE_BOLT, MLTtsConstants.TTS_ZH_HANS }, // Chinese
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_ZH_HANS_MALE_BOLT, MLTtsConstants.TTS_ZH_HANS },   // Chinese
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_ZH_HANS_FEMALE_EAGLE, MLTtsConstants.TTS_ZH_HANS }, // Chinese
+            { MLTtsConstants.TTS_SPEAKER_OFFLINE_ZH_HANS_MALE_EAGLE, MLTtsConstants.TTS_ZH_HANS }, // Chinese
+        };
+    }
+
     public void Configurations(string ttsMode)
     {
-        Debug.Log(TAG + "-> Configurations {ttsMode}");
+        Debug.Log(TAG + $"-> Configurations {ttsMode}");
         m_ttsMode = ttsMode;
         mlConfigs = new MLTtsConfig()
             .SetLanguage(ttsMode == MLTtsConstants.TTS_ONLINE_MODE ? OnlineDefaultLanguageCode : OfflineDefaultLanguageCode)
@@ -136,7 +148,7 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
     {
         mlConfigs.SetPerson(speakerCode);
         Debug.Log(TAG + "-> SetSpeaker: " + speakerCode);
-        var languageCode = LanguageCodes.GetValueOrDefault(speakerCode);
+        var languageCode = LanguageCodes.FirstOrDefault(x => x.Key.ToLowerInvariant() == speakerCode).Value;
         SetLanguage(languageCode);
         mlTtsEngine.UpdateConfig(mlConfigs);
 
@@ -171,9 +183,19 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
 
     public string Speak(string text, int playMode)
     {
+        // Check if ttsMode is online and internet is not available
+        if (m_ttsMode == MLTtsConstants.TTS_ONLINE_MODE && !IsInternetAvailable())
+        {
+            var error = "Speak Error: Internet connection is not available for online TTS mode.";
+            Debug.LogError(TAG + "->" + error);
+            return null;
+        }
+
         try
         {
-            return mlTtsEngine.Speak(text, playMode);
+            Debug.Log(TAG + "-> Speak Mode " + mlConfigs.GetSynthesizeMode());
+            var result = mlTtsEngine.Speak(text.Trim(), playMode);
+            return result;
         }
         catch (Exception e)
         {
@@ -212,7 +234,7 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
             if (!isExist)
             {
                 Debug.Log($"{TAG} -> Model does not exist, downloading {offlineSpeaker}");
-                DownloadModel(offlineSpeaker);
+                DownloadModel(model);
             }
             else
             {
@@ -224,15 +246,11 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
         });
     }
 
-    private void DownloadModel(string person)
+    private void DownloadModel(MLTtsLocalModel model)
     {
-        // Create an on-device TTS model manager.
-        mLLocalModelManager = MLLocalModelManager.Instance;
-        // Create an MLTtsLocalModel instance and pass the speaker (indicating by person) to download the language model corresponding to the speaker.
-        MLTtsLocalModel model = new MLTtsLocalModel.Factory(person).Create();
         // Create a download policy configurator. You can set that when any of the following conditions is met, the model can be downloaded: 1. The device is charging; 2. Wi-Fi is connected; 3. The device is idle.
         MLModelDownloadStrategy request = new MLModelDownloadStrategy.Factory().NeedWifi().Create();
-        //configuring the download listener
+
         var listenerInstance = new MLDownloadListenerManager
         {
             OnProcessAction = OnProcessAction
@@ -242,11 +260,17 @@ public class HMSMLTextToSpeechKitManager : HMSManagerSingleton<HMSMLTextToSpeech
         // Register the download listener.
         mLLocalModelManager.DownloadModel(model, request, listener).AddOnSuccessListener((result) =>
         {
-            Debug.Log("Model downloaded successfully");
             mlTtsEngine.UpdateConfig(mlConfigs);
+            Debug.Log($"{TAG} -> Model downloaded successfully - > {model.ModelName}");
         }).AddOnFailureListener((exception) =>
         {
-            Debug.Log("Model downloaded failed");
+            Debug.Log($"{TAG} -> DownloadModel Failed: {exception.WrappedExceptionMessage}");
         });
     }
+    private bool IsInternetAvailable()
+    {
+        return Application.internetReachability != NetworkReachability.NotReachable;
+    }
+
+
 }

@@ -29,6 +29,7 @@ The HMS Unity plugin helps you integrate the full power of Huawei Mobile Service
 * In-App Comments
 * Remote Configuration
 * 3D Modeling Kit (Beta)
+* ML Kit (Translation & Text-To-Speech)
 
 ## Requirements
 Android SDK min 21
@@ -79,7 +80,7 @@ Drive Kit allows you to create games that use HUAWEI Drive capabilities. For mor
 
 # Game Service
 
-Game Service helps you build basic game functions such as achievements, leaderboards, and saved games at low costs. Improve efficiency in testing, managing, and releasing games and keep attracting users with continuous optimization based on game data analysis. For more  
+Game Service helps you build basic game functions such as achievements, leaderboards, and saved games at low costs. Improve efficiency in testing, managing, and releasing games and keep attracting users with continuous optimization based on game data analysis. For more
 [About the Service](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050121216).
 
 # In-App purchases
@@ -89,7 +90,7 @@ For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/dev
 
 # Location Kit
 
-Location Kit provides capabilities for you to obtain the precise user device location quickly, helping you build up global positioning capabilities and expand your global business. For more  
+Location Kit provides capabilities for you to obtain the precise user device location quickly, helping you build up global positioning capabilities and expand your global business. For more
 [About the Service](https://developer.huawei.com/consumer/en/doc/development/HMSCore-Guides/introduction-0000001050706106).
 
 # Push Kit
@@ -136,6 +137,21 @@ For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/dev
 
 The in-app comments service allows you to prompt your users to submit ratings and make comments for your app.
 For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/development/AppGallery-connect-Guides/agc-comments-introduction-0000001063018306).
+
+# Remote Configuration
+
+Remote Configuration of AppGallery Connect allows you to change the behavior and appearance of your app online without requiring users to update the app. With the service, you can provide tailored experience for your users in a timely manner.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/AppGallery-connect-Guides/agc-remoteconfig-introduction-0000001055149778).
+
+# 3D Modelling Kit
+
+3D Modeling Kit provides four capabilities — material generation, 3D object reconstruction, motion capture, and auto rigging — to help with creating 3D content more efficiently at a lower cost.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/graphics-Guides/introduction-0000001143077297).
+
+# ML Kit
+
+ML Kit allows your apps to easily leverage Huawei's long-term proven expertise in machine learning to support diverse artificial intelligence (AI) applications throughout a wide range of industries. Thanks to Huawei's technology accumulation, ML Kit provides diversified leading machine learning capabilities that are easy to use, helping you develop various AI apps.
+For more [Service Introduction](https://developer.huawei.com/consumer/en/doc/hiai-Guides/service-introduction-0000001050040017).
 
 # License
 

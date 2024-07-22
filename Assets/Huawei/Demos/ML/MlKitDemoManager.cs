@@ -7,6 +7,7 @@ public class MlKitDemoManager : MonoBehaviour
     [SerializeField] private GameObject m_mlKitDemoMenu;
     private bool IsTranslateModuleEnabled => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTranslateModule);
     private bool IsTTSEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTextToSpeechModule);
+    private bool IsLangDetectionEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableLanguageDetectionModule);
 
     #region Singleton
     public static MlKitDemoManager Instance { get; private set; }
@@ -54,6 +55,20 @@ public class MlKitDemoManager : MonoBehaviour
         m_mlKitDemoMenu.SetActive(false);
         ttsMenu.SetActive(true);
         Debug.Log($"[{TextToSpeechDemoManager.Instance.enabled}] OpenTextToSpeechDemo");
+
+    }
+
+    public void OpenLangDetectionDemo(GameObject ldMenu)
+    {
+        if (!IsLangDetectionEnable)
+        {
+            AndroidToast.MakeText("Lang Detection Module is not enabled").Show();
+            Debug.Log("Lang Detection Module is not enabled");
+            return;
+        }
+        m_mlKitDemoMenu.SetActive(false);
+        ldMenu.SetActive(true);
+        //Debug.Log($"[{LanguageDetectionDemoManager().enabled}] Open");
 
     }
 

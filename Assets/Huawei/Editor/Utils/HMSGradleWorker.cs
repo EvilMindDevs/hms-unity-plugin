@@ -265,6 +265,17 @@ namespace HmsPlugin
                     "com.huawei.hms:ml-computer-language-detection-model:3.11.0.302"
                 });
             }
+
+            if (settings.GetBool(HMSMLKitSettings.EnableTextRecognitionModule))
+            {
+                packages.AddRange(new[]
+                {
+                    "com.huawei.hms:ml-computer-vision-ocr:3.11.0.301",
+                    "com.huawei.hms:ml-computer-vision-ocr-cn-model:3.11.0.301",
+                    "com.huawei.hms:ml-computer-vision-ocr-jk-model:3.11.0.301",
+                    "com.huawei.hms:ml-computer-vision-ocr-latin-model:3.11.0.301"
+                });
+            }
         }
         #endregion
         public void OnPreprocessBuild(BuildReport report)

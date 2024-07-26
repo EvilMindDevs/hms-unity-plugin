@@ -8,11 +8,13 @@ namespace HmsPlugin
         private bool translateIsActive = false;
         private bool textToSpeechIsActive = false;
         private bool langDetectionIsActive = false;
+        private bool textRecognitionIsActive = false;
         private TextField.TextFieldWithAccept _keyAPITextField;
 
         private Toggle.Toggle _enableTranslateToggle;
         private Toggle.Toggle _enableTextToSpeechToggle;
         private Toggle.Toggle _enableLangDetectionToggle;
+        private Toggle.Toggle _enableTextRecognitionToggle;
         private HMSSettings _settings;
 
         public HMSMLKitSettingsDrawer()
@@ -25,6 +27,8 @@ namespace HmsPlugin
             translateIsActive = _settings.GetBool(HMSMLKitSettings.EnableTranslateModule);
             textToSpeechIsActive = _settings.GetBool(HMSMLKitSettings.EnableTextToSpeechModule);
             langDetectionIsActive = _settings.GetBool(HMSMLKitSettings.EnableLanguageDetectionModule);
+            textRecognitionIsActive = _settings.GetBool(HMSMLKitSettings.EnableTextRecognitionModule);
+
             AddDrawer(new VerticalSequenceDrawer(
                 new HorizontalSequenceDrawer(new Spacer(), new Label.Label("- ML Kit Modules -").SetBold(true), new Spacer()),
                 new HorizontalSequenceDrawer(new HorizontalLine())
@@ -87,12 +91,24 @@ namespace HmsPlugin
             AddDrawer(new HorizontalLine());
         }
 
+        private void TextRecognitionDrawer()
+        {
+            AddDrawer(new VerticalSequenceDrawer(
+                new HorizontalSequenceDrawer(new Label.Label("Text Recognition Module").SetBold(true)),
+                new HorizontalSequenceDrawer(new Spacer()),
+                new HorizontalSequenceDrawer(new Label.Label("Text Recognition Module enables you to recognize text from images."))
+            ));
+            _enableTextRecognitionToggle = new Toggle.Toggle("Enable Text Recognition Module", textRecognitionIsActive, OnTextRecognitionToggleChanged, false).SetLabelWidth(200);
+            AddDrawer(_enableTextRecognitionToggle);
+            AddDrawer(new HorizontalLine());
+        }
         private void SetupSequence()
         {
             KeyAPIDrawer();
             TranslateModuleDrawer();
             TextToSpeechModuleDrawer();
             LanguageDetectionModuleDrawer();
+            TextRecognitionDrawer();
         }
         private void OnTranslateToggleChanged(bool value)
         {
@@ -112,10 +128,17 @@ namespace HmsPlugin
             _settings.SetBool(HMSMLKitSettings.EnableLanguageDetectionModule, langDetectionIsActive);
         }
 
+        private void OnTextRecognitionToggleChanged(bool value)
+        {
+            _settings.SetBool(HMSMLKitSettings.EnableTextRecognitionModule, value);
+        }
+
         private void OnKeyAPISaveButtonClick()
         {
             _settings.Set(HMSMLKitSettings.MLKeyAPI, _keyAPITextField.GetCurrentText());
         }
+
+
     }
 
 

@@ -8,6 +8,7 @@ public class MlKitDemoManager : MonoBehaviour
     private bool IsTranslateModuleEnabled => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTranslateModule);
     private bool IsTTSEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTextToSpeechModule);
     private bool IsLangDetectionEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableLanguageDetectionModule);
+    private bool IsTextRecognitionEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTextRecognitionModule);
 
     #region Singleton
     public static MlKitDemoManager Instance { get; private set; }
@@ -30,12 +31,13 @@ public class MlKitDemoManager : MonoBehaviour
     {
         Singleton();
     }
+
     public void OpenTranslateDemo(GameObject translateMenu)
     {
         if (!IsTranslateModuleEnabled)
         {
             AndroidToast.MakeText("Translate Module is not enabled").Show();
-            Debug.Log("Translate Module is not enabled");
+            Debug.LogWarning("Translate Module is not enabled");
             return;
         }
 
@@ -49,13 +51,12 @@ public class MlKitDemoManager : MonoBehaviour
         if (!IsTTSEnable)
         {
             AndroidToast.MakeText("Text To Speech Module is not enabled").Show();
-            Debug.Log("Text To Speech Module is not enabled");
+            Debug.LogWarning("Text To Speech Module is not enabled");
             return;
         }
         m_mlKitDemoMenu.SetActive(false);
         ttsMenu.SetActive(true);
         Debug.Log($"[{TextToSpeechDemoManager.Instance.enabled}] OpenTextToSpeechDemo");
-
     }
 
     public void OpenLangDetectionDemo(GameObject ldMenu)
@@ -63,13 +64,25 @@ public class MlKitDemoManager : MonoBehaviour
         if (!IsLangDetectionEnable)
         {
             AndroidToast.MakeText("Lang Detection Module is not enabled").Show();
-            Debug.Log("Lang Detection Module is not enabled");
+            Debug.LogWarning("Lang Detection Module is not enabled");
             return;
         }
         m_mlKitDemoMenu.SetActive(false);
         ldMenu.SetActive(true);
-        //Debug.Log($"[{LanguageDetectionDemoManager().enabled}] Open");
+        Debug.Log($"[{LanguageDetectionDemoManager.Instance.enabled}] OpenLangDetectionDemo");
+    }
 
+    public void OpenTextRecognitionDemo(GameObject trMenu)
+    {
+        if (!IsTextRecognitionEnable)
+        {
+            AndroidToast.MakeText("Text Recognition Module is not enabled").Show();
+            Debug.LogWarning("Text Recognition Module is not enabled");
+            return;
+        }
+        m_mlKitDemoMenu.SetActive(false);
+        trMenu.SetActive(true);
+        Debug.Log($"[{TextRecognitionDemoManager.Instance.enabled}] OpenTextRecognitionDemo");
     }
 
     #endregion

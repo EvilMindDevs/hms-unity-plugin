@@ -7,10 +7,12 @@ namespace HmsPlugin
     {
         private bool translateIsActive = false;
         private bool textToSpeechIsActive = false;
+        private bool langDetectionIsActive = false;
         private TextField.TextFieldWithAccept _keyAPITextField;
 
         private Toggle.Toggle _enableTranslateToggle;
         private Toggle.Toggle _enableTextToSpeechToggle;
+        private Toggle.Toggle _enableLangDetectionToggle;
         private HMSSettings _settings;
 
         public HMSMLKitSettingsDrawer()
@@ -22,6 +24,7 @@ namespace HmsPlugin
 
             translateIsActive = _settings.GetBool(HMSMLKitSettings.EnableTranslateModule);
             textToSpeechIsActive = _settings.GetBool(HMSMLKitSettings.EnableTextToSpeechModule);
+            langDetectionIsActive = _settings.GetBool(HMSMLKitSettings.EnableLanguageDetectionModule);
             AddDrawer(new VerticalSequenceDrawer(
                 new HorizontalSequenceDrawer(new Spacer(), new Label.Label("- ML Kit Modules -").SetBold(true), new Spacer()),
                 new HorizontalSequenceDrawer(new HorizontalLine())
@@ -58,6 +61,19 @@ namespace HmsPlugin
             AddDrawer(_enableTextToSpeechToggle);
             AddDrawer(new HorizontalLine());
         }
+        private void LanguageDetectionModuleDrawer()
+        {
+            AddDrawer(new VerticalSequenceDrawer(
+                new HorizontalSequenceDrawer(new Label.Label("Language Detection Module").SetBold(true)),
+                new HorizontalSequenceDrawer(new Spacer()),
+                new HorizontalSequenceDrawer(new Label.Label("Language Detection Module enables you to detect to languages."))
+
+            ));
+            AddDrawer(new Space(3));
+            _enableLangDetectionToggle = new Toggle.Toggle("Enable Language Detection Module", langDetectionIsActive, OnLanguageDetectionToggleChanged, false).SetLabelWidth(210);
+            AddDrawer(_enableLangDetectionToggle);
+            AddDrawer(new HorizontalLine());
+        }
 
         private void KeyAPIDrawer()
         {
@@ -76,6 +92,7 @@ namespace HmsPlugin
             KeyAPIDrawer();
             TranslateModuleDrawer();
             TextToSpeechModuleDrawer();
+            LanguageDetectionModuleDrawer();
         }
         private void OnTranslateToggleChanged(bool value)
         {
@@ -88,6 +105,11 @@ namespace HmsPlugin
         {
             textToSpeechIsActive = value;
             _settings.SetBool(HMSMLKitSettings.EnableTextToSpeechModule, textToSpeechIsActive);
+        }
+        private void OnLanguageDetectionToggleChanged(bool value)
+        {
+            langDetectionIsActive = value;
+            _settings.SetBool(HMSMLKitSettings.EnableLanguageDetectionModule, langDetectionIsActive);
         }
 
         private void OnKeyAPISaveButtonClick()

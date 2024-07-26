@@ -256,6 +256,15 @@ namespace HmsPlugin
                     "com.huawei.hms:ml-computer-voice-tts-model-eagle:3.6.0.300"
                 });
             }
+
+            if (settings.GetBool(HMSMLKitSettings.EnableLanguageDetectionModule))
+            {
+                packages.AddRange(new[]
+                {
+                    "com.huawei.hms:ml-computer-language-detection:3.11.0.302",
+                    "com.huawei.hms:ml-computer-language-detection-model:3.11.0.302"
+                });
+            }
         }
         #endregion
         public void OnPreprocessBuild(BuildReport report)

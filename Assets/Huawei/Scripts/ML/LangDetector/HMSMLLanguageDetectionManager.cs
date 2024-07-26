@@ -68,16 +68,16 @@ namespace Assets.Huawei.Scripts.ML.LangDetector
         }
 
 
-        private void SetOnlineDetection()
+        private void SetOnlineDetection(float f = 0.01f)
         {
-            float f = 0.01f;
+            
             remoteSetting = new MLRemoteLangDetectorSetting.Factory().SetTrustedThreshold(f).Create();
 
             remoteDetector = MLLangDetectorFactory.GetInstance().GetRemoteLangDetector(remoteSetting); 
         }
-        private void SetOfflineDetection()
+        private void SetOfflineDetection(float f = 0.01f)
         {
-            float f = 0.01f;
+          
             localSetting = new MLLocalLangDetectorSetting.Factory().SetTrustedThreshold(f).Create();
 
             localDetector = MLLangDetectorFactory.GetInstance().GetLocalLangDetector(localSetting); 
@@ -99,7 +99,7 @@ namespace Assets.Huawei.Scripts.ML.LangDetector
         }
         public void FirstBestDetectLocal(string text, Action<string> success, Action<HMSException> failure)
         {
-            Debug.Log($"FIRST BEST DETECT LOCAL FUN");
+           
             localDetector.FirstBestDetect(text).AddOnSuccessListener((result) =>
             {
                 Debug.Log($"{TAG} FIRST BEST DETECT LOCAL -> {result}");
@@ -127,7 +127,7 @@ namespace Assets.Huawei.Scripts.ML.LangDetector
         public void FirstBestDetectRemote(string text, Action<string> success, Action<HMSException> failure)
 
         {
-            Debug.Log($"FIRST BEST DETECT REMOTE FUN");
+            
             remoteDetector.FirstBestDetect(text).AddOnSuccessListener((result) =>
             {
                 Debug.Log($"{TAG} FIRST BEST DETECT REMOTE -> {result}");
@@ -141,12 +141,12 @@ namespace Assets.Huawei.Scripts.ML.LangDetector
         }
         public IList<MLDetectedLang> SyncProbilityDetectLocal(string text)
         {
-            return localDetector.SyncProbabilityDetect(text); //try catch koyulabilir
+            return localDetector.SyncProbabilityDetect(text); 
         }
 
         public string SyncFirstBestDetectLocal(string text)
         {
-            return localDetector.SyncFirstBestDetect(text); //try catch koyulabilir
+            return localDetector.SyncFirstBestDetect(text); 
         }
 
         public void StopLocalLangDetector()
@@ -160,12 +160,12 @@ namespace Assets.Huawei.Scripts.ML.LangDetector
 
         public IList<MLDetectedLang> SyncProbilityDetectRemote(string text)
         {
-            return remoteDetector.SyncProbabilityDetect(text); //try catch koyulabilir
+            return remoteDetector.SyncProbabilityDetect(text); 
         }
 
         public string SyncFirstBestDetectRemote(string text)
         {
-            return remoteDetector.SyncFirstBestDetect(text); //try catch koyulabilir
+            return remoteDetector.SyncFirstBestDetect(text); 
         }
 
         public void StopRemoteLangDetector()

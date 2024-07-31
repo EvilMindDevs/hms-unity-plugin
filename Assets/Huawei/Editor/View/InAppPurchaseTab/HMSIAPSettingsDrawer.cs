@@ -80,6 +80,9 @@ namespace HmsPlugin
                 AddDrawer(new Space(10));
             }
 
+            AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Import from CSV", ImportFromCSV).SetWidth(150), new Button.Button("Export to CSV", ExportToCSV).SetWidth(150), new Spacer()));
+            AddDrawer(new Space(10));
+
             AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Clear All Products", ClearAllIAPProducts).SetWidth(250), new Spacer()));
             AddDrawer(new Space(3));
             AddDrawer(new HorizontalSequenceDrawer(new Spacer(), new Button.Button("Create Constant Classes", CreateIAPConstants).SetWidth(250), new Spacer()));
@@ -94,6 +97,39 @@ namespace HmsPlugin
         private void ClearAllIAPProducts()
         {
             _productManipulator.ClearAllProducts();
+        }
+
+        private void ImportFromCSV()
+        {
+            string path = EditorUtility.OpenFilePanel("Choose a CSV File", "", "csv");
+            if (!string.IsNullOrEmpty(path))
+            {
+                using (var reader = new StreamReader(path))
+                {
+                    reader.ReadLine();  // Skip header
+                    while (!reader.EndOfStream)
+                    {
+                        var l = reader.ReadLine().Split(',');
+                        string identifier = l[0];
+                        var type = (HMSIAPProductType)int.Parse(l[1]);
+                        _productManipulator.AddProduct(identifier, type);
+                    }
+                }
+            }
+        }
+
+        private void ExportToCSV()
+        {
+            var exportPath = EditorUtility.SaveFilePanel("Export Product List", "", "HMSIAPProductList", "csv");
+            using (var file = new StreamWriter(exportPath))
+            {
+                file.WriteLine("Identifier, Type");
+                foreach (var product in _productManipulator.GetAllProducts())
+                {
+                    file.WriteLine($"{product.Identifier}, {(int)product.Type}");
+                }
+            }
+            EditorUtility.DisplayDialog("Exported", "Product list exported to " + exportPath, "OK");
         }
 
         private void ImportFromGoogle()

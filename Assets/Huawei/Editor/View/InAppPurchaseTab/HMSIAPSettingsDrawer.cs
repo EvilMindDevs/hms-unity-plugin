@@ -1,4 +1,5 @@
 using HmsPlugin.List;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -101,35 +102,49 @@ namespace HmsPlugin
 
         private void ImportFromCSV()
         {
-            string path = EditorUtility.OpenFilePanel("Choose a CSV File", "", "csv");
-            if (!string.IsNullOrEmpty(path))
+            try
             {
-                using (var reader = new StreamReader(path))
+                string path = EditorUtility.OpenFilePanel("Choose a CSV File", "", "csv");
+                if (!string.IsNullOrEmpty(path))
                 {
-                    reader.ReadLine();  // Skip header
-                    while (!reader.EndOfStream)
+                    using (var reader = new StreamReader(path))
                     {
-                        var l = reader.ReadLine().Split(',');
-                        string identifier = l[0];
-                        var type = (HMSIAPProductType)int.Parse(l[1]);
-                        _productManipulator.AddProduct(identifier, type);
+                        reader.ReadLine();  // Skip header
+                        while (!reader.EndOfStream)
+                        {
+                            var l = reader.ReadLine().Split(',');
+                            string identifier = l[0];
+                            var type = (HMSIAPProductType)int.Parse(l[1]);
+                            _productManipulator.AddProduct(identifier, type);
+                        }
                     }
                 }
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError($"Error while importing products from CSV: {exception.Message}");
             }
         }
 
         private void ExportToCSV()
         {
-            var exportPath = EditorUtility.SaveFilePanel("Export Product List", "", "HMSIAPProductList", "csv");
-            using (var file = new StreamWriter(exportPath))
+            try
             {
-                file.WriteLine("Identifier, Type");
-                foreach (var product in _productManipulator.GetAllProducts())
+                var exportPath = EditorUtility.SaveFilePanel("Export Product List", "", "HMSIAPProductList", "csv");
+                using (var file = new StreamWriter(exportPath))
                 {
-                    file.WriteLine($"{product.Identifier}, {(int)product.Type}");
+                    file.WriteLine("Identifier, Type");
+                    foreach (var product in _productManipulator.GetAllProducts())
+                    {
+                        file.WriteLine($"{product.Identifier}, {(int)product.Type}");
+                    }
                 }
+                EditorUtility.DisplayDialog("Exported", "Product list exported to " + exportPath, "OK");
             }
-            EditorUtility.DisplayDialog("Exported", "Product list exported to " + exportPath, "OK");
+            catch (Exception exception)
+            {
+                Debug.LogError($"Error while exporting products to CSV: {exception.Message}");
+            }
         }
 
         private void ImportFromGoogle()

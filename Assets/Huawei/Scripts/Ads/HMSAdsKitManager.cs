@@ -21,6 +21,8 @@ namespace HmsPlugin
         private const string TestRewardedAdId = "testx9dtjwj8hp";
         private const string TestSplashImageAdId = "testq6zq98hecj";
         private const string TestSplashVideoAdId = "testd7c5cewoj6";
+        private const string DefaultIcon = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"; // 1x1 transparent pixel(base64 encoded)
+
         #endregion
 
         #region PRIVATE_MEMBERS
@@ -731,20 +733,29 @@ namespace HmsPlugin
             {
                 AdId = adId,
                 Orientation = orientation,
-                Title = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashTitle)) ? "Splash Title" : adsKitSettings.Get(HMSAdsKitSettings.SplashTitle),
-                SubText = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)) ? "Splash SubText" : adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)
+                Title = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashTitle))
+                    ? "Splash Title"
+                    : adsKitSettings.Get(HMSAdsKitSettings.SplashTitle),
+                SubText = string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashSubText))
+                    ? "Splash SubText"
+                    : adsKitSettings.Get(HMSAdsKitSettings.SplashSubText)
             };
 
-            if (!string.IsNullOrEmpty(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)))
-            {
-                Texture2D texture = new Texture2D(28, 28);
-                texture.LoadImage(Convert.FromBase64String(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes)));
-                splashView.Icon = texture;
-            }
+            Texture2D texture = new Texture2D(28, 28);
+            texture.LoadImage(Convert.FromBase64String(adsKitSettings.Get(HMSAdsKitSettings.SplashImageBytes) ?? DefaultIcon));
+            splashView.Icon = texture;
 
-            splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(SplashAdStatusListener_OnAdShowed, SplashAdStatusListener_OnAdClicked));
-            splashView.SetSplashAdLoadListener(new SplashAdLoadListener(SplashAdStatusListener_OnAdDismissed, SplashAdStatusListener_OnAdFailedToLoad, SplashAdStatusListener_OnAdLoaded));
+            splashView.SetSplashAdDisplayListener(new SplashAdDisplayListener(
+                SplashAdStatusListener_OnAdShowed,
+                SplashAdStatusListener_OnAdClicked));
+
+            splashView.SetSplashAdLoadListener(new SplashAdLoadListener(
+                SplashAdStatusListener_OnAdDismissed,
+                SplashAdStatusListener_OnAdFailedToLoad,
+                SplashAdStatusListener_OnAdLoaded));
+
             splashView.LoadAd(new AdParam.Builder().Build());
+
         }
 
         public void AssignDefaultSplashAdLoad(AdLoadMethod type = AdLoadMethod.Default)

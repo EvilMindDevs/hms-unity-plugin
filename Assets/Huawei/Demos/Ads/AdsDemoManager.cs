@@ -50,8 +50,8 @@ public class AdsDemoManager : MonoBehaviour
         HMSAdsKitManager.Instance = new Builder()
                                     .SetHasPurchasedNoAds(false)
                                     .SetRewardedAdLoadMethod(RewardedAdLoadMethod, rewardVerifyConfig)
-                                    .SetBannerAdLoadMethod(InterstitialAdLoadMethod)
-                                    .SetInterstitialAdLoadMethod(BannerAdLoadMethod)
+                                    .SetBannerAdLoadMethod(BannerAdLoadMethod)
+                                    .SetInterstitialAdLoadMethod(InterstitialAdLoadMethod)
                                     .SetSplashAdLoadMethod(SplashAdLoadMethod)
                                     .Build();
 

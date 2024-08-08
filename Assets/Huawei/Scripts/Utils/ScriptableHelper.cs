@@ -4,17 +4,21 @@ using UnityEngine;
 
 namespace HmsPlugin
 {
-
     public static class ScriptableHelper
     {
         public static void Save(UnityEngine.Object scriptableObject)
         {
-
 #if UNITY_EDITOR
-            EditorUtility.SetDirty(scriptableObject);
-
-        // Note: we do not call AssetDatabase.SaveAssets() because it takes too long on bigger projects
-        // And SetDirty should be enough to live between play mode changes & reopening Unity
+            if (scriptableObject != null)
+            {
+                EditorUtility.SetDirty(scriptableObject);
+            }
+            else
+            {
+                Debug.LogWarning("ScriptableObject is null. Cannot set dirty.");
+            }
+            // Note: we do not call AssetDatabase.SaveAssets() because it takes too long on bigger projects
+            // And SetDirty should be enough to live between play mode changes & reopening Unity
 #endif
         }
 
@@ -23,13 +27,7 @@ namespace HmsPlugin
         public static T Load<T>(string filename, string path) where T : ScriptableObject
         {
             var asset = Resources.Load<T>(filename);
-
-            if (asset == null)
-            {
-                asset = Create<T>(filename, path);
-            }
-
-            return asset;
+            return asset != null ? asset : Create<T>(filename, path);
         }
 
         // path should start with "Assets"
@@ -38,19 +36,22 @@ namespace HmsPlugin
         {
             var asset = ScriptableObject.CreateInstance<T>();
 #if UNITY_EDITOR
+            if (!string.IsNullOrEmpty(path))
+            {
+                Directory.CreateDirectory(path);
+                string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(path, filename + ".asset"));
+                AssetDatabase.CreateAsset(asset, assetPathAndName);
+                AssetDatabase.SaveAssetIfDirty(asset);
+            }
+            else
+            {
+                Debug.LogError("Invalid path. Cannot create asset.");
 
-            Directory.CreateDirectory(path);
-            string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(path, filename + ".asset"));
-
-            AssetDatabase.CreateAsset(asset, assetPathAndName);
-
-            // AssetDatabase.SaveAssets ();
-            // AssetDatabase.Refresh();
-
+            }
             return asset;
 #else
             Debug.LogError("Creating ScriptableObjects during runtime is not allowed!");
-            return (T)null;
+            return null;
 #endif
         }
     }

@@ -356,11 +356,11 @@ namespace HmsPlugin
             switch (type)
             {
                 case AdLoadMethod.Default:
-                    DefaultLoadBannerAd = (a, b) => LoadBannerAd(position, bannerSize.ToString());
+                    DefaultLoadBannerAd = (a, b) => LoadBannerAd(a, b.ToString());
                     break;
                 case AdLoadMethod.WithAdId:
                     var adId = "testw6vs28auh3";
-                    DefaultLoadBannerAd = (a, b) => LoadBannerAd(adId, position, bannerSize.ToString());
+                    DefaultLoadBannerAd = (a, b) => LoadBannerAd(adId, a, b.ToString());
                     break;
                 case AdLoadMethod.WithConfig:
                     Debug.LogError($"{TAG} AssignDefaultBannerAdLoad with config is not supported.");

@@ -9,12 +9,14 @@ namespace HmsPlugin
         private bool textToSpeechIsActive = false;
         private bool langDetectionIsActive = false;
         private bool textRecognitionIsActive = false;
+        private bool skeletonDetectionIsActive = false;
         private TextField.TextFieldWithAccept _keyAPITextField;
 
         private Toggle.Toggle _enableTranslateToggle;
         private Toggle.Toggle _enableTextToSpeechToggle;
         private Toggle.Toggle _enableLangDetectionToggle;
         private Toggle.Toggle _enableTextRecognitionToggle;
+        private Toggle.Toggle _enableSkeletonDetectionToggle;
         private HMSSettings _settings;
 
         public HMSMLKitSettingsDrawer()
@@ -28,6 +30,7 @@ namespace HmsPlugin
             textToSpeechIsActive = _settings.GetBool(HMSMLKitSettings.EnableTextToSpeechModule);
             langDetectionIsActive = _settings.GetBool(HMSMLKitSettings.EnableLanguageDetectionModule);
             textRecognitionIsActive = _settings.GetBool(HMSMLKitSettings.EnableTextRecognitionModule);
+            skeletonDetectionIsActive = _settings.GetBool(HMSMLKitSettings.EnableSkeletonDetectionModule);
 
             AddDrawer(new VerticalSequenceDrawer(
                 new HorizontalSequenceDrawer(new Spacer(), new Label.Label("- ML Kit Modules -").SetBold(true), new Spacer()),
@@ -102,6 +105,22 @@ namespace HmsPlugin
             AddDrawer(_enableTextRecognitionToggle);
             AddDrawer(new HorizontalLine());
         }
+
+
+        private void SkeletonDetectionModuleDrawer()
+        {
+            AddDrawer(new VerticalSequenceDrawer(
+                new HorizontalSequenceDrawer(new Label.Label("Skeleton Detection Module").SetBold(true)),
+                new HorizontalSequenceDrawer(new Spacer()),
+                new HorizontalSequenceDrawer(new Label.Label("Skeleton Detection Module enables you to detect to languages."))
+
+            ));
+            AddDrawer(new Space(3));
+            _enableSkeletonDetectionToggle = new Toggle.Toggle("Enable Skeleton Detection Module", skeletonDetectionIsActive, OnSkeletonDetectionToggleChanged, false).SetLabelWidth(210);
+            AddDrawer(_enableSkeletonDetectionToggle);
+            AddDrawer(new HorizontalLine());
+        }
+
         private void SetupSequence()
         {
             KeyAPIDrawer();
@@ -109,6 +128,7 @@ namespace HmsPlugin
             TextToSpeechModuleDrawer();
             LanguageDetectionModuleDrawer();
             TextRecognitionDrawer();
+            SkeletonDetectionModuleDrawer();
         }
         private void OnTranslateToggleChanged(bool value)
         {
@@ -131,6 +151,11 @@ namespace HmsPlugin
         private void OnTextRecognitionToggleChanged(bool value)
         {
             _settings.SetBool(HMSMLKitSettings.EnableTextRecognitionModule, value);
+        }
+
+        private void OnSkeletonDetectionToggleChanged(bool value)
+        {
+            _settings.SetBool(HMSMLKitSettings.EnableSkeletonDetectionModule, value);
         }
 
         private void OnKeyAPISaveButtonClick()

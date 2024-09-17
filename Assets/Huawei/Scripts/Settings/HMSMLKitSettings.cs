@@ -9,6 +9,7 @@ namespace HmsPlugin
         public const string EnableTextToSpeechModule = "EnableTextToSpeechModule";
         public const string EnableLanguageDetectionModule = "EnableLanguageDetectionModule";
         public const string EnableTextRecognitionModule = "EnableTextRecognitionModule";
+        public const string EnableSkeletonDetectionModule = "EnableSkeletonDetectionModule";
         public const string MLKeyAPI = "MLKeyAPI";
 
         private SettingsScriptableObject loadedSettings;

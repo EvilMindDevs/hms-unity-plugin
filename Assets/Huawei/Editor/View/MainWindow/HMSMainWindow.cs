@@ -41,11 +41,6 @@ namespace HmsPlugin
         {
             GetWindow(typeof(HMSKeyToolWindow), false, "HMS Key Tool", true);
         }
-        [MenuItem("Huawei/Utils/Script Compilation")]
-        public static void ScriptCompilation()
-        {
-            GetWindow(typeof(CompilationWindow), false, "Script Compilation", true);
-        }
 
         public override IDrawer CreateDrawer()
         {

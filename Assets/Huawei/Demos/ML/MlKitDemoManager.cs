@@ -9,6 +9,7 @@ public class MlKitDemoManager : MonoBehaviour
     private bool IsTTSEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTextToSpeechModule);
     private bool IsLangDetectionEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableLanguageDetectionModule);
     private bool IsTextRecognitionEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableTextRecognitionModule);
+    private bool IsSkeletonDetectionEnable => HMSMLKitSettings.Instance.Settings.GetBool(HMSMLKitSettings.EnableSkeletonDetectionModule);
 
     #region Singleton
     public static MlKitDemoManager Instance { get; private set; }
@@ -83,6 +84,19 @@ public class MlKitDemoManager : MonoBehaviour
         m_mlKitDemoMenu.SetActive(false);
         trMenu.SetActive(true);
         Debug.Log($"[{TextRecognitionDemoManager.Instance.enabled}] OpenTextRecognitionDemo");
+    }
+
+     public void OpenSkeletonDetectionDemo(GameObject trMenu)
+    {
+        if (!IsSkeletonDetectionEnable)
+        {
+            AndroidToast.MakeText("Skeleton Detection Module is not enabled").Show();
+            Debug.LogWarning("Skeleton Detection Module is not enabled");
+            return;
+        }
+        m_mlKitDemoMenu.SetActive(false);
+        trMenu.SetActive(true);
+        Debug.Log($"[{SkeletonDetectionDemoManager.Instance.enabled}] OpenSkeletonDetectionDemo");
     }
 
     #endregion

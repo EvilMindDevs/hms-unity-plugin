@@ -276,6 +276,14 @@ namespace HmsPlugin
                     "com.huawei.hms:ml-computer-vision-ocr-latin-model:3.11.0.301"
                 });
             }
+
+            if (settings.GetBool(HMSMLKitSettings.EnableSkeletonDetectionModule))
+            {
+                packages.AddRange(new[]
+                {
+                    "com.huawei.hms:ml-computer-vision-skeleton:3.11.0.301"
+                });
+            }
         }
         #endregion
         public void OnPreprocessBuild(BuildReport report)
